@@ -64,7 +64,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget get avatarPicker => Center(
         child: ClipOval(
           child: SizedBox.fromSize(
-            size: Size.square(116.0.w),
+            size: Size.square(116.w),
             child: GestureDetector(
               onTap: () {
                 navigatorState.pushNamed(Routes.openjmuImageCrop);
@@ -77,14 +77,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.white54,
-                          width: 5.0.w,
+                          width: 5.w,
                         ),
                         color: Colors.black45,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.photo_camera,
-                        size: 48.0.w,
+                        size: 48.w,
                         color: Colors.white60,
                       ),
                     ),
@@ -104,11 +104,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }) {
     return Container(
       margin: EdgeInsets.only(
-        top: 30.0.h,
-        bottom: 6.0.h,
+        top: 30.h,
+        bottom: 6.h,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: 30.0.w,
+        horizontal: 30.w,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -116,9 +116,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         children: <Widget>[
           Text(
             title,
-            style: TextStyle(fontSize: 18.0.sp),
+            style: TextStyle(fontSize: 18.sp),
           ),
-          SizedBox(height: 10.0.h),
+          SizedBox(height: 10.h),
           DefaultTextStyle(
             style: context.themeData.textTheme.bodyText2.copyWith(
               fontSize: 22.sp,
@@ -160,7 +160,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: currentThemeColor),
                   ),
-                  contentPadding: EdgeInsets.only(bottom: 6.0.h),
+                  contentPadding: EdgeInsets.only(bottom: 6.h),
                   isDense: true,
                 ),
                 scrollPadding: EdgeInsets.zero,

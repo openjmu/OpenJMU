@@ -72,7 +72,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
         automaticallyImplyLeading: false,
         title: Container(
           alignment: AlignmentDirectional.centerStart,
-          padding: EdgeInsets.only(right: 20.0.w),
+          padding: EdgeInsets.only(right: 20.w),
           child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
@@ -80,7 +80,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
           SizedBox(width: 10.w),
           switchButton,
         ],
-        actionsPadding: EdgeInsets.only(right: 20.0.w),
+        actionsPadding: EdgeInsets.only(right: 20.w),
       );
 
   Widget get _refreshIcon {
@@ -92,7 +92,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       color: context.themeData.canvasColor,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+        borderRadius: BorderRadius.circular(13.w),
       ),
       child: Icon(Icons.refresh, size: 32.w),
       onPressed: () {
@@ -109,14 +109,14 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       height: 56.w,
       padding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+        borderRadius: BorderRadius.circular(13.w),
       ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       child: Text(
         currentIndex == 0 ? '成绩单' : '课程表',
         style: TextStyle(
           color: adaptiveButtonColor(),
-          fontSize: suSetSp(20.0),
+          fontSize: 20.sp,
           height: 1.24,
           fontWeight: FontWeight.bold,
         ),

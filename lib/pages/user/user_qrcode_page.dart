@@ -66,10 +66,10 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
   Widget get usernameWidget {
     return Flexible(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Text(
           currentUser.name,
-          style: TextStyle(fontSize: 22.0.sp),
+          style: TextStyle(fontSize: 22.sp),
           textAlign: TextAlign.left,
           maxLines: 1,
           overflow: TextOverflow.fade,
@@ -100,8 +100,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       onTap: saveToGallery,
       child: Container(
         margin: EdgeInsets.only(top: minWidth / 10),
-        width: 80.0.w,
-        height: 80.0.w,
+        width: 80.w,
+        height: 80.w,
         decoration: BoxDecoration(
           color: context.themeData.canvasColor,
           shape: BoxShape.circle,
@@ -137,9 +137,9 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                   key: previewContainer,
                   child: Container(
                     width: minWidth / 1.5,
-                    padding: EdgeInsets.all(25.0.w),
+                    padding: EdgeInsets.all(25.w),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0.w),
+                      borderRadius: BorderRadius.circular(20.w),
                       color: context.themeData.colorScheme.surface,
                     ),
                     child: Column(
@@ -152,7 +152,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                             sexualWidget(margin: EdgeInsets.zero),
                           ],
                         ),
-                        SizedBox(height: 30.0.w),
+                        SizedBox(height: 30.w),
                         qrImage,
                       ],
                     ),

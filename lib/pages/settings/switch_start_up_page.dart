@@ -42,7 +42,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
+        margin: EdgeInsets.symmetric(vertical: 16.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -53,14 +53,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 Text(
                   '${page['name']}',
                   style: Theme.of(context).textTheme.headline6.copyWith(
-                        fontSize: suSetSp(26.0),
+                        fontSize: 26.sp,
                         fontWeight: FontWeight.normal,
                       ),
                 ),
                 Text(
                   '${page['pages'][page['index']]}',
                   style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: suSetSp(18.0),
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.normal,
                       ),
                 ),
@@ -69,8 +69,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
             SvgPicture.asset(
               R.ASSETS_ICONS_ARROW_RIGHT_SVG,
               color: Colors.grey,
-              width: suSetWidth(30.0),
-              height: suSetWidth(30.0),
+              width: 30.w,
+              height: 30.w,
             ),
           ],
         ),
@@ -98,12 +98,12 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border.all(color: Theme.of(context).dividerColor),
-          borderRadius: BorderRadius.circular(suSetSp(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
         ),
         child: Center(
           child: Text(
             '${page['pages'][index]}',
-            style: TextStyle(fontSize: suSetSp(20.0)),
+            style: TextStyle(fontSize: 20.sp),
           ),
         ),
       ),
@@ -133,18 +133,18 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.symmetric(
-            vertical: suSetSp(20.0),
-            horizontal: suSetSp(16.0),
+            horizontal: 16.w,
+            vertical: 20.w,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(bottom: suSetSp(12.0)),
+                padding: EdgeInsets.only(bottom: 12.w),
                 child: Text(
                   '选择页面',
                   style: TextStyle(
-                    fontSize: suSetSp(24.0),
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -152,8 +152,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               GridView.count(
                 shrinkWrap: true,
                 crossAxisCount: 4,
-                mainAxisSpacing: suSetSp(6.0),
-                crossAxisSpacing: suSetSp(12.0),
+                mainAxisSpacing: 6.w,
+                crossAxisSpacing: 12.w,
                 childAspectRatio: 2.1,
                 children: List<Widget>.generate(
                   (page['pages'] as List<String>).length,
@@ -196,21 +196,21 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               Text(
                 '启动页设置',
                 style: Theme.of(context).textTheme.headline6.copyWith(
-                      fontSize: suSetSp(26.0),
+                      fontSize: 26.sp,
                       fontWeight: FontWeight.bold,
                     ),
               ),
               Text(
                 '选择您偏好的启动页面',
                 style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: suSetSp(18.0),
+                      fontSize: 18.sp,
                     ),
               ),
             ],
           ),
         ),
         body: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: suSetSp(40.0)),
+          padding: EdgeInsets.symmetric(horizontal: 40.w),
           separatorBuilder: (_, int index) => separator(
             context,
             color: Colors.transparent,

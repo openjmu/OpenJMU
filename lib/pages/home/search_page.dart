@@ -163,7 +163,7 @@ class SearchPageState extends State<SearchPage>
   }
 
   Widget get searchButton => IconButton(
-        icon: Icon(Icons.search, size: suSetWidth(30.0)),
+        icon: Icon(Icons.search, size: 30.w),
         onPressed: () {
           search(context, _controller.text);
         },
@@ -177,10 +177,10 @@ class SearchPageState extends State<SearchPage>
           SystemChannels.textInput.invokeMethod<void>('TextInput.show');
         },
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Icon(
             Icons.clear,
-            size: suSetWidth(24.0),
+            size: 24.w,
             color: Theme.of(context).iconTheme.color,
           ),
         ),
@@ -191,9 +191,9 @@ class SearchPageState extends State<SearchPage>
       _controller = TextEditingController(text: content);
     }
     return Container(
-      height: suSetHeight(kAppBarHeight) / 1.3,
+      height: kAppBarHeight.h / 1.3,
       padding: EdgeInsets.only(
-        left: suSetWidth(16.0),
+        left: 16.w,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(kAppBarHeight),
@@ -220,7 +220,7 @@ class SearchPageState extends State<SearchPage>
               focusNode: _focusNode,
               keyboardType: TextInputType.text,
               style: TextStyle(
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
                 fontWeight: FontWeight.normal,
                 textBaseline: TextBaseline.alphabetic,
               ),
@@ -238,20 +238,20 @@ class SearchPageState extends State<SearchPage>
 
   Widget get userListView => (userList != null && userList.isNotEmpty)
       ? SizedBox(
-          height: suSetHeight(150.0),
+          height: 150.h,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(
-                    top: suSetHeight(16.0), left: suSetWidth(12.0)),
+                    top: 16.h, left: 12.w),
                 child: Text(
                   '相关用户 (${userList.length})',
                   style: Theme.of(context)
                       .textTheme
                       .caption
-                      .copyWith(fontSize: suSetSp(19.0)),
+                      .copyWith(fontSize: 19.sp),
                 ),
               ),
               Expanded(
@@ -261,15 +261,15 @@ class SearchPageState extends State<SearchPage>
                   itemBuilder: (BuildContext _, int index) {
                     return Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: suSetHeight(15.0)),
+                          EdgeInsets.symmetric(horizontal: 15.h),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           UserAvatar(uid: userList[index].id, size: 56.0),
-                          SizedBox(height: suSetHeight(8.0)),
+                          SizedBox(height: 8.h),
                           Text(
                             userList[index].nickname,
-                            style: TextStyle(fontSize: suSetSp(18.0)),
+                            style: TextStyle(fontSize: 18.sp),
                           ),
                         ],
                       ),
@@ -277,7 +277,7 @@ class SearchPageState extends State<SearchPage>
                   },
                 ),
               ),
-              Divider(height: suSetHeight(2.0)),
+              Divider(height: 2.h),
             ],
           ),
         )
@@ -319,9 +319,9 @@ class SearchPageState extends State<SearchPage>
                           } else {
                             return Padding(
                               padding: EdgeInsets.only(
-                                top: suSetHeight(16.0),
-                                bottom: suSetHeight(8.0),
-                                left: suSetWidth(12.0),
+                                top: 16.h,
+                                bottom: 8.h,
+                                left: 12.w,
                               ),
                               child: Text(
                                 '相关动态',
@@ -329,7 +329,7 @@ class SearchPageState extends State<SearchPage>
                                     .textTheme
                                     .caption
                                     .copyWith(
-                                      fontSize: suSetSp(19.0),
+                                      fontSize: 19.sp,
                                     ),
                               ),
                             );
@@ -340,15 +340,15 @@ class SearchPageState extends State<SearchPage>
                             index == 1) {
                           return Padding(
                             padding: EdgeInsets.only(
-                              top: suSetHeight(16.0),
-                              bottom: suSetHeight(8.0),
-                              left: suSetWidth(12.0),
+                              top: 16.h,
+                              bottom: 8.h,
+                              left: 12.w,
                             ),
                             child: Text(
                               '相关动态',
                               style:
                                   Theme.of(context).textTheme.caption.copyWith(
-                                        fontSize: suSetSp(19.0),
+                                        fontSize: 19.sp,
                                       ),
                             ),
                           );
@@ -375,7 +375,7 @@ class SearchPageState extends State<SearchPage>
                   : Center(
                       child: Text(
                         '没有搜索到动态内容~\n🧐',
-                        style: TextStyle(fontSize: suSetSp(30.0)),
+                        style: TextStyle(fontSize: 30.sp),
                         textAlign: TextAlign.center,
                       ),
                     )

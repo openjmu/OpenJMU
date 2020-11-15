@@ -54,12 +54,12 @@ class _ConventionDialogState extends State<ConventionDialog> {
 
   Widget get header => Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(16.0), vertical: suSetHeight(20.0)),
+            horizontal: 16.w, vertical: 20.h),
         child: Center(
           child: Text(
             '发布提醒',
             style:
-                TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.bold),
+                TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -76,17 +76,17 @@ class _ConventionDialogState extends State<ConventionDialog> {
           ],
         ),
         style: TextStyle(
-          fontSize: suSetSp(18.0),
+          fontSize: 18.sp,
           fontWeight: FontWeight.normal,
         ),
       );
 
   Widget get conventionTitle => Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
         child: Text(
           '集大通平台公约',
           style: TextStyle(
-            fontSize: suSetSp(20.0),
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,
@@ -160,7 +160,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
             TextSpan(
               text: 'OpenJMU中的“集市”',
               style: TextStyle(
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -223,18 +223,18 @@ class _ConventionDialogState extends State<ConventionDialog> {
           ],
         ),
         style: TextStyle(
-          fontSize: suSetSp(18.0),
+          fontSize: 18.sp,
           fontWeight: FontWeight.normal,
         ),
       );
 
   Widget actions(BuildContext context) => Padding(
-        padding: EdgeInsets.all(suSetWidth(16.0)),
+        padding: EdgeInsets.all(16.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             confirmButton(context),
-            SizedBox(width: suSetWidth(16.0)),
+            SizedBox(width: 16.w),
             cancelButton(context),
           ],
         ),
@@ -245,9 +245,9 @@ class _ConventionDialogState extends State<ConventionDialog> {
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: 2.0,
-          height: suSetHeight(56.0),
+          height: 56.h,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0.w),
+            borderRadius: BorderRadius.circular(10.w),
           ),
           color: context.themeData.canvasColor,
           onPressed: canSend
@@ -264,7 +264,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
                 return '$s(${countDown}s)';
               }
             }(),
-            style: TextStyle(fontSize: suSetSp(21.0)),
+            style: TextStyle(fontSize: 21.sp),
           ),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
@@ -275,9 +275,9 @@ class _ConventionDialogState extends State<ConventionDialog> {
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: 2.0,
-          height: suSetHeight(56.0),
+          height: 56.h,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+            borderRadius: BorderRadius.circular(10.w),
           ),
           color: currentThemeColor.withOpacity(0.8),
           onPressed: () {
@@ -285,7 +285,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
           },
           child: Text(
             '我再想想',
-            style: TextStyle(color: Colors.white, fontSize: suSetSp(21.0)),
+            style: TextStyle(color: Colors.white, fontSize: 21.sp),
           ),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
@@ -297,7 +297,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
       type: MaterialType.transparency,
       child: Center(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+          borderRadius: BorderRadius.circular(20.w),
           child: Container(
             width: Screens.width * 0.75,
             height: Screens.height * 0.7,
@@ -316,8 +316,8 @@ class _ConventionDialogState extends State<ConventionDialog> {
                     child: CupertinoScrollbar(
                       child: ListView(
                         padding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(20.0),
-                          vertical: suSetHeight(10.0),
+                          horizontal: 20.w,
+                          vertical: 10.h,
                         ),
                         children: <Widget>[
                           confirmTips,

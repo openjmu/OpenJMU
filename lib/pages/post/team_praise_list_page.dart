@@ -56,14 +56,14 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
 
   Widget _header(BuildContext context, int index, TeamPraiseItem item) {
     return Container(
-      height: suSetHeight(80.0),
+      height: 80.h,
       padding: EdgeInsets.symmetric(
-        vertical: suSetHeight(8.0),
+        vertical: 8.h,
       ),
       child: Row(
         children: <Widget>[
           UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
-          SizedBox(width: suSetWidth(16.0)),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -73,15 +73,15 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(fontSize: suSetSp(22.0)),
+                      style: TextStyle(fontSize: 22.sp),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
+                        margin: EdgeInsets.only(left: 14.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(4.0),
+                            horizontal: 8.w,
+                            vertical: 4.h,
                           ),
                         ),
                       ),
@@ -91,7 +91,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                 ),
                 Text(
                   praiseList[index].scope['name'] as String,
-                  style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
+                  style: TextStyle(color: Colors.blue, fontSize: 17.sp),
                 ),
               ],
             ),
@@ -117,14 +117,14 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     return Text(
       time,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 18.sp,
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget _content(TeamPraiseItem item) => Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+        padding: EdgeInsets.symmetric(vertical: 6.h),
         child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
@@ -133,14 +133,14 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                 alignment: ui.PlaceholderAlignment.middle,
                 child: Icon(
                   Icons.thumb_up,
-                  size: suSetWidth(21.0),
+                  size: 21.w,
                   color: currentThemeColor,
                 ),
               ),
             ],
           ),
           style: TextStyle(
-            fontSize: suSetSp(21.0),
+            fontSize: 21.sp,
           ),
         ),
       );
@@ -148,18 +148,18 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
   Widget _rootContent(TeamPraiseItem item) => Container(
         width: double.maxFinite,
         margin: EdgeInsets.only(
-          top: suSetHeight(6.0),
-          bottom: suSetHeight(12.0),
+          top: 6.h,
+          bottom: 12.h,
         ),
-        padding: EdgeInsets.all(suSetWidth(8.0)),
+        padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
           color: Theme.of(context).canvasColor,
         ),
         child: ExtendedText(
           item.post.content,
           style: TextStyle(
-            fontSize: suSetSp(18.0),
+            fontSize: 18.sp,
           ),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 1,
@@ -194,15 +194,15 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
           },
           child: Container(
             margin: EdgeInsets.symmetric(
-              horizontal: suSetWidth(12.0),
-              vertical: suSetHeight(6.0),
+              horizontal: 12.w,
+              vertical: 6.h,
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(24.0),
-              vertical: suSetHeight(8.0),
+              horizontal: 24.w,
+              vertical: 8.h,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+              borderRadius: BorderRadius.circular(10.w),
               color: Theme.of(context).cardColor,
             ),
             child: Column(
@@ -236,7 +236,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                     '暂无内容',
                     style: TextStyle(
                       color: currentThemeColor,
-                      fontSize: suSetSp(24.0),
+                      fontSize: 24.sp,
                     ),
                   ),
                 )

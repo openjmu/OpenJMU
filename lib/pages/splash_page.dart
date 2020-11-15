@@ -136,13 +136,13 @@ class SplashState extends State<SplashPage> {
   }
 
   Widget get logo => Container(
-        margin: EdgeInsets.all(suSetWidth(30.0)),
+        margin: EdgeInsets.all(30.w),
         child: Hero(
           tag: 'Logo',
           child: SvgPicture.asset(
             R.IMAGES_SPLASH_PAGE_LOGO_SVG,
-            width: suSetWidth(150.0),
-            height: suSetHeight(150.0),
+            width: 150.w,
+            height: 150.h,
             color: currentIsDark ? currentThemeColor : Colors.white,
           ),
         ),
@@ -153,7 +153,7 @@ class SplashState extends State<SplashPage> {
           Expanded(
             child: Container(
               margin: EdgeInsets.only(
-                bottom: suSetHeight(10.0),
+                bottom: 10.h,
               ),
               child: SpinKitWidget(
                 color: currentIsDark ? currentThemeColor : Colors.white,
@@ -161,7 +161,7 @@ class SplashState extends State<SplashPage> {
               ),
             ),
           ),
-          SizedBox(height: suSetHeight(30.0)),
+          SizedBox(height: 30.h),
         ],
       );
 
@@ -169,24 +169,24 @@ class SplashState extends State<SplashPage> {
         children: <Widget>[
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
+              margin: EdgeInsets.only(bottom: 10.h),
               child: Center(
                 child: Icon(
                   Icons.signal_wifi_off,
                   color: currentIsDark ? currentThemeColor : Colors.white,
-                  size: suSetWidth(48.0),
+                  size: 48.w,
                 ),
               ),
             ),
           ),
           SizedBox(
-            height: suSetHeight(30.0),
+            height: 30.h,
             child: Center(
               child: Text(
                 '请检查联网状态',
                 style: TextStyle(
                   color: currentIsDark ? currentThemeColor : Colors.white,
-                  fontSize: suSetSp(24.0),
+                  fontSize: 24.sp,
                 ),
               ),
             ),

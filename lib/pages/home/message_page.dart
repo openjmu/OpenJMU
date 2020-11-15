@@ -39,7 +39,7 @@ class MessagePageState extends State<MessagePage>
         Expanded(child: MainPage.selfPageOpener),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Center(
               child: Consumer<MessagesProvider>(
                 builder: (_, MessagesProvider provider, __) {
@@ -47,15 +47,15 @@ class MessagePageState extends State<MessagePage>
                     overflow: Overflow.visible,
                     children: <Widget>[
                       Positioned(
-                        top: suSetHeight(kToolbarHeight / 4),
-                        right: -suSetWidth(10.0),
+                        top: kToolbarHeight / 4.h,
+                        right: -10.w,
                         child: Visibility(
                           visible: provider.unreadCount > 0,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Container(
-                              width: suSetWidth(12.0),
-                              height: suSetWidth(12.0),
+                              width: 12.w,
+                              height: 12.w,
                               color: currentThemeColor,
                             ),
                           ),
@@ -75,15 +75,15 @@ class MessagePageState extends State<MessagePage>
 //                indicator: RoundedUnderlineTabIndicator(
 //                  borderSide: BorderSide(
 //                    color: currentThemeColor,
-//                    width: suSetHeight(3.0),
+//                    width: 3.h,
 //                  ),
-//                  width: suSetWidth(26.0),
-//                  insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
+//                  width: 26.w,
+//                  insets: EdgeInsets.only(bottom: 4.h),
 //                ),
 //                labelColor: Theme.of(context).textTheme.bodyText2.color,
 //                labelStyle: MainPageState.tabSelectedTextStyle,
 //                labelPadding: EdgeInsets.symmetric(
-//                  horizontal: suSetWidth(20.0),
+//                  horizontal: 20.w,
 //                ),
 //                unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
 //                tabs: <Widget>[
@@ -93,15 +93,15 @@ class MessagePageState extends State<MessagePage>
 //                        overflow: Overflow.visible,
 //                        children: <Widget>[
 //                          Positioned(
-//                            top: suSetHeight(kToolbarHeight / 4),
-//                            right: -suSetWidth(10.0),
+//                            top: kToolbarHeight / 4.h,
+//                            right: -10.w,
 //                            child: Visibility(
 //                              visible: provider.unreadCount > 0,
 //                              child: ClipRRect(
 //                                borderRadius: BorderRadius.circular(100),
 //                                child: Container(
-//                                  width: suSetWidth(12.0),
-//                                  height: suSetWidth(12.0),
+//                                  width: 12.w,
+//                                  height: 12.w,
 //                                  color: currentThemeColor,
 //                                ),
 //                              ),
@@ -149,10 +149,10 @@ class MessagePageState extends State<MessagePage>
                   height: Screens.width / 3.5,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: suSetHeight(30.0)),
+                  padding: EdgeInsets.only(top: 30.h),
                   child: Text(
                     '无新消息',
-                    style: TextStyle(fontSize: suSetSp(22.0)),
+                    style: TextStyle(fontSize: 22.sp),
                   ),
                 )
               ],
@@ -175,7 +175,7 @@ class MessagePageState extends State<MessagePage>
                           deleteWidget(messageProvider, appId),
                         ],
                         child: AppMessagePreviewWidget(message: message),
-                        height: suSetHeight(88.0),
+                        height: 88.h,
                       );
                     },
                     childCount: messageProvider.appsMessages.keys.length,
@@ -218,7 +218,7 @@ class MessagePageState extends State<MessagePage>
           '删除',
           style: TextStyle(
             color: Colors.white,
-            fontSize: suSetSp(20.0),
+            fontSize: 20.sp,
           ),
         ),
       ),

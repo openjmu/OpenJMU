@@ -117,8 +117,8 @@ class DismissWrapperState extends State<DismissWrapper>
               EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 2.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(suSetWidth(24.0)),
-              topRight: Radius.circular(suSetWidth(24.0)),
+              topLeft: Radius.circular(24.w),
+              topRight: Radius.circular(24.w),
             ),
             color: widget.backgroundColor ?? Theme.of(context).primaryColor,
           ),

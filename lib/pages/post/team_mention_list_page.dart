@@ -55,14 +55,14 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
 
   Widget _header(BuildContext context, int index, TeamMentionItem item) {
     return Container(
-      height: suSetHeight(80.0),
+      height: 80.h,
       padding: EdgeInsets.symmetric(
-        vertical: suSetHeight(8.0),
+        vertical: 8.h,
       ),
       child: Row(
         children: <Widget>[
           UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
-          SizedBox(width: suSetWidth(16.0)),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -72,15 +72,15 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(fontSize: suSetSp(22.0)),
+                      style: TextStyle(fontSize: 22.sp),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
+                        margin: EdgeInsets.only(left: 14.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(4.0),
+                            horizontal: 8.w,
+                            vertical: 4.h,
                           ),
                         ),
                       ),
@@ -93,7 +93,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                 ),
                 Text(
                   '${mentionedList[index].scope['name']}',
-                  style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
+                  style: TextStyle(color: Colors.blue, fontSize: 17.sp),
                 ),
               ],
             ),
@@ -118,7 +118,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     return Text(
       time,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 18.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -126,10 +126,10 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
 
   Widget _content(TeamMentionItem item) {
     return Padding(
-      padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
+      padding: EdgeInsets.only(bottom: 10.h),
       child: ExtendedText(
         item.post?.content ?? item.comment?.content ?? '',
-        style: TextStyle(fontSize: suSetSp(21.0)),
+        style: TextStyle(fontSize: 21.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
         overflowWidget: TextOverflowWidget(
@@ -172,15 +172,15 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
           },
           child: Container(
             margin: EdgeInsets.symmetric(
-              horizontal: suSetWidth(12.0),
-              vertical: suSetHeight(6.0),
+              horizontal: 12.w,
+              vertical: 6.h,
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(24.0),
-              vertical: suSetHeight(8.0),
+              horizontal: 24.w,
+              vertical: 8.h,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+              borderRadius: BorderRadius.circular(10.w),
               color: Theme.of(context).cardColor,
             ),
             child: Column(
@@ -213,7 +213,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                     '暂无内容',
                     style: TextStyle(
                       color: currentThemeColor,
-                      fontSize: suSetSp(24.0),
+                      fontSize: 24.sp,
                     ),
                   ),
                 )

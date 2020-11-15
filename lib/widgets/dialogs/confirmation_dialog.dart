@@ -80,7 +80,7 @@ class ConfirmationDialog extends StatelessWidget {
           Text(
             title,
             style:
-                TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
+                TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),
@@ -93,9 +93,9 @@ class ConfirmationDialog extends StatelessWidget {
       child: MaterialButton(
         elevation: 0.0,
         highlightElevation: 2.0,
-        height: suSetHeight(60.0),
+        height: 60.h,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
         ),
         color: Theme.of(context).canvasColor,
         onPressed: () {
@@ -107,7 +107,7 @@ class ConfirmationDialog extends StatelessWidget {
         },
         child: Text(
           confirmLabel,
-          style: TextStyle(fontSize: suSetSp(22.0)),
+          style: TextStyle(fontSize: 22.sp),
         ),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
@@ -120,9 +120,9 @@ class ConfirmationDialog extends StatelessWidget {
       child: MaterialButton(
         elevation: 0.0,
         highlightElevation: 2.0,
-        height: suSetHeight(60.0),
+        height: 60.h,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
         ),
         color: currentThemeColor.withOpacity(0.8),
         onPressed: () {
@@ -136,7 +136,7 @@ class ConfirmationDialog extends StatelessWidget {
           cancelLabel,
           style: TextStyle(
             color: adaptiveButtonColor(),
-            fontSize: suSetSp(22.0),
+            fontSize: 22.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -161,9 +161,9 @@ class ConfirmationDialog extends StatelessWidget {
               maxWidth: Screens.width / 1.25,
               maxHeight: Screens.height / 1.5,
             ),
-            padding: EdgeInsets.all(suSetWidth(30.0)),
+            padding: EdgeInsets.all(30.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(24.0)),
+              borderRadius: BorderRadius.circular(24.w),
               color: Theme.of(context).primaryColor,
             ),
             child: Column(
@@ -175,11 +175,11 @@ class ConfirmationDialog extends StatelessWidget {
                 else
                   Padding(
                     padding: contentPadding ??
-                        EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                        EdgeInsets.symmetric(vertical: 20.h),
                     child: ExtendedText(
                       content,
                       style: TextStyle(
-                          fontSize: suSetSp(20.0),
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.normal),
                       textAlign: contentAlignment,
                       specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),

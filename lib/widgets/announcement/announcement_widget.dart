@@ -90,7 +90,7 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: radius != null
-                  ? BorderRadius.circular(suSetWidth(radius))
+                  ? BorderRadius.circular(radius.w)
                   : null,
               color: backgroundColor ?? defaultLightColor,
             ),

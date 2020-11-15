@@ -222,12 +222,12 @@ class _AddingButtonPageState extends State<AddingButtonPage>
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             child: Container(
-              width: suSetWidth(MainPageState.bottomBarHeight),
-              height: suSetHeight(MainPageState.bottomBarHeight),
+              width: MainPageState.bottomBarHeight.w,
+              height: MainPageState.bottomBarHeight.w,
               decoration: BoxDecoration(
                 boxShadow: <BoxShadow>[
                   BoxShadow(
-                    blurRadius: suSetWidth(20.0),
+                    blurRadius: 20.w,
                     color: Theme.of(context).dividerColor.withOpacity(0.2),
                     spreadRadius: 0.0,
                   ),
@@ -239,7 +239,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 child: Icon(
                   Icons.add,
                   color: Colors.white.withOpacity(currentIsDark ? 0.7 : 1.0),
-                  size: suSetWidth(48.0),
+                  size: 48.w,
                 ),
               ),
             ),
@@ -308,8 +308,8 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    width: suSetWidth(80.0),
-                    height: suSetWidth(80.0),
+                    width: 80.w,
+                    height: 80.w,
                     decoration: BoxDecoration(
                       color: itemColors[index],
                       shape: BoxShape.circle,
@@ -318,17 +318,17 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                       child: SvgPicture.asset(
                         itemIcons[index],
                         color: Colors.white,
-                        width: suSetWidth(40.0),
+                        width: 40.w,
                       ),
                     ),
                   ),
-                  emptyDivider(height: suSetHeight(10.0)),
+                  emptyDivider(height: 10.h),
                   Text(
                     itemTitles[index],
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2
-                        .copyWith(fontSize: suSetSp(20.0)),
+                        .copyWith(fontSize: 20.sp),
                   ),
                 ],
               ),
@@ -373,7 +373,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                   (int i) => item(context, i),
                 ),
               ),
-              SizedBox(height: suSetHeight(120.0)),
+              SizedBox(height: 120.h),
             ],
           ),
         ),

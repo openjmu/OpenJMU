@@ -98,7 +98,7 @@ class _MarketingPageState extends State<MarketingPage> {
         automaticallyImplyLeading: false,
         title: Container(
           alignment: AlignmentDirectional.centerStart,
-          padding: EdgeInsets.only(right: 20.0.w),
+          padding: EdgeInsets.only(right: 20.w),
           child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
@@ -106,7 +106,7 @@ class _MarketingPageState extends State<MarketingPage> {
           SizedBox(width: 10.w),
           MainPage.publishButton(Routes.openjmuPublishTeamPost),
         ],
-        actionsPadding: EdgeInsets.only(right: 20.0.w),
+        actionsPadding: EdgeInsets.only(right: 20.w),
       ),
       body: Container(
         color: Theme.of(context).canvasColor,
@@ -115,7 +115,7 @@ class _MarketingPageState extends State<MarketingPage> {
           onRefresh: getPostList,
           child: loaded
               ? ExtendedListView.builder(
-                  padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+                  padding: EdgeInsets.symmetric(vertical: 6.w),
                   extendedListDelegate: ExtendedListDelegate(
                     collectGarbage: collectGarbageHandler,
                   ),

@@ -249,14 +249,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       },
       child: Container(
         width: weekSize.w,
-        padding: EdgeInsets.all(10.0.w),
+        padding: EdgeInsets.all(10.w),
         child: Selector<DateProvider, int>(
           selector: (BuildContext _, DateProvider provider) =>
               provider.currentWeek,
           builder: (BuildContext _, int week, Widget __) {
             return DecoratedBox(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0.w),
+                borderRadius: BorderRadius.circular(20.w),
                 border: (week == index + 1 && currentWeek != week)
                     ? Border.all(
                         color: currentThemeColor.withOpacity(0.35),
@@ -274,14 +274,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                       const TextSpan(text: '第'),
                       TextSpan(
                         text: '${index + 1}',
-                        style: TextStyle(fontSize: 30.0.sp),
+                        style: TextStyle(fontSize: 30.sp),
                       ),
                       const TextSpan(text: '周'),
                     ],
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2
-                        .copyWith(fontSize: 18.0.w),
+                        .copyWith(fontSize: 18.w),
                   ),
                 ),
               ),
@@ -299,7 +299,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         onTap: () => showRemarkDetail(context),
         child: Container(
           width: Screens.width,
-          constraints: BoxConstraints(maxHeight: 54.0.h),
+          constraints: BoxConstraints(maxHeight: 54.h),
           child: Stack(
             children: <Widget>[
               AnimatedBuilder(
@@ -321,7 +321,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               AnimatedContainer(
                 duration: animateDuration,
                 padding: EdgeInsets.symmetric(
-                  horizontal: 30.0.w,
+                  horizontal: 30.w,
                 ),
                 child: Center(
                   child: Selector<CoursesProvider, String>(
@@ -336,7 +336,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           TextSpan(text: remark),
                         ],
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontSize: 20.0.sp,
+                              fontSize: 20.sp,
                             ),
                       ),
                       textAlign: TextAlign.center,
@@ -389,7 +389,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   '${_month.substring(0, _month.length - 1)}'
                   '\n'
                   '${_month.substring(_month.length - 1, _month.length)}',
-                  style: TextStyle(fontSize: 18.0.sp),
+                  style: TextStyle(fontSize: 18.sp),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -399,7 +399,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 1.5),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0.w),
+                    borderRadius: BorderRadius.circular(5.w),
                     color: DateFormat('MM/dd').format(
                               now.subtract(selectedWeekDaysDuration +
                                   (now.weekday - 1 - i).days),
@@ -416,12 +416,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           _weekday(i),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.0.sp,
+                            fontSize: 18.sp,
                           ),
                         ),
                         Text(
                           _date(i),
-                          style: TextStyle(fontSize: 14.0.sp),
+                          style: TextStyle(fontSize: 14.sp),
                         ),
                       ],
                     ),
@@ -449,13 +449,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   Text(
                     (i + 1).toString(),
                     style: TextStyle(
-                      fontSize: 17.0.sp,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     CourseAPI.getCourseTime(i + 1),
-                    style: TextStyle(fontSize: 12.0.sp),
+                    style: TextStyle(fontSize: 12.sp),
                   ),
                 ],
               ),
@@ -525,7 +525,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         child: Center(
           child: Text(
             '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
-            style: TextStyle(fontSize: 30.0.sp),
+            style: TextStyle(fontSize: 30.sp),
             strutStyle: const StrutStyle(height: 1.8),
             textAlign: TextAlign.center,
           ),
@@ -536,7 +536,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         child: Center(
           child: Text(
             '课表看起来还未准备好\n不如到广场放松一下？\n🤒',
-            style: TextStyle(fontSize: 30.0.sp),
+            style: TextStyle(fontSize: 30.sp),
             strutStyle: const StrutStyle(height: 1.8),
             textAlign: TextAlign.center,
           ),
@@ -694,12 +694,12 @@ class CourseWidget extends StatelessWidget {
       bottom: 1.5,
       left: 1.5,
       child: Container(
-        width: 24.0.w,
-        height: 24.0.h,
+        width: 24.w,
+        height: 24.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10.0.w),
-            bottomLeft: Radius.circular(5.0.w),
+            topRight: Radius.circular(10.w),
+            bottomLeft: Radius.circular(5.w),
           ),
           color: currentThemeColor.withOpacity(0.35),
         ),
@@ -713,7 +713,7 @@ class CourseWidget extends StatelessWidget {
               )
                   ? Colors.grey
                   : Colors.black,
-              fontSize: 12.0.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -727,12 +727,12 @@ class CourseWidget extends StatelessWidget {
       bottom: 1.5,
       right: 1.5,
       child: Container(
-        width: 24.0.w,
-        height: 24.0.h,
+        width: 24.w,
+        height: 24.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0.w),
-            bottomRight: Radius.circular(5.0.w),
+            topLeft: Radius.circular(10.w),
+            bottomRight: Radius.circular(5.w),
           ),
           color: currentThemeColor.withOpacity(0.35),
         ),
@@ -741,7 +741,7 @@ class CourseWidget extends StatelessWidget {
             '${courseList.length}',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 14.0.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -776,7 +776,7 @@ class CourseWidget extends StatelessWidget {
                             !isOutOfTerm
                         ? Colors.grey
                         : Colors.black,
-                    fontSize: 18.0.sp,
+                    fontSize: 18.sp,
                   ),
             ),
             overflow: TextOverflow.fade,
@@ -846,9 +846,9 @@ class CourseWidget extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        padding: EdgeInsets.all(8.0.w),
+                        padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0.w),
+                          borderRadius: BorderRadius.circular(5.w),
                           color: courseList.isNotEmpty
                               ? CourseAPI.inCurrentWeek(course,
                                           currentWeek: currentWeek) ||
@@ -1352,16 +1352,16 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
   }
 
   Widget get courseEditField => Container(
-        padding: EdgeInsets.all(12.0.w),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18.0.w),
+          borderRadius: BorderRadius.circular(18.w),
           color: widget.course != null
               ? widget.course.color
                   .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
               : Theme.of(context).dividerColor,
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 30.0.h),
+          padding: EdgeInsets.symmetric(vertical: 30.h),
           child: Center(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: Screens.width / 2),
@@ -1373,7 +1373,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   enabled: !loading,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 26.0.sp,
+                    fontSize: 26.sp,
                     height: 1.5,
                     textBaseline: TextBaseline.alphabetic,
                   ),
@@ -1384,7 +1384,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                     hintText: '自定义内容',
                     hintStyle: TextStyle(
                       color: Colors.grey,
-                      fontSize: 24.0.sp,
+                      fontSize: 24.sp,
                       height: 1.5,
                       textBaseline: TextBaseline.alphabetic,
                     ),
@@ -1419,7 +1419,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
           splashFactory: InkSplash.splashFactory,
         ),
         child: Positioned(
-          bottom: 8.0.h,
+          bottom: 8.h,
           left: Screens.width / 7,
           right: Screens.width / 7,
           child: Row(
@@ -1427,8 +1427,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
             children: <Widget>[
               MaterialButton(
                 padding: EdgeInsets.zero,
-                minWidth: 48.0.w,
-                height: 48.0.h,
+                minWidth: 48.w,
+                height: 48.h,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(Screens.width / 2),
                 ),

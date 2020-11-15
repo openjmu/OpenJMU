@@ -106,19 +106,19 @@ class PackageUtils {
           ConfirmationDialog(
             child: Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                padding: EdgeInsets.symmetric(vertical: 20.h),
                 child: Column(
                   children: <Widget>[
                     Center(
                       child: Container(
                         margin:
-                            EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                            EdgeInsets.symmetric(vertical: 6.h),
                         child: Text(
                           'OpenJmu has new version',
                           style: TextStyle(
                             color: currentThemeColor,
                             fontFamily: 'chocolate',
-                            fontSize: suSetSp(28.0),
+                            fontSize: 28.sp,
                           ),
                         ),
                       ),
@@ -126,13 +126,13 @@ class PackageUtils {
                     Center(
                       child: Container(
                         margin:
-                            EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                            EdgeInsets.symmetric(vertical: 6.h),
                         child: Text(
                           text,
                           style: TextStyle(
                             color: currentThemeColor,
                             fontFamily: 'chocolate',
-                            fontSize: suSetSp(28.0),
+                            fontSize: 28.sp,
                           ),
                         ),
                       ),
@@ -141,7 +141,7 @@ class PackageUtils {
                       Center(
                         child: Container(
                           margin: EdgeInsets.symmetric(
-                            vertical: suSetHeight(6.0),
+                            vertical: 6.h,
                           ),
                           child: MaterialButton(
                             color: currentThemeColor,
@@ -157,7 +157,7 @@ class PackageUtils {
                               '查看版本履历',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: suSetSp(20.0),
+                                fontSize: 20.sp,
                               ),
                             ),
                           ),
@@ -167,7 +167,7 @@ class PackageUtils {
                       child: SingleChildScrollView(
                         child: Text(
                           event.response['updateLog'] as String,
-                          style: TextStyle(fontSize: suSetSp(18.0)),
+                          style: TextStyle(fontSize: 18.sp),
                         ),
                       ),
                     ),

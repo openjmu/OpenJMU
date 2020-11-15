@@ -114,7 +114,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: suSetHeight(widget.height),
+              height: widget.height.h,
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -148,7 +148,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                           color: _selectedIndex == index
                               ? widget.selectedColor
                               : widget.color,
-                          fontSize: suSetSp(widget.itemFontSize),
+                          fontSize: widget.itemFontSize.sp,
                           fontWeight: FontWeight.normal,
                         ),
                         child: Text(item.text),
@@ -168,8 +168,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                       child: ClipRRect(
                         borderRadius: maxBorderRadius,
                         child: Container(
-                          width: 12.0.w,
-                          height: 12.0.w,
+                          width: 12.w,
+                          height: 12.w,
                           color: widget.selectedColor,
                         ),
                       ),
@@ -188,8 +188,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                       child: ClipRRect(
                         borderRadius: maxBorderRadius,
                         child: Container(
-                          width: 12.0.w,
-                          height: 12.0.w,
+                          width: 12.w,
+                          height: 12.w,
                           color: widget.selectedColor,
                         ),
                       ),
@@ -208,8 +208,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                       child: ClipRRect(
                         borderRadius: maxBorderRadius,
                         child: Container(
-                          width: 12.0.w,
-                          height: 12.0.w,
+                          width: 12.w,
+                          height: 12.w,
                           color: widget.selectedColor,
                         ),
                       ),
@@ -248,7 +248,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     if (Platform.isIOS) {
       appBar = ClipRect(
         child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 20.0.w, sigmaY: 20.0.w),
+          filter: ui.ImageFilter.blur(sigmaX: 20.w, sigmaY: 20.w),
           child: appBar,
         ),
       );

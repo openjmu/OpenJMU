@@ -18,8 +18,8 @@ class AppCenterPage extends StatelessWidget {
     );
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 16.0.w,
-        vertical: 16.0.h,
+        horizontal: 16.w,
+        vertical: 16.h,
       ),
       child: Column(
         children: <Widget>[
@@ -49,7 +49,7 @@ class AppCenterPage extends StatelessWidget {
               }
               context.read<WebAppsProvider>().isEditingCommonApps = !isEditing;
             },
-            borderRadius: BorderRadius.circular(15.0.w),
+            borderRadius: BorderRadius.circular(15.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -63,8 +63,8 @@ class AppCenterPage extends StatelessWidget {
                     child: Center(
                       child: SvgPicture.asset(
                         R.ASSETS_ICONS_SEND_SVG,
-                        width: 24.0.w,
-                        height: 24.0.w,
+                        width: 24.w,
+                        height: 24.w,
                         color: context.themeData.iconTheme.color,
                       ),
                     ),
@@ -90,19 +90,19 @@ class AppCenterPage extends StatelessWidget {
   /// Section widget for common apps.
   /// 常用应用的区域部件
   Widget commonAppsSection(BuildContext context) {
-    final TextStyle style = TextStyle(fontSize: 16.0.sp);
+    final TextStyle style = TextStyle(fontSize: 16.sp);
     return Consumer<WebAppsProvider>(
       builder: (BuildContext _, WebAppsProvider provider, Widget __) {
         final bool isEditing = provider.isEditingCommonApps;
         return AnimatedContainer(
           duration: kThemeChangeDuration,
-          margin: EdgeInsets.only(bottom: 10.0.h),
+          margin: EdgeInsets.only(bottom: 10.h),
           padding: EdgeInsets.symmetric(
-            vertical: 10.0.h,
+            vertical: 10.h,
           ),
           height: (isEditing ? 120.0 : 156.0).h,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0.w),
+            borderRadius: BorderRadius.circular(20.w),
             color: context.themeData.colorScheme.surface,
           ),
           child: Column(
@@ -117,7 +117,7 @@ class AppCenterPage extends StatelessWidget {
                         child: Center(
                           child: Text(
                             '置顶应用会显示在这里',
-                            style: TextStyle(fontSize: 18.0.sp),
+                            style: TextStyle(fontSize: 18.sp),
                           ),
                         ),
                       )
@@ -146,7 +146,7 @@ class AppCenterPage extends StatelessWidget {
               ),
               AnimatedContainer(
                 duration: kThemeChangeDuration,
-                height: isEditing ? 0 : 36.0.h,
+                height: isEditing ? 0 : 36.h,
                 child: Center(
                   child: Text(
                     isEditing ? '' : '点击编辑对常用应用进行调整',
@@ -171,7 +171,7 @@ class AppCenterPage extends StatelessWidget {
       builder: (BuildContext _, WebAppsProvider provider, Widget __) {
         return InkWell(
           splashFactory: InkSplash.splashFactory,
-          borderRadius: BorderRadius.circular(15.0.w),
+          borderRadius: BorderRadius.circular(15.w),
           child: Stack(
             children: <Widget>[
               Positioned.fill(
@@ -237,15 +237,15 @@ class AppCenterPage extends StatelessWidget {
     final bool isEditing = provider.isEditingCommonApps;
     final IconThemeData iconTheme = IconThemeData(
       color: context.themeData.iconTheme.color.withOpacity(0.5),
-      size: 12.0.w,
+      size: 12.w,
     );
     return PositionedDirectional(
-      bottom: 45.0.w,
-      end: 20.0.w,
+      bottom: 45.w,
+      end: 20.w,
       child: isEditing
           ? Container(
-              width: 28.0.w,
-              height: 28.0.w,
+              width: 28.w,
+              height: 28.w,
               decoration: BoxDecoration(
                 color: context.themeData.canvasColor,
                 shape: BoxShape.circle,
@@ -278,10 +278,10 @@ class AppCenterPage extends StatelessWidget {
         final Set<WebApp> list = appCategoriesList[name];
         if (list?.isNotEmpty ?? false) {
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 10.0.h),
-            padding: EdgeInsets.symmetric(vertical: 10.0.h),
+            margin: EdgeInsets.symmetric(vertical: 10.h),
+            padding: EdgeInsets.symmetric(vertical: 10.h),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0.w),
+              borderRadius: BorderRadius.circular(20.w),
               color: context.themeData.colorScheme.surface,
             ),
             child: Column(
@@ -289,16 +289,16 @@ class AppCenterPage extends StatelessWidget {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(
-                    left: 30.0.w,
-                    top: 10.0.h,
-                    bottom: 10.0.h,
+                    left: 30.w,
+                    top: 10.h,
+                    bottom: 10.h,
                   ),
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
                       WebApp.category[name],
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 20.0.sp,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                           ),
                     ),

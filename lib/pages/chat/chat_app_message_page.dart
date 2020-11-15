@@ -44,7 +44,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   Widget get topBar {
     return FixedAppBar(
       title: Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +77,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         child: UnconstrainedBox(
           child: MaterialButton(
             shape: const RoundedRectangleBorder(borderRadius: maxBorderRadius),
-            padding: EdgeInsets.all(suSetHeight(10.0)),
+            padding: EdgeInsets.all(10.h),
             highlightElevation: 4.0,
             color: currentThemeColor,
             child: Center(
@@ -137,20 +137,18 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
             Flexible(
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(16.0),
-                  vertical: suSetSp(10.0),
+                  horizontal: 16.w,
+                  vertical: 10.w,
                 ),
-                constraints: BoxConstraints(
-                  minHeight: suSetSp(30.0),
-                ),
+                constraints: BoxConstraints(minHeight: 30.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(20.w),
                   color: Theme.of(context).canvasColor,
                 ),
                 child: ExtendedText(
                   message.content,
                   selectionEnabled: true,
-                  style: TextStyle(fontSize: suSetSp(20.0)),
+                  style: TextStyle(fontSize: 20.sp),
                   specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
                   onSpecialTextTap: (dynamic data) {
                     API.launchWeb(
@@ -162,7 +160,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: suSetWidth(8.0)),
+              padding: EdgeInsets.only(left: 8.w),
               child: Text(
                 timeHandler(message.sendTime),
                 style: TextStyle(
@@ -171,7 +169,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                       .caption
                       .color
                       .withOpacity(0.25),
-                  fontSize: suSetSp(14.0),
+                  fontSize: 14.sp,
                 ),
               ),
             )

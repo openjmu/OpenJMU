@@ -307,8 +307,8 @@ class NotificationsPageState extends State<NotificationsPage>
           behavior: HitTestBehavior.opaque,
           onTap: navigatorState.maybePop,
           child: Container(
-            width: suSetWidth(76.0),
-            height: suSetWidth(40.0),
+            width: 76.w,
+            height: 40.w,
             decoration: BoxDecoration(
               borderRadius: maxBorderRadius,
               color: Theme.of(context).dividerColor,
@@ -316,14 +316,14 @@ class NotificationsPageState extends State<NotificationsPage>
             child: Stack(
               children: <Widget>[
                 Positioned(
-                  top: suSetWidth(-1.0),
-                  bottom: suSetWidth(-1.0),
+                  top: -1.w,
+                  bottom: -1.w,
                   left: 0.0,
                   right: 0.0,
                   child: Icon(
                     Icons.keyboard_arrow_down,
                     color: Colors.black38,
-                    size: suSetWidth(42.0),
+                    size: 42.w,
                   ),
                 ),
               ],
@@ -354,7 +354,7 @@ class NotificationsPageState extends State<NotificationsPage>
                     },
                     child: Container(
                       margin:
-                          EdgeInsets.symmetric(horizontal: suSetWidth(21.0)),
+                          EdgeInsets.symmetric(horizontal: 21.w),
                       child: badgeIcon(
                         content: count == 0 ? '' : count,
                         icon: getActionIcon(i, j),
@@ -383,12 +383,12 @@ class NotificationsPageState extends State<NotificationsPage>
       firstChild: SvgPicture.asset(
         icon,
         color: currentThemeColor,
-        width: suSetWidth(32.0),
+        width: 32.w,
       ),
       secondChild: SvgPicture.asset(
         icon,
         color: Theme.of(context).dividerColor,
-        width: suSetWidth(32.0),
+        width: 32.w,
       ),
     );
   }
@@ -402,10 +402,10 @@ class NotificationsPageState extends State<NotificationsPage>
               child: AnimatedContainer(
                 duration: duration,
                 margin: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(24.0),
-                  vertical: suSetHeight(10.0),
+                  horizontal: 24.w,
+                  vertical: 10.h,
                 ),
-                padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 decoration: BoxDecoration(
                   borderRadius: maxBorderRadius,
                   color: _mentionIndex == i
@@ -489,25 +489,25 @@ class NotificationsPageState extends State<NotificationsPage>
               innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,
               body: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(suSetWidth(20.0)),
-                  topRight: Radius.circular(suSetWidth(20.0)),
+                  topLeft: Radius.circular(20.w),
+                  topRight: Radius.circular(20.w),
                 ),
                 child: Container(
                   constraints: BoxConstraints(maxHeight: maximumSheetHeight),
-                  padding: EdgeInsets.only(top: suSetHeight(20.0)),
+                  padding: EdgeInsets.only(top: 20.h),
                   color: Theme.of(context).primaryColor,
                   child: Column(
                     children: <Widget>[
                       backButton,
                       Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
-                        height: suSetHeight(kAppBarHeight),
+                            EdgeInsets.symmetric(horizontal: 20.w),
+                        height: kAppBarHeight.h,
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
                               color: Theme.of(context).canvasColor,
-                              width: suSetWidth(1.0),
+                              width: 1.w,
                             ),
                           ),
                           color: Theme.of(context).primaryColor,

@@ -368,8 +368,8 @@ class ImageList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        top: suSetHeight(16.0),
-        bottom: Screens.bottomSafeHeight + suSetHeight(16.0),
+        top: 16.h,
+        bottom: Screens.bottomSafeHeight + 16.h,
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -382,25 +382,25 @@ class ImageList extends StatelessWidget {
         initialData: index,
         stream: pageStreamController.stream,
         builder: (BuildContext context, AsyncSnapshot<int> data) => SizedBox(
-          height: suSetHeight(52.0),
+          height: 52.h,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List<Widget>.generate(
               pics.length,
               (int i) => Container(
-                margin: EdgeInsets.symmetric(horizontal: suSetWidth(2.0)),
-                width: suSetWidth(52.0),
-                height: suSetWidth(52.0),
+                margin: EdgeInsets.symmetric(horizontal: 2.w),
+                width: 52.w,
+                height: 52.w,
                 child: AnimatedContainer(
                   curve: Curves.fastOutSlowIn,
                   duration: kTabScrollDuration,
                   margin:
-                      EdgeInsets.all(suSetWidth(i == data.data ? 0.0 : 6.0)),
+                      EdgeInsets.all((i == data.data ? 0 : 6).w),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(suSetWidth(8.0)),
+                    borderRadius: BorderRadius.circular(8.w),
                     border: Border.all(
                       color: Colors.white,
-                      width: suSetWidth(i == data.data ? 3.0 : 1.5),
+                      width: (i == data.data ? 3 : 1.5).w,
                     ),
                   ),
                   child: GestureDetector(
@@ -413,7 +413,7 @@ class ImageList extends StatelessWidget {
                       );
                     },
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(suSetWidth(6.0)),
+                      borderRadius: BorderRadius.circular(6.w),
                       child: ExtendedImage.network(
                         pics[i].imageThumbUrl ?? pics[i].imageUrl,
                         fit: BoxFit.cover,
@@ -446,7 +446,7 @@ class ViewAppBar extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: Container(
-        height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
+        height: Screens.topSafeHeight + kAppBarHeight.h,
         padding: EdgeInsets.only(top: Screens.topSafeHeight),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -468,12 +468,12 @@ class ViewAppBar extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         UserAvatar(uid: post.uid),
-                        SizedBox(width: suSetWidth(10.0)),
+                        SizedBox(width: 10.w),
                         Text(
                           post.nickname,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: suSetSp(20.0),
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.normal,
                           ),
                         ),

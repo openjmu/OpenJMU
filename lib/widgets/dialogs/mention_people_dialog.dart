@@ -63,7 +63,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           style: Theme.of(context)
               .textTheme
               .headline6
-              .copyWith(fontSize: suSetSp(24.0)),
+              .copyWith(fontSize: 24.sp),
         ),
       );
 
@@ -80,7 +80,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           ),
           textInputAction: TextInputAction.search,
           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
                 textBaseline: TextBaseline.alphabetic,
               ),
           scrollPadding: EdgeInsets.zero,
@@ -99,7 +99,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         onTap: requestSearch,
         child: Icon(
           Icons.search,
-          size: suSetWidth(32.0),
+          size: 32.w,
           color: Theme.of(context).textTheme.bodyText2.color,
         ),
       );
@@ -123,18 +123,18 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           Navigator.of(context).maybePop<User>(users[index]);
         },
         child: SizedBox(
-          height: suSetHeight(68.0),
+          height: 68.h,
           child: Row(
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(
-                    left: suSetWidth(24.0), right: suSetWidth(30.0)),
+                    left: 24.w, right: 30.w),
                 child: UserAvatar(uid: users[index].id, size: 54.0),
               ),
               Expanded(
                 child: Text(
                   users[index].nickname,
-                  style: TextStyle(fontSize: suSetSp(19.0)),
+                  style: TextStyle(fontSize: 19.sp),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -156,21 +156,21 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           Stack(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
-                width: Screens.width - suSetWidth(100),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                width: Screens.width - 100.w,
                 decoration: BoxDecoration(
                   color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.circular(suSetWidth(12.0)),
+                  borderRadius: BorderRadius.circular(12.w),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     title,
                     Container(
-                      margin: EdgeInsets.all(suSetWidth(20.0)),
+                      margin: EdgeInsets.all(20.w),
                       padding:
-                          EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
-                      height: suSetHeight(60.0),
+                          EdgeInsets.symmetric(horizontal: 8.w),
+                      height: 60.h,
                       decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(color: currentThemeColor)),
@@ -182,7 +182,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                             searchButton
                           else
                             SizedBox.fromSize(
-                              size: Size.square(suSetWidth(32.0)),
+                              size: Size.square(32.w),
                               child: const PlatformProgressIndicator(),
                             ),
                         ],
@@ -193,8 +193,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                 ),
               ),
               Positioned(
-                top: suSetWidth(20.0),
-                right: suSetWidth(20.0),
+                top: 20.w,
+                right: 20.w,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   child: const Icon(Icons.close),

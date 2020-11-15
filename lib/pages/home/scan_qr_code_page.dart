@@ -25,7 +25,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     with TickerProviderStateMixin {
   final TextStyle buttonTextStyle = TextStyle(
     color: Colors.white,
-    fontSize: 16.0.sp,
+    fontSize: 16.sp,
   );
 
   /// List for available cameras.
@@ -286,7 +286,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
                 padding: const EdgeInsets.only(bottom: 24.0),
                 child: Text(
                   '我的二维码',
-                  style: TextStyle(fontSize: 24.0.sp, color: Colors.white),
+                  style: TextStyle(fontSize: 24.sp, color: Colors.white),
                 ),
               ),
               Container(

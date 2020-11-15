@@ -65,7 +65,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   }
 
   Widget get goBackButton => Container(
-        margin: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+        margin: EdgeInsets.symmetric(vertical: 20.h),
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: 0.0,
@@ -93,14 +93,14 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               '回到梦开始的地方 →',
               style: TextStyle(
                 color: currentThemeColor,
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
               ),
             ),
             secondChild: Text(
               '← 踏上新旅途',
               style: TextStyle(
                 color: currentThemeColor,
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
               ),
             ),
           ),
@@ -112,7 +112,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     return Expanded(
       child: Container(
         width: double.infinity,
-        height: suSetHeight(10.0),
+        height: 10.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.horizontal(
             left: Radius.circular(left ? 0 : 999),
@@ -126,19 +126,19 @@ class _ChangeLogPageState extends State<ChangeLogPage>
 
   Widget _logVersion(ChangeLog log) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: suSetWidth(40.0)),
+      margin: EdgeInsets.symmetric(horizontal: 40.w),
       child: Column(
         children: <Widget>[
           if (log.buildNumber == PackageUtils.buildNumber)
             Expanded(
               flex: 3,
               child: Center(
-                  child: Text('📍', style: TextStyle(fontSize: suSetSp(40.0)))),
+                  child: Text('📍', style: TextStyle(fontSize: 40.sp))),
             )
           else
             const Spacer(flex: 2),
           versionInfo(log),
-          SizedBox(height: suSetHeight(12.0)),
+          SizedBox(height: 12.h),
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -168,7 +168,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     return Text(
       '${log.date} ',
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(20.0),
+            fontSize: 20.sp,
           ),
     );
   }
@@ -177,7 +177,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     return Text(
       '(${log.buildNumber})',
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(20.0),
+            fontSize: 20.sp,
           ),
     );
   }
@@ -209,16 +209,16 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               transform: Matrix4.translationValues(parallaxOffset, 0.0, 0.0),
               child: Container(
                 margin: EdgeInsets.only(
-                  left: suSetWidth(40.0),
-                  right: suSetWidth(40.0),
-                  bottom: suSetHeight(60.0),
+                  left: 40.w,
+                  right: 40.w,
+                  bottom: 60.h,
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+                  borderRadius: BorderRadius.circular(15.w),
                   color: Theme.of(context).cardColor,
                 ),
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(suSetWidth(20.0)),
+                  padding: EdgeInsets.all(20.w),
                   physics: const BouncingScrollPhysics(),
                   child: sectionWidget(log.sections),
                 ),
@@ -241,7 +241,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
       style: Theme.of(context)
           .textTheme
           .bodyText2
-          .copyWith(fontSize: suSetSp(20.0)),
+          .copyWith(fontSize: 20.sp),
     );
   }
 
@@ -268,41 +268,41 @@ class _ChangeLogPageState extends State<ChangeLogPage>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           ClipRRect(
-            borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+            borderRadius: BorderRadius.circular(20.w),
             child: Image.asset(
               R.IMAGES_LOGO_1024_PNG,
-              width: suSetWidth(150.0),
-              height: suSetWidth(150.0),
+              width: 150.w,
+              height: 150.w,
             ),
           ),
-          SizedBox(height: suSetHeight(50.0)),
+          SizedBox(height: 50.h),
           Text(
             'Open The Sky',
             style: TextStyle(
               color: defaultLightColor,
               fontFamily: 'chocolate',
-              fontSize: suSetSp(50.0),
+              fontSize: 50.sp,
             ),
           ),
-          SizedBox(height: suSetHeight(20.0)),
+          SizedBox(height: 20.h),
           Text(
             '2019.03.17',
             style: TextStyle(
               fontFamily: 'chocolate',
-              fontSize: suSetSp(30.0),
+              fontSize: 30.sp,
             ),
           ),
-          SizedBox(height: suSetHeight(80.0)),
+          SizedBox(height: 80.h),
         ],
       );
 
   Widget get emptyTips => Padding(
-        padding: EdgeInsets.all(suSetWidth(60.0)),
+        padding: EdgeInsets.all(60.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             const SpinKitWidget(),
-            SizedBox(height: suSetHeight(40.0)),
+            SizedBox(height: 40.h),
             Text.rich(
               TextSpan(
                 children: <InlineSpan>[
@@ -311,11 +311,11 @@ class _ChangeLogPageState extends State<ChangeLogPage>
                   ),
                   TextSpan(
                     text: '🚀',
-                    style: TextStyle(fontSize: suSetSp(50.0)),
+                    style: TextStyle(fontSize: 50.sp),
                   ),
                 ],
               ),
-              style: TextStyle(fontSize: suSetSp(25.0)),
+              style: TextStyle(fontSize: 25.sp),
               textAlign: TextAlign.center,
             ),
           ],

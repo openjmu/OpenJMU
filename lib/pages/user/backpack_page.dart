@@ -97,7 +97,7 @@ class _BackpackPageState extends State<BackpackPage> {
     return AspectRatio(
       aspectRatio: 1.0,
       child: Padding(
-        padding: EdgeInsets.all(30.0.w),
+        padding: EdgeInsets.all(30.w),
         child: ExtendedImage.network(
           API.backPackItemIcon(itemType: myItems[index].type),
           headers: _header,
@@ -116,14 +116,14 @@ class _BackpackPageState extends State<BackpackPage> {
       children: <Widget>[
         Text(
           myItems[index].name,
-          style: TextStyle(fontSize: 24.0.sp),
+          style: TextStyle(fontSize: 24.sp),
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 12.0.h),
+        SizedBox(height: 12.h),
         Text(
           myItems[index].description,
           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontSize: 18.0.sp,
+                fontSize: 18.sp,
               ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -136,20 +136,20 @@ class _BackpackPageState extends State<BackpackPage> {
   /// 背包物品的计数
   Widget itemCount(int index) {
     return Positioned(
-      top: 16.0.w,
-      right: 16.0.w,
+      top: 16.w,
+      right: 16.w,
       child: Container(
-        height: 24.0.sp,
-        padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+        height: 24.sp,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.0.w),
+          borderRadius: BorderRadius.circular(12.w),
           color: currentThemeColor.withOpacity(0.5),
         ),
         child: Center(
           child: Text(
             '${myItems[index].count > 99 ? '99+' : myItems[index].count}',
             style: TextStyle(
-              fontSize: 18.0.sp,
+              fontSize: 18.sp,
               color: Colors.white70,
               fontWeight: FontWeight.bold,
             ),
@@ -165,16 +165,16 @@ class _BackpackPageState extends State<BackpackPage> {
   /// 背包物品部件
   Widget backpackItem(BuildContext context, int index) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
-      height: 140.0.h,
+      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+      height: 140.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0.w),
+        borderRadius: BorderRadius.circular(15.w),
         color: Theme.of(context).primaryColor,
       ),
       child: Stack(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 12.0.w),
+            padding: EdgeInsets.only(right: 12.w),
             child: Row(
               children: <Widget>[
                 itemIcon(index),
@@ -197,7 +197,7 @@ class _BackpackPageState extends State<BackpackPage> {
         body: isLoading
             ? const Center(child: SpinKitWidget())
             : ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 10.0.w),
+                padding: EdgeInsets.symmetric(vertical: 10.w),
                 itemCount: myItems.length,
                 itemBuilder: backpackItem,
               ),

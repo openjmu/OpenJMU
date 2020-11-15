@@ -58,7 +58,7 @@ class LoginPageState extends State<LoginPage>
   /// 白色的文字样式
   TextStyle get whiteTextStyle => TextStyle(
         color: Colors.white,
-        fontSize: suSetSp(18.0),
+        fontSize: 18.sp,
       );
 
   String _username = DataUtils.recoverWorkId() ?? ''; // 账户变量
@@ -317,8 +317,8 @@ class LoginPageState extends State<LoginPage>
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(30.0),
-              vertical: suSetHeight(30.0),
+              horizontal: 30.w,
+              vertical: 30.h,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,15 +336,15 @@ class LoginPageState extends State<LoginPage>
         'OpenJmu',
         style: whiteTextStyle.copyWith(
           fontFamily: 'Chocolate',
-          fontSize: suSetSp(40.0),
+          fontSize: 40.sp,
         ),
       );
 
   /// Welcome tip widget.
   /// 欢迎语部件
   Widget get welcomeTip => Container(
-        margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
-        height: suSetHeight(100.0),
+        margin: EdgeInsets.symmetric(vertical: 15.h),
+        height: 100.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,11 +352,11 @@ class LoginPageState extends State<LoginPage>
             Text(
               '欢迎使用',
               style: whiteTextStyle.copyWith(
-                  fontSize: suSetSp(40.0), fontWeight: FontWeight.w600),
+                  fontSize: 40.sp, fontWeight: FontWeight.w600),
             ),
             Text(
               '登录以继续',
-              style: whiteTextStyle.copyWith(fontSize: suSetSp(22.0)),
+              style: whiteTextStyle.copyWith(fontSize: 22.sp),
             ),
           ],
         ),
@@ -370,7 +370,7 @@ class LoginPageState extends State<LoginPage>
         builder: (_, bool announcementEnabled, __) {
           if (announcementEnabled) {
             return Container(
-              margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
+              margin: EdgeInsets.symmetric(vertical: 15.h),
               child: const AnnouncementWidget(
                 backgroundColor: Colors.black26,
                 radius: 10.0,
@@ -391,12 +391,12 @@ class LoginPageState extends State<LoginPage>
     @required Widget child,
   }) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: suSetHeight(14.0)),
-      padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+      margin: EdgeInsets.symmetric(vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       width: double.maxFinite,
-      height: suSetHeight(100.0),
+      height: 100.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+        borderRadius: BorderRadius.circular(15.w),
         color: Colors.black.withOpacity(0.15),
       ),
       child: Column(
@@ -405,7 +405,7 @@ class LoginPageState extends State<LoginPage>
         children: <Widget>[
           Text(
             title,
-            style: whiteTextStyle.copyWith(fontSize: suSetSp(18.0)),
+            style: whiteTextStyle.copyWith(fontSize: 18.sp),
           ),
           Theme(
             data: Theme.of(context).copyWith(
@@ -439,19 +439,19 @@ class LoginPageState extends State<LoginPage>
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                 ),
-                style: whiteTextStyle.copyWith(fontSize: suSetSp(36.0)),
+                style: whiteTextStyle.copyWith(fontSize: 36.sp),
                 textSelectionControls: WhiteTextSelectionControls(),
               ),
             ),
             if (_usernameCanClear)
               SizedBox.fromSize(
-                size: Size.square(suSetWidth(40.0)),
+                size: Size.square(40.w),
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(
                     Icons.clear,
                     color: Colors.white,
-                    size: suSetWidth(40.0),
+                    size: 40.w,
                   ),
                   onPressed: _usernameController.clear,
                 ),
@@ -485,17 +485,17 @@ class LoginPageState extends State<LoginPage>
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                 ),
-                style: whiteTextStyle.copyWith(fontSize: suSetSp(36.0)),
+                style: whiteTextStyle.copyWith(fontSize: 36.sp),
               ),
             ),
             SizedBox.fromSize(
-              size: Size.square(suSetWidth(40.0)),
+              size: Size.square(40.w),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 icon: Icon(
                   _isObscure ? Icons.visibility_off : Icons.visibility,
                   color: Colors.white.withOpacity(_isObscure ? 0.25 : 1.0),
-                  size: suSetWidth(40.0),
+                  size: 40.w,
                 ),
                 onPressed: () {
                   setState(() {
@@ -511,7 +511,7 @@ class LoginPageState extends State<LoginPage>
   /// Agreement checkbox.
   /// 用户协议复选框
   Widget get agreementCheckbox => SizedBox.fromSize(
-        size: Size.square(suSetWidth(60.0)),
+        size: Size.square(60.w),
         child: RoundedCheckbox(
           value: _agreement,
           activeColor: Colors.white30,
@@ -546,7 +546,7 @@ class LoginPageState extends State<LoginPage>
                 },
             ),
           ],
-          style: whiteTextStyle.copyWith(fontSize: suSetSp(18.0)),
+          style: whiteTextStyle.copyWith(fontSize: 18.sp),
         ),
         maxLines: 1,
         overflow: TextOverflow.fade,
@@ -555,7 +555,7 @@ class LoginPageState extends State<LoginPage>
   /// Agreement widget.
   /// 用户协议部件。包含复选框和提示。
   Widget get agreementWidget => Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+        padding: EdgeInsets.symmetric(vertical: 10.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -574,16 +574,16 @@ class LoginPageState extends State<LoginPage>
           behavior: HitTestBehavior.opaque,
           onTap: loginButtonEnable ? () => loginButtonPressed(context) : null,
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
-            padding: EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
-            height: suSetHeight(80.0),
+            margin: EdgeInsets.symmetric(vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            height: 80.h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+              borderRadius: BorderRadius.circular(15.w),
               boxShadow: <BoxShadow>[
                 BoxShadow(
                   color: Colors.black26,
-                  offset: Offset(0, suSetHeight(2.0)),
-                  blurRadius: suSetHeight(5.0),
+                  offset: Offset(0, 2.h),
+                  blurRadius: 5.h,
                 ),
               ],
               color: Colors.white,
@@ -593,7 +593,7 @@ class LoginPageState extends State<LoginPage>
                 '登录',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: suSetSp(20.0),
+                  fontSize: 20.sp,
                 ),
               ),
               const Spacer(flex: 1),
@@ -618,7 +618,7 @@ class LoginPageState extends State<LoginPage>
   /// Actions down below.
   /// 其他操作项。包含“账号查询”、“忘记密码”。
   Widget get otherActions => SizedBox(
-        height: suSetHeight(30.0),
+        height: 30.h,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

@@ -169,7 +169,7 @@ class EmotionPad extends StatelessWidget {
               ),
               Text(
                 filteredString(EmoticonUtils.emoticonMap.keys.elementAt(index)),
-                style: TextStyle(fontSize: 16.0.sp),
+                style: TextStyle(fontSize: 16.sp),
               ),
             ],
           ),

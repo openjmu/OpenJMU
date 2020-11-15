@@ -42,7 +42,7 @@ class ScorePage extends StatelessWidget {
         child: Text(
           '暂时还没有你的成绩\n🤔',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 30.0.sp),
+          style: TextStyle(fontSize: 30.sp),
         ),
       );
 
@@ -57,7 +57,7 @@ class ScorePage extends StatelessWidget {
       ),
     );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.0.h),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       child: Row(
         children: <Widget>[
           dot,
@@ -80,7 +80,7 @@ class ScorePage extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .caption
-                  .copyWith(fontSize: 19.0.sp),
+                  .copyWith(fontSize: 19.sp),
               textAlign: TextAlign.center,
             ),
           ),
@@ -102,9 +102,9 @@ class ScorePage extends StatelessWidget {
           onTap: () => provider.selectTerm(index),
           child: AnimatedContainer(
             duration: 200.milliseconds,
-            margin: EdgeInsets.all(6.0.w),
+            margin: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0.w),
+              borderRadius: BorderRadius.circular(15.w),
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     blurRadius: 5.0, color: Theme.of(context).canvasColor),
@@ -114,7 +114,7 @@ class ScorePage extends StatelessWidget {
                   : Theme.of(context).canvasColor,
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0.sp),
+              padding: EdgeInsets.symmetric(horizontal: 8.sp),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -129,7 +129,7 @@ class ScorePage extends StatelessWidget {
                               .color
                               .withOpacity(0.3),
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.0.sp,
+                      fontSize: 18.sp,
                     ),
                   ),
                   Text(
@@ -143,7 +143,7 @@ class ScorePage extends StatelessWidget {
                               .color
                               .withOpacity(0.3),
                       fontWeight: FontWeight.bold,
-                      fontSize: 20.0.sp,
+                      fontSize: 20.sp,
                     ),
                   ),
                 ],
@@ -156,9 +156,9 @@ class ScorePage extends StatelessWidget {
   }
 
   Widget get termsWidget => Container(
-        padding: EdgeInsets.symmetric(vertical: 5.0.h),
+        padding: EdgeInsets.symmetric(vertical: 5.h),
         width: Screens.width,
-        height: 86.0.h,
+        height: 86.h,
         child: Center(
           child: Selector<ScoresProvider, List<String>>(
             selector: (BuildContext _, ScoresProvider provider) =>
@@ -172,7 +172,7 @@ class ScorePage extends StatelessWidget {
                 itemCount: terms.length + 2,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0 || index == terms.length + 1) {
-                    return SizedBox(width: 10.0.w);
+                    return SizedBox(width: 10.w);
                   } else {
                     return _term(
                       context,
@@ -190,7 +190,7 @@ class ScorePage extends StatelessWidget {
   Widget _name(BuildContext context, Score score) {
     return Text(
       score.courseName,
-      style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 24.0.sp),
+      style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 24.sp),
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -202,7 +202,7 @@ class ScorePage extends StatelessWidget {
           TextSpan(
             text: score.formattedScore,
             style: TextStyle(
-              fontSize: 36.0.sp,
+              fontSize: 36.sp,
               fontWeight: FontWeight.bold,
               color: !score.isPass
                   ? Colors.red
@@ -213,7 +213,7 @@ class ScorePage extends StatelessWidget {
           TextSpan(text: '${score.scorePoint}'),
         ],
         style:
-            Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 20.0.sp),
+            Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 20.sp),
       ),
     );
   }
@@ -222,7 +222,7 @@ class ScorePage extends StatelessWidget {
     return Text(
       '学时: ${score.creditHour}　'
       '学分: ${score.credit.toStringAsFixed(1)}',
-      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20.0.sp),
+      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20.sp),
     );
   }
 
@@ -239,7 +239,7 @@ class ScorePage extends StatelessWidget {
             filteredScores.length,
             (int i) => Card(
               child: Padding(
-                padding: EdgeInsets.all(12.0.w),
+                padding: EdgeInsets.all(12.w),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[

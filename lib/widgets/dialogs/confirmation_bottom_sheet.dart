@@ -81,9 +81,9 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
   bool animating = false;
 
   Widget dragIndicator(BuildContext context) => Container(
-        margin: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
-        width: suSetWidth(54.0),
-        height: suSetHeight(8.0),
+        margin: EdgeInsets.symmetric(vertical: 16.h),
+        width: 54.w,
+        height: 8.h,
         decoration: BoxDecoration(
           borderRadius: maxBorderRadius,
           color: Theme.of(context).dividerColor,
@@ -92,9 +92,9 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
 
   Widget titleWidget(BuildContext context) => Container(
         margin: EdgeInsets.only(
-          left: suSetWidth(20.0),
-          right: suSetWidth(20.0),
-          bottom: suSetHeight(10.0),
+          left: 20.w,
+          right: 20.w,
+          bottom: 10.h,
         ),
         child: Row(
           mainAxisAlignment: widget.centerTitle
@@ -104,7 +104,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
             Text(
               widget.title,
               style: TextStyle(
-                  fontSize: suSetSp(28.0), fontWeight: FontWeight.bold),
+                  fontSize: 28.sp, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -120,8 +120,8 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       onPressed: () => Navigator.of(context).maybePop(true),
       child: Container(
         width: Screens.width,
-        height: suSetWidth(60.0),
-        margin: EdgeInsets.only(top: suSetHeight(20.0)),
+        height: 60.w,
+        margin: EdgeInsets.only(top: 20.h),
         decoration: BoxDecoration(
           borderRadius: maxBorderRadius,
           color: currentThemeColor.withOpacity(0.9),
@@ -129,7 +129,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         child: Center(
           child: Text(
             widget.confirmLabel ?? '确定',
-            style: TextStyle(color: Colors.white, fontSize: suSetSp(23.0)),
+            style: TextStyle(color: Colors.white, fontSize: 23.sp),
           ),
         ),
       ),
@@ -159,9 +159,9 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
             ),
           ),
           Container(
-            margin: EdgeInsets.all(suSetWidth(20.0)),
+            margin: EdgeInsets.all(20.w),
             width: Screens.width,
-            height: suSetWidth(60.0),
+            height: 60.w,
             decoration: BoxDecoration(
               borderRadius: maxBorderRadius,
               color: Theme.of(context).canvasColor,
@@ -169,7 +169,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
             child: Center(
               child: Text(
                 widget.cancelLabel ?? '取消',
-                style: TextStyle(fontSize: suSetSp(23.0)),
+                style: TextStyle(fontSize: 23.sp),
               ),
             ),
           ),
@@ -213,7 +213,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
                             ? <Widget>[
                                 Text(
                                   widget.content,
-                                  style: TextStyle(fontSize: suSetSp(20.0)),
+                                  style: TextStyle(fontSize: 20.sp),
                                   textAlign: TextAlign.center,
                                 ),
                               ]
@@ -255,24 +255,24 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
         onTap();
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
+        padding: EdgeInsets.symmetric(vertical: 24.h),
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: IconTheme(
                 data: Theme.of(context)
                     .iconTheme
-                    .copyWith(size: suSetWidth(36.0)),
+                    .copyWith(size: 36.w),
                 child: icon,
               ),
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: Text(
                   text,
-                  style: TextStyle(fontSize: suSetSp(22.0)),
+                  style: TextStyle(fontSize: 22.sp),
                 ),
               ),
             ),

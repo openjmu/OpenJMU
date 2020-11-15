@@ -47,10 +47,10 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(suSetWidth(12.0)),
+                borderRadius: BorderRadius.circular(12.w),
               ),
-              width: MediaQuery.of(context).size.width - suSetWidth(100),
-              padding: EdgeInsets.only(top: suSetHeight(20.0)),
+              width: MediaQuery.of(context).size.width - 100.w,
+              padding: EdgeInsets.only(top: 20.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -61,11 +61,11 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(suSetWidth(20.0)),
+                    padding: EdgeInsets.all(20.w),
                     child: TextField(
                       autofocus: true,
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: suSetSp(18.0),
+                            fontSize: 18.sp,
                             textBaseline: TextBaseline.alphabetic,
                           ),
                       controller: _textEditingController,
@@ -73,7 +73,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                       maxLines: null,
                       decoration: InputDecoration(
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                            EdgeInsets.symmetric(vertical: 6.h),
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]),
                         ),
@@ -88,7 +88,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                     ),
                   ),
                   SizedBox(
-                    height: suSetHeight(60.0),
+                    height: 60.h,
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -96,7 +96,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                             isDefaultAction: true,
                             child: Text(
                               '取消',
-                              style: TextStyle(fontSize: suSetSp(18.0)),
+                              style: TextStyle(fontSize: 18.sp),
                             ),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
@@ -109,7 +109,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                                 color: canSave
                                     ? currentThemeColor
                                     : Theme.of(context).disabledColor,
-                                fontSize: suSetSp(18.0),
+                                fontSize: 18.sp,
                               ),
                             ),
                             onPressed: () {

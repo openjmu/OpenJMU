@@ -45,17 +45,17 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   TextStyle get textActiveStyle => TextStyle(
         color: adaptiveButtonColor(),
-        fontSize: suSetSp(20.0),
+        fontSize: 20.sp,
         fontWeight: FontWeight.bold,
       );
 
   TextStyle get textInActiveStyle => TextStyle(
         color: Colors.grey,
-        fontSize: suSetSp(18.0),
+        fontSize: 18.sp,
       );
 
   ShapeBorder get sectionButtonShape => RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+        borderRadius: BorderRadius.circular(10.w),
       );
 
   int _tabIndex = 1;
@@ -174,7 +174,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget get postCard => Padding(
-        padding: EdgeInsets.all(10.0.w),
+        padding: EdgeInsets.all(10.w),
         child: PostCard(
           widget.post,
           index: widget.index,
@@ -186,12 +186,12 @@ class PostDetailPageState extends State<PostDetailPage> {
       );
 
   Widget get deleteButton => IconButton(
-        icon: Icon(Icons.delete_outline, size: suSetWidth(30.0)),
+        icon: Icon(Icons.delete_outline, size: 30.w),
         onPressed: () => confirmDelete(context),
       );
 
   Widget get postActionButton => IconButton(
-        icon: Icon(Icons.more_horiz, size: suSetWidth(30.0)),
+        icon: Icon(Icons.more_horiz, size: 30.w),
         onPressed: () => postExtraActions(context),
       );
 
@@ -277,14 +277,14 @@ class PostDetailPageState extends State<PostDetailPage> {
   Widget get actionLists => Container(
         width: Screens.width,
         color: Theme.of(context).cardColor,
-        padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Row(
           children: <Widget>[
             MaterialButton(
               color: _tabIndex == 0 ? activeColor : Theme.of(context).cardColor,
               elevation: 0,
               padding: EdgeInsets.zero,
-              minWidth: suSetWidth(sectionButtonWidth),
+              minWidth: sectionButtonWidth.w,
               shape: sectionButtonShape,
               child: Text('转发 ${moreThanZero(forwards)}', style: forwardsStyle),
               onPressed: () {
@@ -296,7 +296,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               color: _tabIndex == 1 ? activeColor : Theme.of(context).cardColor,
               elevation: 0,
               padding: EdgeInsets.zero,
-              minWidth: suSetWidth(sectionButtonWidth),
+              minWidth: sectionButtonWidth.w,
               shape: sectionButtonShape,
               child: Text('评论 ${moreThanZero(comments)}', style: commentsStyle),
               onPressed: () {
@@ -309,7 +309,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               color: _tabIndex == 2 ? activeColor : Theme.of(context).cardColor,
               elevation: 0,
               padding: EdgeInsets.zero,
-              minWidth: suSetWidth(sectionButtonWidth),
+              minWidth: sectionButtonWidth.w,
               shape: sectionButtonShape,
               child: Text('赞 ${moreThanZero(praises)}', style: praisesStyle),
               onPressed: () {
@@ -324,7 +324,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   Widget get toolbar {
     final TextStyle bodyTextStyle = Theme.of(context).textTheme.bodyText2;
     return Container(
-      height: Screens.bottomSafeHeight + suSetHeight(70.0),
+      height: Screens.bottomSafeHeight + 70.h,
       padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
       color: Theme.of(context).cardColor,
       child: Row(
@@ -342,7 +342,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
                 color: bodyTextStyle.color,
-                width: suSetWidth(iconSize),
+                width: iconSize.w,
               ),
               label: Text(
                 '转发',
@@ -362,7 +362,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
                 color: bodyTextStyle.color,
-                width: suSetWidth(iconSize),
+                width: iconSize.w,
               ),
               label: Text(
                 '评论',
@@ -373,7 +373,7 @@ class PostDetailPageState extends State<PostDetailPage> {
           ),
           Expanded(
             child: LikeButton(
-              size: suSetWidth(iconSize),
+              size: iconSize.w,
               circleColor: CircleColor(
                 start: currentThemeColor,
                 end: currentThemeColor,
@@ -392,15 +392,15 @@ class PostDetailPageState extends State<PostDetailPage> {
               likeBuilder: (bool isLiked) => SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                 color: isLiked ? currentThemeColor : bodyTextStyle.color,
-                width: suSetWidth(iconSize),
+                width: iconSize.w,
               ),
               likeCount: widget.post.isLike
                   ? moreThanOne(praises)
                   : moreThanZero(praises),
               likeCountAnimationType: LikeCountAnimationType.none,
               likeCountPadding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(10.0),
-                vertical: suSetHeight(12.0),
+                horizontal: 10.w,
+                vertical: 12.h,
               ),
               isLiked: widget.post.isLike,
               onTap: onLikeButtonTap,
@@ -462,7 +462,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                     SliverPersistentHeader(
                       delegate: CommonSliverPersistentHeaderDelegate(
                         child: actionLists,
-                        height: suSetHeight(74.0),
+                        height: 74.h,
                       ),
                       pinned: true,
                     ),

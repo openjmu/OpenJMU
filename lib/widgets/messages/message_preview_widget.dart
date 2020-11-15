@@ -85,17 +85,17 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-      height: suSetHeight(widget.height),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      height: widget.height.h,
       child: Row(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: suSetWidth(16.0)),
+            padding: EdgeInsets.only(right: 16.w),
             child: UserAPI.getAvatar(size: 60.0, uid: widget.uid),
           ),
           Expanded(
             child: SizedBox(
-              height: suSetSp(60.0),
+              height: 60.w,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   Row(
                     children: <Widget>[
                       SizedBox(
-                        height: suSetSp(30.0),
+                        height: 30.w,
                         child: user != null
                             ? Text(
                                 '${user.name ?? user.uid}',
@@ -111,7 +111,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                                     .textTheme
                                     .bodyText2
                                     .copyWith(
-                                      fontSize: suSetSp(22.0),
+                                      fontSize: 22.sp,
                                       fontWeight: FontWeight.w500,
                                     ),
                               )
@@ -129,8 +129,8 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                       ),
                       const Spacer(),
                       Container(
-                        width: suSetWidth(28.0),
-                        height: suSetWidth(28.0),
+                        width: 28.w,
+                        height: 28.w,
                         decoration: BoxDecoration(
                           color: currentThemeColor.withOpacity(0.5),
                           shape: BoxShape.circle,
@@ -139,7 +139,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                           child: Text(
                             '${widget.unreadMessages.length}',
                             style: TextStyle(
-                              fontSize: suSetSp(18.0),
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.normal,
                             ),
                           ),
@@ -155,7 +155,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                               .bodyText2
                               .color
                               .withOpacity(0.5),
-                          fontSize: suSetSp(19.0),
+                          fontSize: 19.sp,
                         ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

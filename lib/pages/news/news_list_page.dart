@@ -87,21 +87,21 @@ class NewsListPageState extends State<NewsListPage>
         Expanded(
           child: Text(
             news.title,
-            style: TextStyle(fontSize: suSetSp(18.0)),
+            style: TextStyle(fontSize: 18.sp),
             overflow: TextOverflow.ellipsis,
           ),
         ),
         if (news.relateTopicId != null)
           Container(
-            margin: EdgeInsets.only(left: suSetSp(6.0)),
-            padding: EdgeInsets.symmetric(horizontal: suSetSp(6.0)),
+            margin: EdgeInsets.only(left: 6.w),
+            padding: EdgeInsets.symmetric(horizontal: 6.w),
             decoration: BoxDecoration(
               color: currentThemeColor,
-              borderRadius: BorderRadius.circular(suSetSp(20.0)),
+              borderRadius: BorderRadius.circular(20.w),
             ),
             child: Text(
               '专题',
-              style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
+              style: TextStyle(color: Colors.white, fontSize: 18.sp),
             ),
           ),
       ],
@@ -114,7 +114,7 @@ class NewsListPageState extends State<NewsListPage>
         Expanded(
           child: Text(
             news.summary,
-            style: TextStyle(color: Colors.grey, fontSize: suSetSp(16.0)),
+            style: TextStyle(color: Colors.grey, fontSize: 16.sp),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -129,7 +129,7 @@ class NewsListPageState extends State<NewsListPage>
           padding: EdgeInsets.zero,
           child: Text(
             news.postTime,
-            style: TextStyle(color: Colors.grey, fontSize: suSetSp(14.0)),
+            style: TextStyle(color: Colors.grey, fontSize: 14.sp),
           ),
         ),
         Expanded(
@@ -138,12 +138,12 @@ class NewsListPageState extends State<NewsListPage>
             children: <Widget>[
               Text(
                 '${news.glances} ',
-                style: TextStyle(color: Colors.grey, fontSize: suSetSp(14.0)),
+                style: TextStyle(color: Colors.grey, fontSize: 14.sp),
               ),
               Icon(
                 Icons.remove_red_eye,
                 color: Colors.grey,
-                size: suSetSp(14.0),
+                size: 14.w,
               ),
             ],
           ),
@@ -157,8 +157,8 @@ class NewsListPageState extends State<NewsListPage>
         '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}';
     final ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
     return SizedBox(
-      width: suSetSp(80.0),
-      height: suSetSp(80.0),
+      width: 80.w,
+      height: 80.w,
       child: FadeInImage(
         fadeInDuration: 100.milliseconds,
         placeholder: const AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
@@ -170,8 +170,8 @@ class NewsListPageState extends State<NewsListPage>
 
   Widget newsItem(News news) {
     return Container(
-      height: suSetSp(96.0),
-      padding: EdgeInsets.all(suSetSp(8.0)),
+      height: 96.w,
+      padding: EdgeInsets.all(8.w),
       child: InkWell(
         onTap: () {
           navigatorState.pushNamed(
@@ -200,11 +200,8 @@ class NewsListPageState extends State<NewsListPage>
               coverImg(news)
             else
               Padding(
-                padding: EdgeInsets.all(suSetSp(4.0)),
-                child: Container(
-                  width: suSetSp(80.0),
-                  height: suSetSp(80.0),
-                ),
+                padding: EdgeInsets.all(4.w),
+                child: SizedBox.fromSize(size: Size.square(80.w)),
               ),
           ],
         ),

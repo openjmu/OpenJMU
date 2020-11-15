@@ -291,7 +291,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
                         Flexible(
                           child: Text(
                             title,
-                            style: TextStyle(fontSize: 22.0.sp),
+                            style: TextStyle(fontSize: 22.sp),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

@@ -33,7 +33,7 @@ class UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   final List<String> tabList = <String>['动态', '黑名单'];
 
-  double get tabBarHeight => 56.0.h;
+  double get tabBarHeight => 56.h;
   final List<Post> posts = <Post>[];
   final List<UserTag> userTags = <UserTag>[];
 
@@ -262,9 +262,9 @@ class UserPageState extends State<UserPage>
           return LoadMoreIndicator(canLoadMore: canLoadMorePost);
         }
         return Container(
-          margin: index == 0 ? EdgeInsets.only(top: 10.0.h) : null,
+          margin: index == 0 ? EdgeInsets.only(top: 10.h) : null,
           padding: EdgeInsets.symmetric(
-            horizontal: 12.0.w,
+            horizontal: 12.w,
           ),
           child: PostCard(
             posts[index],
@@ -346,12 +346,12 @@ class UserPageState extends State<UserPage>
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         UserAPI.getAvatar(size: 36.0, uid: uid),
-        emptyDivider(width: 12.0.w),
+        emptyDivider(width: 12.w),
         Text(
           user?.name ?? '',
           style: TextStyle(
             color: context.themeData.textTheme.bodyText1.color,
-            fontSize: 21.0.sp,
+            fontSize: 21.sp,
           ),
         ),
       ],
@@ -393,8 +393,8 @@ class UserPageState extends State<UserPage>
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(18.0.w),
-            topRight: Radius.circular(18.0.w),
+            topLeft: Radius.circular(18.w),
+            topRight: Radius.circular(18.w),
           ),
           color: context.themeData.primaryColor,
         ),
@@ -402,10 +402,10 @@ class UserPageState extends State<UserPage>
         child: TabBar(
           controller: tabController,
           isScrollable: true,
-          indicatorWeight: 4.0.h,
+          indicatorWeight: 4.h,
           indicatorSize: TabBarIndicatorSize.label,
-          labelStyle: TextStyle(fontSize: 18.0.sp),
-          labelPadding: EdgeInsets.symmetric(horizontal: 12.0.w),
+          labelStyle: TextStyle(fontSize: 18.sp),
+          labelPadding: EdgeInsets.symmetric(horizontal: 12.w),
           tabs: List<Tab>.generate(
             tabList.length,
             (int index) {
@@ -430,7 +430,7 @@ class UserPageState extends State<UserPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               children: <Widget>[
                 userAvatar,
@@ -445,21 +445,21 @@ class UserPageState extends State<UserPage>
             children: <Widget>[
               usernameWidget,
               if (Constants.developerList.contains(user?.uid ?? 0))
-                SizedBox(width: 8.0.w),
+                SizedBox(width: 8.w),
               if (Constants.developerList.contains(user?.uid ?? 0))
                 DeveloperTag(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 8.0.w,
-                    vertical: 4.0.h,
+                    horizontal: 8.w,
+                    vertical: 4.h,
                   ),
-                  height: 32.0.h,
+                  height: 32.h,
                 ),
             ],
           ),
           signatureWidget,
           if (user != null)
             SizedBox(
-              height: 40.0.h,
+              height: 40.h,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -515,14 +515,14 @@ class UserPageState extends State<UserPage>
     return MaterialButton(
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       minWidth: 0.0,
-      height: 46.0.h,
+      height: 46.h,
       padding: EdgeInsets.symmetric(
-        horizontal: 14.0.w,
+        horizontal: 14.w,
       ),
       color: Colors.black26,
       elevation: 0.0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14.0.w),
+        borderRadius: BorderRadius.circular(14.w),
       ),
       onPressed: requestFollow,
       child: Row(
@@ -531,15 +531,15 @@ class UserPageState extends State<UserPage>
           if (!(user?.isFollowing ?? false))
             SvgPicture.asset(
               R.ASSETS_ICONS_USER_FOLLOW_SVG,
-              width: 30.0.w,
-              height: 30.0.w,
+              width: 30.w,
+              height: 30.w,
               fit: BoxFit.fill,
             ),
           Text(
             '${(user?.isFollowing ?? false) ? '已' : ''}关注',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20.0.sp,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w500,
               height: 1.25,
             ),
@@ -551,18 +551,18 @@ class UserPageState extends State<UserPage>
 
   Widget get editProfileButton {
     return Padding(
-      padding: EdgeInsets.only(right: 10.0.w),
+      padding: EdgeInsets.only(right: 10.w),
       child: MaterialButton(
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         minWidth: 0.0,
-        height: 46.0.h,
+        height: 46.h,
         padding: EdgeInsets.symmetric(
-          horizontal: 14.0.w,
+          horizontal: 14.w,
         ),
         color: Colors.black26,
         elevation: 0.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.0.w),
+          borderRadius: BorderRadius.circular(14.w),
         ),
         onPressed: () {
           navigatorState.pushNamed(Routes.openjmuEditProfilePage);
@@ -571,7 +571,7 @@ class UserPageState extends State<UserPage>
           '编辑资料',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20.0.sp,
+            fontSize: 20.sp,
             fontWeight: FontWeight.w500,
             height: 1.25,
           ),
@@ -584,7 +584,7 @@ class UserPageState extends State<UserPage>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: SizedBox.fromSize(
-        size: Size.square(46.0.h),
+        size: Size.square(46.h),
         child: DecoratedBox(
           decoration: const BoxDecoration(
             color: Colors.black26,
@@ -593,8 +593,8 @@ class UserPageState extends State<UserPage>
           child: Center(
             child: SvgPicture.asset(
               R.ASSETS_ICONS_USER_QR_CODE_SVG,
-              width: 34.0.w,
-              height: 34.0.w,
+              width: 34.w,
+              height: 34.w,
               fit: BoxFit.fill,
             ),
           ),
@@ -608,12 +608,12 @@ class UserPageState extends State<UserPage>
 
   Widget get usernameWidget {
     return Padding(
-      padding: EdgeInsets.only(left: 20.0.w),
+      padding: EdgeInsets.only(left: 20.w),
       child: Text(
         user?.name ?? '',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 24.0.sp,
+          fontSize: 24.sp,
           fontWeight: FontWeight.bold,
         ),
         textAlign: TextAlign.start,
@@ -625,7 +625,7 @@ class UserPageState extends State<UserPage>
 
   Widget get signatureWidget {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Text(
         () {
           if (user == null) {
@@ -636,7 +636,7 @@ class UserPageState extends State<UserPage>
         }(),
         style: TextStyle(
           color: Colors.white,
-          fontSize: 18.0.sp,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w300,
         ),
         textAlign: TextAlign.start,
@@ -648,22 +648,22 @@ class UserPageState extends State<UserPage>
 
   Widget get levelWidget {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8.0.w),
+      margin: EdgeInsets.symmetric(horizontal: 8.w),
       child: Center(
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: 8.0.w,
-            vertical: 4.0.h,
+            horizontal: 8.w,
+            vertical: 4.h,
           ),
           decoration: BoxDecoration(
             color: Colors.redAccent,
-            borderRadius: BorderRadius.circular(20.0.w),
+            borderRadius: BorderRadius.circular(20.w),
           ),
           child: Text(
             ' Lv.${userLevelScore?.levelInfo?.level ?? 0}',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 16.0.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w300,
               fontStyle: FontStyle.italic,
             ),
@@ -678,20 +678,20 @@ class UserPageState extends State<UserPage>
       userTags.length,
       (int index) {
         return Container(
-          margin: EdgeInsets.only(right: 12.0.w),
+          margin: EdgeInsets.only(right: 12.w),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20.0.w),
+            borderRadius: BorderRadius.circular(20.w),
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: 12.0.w,
-                vertical: 1.0.h,
+                horizontal: 12.w,
+                vertical: 1.h,
               ),
               color: const Color(0x44ffffff),
               child: Text(
                 userTags[index].name,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16.0.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w300,
                 ),
               ),
@@ -705,16 +705,16 @@ class UserPageState extends State<UserPage>
   Widget get fansAndIdolsWidget {
     final TextStyle titleStyle = TextStyle(
       color: Colors.white,
-      fontSize: 15.0.sp,
+      fontSize: 15.sp,
     );
     final TextStyle countStyle = TextStyle(
       color: Colors.white,
-      fontSize: 28.0.sp,
+      fontSize: 28.sp,
       fontStyle: FontStyle.italic,
       fontWeight: FontWeight.w500,
     );
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -733,12 +733,12 @@ class UserPageState extends State<UserPage>
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text('关注', style: titleStyle),
-                SizedBox(width: 8.0.w),
+                SizedBox(width: 8.w),
                 Text('${userIdols ?? ''}', style: countStyle),
               ],
             ),
           ),
-          SizedBox(width: 20.0.w),
+          SizedBox(width: 20.w),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
@@ -754,7 +754,7 @@ class UserPageState extends State<UserPage>
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text('粉丝', style: titleStyle),
-                SizedBox(width: 8.0.w),
+                SizedBox(width: 8.w),
                 Text('${userFans ?? ''}', style: countStyle),
               ],
             ),
@@ -777,7 +777,7 @@ class UserPageState extends State<UserPage>
       return Center(
         child: Text(
           '黑名单为空',
-          style: TextStyle(fontSize: 20.0.sp),
+          style: TextStyle(fontSize: 20.sp),
         ),
       );
     }
@@ -785,14 +785,14 @@ class UserPageState extends State<UserPage>
 
   Widget blacklistUser(BlacklistUser user) {
     return Padding(
-      padding: EdgeInsets.all(8.0.w),
+      padding: EdgeInsets.all(8.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           UserAvatar(uid: user.uid, size: 64.0, canJump: false),
           Text(
             user.username,
-            style: TextStyle(fontSize: 18.0.sp),
+            style: TextStyle(fontSize: 18.sp),
             overflow: TextOverflow.ellipsis,
           ),
           GestureDetector(
@@ -800,16 +800,16 @@ class UserPageState extends State<UserPage>
             onTap: () => removeFromBlacklist(context, user),
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: 10.0.w,
-                vertical: 6.0.h,
+                horizontal: 10.w,
+                vertical: 6.h,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0.w),
+                borderRadius: BorderRadius.circular(10.w),
                 color: currentThemeColor.withAlpha(0x88),
               ),
               child: Text(
                 '移出黑名单',
-                style: TextStyle(fontSize: 16.0.sp),
+                style: TextStyle(fontSize: 16.sp),
               ),
             ),
           ),

@@ -137,7 +137,7 @@ class DeveloperTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       R.ASSETS_ICONS_TEAM_BADGE_SVG,
-      height: suSetHeight(height),
+      height: height.h,
     );
   }
 }
@@ -149,7 +149,7 @@ Widget sexualWidget({
 }) {
   final bool isFemale = ((user ?? currentUser)?.gender == 2) ?? false;
   return Container(
-    margin: margin ?? EdgeInsets.only(left: 20.0.w),
+    margin: margin ?? EdgeInsets.only(left: 20.w),
     child: SvgPicture.asset(
       'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
       width: size.w,
@@ -168,13 +168,13 @@ Widget separator(
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).canvasColor,
       ),
-      child: SizedBox(height: suSetHeight(height ?? 8.0)),
+      child: SizedBox(height: (height ?? 8).h),
     );
 
 /// Empty divider. Used in widgets need empty placeholder.
 Widget emptyDivider({double width, double height}) => SizedBox(
-      width: width != null ? suSetWidth(width) : null,
-      height: height != null ? suSetHeight(height) : null,
+      width: width != null ? width.w : null,
+      height: height != null ? height.w : null,
     );
 
 /// Badge Icon. Used in notification.
@@ -185,10 +185,10 @@ Widget badgeIcon({
   bool showBadge = true,
 }) =>
     Badge(
-      padding: padding ?? EdgeInsets.all(suSetWidth(6.0)),
+      padding: padding ?? EdgeInsets.all(6.w),
       badgeContent: Text(
         '$content',
-        style: TextStyle(color: Colors.white, fontSize: suSetSp(16.0)),
+        style: TextStyle(color: Colors.white, fontSize: 16.sp),
       ),
       badgeColor: currentThemeColor,
       child: icon,
@@ -214,7 +214,7 @@ class SpinKitWidget extends StatelessWidget {
     return SpinKitFadingCube(
       color: color ?? currentThemeColor,
       duration: duration,
-      size: suSetWidth(size),
+      size: size.w,
     );
   }
 }
@@ -245,7 +245,7 @@ class PlatformProgressIndicator extends StatelessWidget {
             child: CupertinoActivityIndicator(radius: radius),
           )
         : CircularProgressIndicator(
-            strokeWidth: suSetWidth(strokeWidth),
+            strokeWidth: strokeWidth.w,
             valueColor:
                 color != null ? AlwaysStoppedAnimation<Color>(color) : null,
             value: value,
@@ -265,22 +265,22 @@ class LoadMoreIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: suSetHeight(50.0),
+      height: 50.h,
       child: canLoadMore
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SpinKitWidget(size: 32.0.w),
+                SpinKitWidget(size: 32.w),
                 Text(
                   '　正在加载',
-                  style: TextStyle(fontSize: suSetSp(18.0)),
+                  style: TextStyle(fontSize: 18.sp),
                 ),
               ],
             )
           : Center(
               child: Text(
                 Constants.endLineTag,
-                style: TextStyle(fontSize: suSetSp(18.0)),
+                style: TextStyle(fontSize: 18.sp),
               ),
             ),
     );
@@ -310,26 +310,26 @@ class ScaledImage extends StatelessWidget {
   final ExtendedTypedNetworkImageProvider provider;
 
   Widget longImageIndicator(BuildContext context) => Positioned(
-        right: suSetWidth(5.0),
-        bottom: suSetWidth(5.0),
+        right: 5.w,
+        bottom: 5.w,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+          borderRadius: BorderRadius.circular(5.w),
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(8.0),
-                vertical: suSetHeight(4.0),
+                horizontal: 8.w,
+                vertical: 4.h,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                borderRadius: BorderRadius.circular(5.w),
                 color: Theme.of(context).primaryColor.withOpacity(0.7),
               ),
               child: Text(
                 '长图',
                 style: TextStyle(
                   color: Theme.of(context).iconTheme.color.withOpacity(0.8),
-                  fontSize: suSetSp(16.0),
+                  fontSize: 16.sp,
                 ),
               ),
             ),
@@ -338,26 +338,26 @@ class ScaledImage extends StatelessWidget {
       );
 
   Widget gifImageIndicator(BuildContext context) => Positioned(
-        right: suSetWidth(5.0),
-        bottom: suSetWidth(5.0),
+        right: 5.w,
+        bottom: 5.w,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+          borderRadius: BorderRadius.circular(5.w),
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(8.0),
-                vertical: suSetHeight(4.0),
+                horizontal: 8.w,
+                vertical: 4.h,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                borderRadius: BorderRadius.circular(5.w),
                 color: Theme.of(context).primaryColor.withOpacity(0.7),
               ),
               child: Text(
                 '动图',
                 style: TextStyle(
                   color: Theme.of(context).iconTheme.color.withOpacity(0.9),
-                  fontSize: suSetSp(16.0),
+                  fontSize: 16.sp,
                 ),
               ),
             ),
@@ -426,7 +426,7 @@ class ScaledImage extends StatelessWidget {
     }
     if (imageWidget != null) {
       imageWidget = ClipRRect(
-        borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+        borderRadius: BorderRadius.circular(10.w),
         child: imageWidget,
       );
     } else {

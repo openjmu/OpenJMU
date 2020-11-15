@@ -214,7 +214,7 @@ class _CommentListState extends State<CommentList>
       Widget _body;
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
-          padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+          padding: EdgeInsets.symmetric(vertical: 6.w),
           extendedListDelegate: const ExtendedListDelegate(),
           itemCount: _commentList.length + 1,
           itemBuilder: (BuildContext _, int index) {
@@ -470,7 +470,7 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget getCommentNickname(BuildContext context, Comment comment) {
     return Text(
       comment.fromUserName,
-      style: TextStyle(fontSize: suSetSp(20.0)),
+      style: TextStyle(fontSize: 20.sp),
     );
   }
 
@@ -478,7 +478,7 @@ class CommentListInPostState extends State<CommentListInPost>
     return Text(
       PostAPI.postTimeConverter(comment.commentTime),
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: 16.sp,
           ),
     );
   }
@@ -486,7 +486,7 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
       content != null ? '$content ' : null,
-      style: TextStyle(fontSize: suSetSp(19.0)),
+      style: TextStyle(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder:
           StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
@@ -537,8 +537,8 @@ class CommentListInPostState extends State<CommentListInPost>
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(20.0),
-                              vertical: suSetHeight(12.0),
+                              horizontal: 20.w,
+                              vertical: 12.h,
                             ),
                             child: UserAPI.getAvatar(
                               uid: _comments[index].fromUserUid,
@@ -549,7 +549,7 @@ class CommentListInPostState extends State<CommentListInPost>
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                SizedBox(height: suSetHeight(10.0)),
+                                SizedBox(height: 10.h),
                                 Row(
                                   children: <Widget>[
                                     getCommentNickname(
@@ -560,25 +560,25 @@ class CommentListInPostState extends State<CommentListInPost>
                                         .contains(_comments[index].fromUserUid))
                                       Container(
                                         margin: EdgeInsets.only(
-                                          left: suSetWidth(14.0),
+                                          left: 14.w,
                                         ),
                                         child: DeveloperTag(
                                           padding: EdgeInsets.symmetric(
-                                            horizontal: suSetWidth(8.0),
-                                            vertical: suSetHeight(4.0),
+                                            horizontal: 8.w,
+                                            vertical: 4.h,
                                           ),
                                         ),
                                       ),
                                   ],
                                 ),
-                                SizedBox(height: suSetHeight(4.0)),
+                                SizedBox(height: 4.h),
                                 getExtendedText(
                                   context,
                                   _comments[index].content,
                                 ),
-                                SizedBox(height: suSetHeight(6.0)),
+                                SizedBox(height: 6.h),
                                 getCommentTime(context, _comments[index]),
-                                SizedBox(height: suSetHeight(10.0)),
+                                SizedBox(height: 10.h),
                               ],
                             ),
                           ),
@@ -587,7 +587,7 @@ class CommentListInPostState extends State<CommentListInPost>
                             icon: Icon(
                               Icons.reply,
                               color: Colors.grey,
-                              size: suSetWidth(28.0),
+                              size: 28.w,
                             ),
                             onPressed: () => replyTo(index),
                           ),

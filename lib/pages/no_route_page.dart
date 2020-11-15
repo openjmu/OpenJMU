@@ -29,7 +29,7 @@ class NoRoutePage extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold)),
                 const TextSpan(text: 'which result nothing...'),
               ],
-              style: TextStyle(fontSize: suSetSp(22.0)),
+              style: TextStyle(fontSize: 22.sp),
             ),
           ),
           const BackButton(),

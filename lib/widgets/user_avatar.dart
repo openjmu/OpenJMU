@@ -32,7 +32,7 @@ class UserAvatar extends StatelessWidget {
       child: GestureDetector(
         child: ClipRRect(
           borderRadius: radius != null
-              ? BorderRadius.circular(suSetWidth(radius))
+              ? BorderRadius.circular(radius.w)
               : maxBorderRadius,
           child: FadeInImage(
             fadeInDuration: 150.milliseconds,

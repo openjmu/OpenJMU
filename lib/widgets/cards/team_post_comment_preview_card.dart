@@ -22,14 +22,14 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
   final TeamPostDetailPageState detailPageState;
 
   Widget _header(BuildContext context) => Container(
-        height: suSetHeight(70.0),
+        height: 70.h,
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
+          vertical: 4.h,
         ),
         child: Row(
           children: <Widget>[
             UserAPI.getAvatar(uid: comment.uid),
-            SizedBox(width: suSetWidth(16.0)),
+            SizedBox(width: 16.w),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,25 +39,25 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                     Text(
                       (comment.userInfo['nickname'] ?? comment.uid).toString(),
                       style: TextStyle(
-                        fontSize: 20.0.sp,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (comment.uid == topPost.uid)
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(10.0)),
+                        margin: EdgeInsets.only(left: 10.w),
                         padding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(6.0),
-                          vertical: suSetHeight(0.5),
+                          horizontal: 6.w,
+                          vertical: 0.5.h,
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                          borderRadius: BorderRadius.circular(5.w),
                           color: currentThemeColor,
                         ),
                         child: Text(
                           '楼主',
                           style: TextStyle(
-                            fontSize: 12.0.sp,
+                            fontSize: 12.sp,
                             color: adaptiveButtonColor(),
                             fontWeight: FontWeight.bold,
                           ),
@@ -65,11 +65,11 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                       ),
                     if (Constants.developerList.contains(comment.uid))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
+                        margin: EdgeInsets.only(left: 14.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(3.0),
+                            horizontal: 8.w,
+                            vertical: 3.h,
                           ),
                         ),
                       ),
@@ -80,14 +80,14 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
             ),
             const Spacer(),
             SizedBox.fromSize(
-              size: Size.square(suSetWidth(50.0)),
+              size: Size.square(50.w),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 icon: Icon(
                   Icons.reply,
                   color: Theme.of(context).dividerColor,
                 ),
-                iconSize: suSetHeight(36.0),
+                iconSize: 36.h,
                 onPressed: () {
                   detailPageState.setReplyToComment(comment);
                 },
@@ -95,14 +95,14 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
             ),
             if (topPost.uid == UserAPI.currentUser.uid)
               SizedBox.fromSize(
-                size: Size.square(suSetWidth(50.0)),
+                size: Size.square(50.w),
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(
                     Icons.delete_outline,
                     color: Theme.of(context).dividerColor,
                   ),
-                  iconSize: suSetWidth(40.0),
+                  iconSize: 40.w,
                   onPressed: () => confirmDelete(context),
                 ),
               ),
@@ -138,7 +138,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
     return Text(
       '第${comment.floor}楼 · ${TeamPostAPI.timeConverter(comment.postTime)}',
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.0.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -146,12 +146,12 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
 
   Widget get _content => Padding(
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
+          vertical: 4.h,
         ),
         child: ExtendedText(
           comment.content ?? '',
           style: TextStyle(
-            fontSize: 19.0.sp,
+            fontSize: 19.sp,
           ),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
@@ -160,7 +160,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
               '全文',
               style: TextStyle(
                 color: currentThemeColor,
-                fontSize: 19.0.sp,
+                fontSize: 19.sp,
               ),
             ),
           ),
@@ -172,15 +172,15 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: suSetWidth(12.0),
-        vertical: suSetHeight(4.0),
+        horizontal: 12.w,
+        vertical: 4.h,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: suSetWidth(24.0),
-        vertical: suSetHeight(8.0),
+        horizontal: 24.w,
+        vertical: 8.h,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+        borderRadius: BorderRadius.circular(10.w),
         color: Theme.of(context).cardColor,
       ),
       child: Column(

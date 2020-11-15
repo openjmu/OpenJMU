@@ -148,7 +148,10 @@ class _ImageCropPageState extends State<ImageCropPage> {
                     cropRectPadding: const EdgeInsets.all(30.0),
                     cropAspectRatio: 1.0,
                     hitTestSize: 30.0,
-                    cornerColor: Colors.grey,
+                    cornerPainter:
+                        const ExtendedImageCropLayerPainterCircleCorner(
+                      color: Colors.grey,
+                    ),
                     lineColor: Colors.grey,
                   );
                 },
@@ -157,16 +160,16 @@ class _ImageCropPageState extends State<ImageCropPage> {
                 child: InkWell(
                   onTap: _openImage,
                   child: Padding(
-                    padding: EdgeInsets.all(suSetSp(60.0)),
+                    padding: EdgeInsets.all(60.sp),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Icon(Icons.add, size: suSetSp(60.0)),
+                        Icon(Icons.add, size: 60.sp),
                         emptyDivider(height: 20.0),
                         Text(
                           '选择需要上传的头像',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: suSetSp(20.0),
+                                fontSize: 20.sp,
                               ),
                         ),
                       ],

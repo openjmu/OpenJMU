@@ -128,7 +128,7 @@ class _PostListState extends State<PostList>
           child: Text(
             '这里空空如也~轻触重试',
             style: TextStyle(
-              fontSize: suSetSp(30.0),
+              fontSize: 30.sp,
               color: currentThemeColor,
             ),
           ),
@@ -143,7 +143,7 @@ class _PostListState extends State<PostList>
           child: Text(
             '加载失败，轻触重试',
             style: TextStyle(
-              fontSize: suSetSp(30.0),
+              fontSize: 30.sp,
               color: currentThemeColor,
             ),
           ),
@@ -270,7 +270,7 @@ class _PostListState extends State<PostList>
 
     if (!_isLoading) {
       _itemList = ExtendedListView.builder(
-        padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+        padding: EdgeInsets.symmetric(vertical: 6.w),
         extendedListDelegate: ExtendedListDelegate(
           collectGarbage: (List<int> garbage) {
             for (final int index in garbage) {
@@ -476,21 +476,21 @@ class ForwardListInPostState extends State<ForwardListInPost>
 
   Text getPostNickname(BuildContext context, Post post) => Text(
         post.nickname,
-        style: TextStyle(fontSize: suSetSp(20.0)),
+        style: TextStyle(fontSize: 20.sp),
       );
 
   Text getPostTime(BuildContext context, Post post) {
     return Text(
       PostAPI.postTimeConverter(post.postTime),
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: 16.sp,
           ),
     );
   }
 
   Widget getExtendedText(BuildContext context, String content) => ExtendedText(
         content,
-        style: TextStyle(fontSize: suSetSp(19.0)),
+        style: TextStyle(fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       );
@@ -525,8 +525,8 @@ class ForwardListInPostState extends State<ForwardListInPost>
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(20.0),
-                            vertical: suSetHeight(12.0),
+                            horizontal: 20.w,
+                            vertical: 12.h,
                           ),
                           child: UserAPI.getAvatar(
                             uid: _posts[index].uid,
@@ -537,7 +537,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              SizedBox(height: suSetHeight(10.0)),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: <Widget>[
                                   getPostNickname(context, _posts[index]),
@@ -545,22 +545,22 @@ class ForwardListInPostState extends State<ForwardListInPost>
                                       .contains(_posts[index].uid))
                                     Container(
                                       margin: EdgeInsets.only(
-                                        left: suSetWidth(14.0),
+                                        left: 14.w,
                                       ),
                                       child: DeveloperTag(
                                         padding: EdgeInsets.symmetric(
-                                          horizontal: suSetWidth(8.0),
-                                          vertical: suSetHeight(4.0),
+                                          horizontal: 8.w,
+                                          vertical: 4.h,
                                         ),
                                       ),
                                     ),
                                 ],
                               ),
-                              SizedBox(height: suSetHeight(4.0)),
+                              SizedBox(height: 4.h),
                               getExtendedText(context, _posts[index].content),
-                              SizedBox(height: suSetHeight(6.0)),
+                              SizedBox(height: 6.h),
                               getPostTime(context, _posts[index]),
-                              SizedBox(height: suSetHeight(10.0)),
+                              SizedBox(height: 10.h),
                             ],
                           ),
                         ),

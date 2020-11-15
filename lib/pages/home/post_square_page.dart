@@ -18,7 +18,7 @@ class PostSquarePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Container(
           alignment: AlignmentDirectional.centerStart,
-          padding: EdgeInsets.only(right: 20.0.w),
+          padding: EdgeInsets.only(right: 20.w),
           child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
@@ -26,7 +26,7 @@ class PostSquarePage extends StatelessWidget {
           SizedBox(width: 10.w),
           MainPage.publishButton(Routes.openjmuPublishPost),
         ],
-        actionsPadding: EdgeInsets.only(right: 20.0.w),
+        actionsPadding: EdgeInsets.only(right: 20.w),
       ),
       body: Container(
         color: Theme.of(context).canvasColor,

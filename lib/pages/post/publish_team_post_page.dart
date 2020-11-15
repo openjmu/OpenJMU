@@ -27,7 +27,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   final LoadingDialogController loadingDialogController =
       LoadingDialogController();
   final FocusNode focusNode = FocusNode();
-  final double iconSize = 28.0.h;
+  final double iconSize = 28.h;
 
   List<AssetEntity> selectedAssets = <AssetEntity>[];
   final Set<AssetEntity> failedAssets = <AssetEntity>{};
@@ -346,21 +346,21 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// 发布按钮
   Widget get publishButton => MaterialButton(
         color: currentThemeColor,
-        minWidth: suSetWidth(120.0),
-        height: suSetHeight(50.0),
+        minWidth: 120.w,
+        height: 50.h,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+          borderRadius: BorderRadius.circular(13.w),
         ),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(right: suSetWidth(6.0)),
+              padding: EdgeInsets.only(right: 6.w),
               child: SvgPicture.asset(
                 R.ASSETS_ICONS_SEND_SVG,
-                height: suSetHeight(22.0),
+                height: 22.h,
                 color: Colors.white,
               ),
             ),
@@ -368,7 +368,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
               '发动态',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
                 height: 1.24,
               ),
             ),
@@ -381,7 +381,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// 内容输入区
   Widget get textField => Expanded(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: ExtendedTextField(
             autofocus: false,
             controller: textEditingController,
@@ -391,7 +391,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
             cursorColor: Theme.of(context).cursorColor,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.only(top: 20.0.h),
+              contentPadding: EdgeInsets.only(top: 20.h),
               border: InputBorder.none,
               counterStyle: const TextStyle(color: Colors.transparent),
               hintText: '分享你的动态...',
@@ -402,7 +402,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             ),
             buildCounter: emptyCounterBuilder,
             style: currentTheme.textTheme.bodyText2.copyWith(
-              fontSize: 22.0.sp,
+              fontSize: 22.sp,
               textBaseline: TextBaseline.alphabetic,
             ),
             maxLines: null,
@@ -436,7 +436,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         child: ExtendedImage(
           image: AssetEntityImageProvider(asset, isOriginal: false),
           fit: BoxFit.cover,
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
           shape: BoxShape.rectangle,
         ),
       ),
@@ -452,7 +452,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             child: Icon(
               Icons.error,
               color: Colors.redAccent,
-              size: suSetWidth(40.0),
+              size: 40.w,
             ),
           ),
         ),
@@ -473,18 +473,18 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       },
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(6.0),
-          vertical: suSetHeight(2.0),
+          horizontal: 6.w,
+          vertical: 2.h,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(4.0)),
+          borderRadius: BorderRadius.circular(4.w),
           color: currentTheme.primaryColor.withOpacity(0.75),
         ),
         child: Text(
           '删除',
           style: TextStyle(
             color: currentTheme.iconTheme.color,
-            fontSize: 14.0.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -498,8 +498,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(8.0),
-          vertical: suSetWidth(16.0),
+          horizontal: 8.w,
+          vertical: 16.w,
         ),
         child: AspectRatio(
           aspectRatio: 1.0,
@@ -509,12 +509,12 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             child: DecoratedBox(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                borderRadius: BorderRadius.circular(10.w),
                 color: currentIsDark ? Colors.grey[700] : Colors.white,
               ),
               child: Icon(
                 Icons.add,
-                size: suSetWidth(isAssetListViewCollapsed ? 20.0 : 50.0),
+                size: (isAssetListViewCollapsed ? 20 : 50).w,
               ),
             ),
           ),
@@ -531,13 +531,14 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             curve: Curves.easeInOut,
             duration: kThemeAnimationDuration,
             height: selectedAssets.isNotEmpty
-                ? suSetHeight(isAssetListViewCollapsed ? 72.0 : 140.0)
+                ? isAssetListViewCollapsed ? 72.w : 140.w
                 : 0.0,
             margin: EdgeInsets.all(
-                isAssetListViewCollapsed ? suSetWidth(12.0) : 0.0),
+              isAssetListViewCollapsed ? 12.w : 0,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(
-                suSetWidth(isAssetListViewCollapsed ? 15.0 : 0.0),
+                isAssetListViewCollapsed ? 15.w : 0,
               ),
               color: currentTheme.canvasColor,
             ),
@@ -545,7 +546,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
               shrinkWrap: isAssetListViewCollapsed,
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(8.0),
+                horizontal: 8.w,
               ),
               scrollDirection: Axis.horizontal,
               itemCount: math.min(
@@ -558,8 +559,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
                 }
                 return Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(8.0),
-                    vertical: suSetWidth(16.0),
+                    horizontal: 8.w,
+                    vertical: 16.w,
                   ),
                   child: AspectRatio(
                     aspectRatio: 1.0,
@@ -571,8 +572,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
                           uploadErrorCover,
                         if (!isAssetListViewCollapsed)
                           Positioned(
-                            top: suSetWidth(6.0),
-                            right: suSetWidth(6.0),
+                            top: 6.w,
+                            right: 6.w,
                             child: _assetDeleteButton(index),
                           ),
                       ],
@@ -624,7 +625,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         bottom:
             !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
       ),
-      height: suSetHeight(60.0),
+      height: 60.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -683,7 +684,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       child: FixedAppBarWrapper(
         appBar: FixedAppBar(
           actions: <Widget>[publishButton],
-          actionsPadding: EdgeInsets.only(right: suSetWidth(20.0)),
+          actionsPadding: EdgeInsets.only(right: 20.w),
         ),
         body: Scaffold(
           backgroundColor: currentTheme.primaryColor,

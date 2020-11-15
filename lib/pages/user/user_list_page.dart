@@ -128,7 +128,7 @@ class _UserListState extends State<UserListPage> {
     if (name.length > 3) {
       name = '${name.substring(0, 3)}...';
     }
-    final TextStyle _textStyle = TextStyle(fontSize: 16.0.sp);
+    final TextStyle _textStyle = TextStyle(fontSize: 16.sp);
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
@@ -141,11 +141,11 @@ class _UserListState extends State<UserListPage> {
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 12.w).copyWith(top: 20.h),
         padding: EdgeInsets.symmetric(
-          horizontal: 20.0.w,
-          vertical: 12.0.h,
+          horizontal: 20.w,
+          vertical: 12.h,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0.w),
+          borderRadius: BorderRadius.circular(16.w),
           color: Theme.of(context).canvasColor,
         ),
         child: Row(
@@ -156,7 +156,7 @@ class _UserListState extends State<UserListPage> {
               size: 64.0,
               uid: _user['uid'].toString().toInt(),
             ),
-            SizedBox(width: 12.0.w),
+            SizedBox(width: 12.w),
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -169,31 +169,31 @@ class _UserListState extends State<UserListPage> {
                       children: <Widget>[
                         Text(
                           name,
-                          style: TextStyle(fontSize: 20.0.sp),
+                          style: TextStyle(fontSize: 20.sp),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                    Divider(height: 6.0.h),
+                    Divider(height: 6.h),
                     Row(
                       children: <Widget>[
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text('关注', style: _textStyle),
-                            Divider(height: 4.0.h),
+                            Divider(height: 4.h),
                             Text(
                               userData['idols'] as String,
                               style: _textStyle,
                             ),
                           ],
                         ),
-                        SizedBox(width: 6.0.w),
+                        SizedBox(width: 6.w),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text('粉丝', style: _textStyle),
-                            Divider(height: 4.0.h),
+                            Divider(height: 4.h),
                             Text(
                               userData['fans'] as String,
                               style: _textStyle,
@@ -239,7 +239,7 @@ class _UserListState extends State<UserListPage> {
                 : Center(
                     child: Text(
                       '暂无内容',
-                      style: TextStyle(fontSize: 20.0.sp),
+                      style: TextStyle(fontSize: 20.sp),
                     ),
                   )
             : const SpinKitWidget(),

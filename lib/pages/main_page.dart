@@ -66,7 +66,7 @@ class MainPage extends StatefulWidget {
                 color: context.themeData.canvasColor,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+                  borderRadius: BorderRadius.circular(13.w),
                 ),
                 child: SvgPicture.asset(
                   R.ASSETS_ICONS_NOTIFICATION_SVG,
@@ -118,14 +118,14 @@ class MainPage extends StatefulWidget {
           height: 56.w,
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+            borderRadius: BorderRadius.circular(13.w),
           ),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           child: Text(
             '发动态',
             style: TextStyle(
               color: adaptiveButtonColor(),
-              fontSize: suSetSp(20.0),
+              fontSize: 20.sp,
               height: 1.24,
               fontWeight: FontWeight.bold,
             ),
@@ -160,7 +160,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// Base text style for [TabBar].
   /// 顶部Tab的文字样式基类
   static TextStyle get _baseTabTextStyle => TextStyle(
-        fontSize: 23.0.sp,
+        fontSize: 23.sp,
         textBaseline: TextBaseline.alphabetic,
       );
 

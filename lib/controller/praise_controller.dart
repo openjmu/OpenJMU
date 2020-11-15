@@ -188,7 +188,7 @@ class _PraiseListState extends State<PraiseList>
       Widget _body;
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
-          padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+          padding: EdgeInsets.symmetric(vertical: 6.w),
           extendedListDelegate: const ExtendedListDelegate(),
           itemBuilder: (BuildContext context, int index) {
             if (index == _praiseList.length) {
@@ -353,7 +353,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
   Widget getPostNickname(BuildContext context, Praise praise) {
     return Text(
       praise.nickname,
-      style: TextStyle(fontSize: suSetSp(20.0)),
+      style: TextStyle(fontSize: 20.sp),
     );
   }
 
@@ -368,7 +368,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
                 padding: EdgeInsets.zero,
                 separatorBuilder: (BuildContext context, int index) => Divider(
                   color: Theme.of(context).dividerColor,
-                  height: suSetHeight(1.0),
+                  height: 1.h,
                 ),
                 extendedListDelegate: const ExtendedListDelegate(),
                 itemCount: _praises.length + 1,
@@ -385,8 +385,8 @@ class PraiseListInPostState extends State<PraiseListInPost>
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(24.0),
-                            vertical: suSetHeight(10.0),
+                            horizontal: 24.w,
+                            vertical: 10.h,
                           ),
                           child: UserAPI.getAvatar(
                             uid: _praises[index].uid,

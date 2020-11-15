@@ -89,7 +89,7 @@ class SelfPage extends StatelessWidget {
       child: Container(
         width: double.maxFinite,
         margin: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-        padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: child,
       ),
     );
@@ -105,8 +105,8 @@ class SelfPage extends StatelessWidget {
               }
             },
             child: Container(
-              width: 64.0.w,
-              height: 64.0.w,
+              width: 64.w,
+              height: 64.w,
               decoration: BoxDecoration(
                 color: _.themeData.colorScheme.surface,
                 shape: BoxShape.circle,
@@ -115,32 +115,32 @@ class SelfPage extends StatelessWidget {
                 Widget widget;
                 if (provider.isSigning) {
                   widget = Padding(
-                    padding: EdgeInsets.all(18.0.w),
+                    padding: EdgeInsets.all(18.w),
                     child: PlatformProgressIndicator(
-                      strokeWidth: 4.0.w,
+                      strokeWidth: 4.w,
                     ),
                   );
                 } else {
                   widget = Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      if (provider.hasSigned) SizedBox(height: 2.0.w),
+                      if (provider.hasSigned) SizedBox(height: 2.w),
                       SvgPicture.asset(
                         provider.hasSigned
                             ? R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG
                             : R.ASSETS_ICONS_SELF_PAGE_UNSIGNED_SVG,
                         color: currentThemeColor,
-                        width: provider.hasSigned ? 15.0.w : 24.0.w,
-                        height: provider.hasSigned ? 15.0.w : 24.0.w,
+                        width: provider.hasSigned ? 15.w : 24.w,
+                        height: provider.hasSigned ? 15.w : 24.w,
                       ),
                       if (provider.hasSigned)
                         Padding(
-                          padding: EdgeInsets.only(top: 8.0.w),
+                          padding: EdgeInsets.only(top: 8.w),
                           child: Text(
                             '${provider.signedCount}',
                             style: TextStyle(
                               color: currentThemeColor,
-                              fontSize: 16.0.sp,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                               height: 1.0,
                             ),
@@ -163,21 +163,21 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: 42.0.h,
+        height: 42.h,
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(left: 12.0.w, right: 24.0.w),
+              padding: EdgeInsets.only(left: 12.w, right: 24.w),
               child: SvgPicture.asset(
                 item['icon'] as String,
                 color: context.themeData.iconTheme.color.withOpacity(0.5),
-                width: 45.0.w,
+                width: 45.w,
               ),
             ),
             Expanded(
               child: Text(
                 item['name'] as String,
-                style: TextStyle(fontSize: 20.0.sp),
+                style: TextStyle(fontSize: 20.sp),
               ),
             ),
           ],
@@ -195,7 +195,7 @@ class SelfPage extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: 24.0.w,
+            horizontal: 24.w,
           ),
           child: Row(
             children: <Widget>[
@@ -210,12 +210,12 @@ class SelfPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 20.0.w),
+              SizedBox(width: 20.w),
               Expanded(
                 child: Text(
                   currentUser.name,
                   style: TextStyle(
-                    fontSize: 23.0.sp,
+                    fontSize: 23.sp,
                     color: adaptiveButtonColor(),
                   ),
                   maxLines: 1,
@@ -234,19 +234,19 @@ class SelfPage extends StatelessWidget {
   /// 常用应用部件栏
   Widget commonApps(BuildContext context) => Container(
         margin: EdgeInsets.symmetric(
-          horizontal: 15.0.w,
+          horizontal: 15.w,
         ),
         height: commonAppsHeight.h,
-        padding: EdgeInsets.symmetric(vertical: 12.0.h),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
         child: Consumer<WebAppsProvider>(
           builder: (BuildContext _, WebAppsProvider provider, Widget __) {
             final Set<WebApp> commonWebApps = provider.commonWebApps;
             return Container(
               padding: EdgeInsets.symmetric(
-                horizontal: 10.0.w,
+                horizontal: 10.w,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0.w),
+                borderRadius: BorderRadius.circular(20.w),
                 color: context.themeData.colorScheme.surface,
               ),
               child: Row(
@@ -264,10 +264,10 @@ class SelfPage extends StatelessWidget {
                         },
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                            padding: EdgeInsets.symmetric(vertical: 20.h),
                             child: Text(
                               '常用应用会出现在这里\n点击右上按钮打开应用中心',
-                              style: TextStyle(fontSize: 16.0.sp),
+                              style: TextStyle(fontSize: 16.sp),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -298,10 +298,10 @@ class SelfPage extends StatelessWidget {
           children: <Widget>[
             WebAppIcon(app: app, size: 72.0),
             Padding(
-              padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
+              padding: EdgeInsets.only(top: 4.sp, bottom: 8.sp),
               child: Text(
                 app.name,
-                style: TextStyle(fontSize: 16.0.sp),
+                style: TextStyle(fontSize: 16.sp),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -320,14 +320,14 @@ class SelfPage extends StatelessWidget {
         onTap: () {
           navigatorState.pushNamed(Routes.openjmuAppCenterPage);
         },
-        borderRadius: BorderRadius.circular(15.0.w),
+        borderRadius: BorderRadius.circular(15.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.all(8.0.w),
-              width: 56.0.w,
-              height: 56.0.w,
+              margin: EdgeInsets.all(8.w),
+              width: 56.w,
+              height: 56.w,
               decoration: BoxDecoration(
                 color: context.themeData.canvasColor,
                 shape: BoxShape.circle,
@@ -335,17 +335,17 @@ class SelfPage extends StatelessWidget {
               child: Center(
                 child: SvgPicture.asset(
                   R.ASSETS_ICONS_ARROW_RIGHT_SVG,
-                  width: 32.0.w,
-                  height: 32.0.w,
+                  width: 32.w,
+                  height: 32.w,
                   color: currentThemeColor,
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
+              padding: EdgeInsets.only(top: 4.sp, bottom: 8.sp),
               child: Text(
                 '全部应用',
-                style: TextStyle(fontSize: 16.0.sp),
+                style: TextStyle(fontSize: 16.sp),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
               ),
@@ -397,8 +397,8 @@ class SelfPage extends StatelessWidget {
         builder: (BuildContext _, int currentWeek, Widget __) {
           if (currentWeek != null) {
             return Container(
-              margin: EdgeInsets.only(bottom: 10.0.h),
-              padding: EdgeInsets.symmetric(vertical: 16.0.h),
+              margin: EdgeInsets.only(bottom: 10.h),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Text.rich(
                 TextSpan(
                   children: <TextSpan>[
@@ -448,7 +448,7 @@ class SelfPage extends StatelessWidget {
                       ]),
                   ],
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontSize: 18.0.sp,
+                        fontSize: 18.sp,
                       ),
                 ),
                 textAlign: TextAlign.start,
@@ -492,10 +492,10 @@ class SelfPage extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.symmetric(vertical: 12.0.w),
+                    padding: EdgeInsets.symmetric(vertical: 12.w),
                     separatorBuilder: (BuildContext _, int __) => separator(
                       context,
-                      height: 24.0.h,
+                      height: 24.h,
                     ),
                     itemCount: settingsSection.length,
                     itemBuilder: (BuildContext _, int index) =>

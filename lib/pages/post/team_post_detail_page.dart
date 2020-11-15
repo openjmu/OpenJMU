@@ -412,7 +412,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   Widget get textField => Expanded(
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
+            borderRadius: BorderRadius.circular(50.w),
             color: Theme.of(context).canvasColor.withOpacity(0.5),
           ),
           child: Row(
@@ -427,15 +427,15 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     isDense: true,
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
-                      horizontal: suSetWidth(20.0),
-                      vertical: suSetHeight(10.0),
+                      horizontal: 20.w,
+                      vertical: 10.h,
                     ),
                     prefixText: replyHint,
                     hintText: replyHint == null ? '给你一个神评的机会...' : null,
                   ),
                   cursorColor: currentThemeColor,
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontSize: suSetSp(20.0),
+                        fontSize: 20.sp,
                         textBaseline: TextBaseline.alphabetic,
                       ),
                   maxLines: null,
@@ -448,21 +448,21 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       );
 
   Widget get extendedPadButton => Container(
-        padding: EdgeInsets.only(left: suSetWidth(12.0)),
-        height: suSetHeight(46.0),
+        padding: EdgeInsets.only(left: 12.w),
+        height: 46.h,
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: canSend ? 2.0 : 0.0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
+            borderRadius: BorderRadius.circular(50.w),
           ),
-          minWidth: suSetWidth(60.0),
+          minWidth: 60.w,
           color: currentThemeColor,
           child: Center(
             child: Icon(
               Icons.add_circle_outline,
               color: adaptiveButtonColor(),
-              size: suSetWidth(28.0),
+              size: 28.w,
             ),
           ),
           onPressed: triggerExtendedPad,
@@ -470,26 +470,26 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       );
 
   Widget get sendButton => Container(
-        padding: EdgeInsets.only(left: suSetWidth(12.0)),
-        height: suSetHeight(46.0),
+        padding: EdgeInsets.only(left: 12.w),
+        height: 46.h,
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: canSend ? 2.0 : 0.0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
+            borderRadius: BorderRadius.circular(50.w),
           ),
-          minWidth: suSetWidth(60.0),
+          minWidth: 60.w,
           disabledColor: currentThemeColor.withOpacity(sending ? 1 : 0.3),
           color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
           child: Center(
             child: SizedBox.fromSize(
-              size: Size.square(suSetWidth(28.0)),
+              size: Size.square(28.w),
               child: sending
                   ? const PlatformProgressIndicator()
                   : Icon(
                       Icons.send,
                       color: adaptiveButtonColor(),
-                      size: suSetWidth(28.0),
+                      size: 28.w,
                     ),
             ),
           ),
@@ -519,21 +519,21 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
-                      padding: EdgeInsets.all(suSetWidth(14.0)),
+                      margin: EdgeInsets.only(bottom: 12.h),
+                      padding: EdgeInsets.all(14.w),
                       decoration: BoxDecoration(
                         color: extendedFeature[index]['color'] as Color,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         extendedFeature[index]['icon'] as IconData,
-                        size: suSetWidth(26.0),
+                        size: 26.w,
                         color: adaptiveButtonColor(),
                       ),
                     ),
                     Text(
                       extendedFeature[index]['name'] as String,
-                      style: TextStyle(fontSize: suSetSp(19.0)),
+                      style: TextStyle(fontSize: 19.sp),
                     ),
                   ],
                 ),
@@ -547,12 +547,12 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         behavior: HitTestBehavior.opaque,
         onTap: triggerEmoticonPad,
         child: Container(
-          margin: EdgeInsets.only(right: suSetWidth(12.0)),
+          margin: EdgeInsets.only(right: 12.w),
           child: Center(
             child: Icon(
               Icons.insert_emoticon,
               color: showEmoticonPad ? currentThemeColor : null,
-              size: suSetWidth(30.0),
+              size: 30.w,
             ),
           ),
         ),
@@ -604,8 +604,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                           ),
                           Divider(
                             color: Theme.of(context).canvasColor,
-                            height: suSetHeight(10.0),
-                            thickness: suSetHeight(10.0),
+                            height: 10.h,
+                            thickness: 10.h,
                           ),
                         ],
                       ),
@@ -647,7 +647,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                 break;
                             }
                             return Padding(
-                              padding: EdgeInsets.all(suSetSp(4.0)),
+                              padding: EdgeInsets.all(4.w),
                               child: item,
                             );
                           },
@@ -657,14 +657,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     else
                       SliverToBoxAdapter(
                         child: SizedBox(
-                          height: suSetHeight(300.0),
+                          height: 300.h,
                           child: const Center(child: Text('Nothing here.')),
                         ),
                       )
                   else
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: suSetHeight(300.0),
+                        height: 300.h,
                         child: const Center(child: SpinKitWidget()),
                       ),
                     ),
@@ -676,13 +676,13 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.all(suSetWidth(16.0)),
+                padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
                   boxShadow: <BoxShadow>[
                     BoxShadow(
                       color: Theme.of(context).dividerColor.withOpacity(0.03),
-                      offset: Offset(0, -suSetHeight(2.0)),
-                      blurRadius: suSetHeight(2.0),
+                      offset: Offset(0, -2.h),
+                      blurRadius: 2.h,
                     ),
                   ],
                   color: Theme.of(context).primaryColor,

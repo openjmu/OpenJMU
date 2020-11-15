@@ -142,30 +142,30 @@ class MentionText extends SpecialText {
         deleteAll: true,
         start: start,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+          margin: EdgeInsets.symmetric(horizontal: 6.w),
           padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(6.0),
-            vertical: suSetHeight(2.0),
+            horizontal: 6.w,
+            vertical: 2.h,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+            borderRadius: BorderRadius.circular(5.w),
             color: const Color(0xff363636),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(right: suSetWidth(4.0)),
+                padding: EdgeInsets.only(right: 4.w),
                 child: Icon(
                   Icons.supervised_user_circle,
-                  size: suSetWidth(20.0),
+                  size: 20.w,
                   color: Colors.white,
                 ),
               ),
               Text(
                 mentionText.substring(1, mentionText.length),
                 style: textStyle?.copyWith(
-                  fontSize: suSetSp(17.0),
+                  fontSize: 17.sp,
                   color: Colors.white,
                 ),
               ),
@@ -220,19 +220,19 @@ class PoundText extends SpecialText {
         deleteAll: false,
         start: start,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+          margin: EdgeInsets.symmetric(horizontal: 6.w),
           padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(6.0),
-            vertical: suSetHeight(2.0),
+            horizontal: 6.w,
+            vertical: 2.h,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+            borderRadius: BorderRadius.circular(5.w),
             color: Colors.grey[200],
           ),
           child: Text(
             poundText,
             style: textStyle?.copyWith(
-              fontSize: suSetSp(17.0),
+              fontSize: 17.sp,
               color: Colors.black,
             ),
           ),
@@ -285,9 +285,9 @@ class EmoticonText extends SpecialText {
           start: start,
           fit: BoxFit.fill,
           margin: EdgeInsets.only(
-            left: suSetWidth(1.0),
-            bottom: suSetHeight(2.0),
-            right: suSetWidth(1.0),
+            left: 1.w,
+            bottom: 2.h,
+            right: 1.w,
           ),
         );
       } else {
@@ -296,9 +296,9 @@ class EmoticonText extends SpecialText {
           imageWidth: size,
           imageHeight: size,
           margin: EdgeInsets.only(
-            left: suSetWidth(1.0),
-            bottom: suSetHeight(2.0),
-            right: suSetWidth(1.0),
+            left: 1.w,
+            bottom: 2.h,
+            right: 1.w,
           ),
         );
       }

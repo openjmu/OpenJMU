@@ -90,48 +90,49 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Widget _header(BuildContext context, TeamPost post) => Container(
-        height: suSetHeight(70.0),
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+        height: 70.w,
+        padding: EdgeInsets.symmetric(vertical: 6.w),
         child: Row(
           children: <Widget>[
             UserAPI.getAvatar(uid: post.uid),
-            SizedBox(width: suSetWidth(16.0)),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(
-                      post.nickname ?? post.uid.toString(),
-                      style: TextStyle(
-                        fontSize: 20.0.sp,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    if (Constants.developerList.contains(post.uid))
-                      Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
-                        child: DeveloperTag(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(2.0),
-                          ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        post.nickname ?? post.uid.toString(),
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
-                  ],
-                ),
-                _postTime(context, post),
-              ],
+                      if (Constants.developerList.contains(post.uid))
+                        Container(
+                          margin: EdgeInsets.only(left: 14.w),
+                          child: DeveloperTag(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 2.h,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  _postTime(context, post),
+                ],
+              ),
             ),
-            const Spacer(),
             IconButton(
               alignment: Alignment.topRight,
               icon: Icon(
                 post.uid == UserAPI.currentUser.uid
                     ? Icons.delete_outline
                     : Icons.keyboard_arrow_down,
-                size: suSetWidth(30.0),
+                size: 30.w,
                 color: Theme.of(context).dividerColor,
               ),
               onPressed: post.uid == UserAPI.currentUser.uid
@@ -146,17 +147,17 @@ class TeamPostPreviewCard extends StatelessWidget {
     return Text(
       TeamPostAPI.timeConverter(post),
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.0.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget _content(TeamPost post) => Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
         child: ExtendedText(
           post.content ?? '',
-          style: TextStyle(fontSize: 19.0.sp),
+          style: TextStyle(fontSize: 19.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overflowWidget: TextOverflowWidget(
@@ -172,14 +173,14 @@ class TeamPostPreviewCard extends StatelessWidget {
   Widget _postInfo(BuildContext context, TeamPostProvider provider) =>
       Container(
         margin: EdgeInsets.symmetric(
-          vertical: suSetHeight(12.0),
+          vertical: 12.h,
         ),
         padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(16.0),
-          vertical: suSetHeight(12.0),
+          horizontal: 16.w,
+          vertical: 12.h,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
           color: Theme.of(context).canvasColor.withOpacity(0.5),
         ),
         child: ListView.builder(
@@ -191,24 +192,24 @@ class TeamPostPreviewCard extends StatelessWidget {
           itemBuilder: (_, int index) {
             if (index == provider.post.postInfo.length) {
               return Container(
-                margin: EdgeInsets.only(top: suSetHeight(12.0)),
+                margin: EdgeInsets.only(top: 12.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
                       Icons.expand_more,
-                      size: suSetWidth(20.0),
+                      size: 20.w,
                       color: Theme.of(context).textTheme.caption.color,
                     ),
                     Text(
                       '查看更多回复',
                       style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: suSetSp(17.0),
+                            fontSize: 17.sp,
                           ),
                     ),
                     Icon(
                       Icons.expand_more,
-                      size: suSetWidth(20.0),
+                      size: 20.w,
                       color: Theme.of(context).textTheme.caption.color,
                     ),
                   ],
@@ -219,7 +220,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 provider.post.postInfo[index].cast<String, dynamic>();
             return Padding(
               padding: EdgeInsets.symmetric(
-                vertical: suSetHeight(4.0),
+                vertical: 4.h,
               ),
               child: ExtendedText(
                 _post['content'] as String ?? '',
@@ -244,20 +245,20 @@ class TeamPostPreviewCard extends StatelessWidget {
                       WidgetSpan(
                         alignment: ui.PlaceholderAlignment.middle,
                         child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 6.0.w),
+                          margin: EdgeInsets.symmetric(horizontal: 6.w),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 5.0.w,
+                            horizontal: 5.w,
                             vertical: 0.5.h,
                           ),
                           decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.circular(suSetWidth(5.0)),
+                                BorderRadius.circular(5.w),
                             color: currentThemeColor,
                           ),
                           child: Text(
                             '楼主',
                             style: TextStyle(
-                              fontSize: 13.0.sp,
+                              fontSize: 13.sp,
                               color: adaptiveButtonColor(),
                               fontWeight: FontWeight.bold,
                             ),
@@ -271,7 +272,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ],
                 ),
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 17.0.sp,
+                      fontSize: 17.sp,
                     ),
                 onSpecialTextTap: specialTextTapRecognizer,
                 maxLines: 3,
@@ -306,8 +307,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                 loader = ScaledImage(
                   image: info.image,
                   length: post.pics.length,
-                  num200: suSetSp(200),
-                  num400: suSetSp(400),
+                  num200: 200.sp,
+                  num400: 400.sp,
                   provider: provider,
                 );
               }
@@ -358,22 +359,22 @@ class TeamPostPreviewCard extends StatelessWidget {
         padding: EdgeInsets.zero,
         shrinkWrap: true,
         primary: false,
-        mainAxisSpacing: suSetSp(10.0),
+        mainAxisSpacing: 10.sp,
         crossAxisCount: 3,
-        crossAxisSpacing: suSetSp(10.0),
+        crossAxisSpacing: 10.sp,
         children: imagesWidget,
       );
     }
     _image = Padding(
-      padding: EdgeInsets.only(top: suSetHeight(6.0)),
+      padding: EdgeInsets.only(top: 6.h),
       child: _image,
     );
     return _image;
   }
 
   Widget _actions(BuildContext context, TeamPostProvider provider) => Container(
-        margin: EdgeInsets.only(top: suSetHeight(8.0)),
-        height: suSetHeight(44.0),
+        margin: EdgeInsets.only(top: 8.h),
+        height: 44.h,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -385,7 +386,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   color: currentIsDark
                       ? actionIconColorDark
                       : actionIconColorLight,
-                  width: suSetWidth(26.0),
+                  width: 26.w,
                 ),
                 label: Text(
                   provider.post.repliesCount == 0
@@ -395,7 +396,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     color: currentIsDark
                         ? actionTextColorDark
                         : actionTextColorLight,
-                    fontSize: suSetSp(18.0),
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -405,7 +406,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             ),
             Expanded(
               child: LikeButton(
-                size: suSetWidth(26.0),
+                size: 26.w,
                 bubblesColor: BubblesColor(
                   dotPrimaryColor: currentThemeColor,
                   dotSecondaryColor: currentThemeColor,
@@ -420,7 +421,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                         : currentIsDark
                             ? actionTextColorDark
                             : actionTextColorLight,
-                    fontSize: suSetSp(18.0),
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -432,14 +433,14 @@ class TeamPostPreviewCard extends StatelessWidget {
                       : currentIsDark
                           ? actionIconColorDark
                           : actionIconColorLight,
-                  width: suSetWidth(26.0),
+                  width: 26.w,
                 ),
                 likeCount: provider.post.isLike
                     ? moreThanOne(provider.post.praisesCount)
                     : moreThanZero(provider.post.praisesCount),
                 likeCountAnimationType: LikeCountAnimationType.none,
                 likeCountPadding:
-                    EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
+                    EdgeInsets.symmetric(horizontal: 8.w),
                 onTap: (bool isLiked) async =>
                     onLikeButtonTap(isLiked, provider),
               ),
@@ -485,15 +486,15 @@ class TeamPostPreviewCard extends StatelessWidget {
               },
               child: Container(
                 margin: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(12.0),
-                  vertical: suSetHeight(6.0),
+                  horizontal: 16.w,
+                  vertical: 10.w,
                 ),
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(20.0),
-                  vertical: suSetHeight(4.0),
+                  horizontal: 24.w,
+                  vertical: 8.w,
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                  borderRadius: BorderRadius.circular(10.w),
                   color: Theme.of(context).cardColor,
                 ),
                 child: Column(

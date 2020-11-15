@@ -73,7 +73,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         focusNode: _focusNode,
         controller: _forwardController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(suSetWidth(16.0)),
+          contentPadding: EdgeInsets.all(16.w),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: currentThemeColor),
           ),
@@ -82,15 +82,15 @@ class ForwardPositionedState extends State<ForwardPositioned> {
           ),
           suffixIcon: _image != null
               ? Container(
-                  margin: EdgeInsets.only(right: suSetWidth(16.0)),
-                  width: suSetWidth(70.0),
+                  margin: EdgeInsets.only(right: 16.w),
+                  width: 70.w,
                   child: Image.file(_image, fit: BoxFit.cover),
                 )
               : null,
         ),
         enabled: !_forwarding,
         style: Theme.of(context).textTheme.bodyText2.copyWith(
-              fontSize: suSetSp(20.0),
+              fontSize: 20.sp,
               textBaseline: TextBaseline.alphabetic,
             ),
         cursorColor: currentThemeColor,
@@ -217,7 +217,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   Widget get toolbar => SizedBox(
-        height: suSetHeight(40.0),
+        height: 40.h,
         child: Row(
           children: <Widget>[
             RoundedCheckbox(
@@ -233,7 +233,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             Text(
               '同时评论到微博',
               style: TextStyle(
-                fontSize: suSetSp(20.0),
+                fontSize: 20.sp,
               ),
             ),
             const Spacer(),
@@ -242,11 +242,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
 //              onTap: _addImage,
 //              child: Padding(
 //                padding: EdgeInsets.symmetric(
-//                  horizontal: suSetWidth(6.0),
+//                  horizontal: 6.w,
 //                ),
 //                child: Icon(
 //                  Icons.add_photo_alternate,
-//                  size: suSetWidth(32.0),
+//                  size: 32.w,
 //                ),
 //              ),
 //            ),
@@ -257,11 +257,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(6.0),
+                  horizontal: 6.sp,
                 ),
                 child: Icon(
                   Icons.alternate_email,
-                  size: suSetWidth(32.0),
+                  size: 32.w,
                 ),
               ),
             ),
@@ -274,11 +274,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(6.0),
+                  horizontal: 6.w,
                 ),
                 child: Icon(
                   Icons.sentiment_very_satisfied,
-                  size: suSetWidth(32.0),
+                  size: 32.w,
                   color: emoticonPadActive
                       ? currentThemeColor
                       : Theme.of(context).iconTheme.color,
@@ -290,11 +290,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 behavior: HitTestBehavior.opaque,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(6.0),
+                    horizontal: 6.w,
                   ),
                   child: Icon(
                     Icons.send,
-                    size: suSetWidth(32.0),
+                    size: 32.w,
                     color: currentThemeColor,
                   ),
                 ),
@@ -303,11 +303,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             else
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(14.0),
+                  horizontal: 14.w,
                 ),
                 child: SizedBox(
-                  width: suSetWidth(12.0),
-                  height: suSetWidth(12.0),
+                  width: 12.w,
+                  height: 12.w,
                   child: const PlatformProgressIndicator(strokeWidth: 2.0),
                 ),
               ),
@@ -343,7 +343,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                   : 0.0,
             ),
             child: Padding(
-              padding: EdgeInsets.all(suSetWidth(12.0)),
+              padding: EdgeInsets.all(12.w),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,

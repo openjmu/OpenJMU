@@ -55,12 +55,12 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   Widget _header(BuildContext context, int index, TeamReplyItem item) {
     return Container(
-      height: suSetHeight(80.0),
-      padding: EdgeInsets.symmetric(vertical: suSetHeight(8.0)),
+      height: 80.h,
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         children: <Widget>[
           UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
-          SizedBox(width: suSetWidth(16.0)),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -70,15 +70,15 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(fontSize: suSetSp(22.0)),
+                      style: TextStyle(fontSize: 22.sp),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
+                        margin: EdgeInsets.only(left: 14.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(4.0),
+                            horizontal: 8.w,
+                            vertical: 4.h,
                           ),
                         ),
                       ),
@@ -89,7 +89,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                 ),
                 Text(
                   replyList[index].scope['name'] as String,
-                  style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
+                  style: TextStyle(color: Colors.blue, fontSize: 17.sp),
                 ),
               ],
             ),
@@ -115,7 +115,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     return Text(
       time,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 18.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -123,11 +123,11 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   Widget _content(TeamReplyItem item) => Padding(
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(6.0),
+          vertical: 6.h,
         ),
         child: ExtendedText(
           item.post?.content ?? item.comment?.content ?? '',
-          style: TextStyle(fontSize: suSetSp(21.0)),
+          style: TextStyle(fontSize: 21.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overflowWidget: TextOverflowWidget(
@@ -142,15 +142,15 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   Widget _rootContent(TeamReplyItem item) => Container(
         width: double.maxFinite,
-        margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
-        padding: EdgeInsets.all(suSetWidth(8.0)),
+        margin: EdgeInsets.symmetric(vertical: 6.h),
+        padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.w),
           color: Theme.of(context).canvasColor,
         ),
         child: ExtendedText(
           item.toPost.content,
-          style: TextStyle(fontSize: suSetSp(20.0)),
+          style: TextStyle(fontSize: 20.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -199,15 +199,15 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
           },
           child: Container(
             margin: EdgeInsets.symmetric(
-              horizontal: suSetWidth(12.0),
-              vertical: suSetHeight(6.0),
+              horizontal: 12.w,
+              vertical: 6.h,
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(24.0),
-              vertical: suSetHeight(8.0),
+              horizontal: 24.w,
+              vertical: 8.h,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+              borderRadius: BorderRadius.circular(10.w),
               color: Theme.of(context).cardColor,
             ),
             child: Column(
@@ -241,7 +241,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                     '暂无内容',
                     style: TextStyle(
                       color: currentThemeColor,
-                      fontSize: suSetSp(24.0),
+                      fontSize: 24.sp,
                     ),
                   ),
                 )

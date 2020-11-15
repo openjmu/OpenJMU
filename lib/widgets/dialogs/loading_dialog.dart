@@ -128,25 +128,25 @@ class LoadingDialogState extends State<LoadingDialog> {
     }
     Widget child = Center(
       child: SizedBox.fromSize(
-        size: Size.square(suSetWidth(180.0)),
+        size: Size.square(180.w),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
-            borderRadius: BorderRadius.circular(suSetWidth(8.0)),
+            borderRadius: BorderRadius.circular(8.w),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox.fromSize(
-                size: Size.square(suSetWidth(50.0)),
+                size: Size.square(50.w),
                 child: Center(child: _icon),
               ),
               Container(
-                margin: EdgeInsets.only(top: suSetHeight(40.0)),
+                margin: EdgeInsets.only(top: 40.h),
                 child: Text(
                   _text,
-                  style: TextStyle(fontSize: suSetSp(16.0)),
+                  style: TextStyle(fontSize: 16.sp),
                 ),
               ),
             ],
@@ -193,7 +193,7 @@ class LoadingDialogController {
         dialogState?.updateContent(
           type: 'success',
           icon: Icon(Icons.check_circle,
-              color: Colors.green, size: suSetWidth(60.0)),
+              color: Colors.green, size: 60.w),
           text: text,
           duration: duration,
           customPop: customPop,
@@ -205,7 +205,7 @@ class LoadingDialogController {
           icon: RotationTransition(
             turns: const AlwaysStoppedAnimation<double>(45 / 360),
             child: Icon(Icons.add_circle,
-                color: Colors.redAccent, size: suSetWidth(60.0)),
+                color: Colors.redAccent, size: 60.w),
           ),
           text: text,
           duration: duration,

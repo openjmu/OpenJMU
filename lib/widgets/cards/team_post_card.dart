@@ -46,14 +46,14 @@ class _TeamPostCardState extends State<TeamPostCard> {
   }
 
   Widget _header(BuildContext context) => Container(
-        height: suSetHeight(64.0),
+        height: 64.h,
         margin: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
+          vertical: 4.h,
         ),
         child: Row(
           children: <Widget>[
             UserAPI.getAvatar(uid: post.uid),
-            SizedBox(width: suSetWidth(16.0)),
+            SizedBox(width: 16.w),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,17 +63,17 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     Text(
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(22.0),
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (Constants.developerList.contains(post.uid))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
+                        margin: EdgeInsets.only(left: 14.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(4.0),
+                            horizontal: 8.w,
+                            vertical: 4.h,
                           ),
                         ),
                       ),
@@ -84,14 +84,14 @@ class _TeamPostCardState extends State<TeamPostCard> {
             ),
             const Spacer(),
             SizedBox.fromSize(
-              size: Size.square(suSetWidth(50.0)),
+              size: Size.square(50.w),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 icon: Icon(
                   Icons.reply,
                   color: Theme.of(context).dividerColor,
                 ),
-                iconSize: suSetHeight(36.0),
+                iconSize: 36.h,
                 onPressed: widget.detailPageState.setReplyToTop,
               ),
             ),
@@ -103,17 +103,17 @@ class _TeamPostCardState extends State<TeamPostCard> {
     return Text(
       TeamPostAPI.timeConverter(post),
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 18.sp,
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget get _content => Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
         child: ExtendedText(
           post.article ?? post.content ?? '',
-          style: TextStyle(fontSize: suSetSp(21.0)),
+          style: TextStyle(fontSize: 21.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
@@ -142,8 +142,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
                 loader = ScaledImage(
                   image: info.image,
                   length: post.pics.length,
-                  num200: suSetWidth(200),
-                  num400: suSetWidth(400),
+                  num200: 200.w,
+                  num400: 400.w,
                 );
               }
               break;
@@ -193,15 +193,15 @@ class _TeamPostCardState extends State<TeamPostCard> {
         padding: EdgeInsets.zero,
         shrinkWrap: true,
         primary: false,
-        mainAxisSpacing: suSetSp(10.0),
+        mainAxisSpacing: 10.sp,
         crossAxisCount: 3,
-        crossAxisSpacing: suSetSp(10.0),
+        crossAxisSpacing: 10.sp,
         children: imagesWidget,
       );
     }
     _image = Padding(
       padding: EdgeInsets.only(
-        top: suSetHeight(6.0),
+        top: 6.h,
       ),
       child: _image,
     );
@@ -212,9 +212,9 @@ class _TeamPostCardState extends State<TeamPostCard> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(top: suSetHeight(10.0)),
-            padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
-            height: suSetHeight(90.0),
+            margin: EdgeInsets.only(top: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            height: 90.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
               color: Theme.of(context).canvasColor,
@@ -223,13 +223,13 @@ class _TeamPostCardState extends State<TeamPostCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: suSetHeight(40.0),
+                  height: 40.h,
                   child: ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     separatorBuilder: (_, __) => SizedBox(
-                      width: suSetWidth(10.0),
+                      width: 10.w,
                     ),
                     itemCount: math.min(post.praisor.length, 9),
                     itemBuilder: (_, int index) => UnconstrainedBox(
@@ -241,7 +241,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: suSetHeight(10.0)),
+                  padding: EdgeInsets.only(top: 10.h),
                   child: Text(
                     '${<String>[
                       ...post.praisor
@@ -253,7 +253,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     '${post.praisesCount > 3 ? '等${post.praisesCount}人' : ''}'
                     '觉得很赞',
                     style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: suSetSp(14.0),
+                          fontSize: 14.sp,
                         ),
                   ),
                 ),
@@ -287,15 +287,15 @@ class _TeamPostCardState extends State<TeamPostCard> {
       children: <Widget>[
         Container(
           margin: EdgeInsets.symmetric(
-            horizontal: suSetWidth(12.0),
-            vertical: suSetHeight(6.0),
+            horizontal: 16.w,
+            vertical: 10.w,
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(24.0),
-            vertical: suSetHeight(8.0),
+            horizontal: 24.w,
+            vertical: 8.w,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+            borderRadius: BorderRadius.circular(10.w),
             color: Theme.of(context).cardColor,
           ),
           child: Column(

@@ -190,13 +190,13 @@ class SettingsProvider extends ChangeNotifier {
 //        child: Material(
 //          type: MaterialType.transparency,
 //          child: Padding(
-//            padding: EdgeInsets.symmetric(vertical: 20.0.h),
+//            padding: EdgeInsets.symmetric(vertical: 20.h),
 //            child: Column(
 //              mainAxisSize: MainAxisSize.min,
 //              crossAxisAlignment: CrossAxisAlignment.start,
 //              children: <Widget>[
 //                Text('检测到您的云设置与云端不匹配，请选择保留本机或云端设置：'),
-//                SizedBox(height: 10.0.h),
+//                SizedBox(height: 10.h),
 //                Row(
 //                  children: <Widget>[
 //                    syncSettingWidget(currentModel),
@@ -221,7 +221,7 @@ class SettingsProvider extends ChangeNotifier {
 //      child: InkWell(
 //        splashFactory: InkSplash.splashFactory,
 //        splashColor: currentTheme.canvasColor,
-//        borderRadius: BorderRadius.circular(20.0.w),
+//        borderRadius: BorderRadius.circular(20.w),
 //        onTap: () {
 //          navigatorState.pop();
 //          if (isFromCloud) {
@@ -231,27 +231,27 @@ class SettingsProvider extends ChangeNotifier {
 //          }
 //        },
 //        child: Padding(
-//          padding: EdgeInsets.symmetric(vertical: 8.0.h),
+//          padding: EdgeInsets.symmetric(vertical: 8.h),
 //          child: Column(
 //            mainAxisSize: MainAxisSize.min,
 //            children: <Widget>[
 //              Icon(
 //                isFromCloud ? Icons.cloud_download : Icons.phonelink_setup,
-//                size: 72.0.w,
+//                size: 72.w,
 //              ),
 //              Container(
-//                margin: EdgeInsets.symmetric(vertical: 6.0.h),
+//                margin: EdgeInsets.symmetric(vertical: 6.h),
 //                child: Text(
 //                  isFromCloud ? '云端' : '本机',
 //                  style: currentTheme.textTheme.bodyText2.copyWith(
-//                    fontSize: 18.0.sp,
+//                    fontSize: 18.sp,
 //                  ),
 //                ),
 //              ),
 //              Text(
 //                DateFormat('MM-dd HH:mm').format(model.lastModified),
 //                style: currentTheme.textTheme.caption.copyWith(
-//                  fontSize: 14.0.sp,
+//                  fontSize: 14.sp,
 //                ),
 //              ),
 //            ],
