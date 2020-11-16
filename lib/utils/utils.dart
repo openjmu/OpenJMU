@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:permission_handler/permission_handler.dart';
