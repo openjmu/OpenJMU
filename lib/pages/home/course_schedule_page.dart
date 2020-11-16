@@ -751,50 +751,48 @@ class CourseWidget extends StatelessWidget {
   }
 
   Widget courseContent(BuildContext context, Course course) {
-    return SizedBox.expand(
-      child: () {
-        if (course != null) {
-          return Text.rich(
+    Widget child;
+    if (course != null) {
+      child = Text.rich(
+        TextSpan(
+          children: <InlineSpan>[
             TextSpan(
-              children: <InlineSpan>[
-                TextSpan(
-                  text: course.name.substring(
-                    0,
-                    math.min(10, course.name.length),
-                  ),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                if (course.name.length > 10) const TextSpan(text: '...'),
-                if (!course.isCustom)
-                  TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
-                if (course.location != null)
-                  TextSpan(text: '\n📍${course.location}'),
-              ],
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    color: !CourseAPI.inCurrentWeek(course,
-                                currentWeek: currentWeek) &&
-                            !isOutOfTerm
-                        ? Colors.grey
-                        : Colors.black,
-                    fontSize: 18.sp,
-                  ),
+              text: course.name.substring(
+                0,
+                math.min(10, course.name.length),
+              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            overflow: TextOverflow.fade,
-          );
-        } else {
-          Icon(
-            Icons.add,
-            color: Theme.of(context)
-                .iconTheme
-                .color
-                .withOpacity(0.15)
-                .withRed(180)
-                .withBlue(180)
-                .withGreen(180),
-          );
-        }
-      }(),
-    );
+            if (course.name.length > 10) const TextSpan(text: '...'),
+            if (!course.isCustom)
+              TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
+            if (course.location != null)
+              TextSpan(text: '\n📍${course.location}'),
+          ],
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+            color: !CourseAPI.inCurrentWeek(course,
+                currentWeek: currentWeek) &&
+                !isOutOfTerm
+                ? Colors.grey
+                : Colors.black,
+            fontSize: 18.sp,
+          ),
+        ),
+        overflow: TextOverflow.fade,
+      );
+    } else {
+      child = Icon(
+        Icons.add,
+        color: Theme.of(context)
+            .iconTheme
+            .color
+            .withOpacity(0.15)
+            .withRed(180)
+            .withBlue(180)
+            .withGreen(180),
+      );
+    }
+    return SizedBox.expand(child: child);
   }
 
   @override
@@ -901,7 +899,7 @@ class _CourseListDialogState extends State<_CourseListDialog> {
 
   Widget get coursesPage {
     return PageView.builder(
-      controller: PageController(viewportFraction: 0.7),
+      controller: PageController(viewportFraction: 0.6),
       physics: const BouncingScrollPhysics(),
       itemCount: widget.courseList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -1259,7 +1257,6 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
                                 child: Text(
                                   course.name,
                                   style: TextStyle(
-                                    color: Colors.black,
                                     fontSize: 22.sp,
                                     fontWeight: FontWeight.bold,
                                     height: 1.5,
