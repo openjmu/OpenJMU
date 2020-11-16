@@ -202,15 +202,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostImages(BuildContext context, Post post) {
-    return Padding(
-      padding: (post.pics?.length ?? 0) > 0
-          ? EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 4.h,
-            )
-          : EdgeInsets.zero,
-      child: getImages(context, post.pics),
-    );
+    return getImages(context, post.pics);
   }
 
   Widget getRootPostImages(
@@ -689,7 +681,6 @@ class _PostCardState extends State<PostCard> {
                         Container(
                           margin: EdgeInsets.only(top: 6.h),
                           height: 44.h,
-                          padding: EdgeInsets.only(left: 20.w),
                           child: OverflowBox(
                             child: Row(
                               children: <Widget>[
