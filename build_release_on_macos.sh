@@ -6,6 +6,9 @@ curtime=$(date +%Y-%m-%d\ %H-%M-%S)
 # Clean first
 flutter clean
 
+# Then run flutter pub get to generate new configuration.
+flutter pub get
+
 # Build iOS Runner.app
 flutter build ios --release
 cd build/ios/iphoneos/Runner.app/Frameworks
