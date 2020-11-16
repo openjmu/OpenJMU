@@ -83,25 +83,27 @@ class _PostCardState extends State<PostCard> {
       });
   }
 
-  Widget getPostNickname(BuildContext context, Post post) => Row(
-        children: <Widget>[
-          Text(
-            '${post.nickname ?? post.uid}',
-            style: TextStyle(fontSize: 20.sp),
-            textAlign: TextAlign.left,
-          ),
-          if (Constants.developerList.contains(post.uid))
-            Container(
-              margin: EdgeInsets.only(left: 14.w),
-              child: DeveloperTag(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8.w,
-                  vertical: 4.h,
-                ),
+  Widget getPostNickname(BuildContext context, Post post) {
+    return Row(
+      children: <Widget>[
+        Text(
+          '${post.nickname ?? post.uid}',
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
+        ),
+        if (Constants.developerList.contains(post.uid))
+          Container(
+            margin: EdgeInsets.only(left: 14.w),
+            child: DeveloperTag(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.w,
+                vertical: 4.h,
               ),
             ),
-        ],
-      );
+          ),
+      ],
+    );
+  }
 
   Widget getPostInfo(Post post) {
     return Text(
@@ -113,19 +115,21 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget getPostContent(BuildContext context, Post post) => Container(
-        width: Screens.width,
-        margin: EdgeInsets.symmetric(vertical: 4.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            getExtendedText(post.content),
-            if (post.rootTopic != null) getRootPost(context, post.rootTopic),
-          ],
-        ),
-      );
+  Widget getPostContent(BuildContext context, Post post) {
+    return Container(
+      width: Screens.width,
+      margin: EdgeInsets.symmetric(vertical: 4.h),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          getExtendedText(post.content),
+          if (post.rootTopic != null) getRootPost(context, post.rootTopic),
+        ],
+      ),
+    );
+  }
 
   Widget getRootPost(BuildContext context, Map<String, dynamic> rootTopic) {
     if (rootTopic['topic'] is List && rootTopic['exists'] == 0) {
@@ -510,15 +514,17 @@ class _PostCardState extends State<PostCard> {
     return completer.future;
   }
 
-  Widget get deleteButton => IconButton(
-        alignment: Alignment.topRight,
-        icon: Icon(
-          Icons.delete_outline,
-          color: Theme.of(context).dividerColor,
-          size: 30.w,
-        ),
-        onPressed: () => confirmDelete(context),
-      );
+  Widget get deleteButton {
+    return IconButton(
+      alignment: Alignment.topRight,
+      icon: Icon(
+        Icons.delete_outline,
+        color: Theme.of(context).dividerColor,
+        size: 30.w,
+      ),
+      onPressed: () => confirmDelete(context),
+    );
+  }
 
   Widget get postActionButton => IconButton(
         alignment: Alignment.topRight,
@@ -654,20 +660,15 @@ class _PostCardState extends State<PostCard> {
                               UserAPI.getAvatar(uid: widget.post.uid),
                               SizedBox(width: 16.w),
                               Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    // horizontal: contentPadding.w,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      getPostNickname(context, post),
-                                      getPostInfo(post),
-                                    ],
-                                  ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    getPostNickname(context, post),
+                                    getPostInfo(post),
+                                  ],
                                 ),
                               ),
                               if (!widget.isDetail)

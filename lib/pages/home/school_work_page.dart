@@ -94,7 +94,11 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(13.w),
       ),
-      child: Icon(Icons.refresh, size: 32.w),
+      child: SvgPicture.asset(
+        R.ASSETS_ICONS_REFRESH_SVG,
+        color: context.themeData.iconTheme.color,
+        width: 24.w,
+      ),
       onPressed: () {
         Instances.eventBus.fire(AppCenterRefreshEvent(currentIndex));
       },

@@ -89,59 +89,61 @@ class TeamPostPreviewCard extends StatelessWidget {
     }
   }
 
-  Widget _header(BuildContext context, TeamPost post) => Container(
-        height: 70.w,
-        padding: EdgeInsets.symmetric(vertical: 6.w),
-        child: Row(
-          children: <Widget>[
-            UserAPI.getAvatar(uid: post.uid),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        post.nickname ?? post.uid.toString(),
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.normal,
-                        ),
+  Widget _header(BuildContext context, TeamPost post) {
+    return Container(
+      height: 70.w,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
+      child: Row(
+        children: <Widget>[
+          UserAPI.getAvatar(uid: post.uid),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(
+                      post.nickname ?? post.uid.toString(),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
                       ),
-                      if (Constants.developerList.contains(post.uid))
-                        Container(
-                          margin: EdgeInsets.only(left: 14.w),
-                          child: DeveloperTag(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 2.h,
-                            ),
+                    ),
+                    if (Constants.developerList.contains(post.uid))
+                      Container(
+                        margin: EdgeInsets.only(left: 14.w),
+                        child: DeveloperTag(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 2.h,
                           ),
                         ),
-                    ],
-                  ),
-                  _postTime(context, post),
-                ],
-              ),
+                      ),
+                  ],
+                ),
+                _postTime(context, post),
+              ],
             ),
-            IconButton(
-              alignment: Alignment.topRight,
-              icon: Icon(
-                post.uid == UserAPI.currentUser.uid
-                    ? Icons.delete_outline
-                    : Icons.keyboard_arrow_down,
-                size: 30.w,
-                color: Theme.of(context).dividerColor,
-              ),
-              onPressed: post.uid == UserAPI.currentUser.uid
-                  ? () => confirmDelete(context)
-                  : () => confirmAction(context),
+          ),
+          IconButton(
+            alignment: Alignment.topRight,
+            icon: Icon(
+              post.uid == UserAPI.currentUser.uid
+                  ? Icons.delete_outline
+                  : Icons.keyboard_arrow_down,
+              size: 30.w,
+              color: Theme.of(context).dividerColor,
             ),
-          ],
-        ),
-      );
+            onPressed: post.uid == UserAPI.currentUser.uid
+                ? () => confirmDelete(context)
+                : () => confirmAction(context),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
@@ -251,8 +253,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                             vertical: 0.5.h,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(5.w),
+                            borderRadius: BorderRadius.circular(5.w),
                             color: currentThemeColor,
                           ),
                           child: Text(
@@ -439,8 +440,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     ? moreThanOne(provider.post.praisesCount)
                     : moreThanZero(provider.post.praisesCount),
                 likeCountAnimationType: LikeCountAnimationType.none,
-                likeCountPadding:
-                    EdgeInsets.symmetric(horizontal: 8.w),
+                likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
                 onTap: (bool isLiked) async =>
                     onLikeButtonTap(isLiked, provider),
               ),

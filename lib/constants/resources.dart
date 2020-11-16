@@ -496,6 +496,9 @@ class R {
   static const String ASSETS_ICONS_NOTIFICATION_SVG =
       'assets/icons/notification.svg';
 
+  static const String ASSETS_ICONS_REFRESH_SVG =
+      'assets/icons/refresh.svg';
+
   static const String ASSETS_ICONS_TEAM_BADGE_SVG =
       'assets/icons/team-badge.svg';
 
@@ -604,6 +607,9 @@ class R {
 
   static const String IMAGES_LOGO_1024_ROUNDED_PNG =
       'images/logo_1024_rounded.png';
+
+  static const String IMAGES_OPENJMU_LOGO_TEXT_SVG =
+      'images/openjmu_logo_text.svg';
 
   static const String IMAGES_PLACEHOLDER_NO_MESSAGE_SVG =
       'images/placeholder/no_message.svg';

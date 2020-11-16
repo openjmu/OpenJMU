@@ -342,20 +342,15 @@ class _HiddenLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PositionedDirectional(
+    return PositionedDirectional(
       top: 0.0,
       start: 0.0,
       end: 0.0,
       height: 30.0,
       child: Center(
-        child: Text(
-          'OpenJmu',
-          style: TextStyle(
-            color: defaultLightColor,
-            fontFamily: 'chocolate',
-            fontSize: 26.0,
-            inherit: false,
-          ),
+        child: SvgPicture.asset(
+          R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
+          color: defaultLightColor,
         ),
       ),
     );

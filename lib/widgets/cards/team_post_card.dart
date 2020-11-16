@@ -45,59 +45,59 @@ class _TeamPostCardState extends State<TeamPostCard> {
     super.initState();
   }
 
-  Widget _header(BuildContext context) => Container(
-        height: 64.h,
-        margin: EdgeInsets.symmetric(
-          vertical: 4.h,
-        ),
-        child: Row(
-          children: <Widget>[
-            UserAPI.getAvatar(uid: post.uid),
-            SizedBox(width: 16.w),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(
-                      post.nickname ?? post.uid.toString(),
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+  Widget _header(BuildContext context) {
+    return Container(
+      height: 70.w,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
+      child: Row(
+        children: <Widget>[
+          UserAPI.getAvatar(uid: post.uid),
+          SizedBox(width: 16.w),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text(
+                    post.nickname ?? post.uid.toString(),
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
                     ),
-                    if (Constants.developerList.contains(post.uid))
-                      Container(
-                        margin: EdgeInsets.only(left: 14.w),
-                        child: DeveloperTag(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
-                          ),
+                  ),
+                  if (Constants.developerList.contains(post.uid))
+                    Container(
+                      margin: EdgeInsets.only(left: 14.w),
+                      child: DeveloperTag(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 4.h,
                         ),
                       ),
-                  ],
-                ),
-                _postTime(context),
-              ],
-            ),
-            const Spacer(),
-            SizedBox.fromSize(
-              size: Size.square(50.w),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.reply,
-                  color: Theme.of(context).dividerColor,
-                ),
-                iconSize: 36.h,
-                onPressed: widget.detailPageState.setReplyToTop,
+                    ),
+                ],
               ),
+              _postTime(context),
+            ],
+          ),
+          const Spacer(),
+          SizedBox.fromSize(
+            size: Size.square(50.w),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.reply,
+                color: Theme.of(context).dividerColor,
+              ),
+              iconSize: 36.h,
+              onPressed: widget.detailPageState.setReplyToTop,
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _postTime(BuildContext context) {
     return Text(
