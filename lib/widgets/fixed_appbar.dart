@@ -72,9 +72,7 @@ class FixedAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = context.select<ThemesProvider, bool>(
-      (ThemesProvider p) => p.dark,
-    );
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     Widget _title = title;
     if (centerTitle) {

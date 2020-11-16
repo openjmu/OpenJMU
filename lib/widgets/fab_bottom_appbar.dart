@@ -254,9 +254,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       );
     }
 
-    final bool isDark = context.select<ThemesProvider, bool>(
-      (ThemesProvider p) => p.dark,
-    );
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BottomAppBar(
       elevation: isDark ? 0 : 10.w,
