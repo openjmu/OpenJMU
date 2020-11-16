@@ -188,7 +188,7 @@ class CommentPositionedState extends State<CommentPositioned> {
         Instances.eventBus.fire(PostCommentedEvent(widget.post.id));
       }).catchError((dynamic e) {
         _commenting = false;
-        trueDebugPrint('Comment post failed: $e');
+        LogUtils.e('Comment post failed: $e');
         if (e is DioError && e.response.statusCode == 404) {
           showToast('动态已被删除');
           Navigator.of(context).pop();

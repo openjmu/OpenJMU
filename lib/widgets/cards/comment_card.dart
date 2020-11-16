@@ -168,7 +168,7 @@ class CommentCard extends StatelessWidget {
         _loadingDialogController.changeState('success', '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
       } catch (e) {
-        trueDebugPrint(e.toString());
+        LogUtils.e(e.toString());
         _loadingDialogController.changeState('failed', '评论删除失败');
       }
     }

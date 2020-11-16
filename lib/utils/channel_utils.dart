@@ -25,7 +25,7 @@ class ChannelUtils {
       }
       await _pmc_flagSecure.invokeMethod<void>(method);
     } on PlatformException catch (e) {
-      trueDebugPrint('Set flag secure failed: ${e.message}.');
+      LogUtils.e('Set flag secure failed: ${e.message}.');
     }
   }
 
@@ -37,19 +37,19 @@ class ChannelUtils {
       );
       return result;
     } on PlatformException catch (e) {
-      trueDebugPrint('Error when invoke method `launchAppName`: $e');
+      LogUtils.e('Error when invoke method `launchAppName`: $e');
       return null;
     }
   }
 
   static Future<String> iOSGetPushToken() async {
-    trueDebugPrint('Getting iOS push token from native...');
+    LogUtils.d('Getting iOS push token from native...');
     try {
       final String result =
           await _pmc_iOSPushToken.invokeMethod('getPushToken');
       return result;
     } on PlatformException catch (e) {
-      trueDebugPrint('iosPushGetter failed: ${e.message}.');
+      LogUtils.e('iosPushGetter failed: ${e.message}.');
       return null;
     }
   }
@@ -59,7 +59,7 @@ class ChannelUtils {
       final String result = await _pmc_iOSPushToken.invokeMethod('getPushDate');
       return result;
     } on PlatformException catch (e) {
-      trueDebugPrint('iosPushDate failed: ${e.message}.');
+      LogUtils.e('iosPushDate failed: ${e.message}.');
       return null;
     }
   }

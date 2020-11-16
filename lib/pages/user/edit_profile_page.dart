@@ -34,7 +34,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               .then((Response<Map<String, dynamic>> response) {
             controller.changeState('success', '更新成功');
           }).catchError((dynamic e) {
-            trueDebugPrint('Error when update signature: $e');
+            LogUtils.e('Error when update signature: $e');
             controller.changeState('failed', '更新失败');
           });
         }

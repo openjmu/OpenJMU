@@ -32,10 +32,11 @@ class NetUtils {
       ..clear();
 
     if (await DataUtils.getTicket()) {
-      trueDebugPrint(
-          'Ticket updated success with new ticket: ${currentUser.sid}');
+      LogUtils.d(
+        'Ticket updated success with new ticket: ${currentUser.sid}',
+      );
     } else {
-      trueDebugPrint('Ticket updated error: ${currentUser.sid}');
+      LogUtils.e('Ticket updated error: ${currentUser.sid}');
     }
     // Release lock.
     dio.unlock();
@@ -50,20 +51,19 @@ class NetUtils {
       client.badCertificateCallback =
           (X509Certificate _, String __, int ___) => true;
     };
-    dio.interceptors.add(cookieManager);
-    dio.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) {
-        if (logNetworkError) {
-          trueDebugPrint('Dio error with request: ${e.request.uri}');
-          trueDebugPrint('Request data: ${e.request.data}');
-          trueDebugPrint('Dio error: ${e.message}');
-        }
-        if (e?.response?.statusCode == 401) {
-          updateTicket();
-        }
-        return e;
-      },
-    ));
+    dio.interceptors
+      ..add(cookieManager)
+      ..add(
+        InterceptorsWrapper(
+          onError: (DioError e) {
+            if (e?.response?.statusCode == 401) {
+              updateTicket();
+            }
+            return e;
+          },
+        ),
+      );
+
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
       if (_isProxyEnabled) {
@@ -73,20 +73,15 @@ class NetUtils {
           (X509Certificate _, String __, int ___) => true;
     };
     tokenDio.interceptors.add(tokenCookieManager);
-    tokenDio.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) {
-        if (logNetworkError) {
-          trueDebugPrint('TokenDio error with request: ${e.request.uri}');
-          trueDebugPrint('Request data: ${e.request.data}');
-          trueDebugPrint('TokenDio error: ${e.message}');
-        }
-        return e;
-      },
-    ));
+
+    if (Constants.isDebug) {
+      dio.interceptors.add(LoggingInterceptor());
+      tokenDio.interceptors.add(LoggingInterceptor());
+    }
   }
 
   static List<Cookie> convertWebViewCookies(List<web_view.Cookie> cookies) {
-    trueDebugPrint('Replacing cookies: $cookies');
+    LogUtils.d('Replacing cookies: $cookies');
     final List<Cookie> replacedCookies = cookies.map((web_view.Cookie cookie) {
       return Cookie(cookie.name, cookie.value?.toString())
         ..domain = cookie.domain
@@ -94,7 +89,7 @@ class NetUtils {
         ..secure = cookie.isSecure ?? false
         ..path = cookie.path;
     }).toList();
-    trueDebugPrint('Replaced cookies: $replacedCookies');
+    LogUtils.d('Replaced cookies: $replacedCookies');
     return replacedCookies;
   }
 
@@ -255,7 +250,7 @@ class NetUtils {
     );
     if (isAllGranted) {
       showToast('开始下载...');
-      trueDebugPrint('File start download: $url');
+      LogUtils.d('File start download: $url');
       path = '${(await getExternalStorageDirectory()).path}/';
       try {
         response = await head<void>(
@@ -279,7 +274,7 @@ class NetUtils {
           path += url.split('/').last.split('?').first;
         }
       } catch (e) {
-        trueDebugPrint('File download failed when fetching head: $e');
+        LogUtils.e('File download failed when fetching head: $e');
         return null;
       }
       try {
@@ -291,17 +286,17 @@ class NetUtils {
             headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
           ),
         );
-        trueDebugPrint('File downloaded: $path');
+        LogUtils.d('File downloaded: $path');
         showToast('下载完成 $path');
         final OpenResult openFileResult = await OpenFile.open(path);
-        trueDebugPrint('File open result: ${openFileResult.type}');
+        LogUtils.d('File open result: ${openFileResult.type}');
         return response;
       } catch (e) {
-        trueDebugPrint('File download failed: $e');
+        LogUtils.e('File download failed: $e');
         return null;
       }
     } else {
-      trueDebugPrint('No permission to download file: $url');
+      LogUtils.e('No permission to download file: $url');
       showToast('未获得存储权限');
       return null;
     }

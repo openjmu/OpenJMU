@@ -11,22 +11,14 @@ export 'device_utils.dart';
 export 'emoji_utils.dart';
 export 'hive_field_utils.dart';
 export 'input_utils.dart';
+export 'log_utils.dart';
 export 'message_utils.dart';
 export 'net_utils.dart';
 export 'notification_utils.dart';
 export 'package_utils.dart';
 export 'toast_utils.dart';
 
-const bool logNetworkError = false;
 const bool logMessageSocketPacket = false;
-
-/// Log only in debug mode.
-/// 只在调试模式打印
-void trueDebugPrint(dynamic message) {
-  if (Constants.isDebug) {
-    log('$message');
-  }
-}
 
 /// Pythagorean theorem.
 /// 勾股定理
@@ -64,7 +56,7 @@ Future<bool> checkPermissions(List<Permission> permissions) async {
       (PermissionStatus p) => p != PermissionStatus.granted,
     );
   } catch (e) {
-    trueDebugPrint('Error when requesting permission: $e');
+    LogUtils.e('Error when requesting permission: $e');
     return false;
   }
 }

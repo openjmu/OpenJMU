@@ -62,7 +62,7 @@ class NotificationUtils {
 
   static Future<void> _onSelect(String payload) async {
     if (payload != null) {
-      trueDebugPrint('notification payload: ' + payload);
+      LogUtils.d('notification payload: ' + payload);
     }
   }
 }

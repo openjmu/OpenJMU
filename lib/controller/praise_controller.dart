@@ -302,13 +302,13 @@ class PraiseListInPostState extends State<PraiseListInPost>
       }
     } on DioError catch (e) {
       if (e.response != null) {
-        trueDebugPrint(e.response.data);
+        LogUtils.e(e.response.data);
       }
-      trueDebugPrint(e.request);
-      trueDebugPrint(e.message);
+      LogUtils.e(e.request);
+      LogUtils.e(e.message);
       return;
     } catch (e) {
-      trueDebugPrint(e);
+      LogUtils.e(e);
     }
   }
 
@@ -340,13 +340,13 @@ class PraiseListInPostState extends State<PraiseListInPost>
       }
     } on DioError catch (e) {
       if (e.response != null) {
-        trueDebugPrint(e.response.data);
+        LogUtils.e(e.response.data);
       }
-      trueDebugPrint(e.request);
-      trueDebugPrint(e.message);
+      LogUtils.e(e.request);
+      LogUtils.e(e.message);
       return;
     } catch (e) {
-      trueDebugPrint(e);
+      LogUtils.e(e);
     }
   }
 

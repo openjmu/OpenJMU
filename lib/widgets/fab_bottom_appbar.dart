@@ -161,8 +161,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
               Consumer<NotificationProvider>(
                 builder: (_, NotificationProvider provider, __) {
                   return Positioned(
-                    top: widget.height / 8,
-                    right: Screens.width / widget.items.length / 5,
+                    top: widget.height / 7,
+                    right: Screens.width / widget.items.length / 4,
                     child: Visibility(
                       visible: provider.showNotification,
                       child: ClipRRect(

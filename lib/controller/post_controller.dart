@@ -109,8 +109,9 @@ class _PostListState extends State<PostList>
         }
       })
       ..on<PostDeletedEvent>().listen((PostDeletedEvent event) {
-        trueDebugPrint(
-            'PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
+        LogUtils.d(
+          'PostDeleted: ${event.postId} / ${event.page} / ${event.index}',
+        );
         if ((event.page == widget.postController.postType) &&
             event.index != null) {
           _idList.removeAt(event.index);
@@ -253,7 +254,7 @@ class _PostListState extends State<PostList>
           _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
     } catch (e) {
       error = true;
-      trueDebugPrint('Failed when refresh post list: $e');
+      LogUtils.e('Failed when refresh post list: $e');
     }
 
     _isLoading = false;
@@ -418,14 +419,14 @@ class ForwardListInPostState extends State<ForwardListInPost>
       }
     } on DioError catch (e) {
       if (e.response != null) {
-        trueDebugPrint('${e.response.data}');
+        LogUtils.e('${e.response.data}');
       } else {
-        trueDebugPrint('${e.request}');
-        trueDebugPrint(e.message);
+        LogUtils.e('${e.request}');
+        LogUtils.e(e.message);
       }
       return;
     } catch (e) {
-      trueDebugPrint('Error when loading post list: $e');
+      LogUtils.e('Error when loading post list: $e');
     }
   }
 
@@ -463,14 +464,14 @@ class ForwardListInPostState extends State<ForwardListInPost>
       }
     } on DioError catch (e) {
       if (e.response != null) {
-        trueDebugPrint('${e.response.data}');
+        LogUtils.e('${e.response.data}');
       } else {
-        trueDebugPrint('${e.request}');
-        trueDebugPrint(e.message);
+        LogUtils.e('${e.request}');
+        LogUtils.e(e.message);
       }
       return;
     } catch (e) {
-      trueDebugPrint('Error when loading post list: $e');
+      LogUtils.e('Error when loading post list: $e');
     }
   }
 

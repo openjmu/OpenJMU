@@ -100,13 +100,13 @@ class ScoresProvider extends ChangeNotifier {
         ..setOption(SocketOption.tcpNoDelay, true)
         ..timeout(2.minutes);
       _socket.listen(onReceive, onDone: destroySocket);
-      trueDebugPrint('Score socket connect success.');
+      LogUtils.d('Score socket connect success.');
       return true;
     } catch (e) {
       _loading = false;
       _loadError = true;
       _errorString = e.toString();
-      trueDebugPrint('Score socket connect error: $e');
+      LogUtils.e('Score socket connect error: $e');
       return false;
     }
   }
@@ -128,7 +128,7 @@ class ScoresProvider extends ChangeNotifier {
         }
       } else {
         loading = false;
-        trueDebugPrint('Error when request score: $e');
+        LogUtils.e('Error when request score: $e');
       }
     }
   }
@@ -166,11 +166,12 @@ class ScoresProvider extends ChangeNotifier {
       }
       _loading = false;
       notifyListeners();
-      trueDebugPrint(
-          'Scores decoded successfully with ${_scores?.length ?? 0} scores.');
+      LogUtils.d(
+        'Scores decoded successfully with ${_scores?.length ?? 0} scores.',
+      );
       _scoreData = '';
     } catch (e) {
-      trueDebugPrint('Decode scores response error: $e');
+      LogUtils.e('Decode scores response error: $e');
     }
   }
 
@@ -183,9 +184,9 @@ class ScoresProvider extends ChangeNotifier {
         'scores': _scores,
       };
       await _scoreBox.put(currentUser.uid, presentData);
-      trueDebugPrint('Scores cache updated successfully.');
+      LogUtils.d('Scores cache updated successfully.');
     } else {
-      trueDebugPrint('Scores cache don\'t need to update.');
+      LogUtils.e('Scores cache don\'t need to update.');
     }
   }
 

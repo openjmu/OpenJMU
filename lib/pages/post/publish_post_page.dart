@@ -93,7 +93,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         });
       }
     } catch (e) {
-      trueDebugPrint('Error when trying to mention someone: $e');
+      LogUtils.e('Error when trying to mention someone: $e');
     }
   }
 
@@ -290,11 +290,11 @@ class _PublishPostPageState extends State<PublishPostPage>
         setState(() {});
       }
 
-      trueDebugPrint('Error when trying upload images: $e');
+      LogUtils.e('Error when trying upload images: $e');
       if (e is DioError) {
-        trueDebugPrint('${e.response.data}');
+        LogUtils.e('${e.response.data}');
       }
-      trueDebugPrint('Images requests will be all cancelled.');
+      LogUtils.e('Images requests will be all cancelled.');
     }
   }
 

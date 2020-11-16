@@ -117,7 +117,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       if (mounted) {
         setState(() {});
       }
-      trueDebugPrint('Failed when fetching cameras: $e');
+      LogUtils.e('Failed when fetching cameras: $e');
     });
   }
 

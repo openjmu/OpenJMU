@@ -95,10 +95,10 @@ class NotificationProvider extends ChangeNotifier {
       final Notifications notification = Notifications.fromJson(response.data);
       notifications = notification;
       if (_ == null) {
-        trueDebugPrint('Updated notifications with :$notification');
+        LogUtils.d('Updated notifications with :$notification');
       }
     }).catchError((dynamic e) {
-      trueDebugPrint('Error when getting notification: $e');
+      LogUtils.e('Error when getting notification: $e');
     });
   }
 
@@ -110,11 +110,11 @@ class NotificationProvider extends ChangeNotifier {
         );
         teamNotifications = notification;
         if (_ == null) {
-          trueDebugPrint('Updated team notifications with: $notification');
+          LogUtils.d('Updated team notifications with: $notification');
         }
       },
     ).catchError((dynamic e) {
-      trueDebugPrint('Error when getting team notification: $e');
+      LogUtils.e('Error when getting team notification: $e');
     });
   }
 

@@ -39,12 +39,12 @@ class MessageUtils {
       ObserverList<Function(MessageReceivedEvent)>();
 
   static void initMessageSocket() {
-    trueDebugPrint('Connecting message socket...');
+    LogUtils.d('Connecting message socket...');
     Socket.connect(
       Messages.socketConfig['host'] as String,
       Messages.socketConfig['port'] as int,
     ).then((Socket socket) {
-      trueDebugPrint('Message socket connected.');
+      LogUtils.d('Message socket connected.');
 
       messageSocket = socket;
       messageSocket.setOption(SocketOption.tcpNoDelay, true);
@@ -54,12 +54,12 @@ class MessageUtils {
       sendCheckCodeVerify();
     }).catchError((dynamic e) {
       messageSocket = null;
-      trueDebugPrint('Error when connecting to message socket: $e');
+      LogUtils.e('Error when connecting to message socket: $e');
     });
   }
 
   static Future<void> destroySocket() async {
-    trueDebugPrint('Message socket pipe close.');
+    LogUtils.d('Message socket pipe close.');
     messageKeepAliveTimer?.cancel();
     messageKeepAliveTimer = null;
     await messageSocket?.close();
@@ -215,7 +215,7 @@ class MessageUtils {
   /// What you need is to handler the command you want to.
   static void commandHandler(Packet packet) {
     if (logMessageSocketPacket) {
-      trueDebugPrint('Handling packet: $packet');
+      LogUtils.d('Handling packet: $packet');
     }
     switch (packet.command) {
       case 0x75:
@@ -253,10 +253,10 @@ class MessageUtils {
       messageSocket.add(package);
 
       if (logMessageSocketPacket) {
-        trueDebugPrint('\nSending $command: $package');
+        LogUtils.d('\nSending $command: $package');
       }
     } catch (e) {
-      trueDebugPrint('Error when trying to add package: $e');
+      LogUtils.e('Error when trying to add package: $e');
     }
   }
 

@@ -8,14 +8,15 @@ import 'package:flutter/foundation.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-export 'package:openjmu/api/comment_api.dart';
-export 'package:openjmu/api/course_api.dart';
-export 'package:openjmu/api/news_api.dart';
-export 'package:openjmu/api/post_api.dart';
-export 'package:openjmu/api/praise_api.dart';
-export 'package:openjmu/api/sign_api.dart';
-export 'package:openjmu/api/team_api.dart';
-export 'package:openjmu/api/user_api.dart';
+export 'comment_api.dart';
+export 'course_api.dart';
+export 'log_interceptor.dart';
+export 'news_api.dart';
+export 'post_api.dart';
+export 'praise_api.dart';
+export 'sign_api.dart';
+export 'team_api.dart';
+export 'user_api.dart';
 
 /// Definition of various sorts of APIs.
 /// 各项接口定义
@@ -293,12 +294,12 @@ class API {
   /// 例如：http://labs.jmu.edu.cn
   /// 结果：https://labs-jmu-edu-cn.webvpn.jmu.edu.cn
   static String replaceWithWebVPN(String url) {
-    trueDebugPrint('Replacing url: $url');
+    LogUtils.d('Replacing url: $url');
     final Uri previousUri = Uri.parse(url);
     final String concatHost = previousUri.host.replaceAll('.', '-');
     final String joinedHost = 'https://$concatHost.${API.webVpnHost}';
     final String replacedUrl = url.replaceAll(API.labsHost, joinedHost);
-    trueDebugPrint('Replaced with: $replacedUrl');
+    LogUtils.d('Replaced with: $replacedUrl');
     return replacedUrl;
   }
 
@@ -316,7 +317,7 @@ class API {
     final bool shouldLaunchFromSystem = provider.launchFromSystemBrowser;
     final String uri = '${Uri.parse(url.trim())}';
     if (shouldLaunchFromSystem) {
-      trueDebugPrint('Launching web: $uri');
+      LogUtils.d('Launching web: $uri');
       return launch(
         uri,
         forceSafariVC: false,
@@ -325,7 +326,7 @@ class API {
         enableDomStorage: true,
       );
     } else {
-      trueDebugPrint('Launching web: $uri');
+      LogUtils.d('Launching web: $uri');
       return navigatorState.pushNamed(
         Routes.openjmuInAppWebview,
         arguments: <String, dynamic>{

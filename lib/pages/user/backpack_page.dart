@@ -28,7 +28,7 @@ class _BackpackPageState extends State<BackpackPage> {
     Future.wait<void>(
       <Future<dynamic>>[getMyItems(), getMyGiftBox()],
     ).catchError((dynamic e) {
-      trueDebugPrint('Get backpack item error: $e');
+      LogUtils.e('Get backpack item error: $e');
     }).whenComplete(() {
       isLoading = false;
       if (mounted) {
@@ -62,7 +62,7 @@ class _BackpackPageState extends State<BackpackPage> {
       headers: _header,
     ))
             .data;
-    print(items);
+    LogUtils.d(items);
   }
 
   /// 使用指定物品
@@ -82,12 +82,12 @@ class _BackpackPageState extends State<BackpackPage> {
         headers: _header,
       ))
               .data;
-      print(result);
-      print(result['itemid_num'] as int);
-      print(result['getitems'][0]['count'] as int);
-      print(result['getitems'][0]['itemtype']);
+      LogUtils.d(result);
+      LogUtils.d(result['itemid_num'] as int);
+      LogUtils.d(result['getitems'][0]['count'] as int);
+      LogUtils.d(result['getitems'][0]['itemtype']);
     } catch (e) {
-      trueDebugPrint('Use backpack item error: $e');
+      LogUtils.e('Use backpack item error: $e');
     }
   }
 

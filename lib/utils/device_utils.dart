@@ -37,7 +37,7 @@ class DeviceUtils {
       deviceModel = model;
     }
 
-    trueDebugPrint('deviceModel: $deviceModel');
+    LogUtils.d('deviceModel: $deviceModel');
   }
 
   static Future<void> getDevicePushToken() async {
@@ -53,7 +53,7 @@ class DeviceUtils {
       } else {
         await HiveFieldUtils.setDevicePushToken(_tempToken);
       }
-      trueDebugPrint('devicePushToken: $devicePushToken');
+      LogUtils.d('devicePushToken: $devicePushToken');
     }
   }
 
@@ -67,6 +67,6 @@ class DeviceUtils {
         await HiveFieldUtils.setDeviceUuid(Uuid().v4());
       }
     }
-    trueDebugPrint('deviceUuid: $deviceUuid');
+    LogUtils.d('deviceUuid: $deviceUuid');
   }
 }

@@ -89,12 +89,12 @@ class HiveBoxes {
       );
     }
     if (confirm) {
-      trueDebugPrint('Clearing Hive Cache Boxes...');
+      LogUtils.d('Clearing Hive Cache Boxes...');
       await coursesBox?.clear();
       await courseRemarkBox?.clear();
       await scoresBox?.clear();
       await startWeekBox?.clear();
-      trueDebugPrint('Boxes cleared');
+      LogUtils.d('Boxes cleared');
       if (kReleaseMode) {
         unawaited(SystemNavigator.pop());
       }
@@ -112,7 +112,7 @@ class HiveBoxes {
       );
     }
     if (confirm) {
-      trueDebugPrint('Clearing Hive Boxes...');
+      LogUtils.d('Clearing Hive Boxes...');
       await appMessagesBox?.clear();
       await changelogBox?.clear();
       await coursesBox?.clear();
@@ -124,7 +124,7 @@ class HiveBoxes {
       await webAppsCommonBox?.clear();
       await settingsBox?.clear();
       await startWeekBox?.clear();
-      trueDebugPrint('Boxes cleared');
+      LogUtils.d('Boxes cleared');
       if (kReleaseMode) {
         unawaited(SystemNavigator.pop());
       }

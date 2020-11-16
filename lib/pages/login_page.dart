@@ -179,7 +179,7 @@ class LoginPageState extends State<LoginPage>
             }
           }
         }).catchError((dynamic e) {
-          trueDebugPrint('Failed when login: $e');
+          LogUtils.e('Failed when login: $e');
           showCenterErrorToast('登录失败');
           _login = false;
           if (mounted) {
@@ -188,7 +188,7 @@ class LoginPageState extends State<LoginPage>
         });
       }
     } catch (e) {
-      trueDebugPrint('Failed when login: $e');
+      LogUtils.e('Failed when login: $e');
       showCenterErrorToast('登录失败');
     }
   }

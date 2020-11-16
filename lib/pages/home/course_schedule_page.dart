@@ -1139,7 +1139,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
       }
     }).catchError((dynamic e) {
       showToast('删除课程失败');
-      trueDebugPrint('Failed in deleting custom course: $e');
+      LogUtils.e('Failed in deleting custom course: $e');
     }).whenComplete(() {
       deleting = false;
       if (mounted) {
@@ -1342,7 +1342,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       }
       Instances.eventBus.fire(CourseScheduleRefreshEvent());
     }).catchError((dynamic e) {
-      trueDebugPrint('Failed when editing custom course: $e');
+      LogUtils.e('Failed when editing custom course: $e');
       showCenterErrorToast('编辑自定义课程失败');
       loading = false;
       if (mounted) {

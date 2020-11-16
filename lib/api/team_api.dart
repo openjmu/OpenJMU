@@ -297,13 +297,13 @@ class TeamPraiseAPI {
           'post_id': id,
         },
       ).catchError((dynamic e) {
-        trueDebugPrint('${e?.response['msg']}');
+        LogUtils.e('${e?.response['msg']}');
       });
     } else {
       return NetUtils.deleteWithCookieAndHeaderSet<Map<String, dynamic>>(
         '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
       ).catchError((dynamic e) {
-        trueDebugPrint('${e?.response['msg']}');
+        LogUtils.e('${e?.response['msg']}');
       });
     }
   }

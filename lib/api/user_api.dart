@@ -147,7 +147,7 @@ class UserAPI {
         data: <String, dynamic>{'fid': uid, 'tagid': 0},
       );
     } catch (e) {
-      trueDebugPrint('Failed when folloe: $e');
+      LogUtils.e('Failed when folloe: $e');
       showCenterErrorToast('关注失败');
     }
   }
@@ -162,7 +162,7 @@ class UserAPI {
         data: <String, dynamic>{'fid': uid},
       );
     } catch (e) {
-      trueDebugPrint('Failed when unfollow $uid: $e');
+      LogUtils.e('Failed when unfollow $uid: $e');
       if (!fromBlacklist) {
         showCenterErrorToast('取消关注失败');
       }
@@ -210,7 +210,7 @@ class UserAPI {
         backpackItemTypes['${item.type}'] = item;
       }
     } catch (e) {
-      trueDebugPrint('Error when getting backpack item type: $e');
+      LogUtils.e('Error when getting backpack item type: $e');
     }
   }
 
@@ -260,7 +260,7 @@ class UserAPI {
         unFollow(user.uid, fromBlacklist: true);
       }).catchError((dynamic e) {
         showToast('加入黑名单失败');
-        trueDebugPrint('Add $user to blacklist failed : $e');
+        LogUtils.e('Add $user to blacklist failed : $e');
       });
     }
   }
@@ -274,7 +274,7 @@ class UserAPI {
       data: <String, dynamic>{'fid': user.uid},
     ).catchError((dynamic e) {
       showToast('移出黑名单失败');
-      trueDebugPrint('Remove $user from blacklist failed: $e');
+      LogUtils.e('Remove $user from blacklist failed: $e');
       if (blacklist.contains(user)) {
         blacklist.remove(user);
       }

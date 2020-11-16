@@ -30,13 +30,13 @@ class PraiseAPI {
       return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
         '${API.postRequestPraise}$id',
       ).catchError((dynamic e) {
-        trueDebugPrint('${e.response}');
+        LogUtils.e('${e.response}');
       });
     } else {
       return NetUtils.deleteWithCookieAndHeaderSet<Map<String, dynamic>>(
         '${API.postRequestPraise}$id',
       ).catchError((dynamic e) {
-        trueDebugPrint('${e.response}');
+        LogUtils.e('${e.response}');
       });
     }
   }

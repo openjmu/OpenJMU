@@ -108,7 +108,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         });
       }
     } catch (e) {
-      trueDebugPrint('Error when trying to mention someone: $e');
+      LogUtils.e('Error when trying to mention someone: $e');
     }
   }
 
@@ -291,11 +291,11 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         setState(() {});
       }
 
-      trueDebugPrint('Error when trying upload images: $e');
+      LogUtils.e('Error when trying upload images: $e');
       if (e is DioError) {
-        trueDebugPrint('${e.response.data}');
+        LogUtils.e('${e.response.data}');
       }
-      trueDebugPrint('Images requests will be all cancelled.');
+      LogUtils.e('Images requests will be all cancelled.');
     }
   }
 
@@ -327,7 +327,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       }
     } catch (e) {
       loadingDialogController.changeState('failed', '动态发布失败');
-      trueDebugPrint(e);
+      LogUtils.e(e);
     } finally {
       isLoading = false;
       if (mounted) {

@@ -86,7 +86,7 @@ class SearchPageState extends State<SearchPage>
         );
       }
     }).catchError((dynamic e) {
-      trueDebugPrint('Error when get users: $e');
+      LogUtils.e('Error when get users: $e');
     });
   }
 
@@ -112,7 +112,7 @@ class SearchPageState extends State<SearchPage>
         postList.add(p);
       }
     }).catchError((dynamic e) {
-      trueDebugPrint('Error when searching posts: $e');
+      LogUtils.e('Error when searching posts: $e');
     });
   }
 

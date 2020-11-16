@@ -182,10 +182,10 @@ class CoursesProvider extends ChangeNotifier {
     } catch (e) {
       _showError = !_hasCourses; // 有课则不显示错误
       if (isOuterNetwork && e is FormatException) {
-        trueDebugPrint('Displaying courses from cache...');
+        LogUtils.d('Displaying courses from cache...');
         _isOuterError = true;
       } else {
-        trueDebugPrint('Error when updating course: $e');
+        LogUtils.e('Error when updating course: $e');
         _isOuterError = false;
       }
       if (!firstLoaded && dateProvider.currentWeek != null) {
@@ -240,9 +240,10 @@ class CoursesProvider extends ChangeNotifier {
     try {
       courses[courseDay][courseTime].add(course);
     } catch (e) {
-      trueDebugPrint(
-          'Failed when trying to add course at day($courseDay) time($courseTime)');
-      trueDebugPrint('$course');
+      LogUtils.e(
+        'Failed when trying to add course at day($courseDay) time($courseTime)',
+      );
+      LogUtils.e('$course');
     }
   }
 

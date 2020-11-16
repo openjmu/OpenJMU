@@ -87,7 +87,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
       );
       unawaited(uploadImage(context, compressedFile));
     } catch (e) {
-      trueDebugPrint('Crop image faild: $e');
+      LogUtils.e('Crop image faild: $e');
       _controller.changeState('failed', '头像更新失败');
     }
   }
@@ -104,7 +104,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
         Navigator.of(context).pop(true);
       });
     } catch (e) {
-      trueDebugPrint(e.toString());
+      LogUtils.e(e.toString());
       _controller.changeState('failed', '头像更新失败');
       _cropping = false;
     }

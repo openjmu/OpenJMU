@@ -57,7 +57,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    trueDebugPrint('Current platform is: ${Platform.operatingSystem}');
+    LogUtils.d('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
 
@@ -145,7 +145,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    trueDebugPrint('\nAppLifecycleState change to: ${state.toString()}\n');
+    LogUtils.d('\nAppLifecycleState change to: ${state.toString()}\n');
     Instances.appLifeCycleState = state;
   }
 
@@ -170,7 +170,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   void initQuickActions() {
     QuickActions()
       ..initialize((String shortcutType) {
-        trueDebugPrint('QuickActions triggered: $shortcutType');
+        LogUtils.d('QuickActions triggered: $shortcutType');
         Instances.eventBus.fire(ActionsEvent(shortcutType));
       })
       ..setShortcutItems(List<ShortcutItem>.generate(
@@ -187,7 +187,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     checkIfNoConnectivity(result);
     Instances.eventBus.fire(ConnectivityChangeEvent(result));
     Instances.connectivityResult = result;
-    trueDebugPrint('Current connectivity: $result');
+    LogUtils.d('Current connectivity: $result');
   }
 
   void checkIfNoConnectivity(ConnectivityResult result) {
@@ -213,14 +213,14 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         'uuid': DeviceUtils.deviceUuid,
         'platform': Platform.isIOS ? 'ios' : 'android',
       };
-      trueDebugPrint('Push data: $data');
+      LogUtils.d('Push data: $data');
       NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
-        trueDebugPrint('Push service info upload success.');
+        LogUtils.d('Push service info upload success.');
       }).catchError((dynamic e) {
-        trueDebugPrint('Push service upload error: $e');
+        LogUtils.e('Push service upload error: $e');
       });
     } catch (e) {
-      trueDebugPrint('Push service init error: $e');
+      LogUtils.e('Push service init error: $e');
     }
   }
 

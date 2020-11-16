@@ -76,12 +76,10 @@ class PostAPI {
   static Future<Response<dynamic>> glancePost(int postId) {
     return NetUtils.postWithCookieAndHeaderSet<dynamic>(
       API.postGlance,
-      data: <String, dynamic>{
-        'tids': <int>[postId]
-      },
+      data: <String, dynamic>{'tids': <int>[postId]},
     ).catchError((dynamic e) {
-      trueDebugPrint('$e');
-      trueDebugPrint('${e?.response}');
+      LogUtils.e('$e');
+      LogUtils.e('${e?.response}');
     });
   }
 

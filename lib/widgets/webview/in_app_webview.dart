@@ -98,18 +98,18 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
             '&night=${currentIsDark ? 1 : 0}',
       );
     } catch (e) {
-      trueDebugPrint('$e');
+      LogUtils.d('$e');
     }
   }
 
   bool checkSchemeLoad(InAppWebViewController controller, String url) {
     final RegExp protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
     if (!url.startsWith(protocolRegExp) && url.contains('://')) {
-      trueDebugPrint('Found scheme when load: $url');
+      LogUtils.d('Found scheme when load: $url');
       if (Platform.isAndroid) {
         Future<void>.delayed(1.microseconds, () async {
           unawaited(controller.stopLoading());
-          trueDebugPrint('Try to launch intent...');
+          LogUtils.d('Try to launch intent...');
           final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
             final bool shouldLaunch = await waitForConfirmation(appName);
@@ -439,7 +439,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
           return false;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
-          trueDebugPrint('Webview onLoadStart: $url');
+          LogUtils.d('Webview onLoadStart: $url');
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
           unawaited(controller.evaluateJavascript(
@@ -472,13 +472,13 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
         },
         onConsoleMessage:
             (InAppWebViewController controller, ConsoleMessage consoleMessage) {
-          trueDebugPrint('Console message: '
+          LogUtils.d('Console message: '
               '${consoleMessage.messageLevel.toString()}'
               ' - '
               '${consoleMessage.message}');
         },
         onDownloadStart: (InAppWebViewController controller, String url) {
-          trueDebugPrint('WebView started download from: $url');
+          LogUtils.d('WebView started download from: $url');
           NetUtils.download(url);
         },
         onWebViewCreated: (InAppWebViewController controller) {

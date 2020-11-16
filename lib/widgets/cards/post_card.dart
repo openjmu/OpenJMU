@@ -526,15 +526,17 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget get postActionButton => IconButton(
-        alignment: Alignment.topRight,
-        icon: Icon(
-          Icons.expand_more,
-          color: Theme.of(context).dividerColor,
-          size: 30.w,
-        ),
-        onPressed: () => postExtraActions(context),
-      );
+  Widget get postActionButton {
+    return IconButton(
+      alignment: Alignment.topRight,
+      icon: Icon(
+        Icons.expand_more,
+        color: Theme.of(context).dividerColor,
+        size: 30.w,
+      ),
+      onPressed: () => postExtraActions(context),
+    );
+  }
 
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
@@ -558,8 +560,8 @@ class _PostCardState extends State<PostCard> {
         Instances.eventBus.fire(
             PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
       } catch (e) {
-        trueDebugPrint(e.toString());
-        trueDebugPrint(e.response?.toString());
+        LogUtils.e(e.toString());
+        LogUtils.e(e.response?.toString());
         _loadingDialogController.changeState('failed', '动态删除失败');
       }
     }

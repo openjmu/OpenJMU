@@ -118,7 +118,7 @@ class UserPageState extends State<UserPage>
         }
       });
     } catch (e) {
-      trueDebugPrint('Failed in fetching user information: $e');
+      LogUtils.e('Failed in fetching user information: $e');
       return;
     }
   }

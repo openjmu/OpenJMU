@@ -51,7 +51,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           setState(() {});
         }
       }).catchError((dynamic e) {
-        trueDebugPrint('Failed when request search: $e');
+        LogUtils.e('Failed when request search: $e');
         loading = false;
       });
     }

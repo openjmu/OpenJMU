@@ -85,8 +85,8 @@ class MainPage extends StatefulWidget {
                 },
               ),
               Positioned(
-                top: (kToolbarHeight / 5).h,
-                right: 2.w,
+                top: 5.w,
+                right: 5.w,
                 child: Visibility(
                   visible: isTeam
                       ? provider.showTeamNotification
@@ -190,7 +190,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    trueDebugPrint('CurrentUser ${UserAPI.currentUser}');
+    LogUtils.d('CurrentUser ${UserAPI.currentUser}');
 
     /// Initialize current page index.
     /// 设定初始页面

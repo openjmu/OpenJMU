@@ -55,7 +55,7 @@ class SignProvider extends ChangeNotifier {
       _hasSigned = signed;
       _signedCount = count;
     } catch (e) {
-      trueDebugPrint('Failed when fetching sign status: $e');
+      LogUtils.e('Failed when fetching sign status: $e');
     } finally {
       notifyListeners();
     }
@@ -69,7 +69,7 @@ class SignProvider extends ChangeNotifier {
       _hasSigned = true;
       _signedCount++;
     } catch (e) {
-      trueDebugPrint('Failed when requesting sign: $e');
+      LogUtils.e('Failed when requesting sign: $e');
     } finally {
       _isSigning = false;
       notifyListeners();

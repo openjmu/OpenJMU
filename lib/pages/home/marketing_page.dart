@@ -83,7 +83,7 @@ class _MarketingPageState extends State<MarketingPage> {
       }
       loaded = true;
     } catch (e) {
-      trueDebugPrint('Get market post list failed: $e');
+      LogUtils.e('Get market post list failed: $e');
     } finally {
       if (mounted) {
         setState(() {});

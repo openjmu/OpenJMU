@@ -62,7 +62,7 @@ class _UserListState extends State<UserListPage> {
         setUserList(response, isMore);
       },
     ).catchError((dynamic e) {
-      trueDebugPrint('Failed when getting idol list: $e');
+      LogUtils.e('Failed when getting idol list: $e');
     });
   }
 
@@ -72,7 +72,7 @@ class _UserListState extends State<UserListPage> {
         setUserList(response, isMore);
       },
     ).catchError((dynamic e) {
-      trueDebugPrint('Failed when getting fans list: $e');
+      LogUtils.e('Failed when getting fans list: $e');
     });
   }
 

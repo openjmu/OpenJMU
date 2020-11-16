@@ -48,7 +48,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
         setState(() {});
       }
     }).catchError((dynamic e) {
-      trueDebugPrint('$e');
+      LogUtils.d('$e');
     });
 
     timeFormat(null);

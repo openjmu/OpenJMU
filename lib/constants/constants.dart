@@ -51,6 +51,9 @@ class Constants {
   /// Set this to [false] before release.
   static bool get isDebug => !kReleaseMode && true;
 
+  /// Whether force logger to print.
+  static bool get forceLogging => false;
+
   static const Map<String, String> quickActionsList = <String, String>{
     'actions_home': '广场',
     'actions_apps': '应用',

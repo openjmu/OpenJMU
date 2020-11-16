@@ -67,7 +67,7 @@ class DataUtils {
       }
       return isCookieInitialized;
     } catch (e) {
-      trueDebugPrint('Failed when login: $e');
+      LogUtils.e('Failed when login: $e');
       showToast('登录失败');
       return false;
     }
@@ -124,7 +124,7 @@ class DataUtils {
         Instances.eventBus.fire(TicketGotEvent(isWizard));
       }
     } catch (e) {
-      trueDebugPrint('Error in recover login info: $e');
+      LogUtils.e('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
     }
   }
@@ -140,10 +140,10 @@ class DataUtils {
       ))
               .data;
       final DateTime _end = currentTime;
-      trueDebugPrint('Done request user info in: ${_end.difference(_start)}');
+      LogUtils.d('Done request user info in: ${_end.difference(_start)}');
       getUserInfoFromResponse(data);
     } catch (e) {
-      trueDebugPrint('Get user info error: ${e.request.cookies}');
+      LogUtils.e('Get user info error: ${e.request.cookies}');
     }
   }
 
@@ -201,7 +201,7 @@ class DataUtils {
 
   static Future<bool> getTicket() async {
     try {
-      trueDebugPrint('Fetch new ticket with: ${settingsBox.get(spTicket)}');
+      LogUtils.d('Fetch new ticket with: ${settingsBox.get(spTicket)}');
       final Map<String, dynamic> params = Constants.loginParams(
         blowfish: settingsBox.get(spBlowfish) as String,
         ticket: settingsBox.get(spTicket) as String,
@@ -216,12 +216,12 @@ class DataUtils {
       ))
               .data;
       final DateTime _end = currentTime;
-      trueDebugPrint('Done request new ticket in: ${_end.difference(_start)}');
+      LogUtils.d('Done request new ticket in: ${_end.difference(_start)}');
       updateSid(response); // Using 99.
       await getUserInfo();
       return true;
     } catch (e) {
-      trueDebugPrint('Error when getting ticket: $e');
+      LogUtils.e('Error when getting ticket: $e');
       return false;
     }
   }
@@ -241,7 +241,7 @@ class DataUtils {
         'http://sso.jmu.edu.cn/imapps/2190?sid=${currentUser.sid}';
     try {
       await NetUtils.head<dynamic>(url);
-      trueDebugPrint('Cookie response didn\'t return 302.');
+      LogUtils.d('Cookie response didn\'t return 302.');
       return false;
     } on DioError catch (dioError) {
       try {
@@ -266,20 +266,20 @@ class DataUtils {
               maxAge: cookie.maxAge,
             );
           }
-          trueDebugPrint('Successfully initialize WebView\'s Cookie.');
+          LogUtils.d('Successfully initialize WebView\'s Cookie.');
           return true;
         } else {
-          trueDebugPrint(
+          LogUtils.e(
             'Error when initializing WebView\'s Cookie: $dioError',
           );
           return false;
         }
       } catch (e) {
-        trueDebugPrint('Error when handling cookie response: $e');
+        LogUtils.e('Error when handling cookie response: $e');
         return false;
       }
     } catch (e) {
-      trueDebugPrint('Error when handling cookie response: $e');
+      LogUtils.e('Error when handling cookie response: $e');
       return false;
     }
   }

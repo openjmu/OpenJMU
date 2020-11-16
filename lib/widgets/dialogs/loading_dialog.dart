@@ -111,7 +111,7 @@ class LoadingDialogState extends State<LoadingDialog> {
               Navigator.pop(context);
             }
           } catch (e) {
-            trueDebugPrint('Error when running pop in loading dialog: $e');
+            LogUtils.e('Error when running pop in loading dialog: $e');
           }
         });
       } else if (_type == 'dismiss') {
@@ -122,7 +122,7 @@ class LoadingDialogState extends State<LoadingDialog> {
             Navigator.pop(context);
           }
         } catch (e) {
-          trueDebugPrint('Error when running pop in loading dialog: $e');
+          LogUtils.e('Error when running pop in loading dialog: $e');
         }
       }
     }

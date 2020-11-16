@@ -217,8 +217,8 @@ class PostDetailPageState extends State<PostDetailPage> {
         Instances.eventBus.fire(
             PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
       } catch (e) {
-        trueDebugPrint(e.toString());
-        trueDebugPrint(e.response?.toString());
+        LogUtils.e(e.toString());
+        LogUtils.e(e.response?.toString());
         _loadingDialogController.changeState('failed', '动态删除失败');
       }
     }

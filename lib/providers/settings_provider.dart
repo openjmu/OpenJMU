@@ -137,7 +137,7 @@ class SettingsProvider extends ChangeNotifier {
       _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();
     } catch (e) {
-      trueDebugPrint('Get announcement error: $e');
+      LogUtils.e('Get announcement error: $e');
       Future<void>.delayed(30.seconds, getAnnouncement);
     }
   }
@@ -157,10 +157,10 @@ class SettingsProvider extends ChangeNotifier {
 //      } else if (res['code'] == '000') {
 //        handleSettingsSyncing(CloudSettingsModel.fromJson(res['data']));
 //      } else {
-//        trueDebugPrint('Failed in getting cloud settings: ${res['message']}');
+//        LogUtils.e('Failed in getting cloud settings: ${res['message']}');
 //      }
 //    } catch (e) {
-//      trueDebugPrint('Failed in getting cloud settings: $e');
+//      LogUtils.e('Failed in getting cloud settings: $e');
 //    }
 //  }
 //
