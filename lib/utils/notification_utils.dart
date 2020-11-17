@@ -22,8 +22,8 @@ class NotificationUtils {
       onDidReceiveLocalNotification: _onReceive,
     );
     const InitializationSettings _settings = InitializationSettings(
-      _settingsAndroid,
-      _settingsIOS,
+      android: _settingsAndroid,
+      iOS: _settingsIOS,
     );
     NotificationUtils.plugin.initialize(
       _settings,
@@ -38,14 +38,16 @@ class NotificationUtils {
       'openjmu_message_channel',
       '推送消息',
       '通知接收到的消息',
-      importance: Importance.High,
-      priority: Priority.High,
+      importance: Importance.high,
+      priority: Priority.high,
       color: color,
       ticker: 'ticker',
     );
     const IOSNotificationDetails iOSDetails = IOSNotificationDetails();
-    final NotificationDetails _details =
-        NotificationDetails(androidDetails, iOSDetails);
+    final NotificationDetails _details = NotificationDetails(
+      android: androidDetails,
+      iOS: iOSDetails,
+    );
     await NotificationUtils.plugin.show(0, title, body, _details);
   }
 

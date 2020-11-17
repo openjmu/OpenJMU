@@ -15,40 +15,40 @@ dependencies:
     sdk: flutter
 
   animations: 1.1.2
-  badges: 1.1.3
-  connectivity: ^0.4.9+3
+  badges: 1.1.4
+  connectivity: ^2.0.2
   cookie_jar: 1.0.1
-  device_info: ^0.4.2+8
+  device_info: ^1.0.0
   dio:
     git:
       url: https://github.com/AlexVincent525/dio.git
       ref: v2.1.16
       path: package_src
   event_bus: 1.1.1
-  extended_image: ^1.1.2
+  extended_image: ^1.3.0
   extended_list: ^2.0.2
   extended_tabs: ^0.2.2
   extended_nested_scroll_view: ^1.0.0
   extended_text: 4.0.0
   extended_text_field: 5.0.0
-  flutter_displaymode: ^0.1.0
+  flutter_displaymode: ^0.1.1
   flutter_icons: ^1.1.0
   flutter_inappwebview: ^4.0.0+4
-  flutter_local_notifications: 1.4.4+5
-  flutter_native_image: ^0.0.5
+  flutter_local_notifications: 3.0.1+4
+  flutter_native_image: ^0.0.5+3
   flutter_screenutil: 2.3.1
   flutter_spinkit: 4.1.2+1
-  flutter_svg: ^0.19.0
-  hive: 1.4.4
+  flutter_svg: ^0.19.1
+  hive: 1.4.4+1
   hive_flutter: ^0.3.1
-  image: 2.1.18
+  image: 2.1.19
   image_editor: ^0.7.3
-  image_save: 3.1.1
+  image_save: 4.0.1
   isolate: ^2.0.2
-  like_button: ^1.0.3
+  like_button: ^1.0.4
   oktoast: 2.3.2
-  open_file: 3.0.1
-  package_info: ^0.4.3
+  open_file: 3.0.3
+  package_info: ^0.4.3+2
   permission_handler: 5.0.1+1
   provider: ^4.3.2+2
   pull_to_refresh_notification: ^1.1.2
@@ -58,9 +58,9 @@ dependencies:
     git:
       url: https://github.com/CaiJingLong/r_scan.git
       ref: d2f1849f365a1d716d0ade34cfc401f1d6b3d56d
-  url_launcher: 5.7.2
+  url_launcher: 5.7.10
   uuid: 2.2.2
-  vibration: 1.6.1
+  vibration: 1.7.2
   wechat_assets_picker: ^4.2.2
 
 dev_dependencies:
