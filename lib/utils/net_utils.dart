@@ -16,6 +16,8 @@ class NetUtils {
   static const bool _isProxyEnabled = false;
   static const String _proxyDestination = 'PROXY 192.168.0.101:8118';
 
+  static const bool shouldLogRequest = false;
+
   static final Dio dio = Dio();
   static final Dio tokenDio = Dio();
 
@@ -74,7 +76,7 @@ class NetUtils {
     };
     tokenDio.interceptors.add(tokenCookieManager);
 
-    if (Constants.isDebug) {
+    if (Constants.isDebug && shouldLogRequest) {
       dio.interceptors.add(LoggingInterceptor());
       tokenDio.interceptors.add(LoggingInterceptor());
     }
