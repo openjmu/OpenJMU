@@ -97,9 +97,8 @@ class SearchPageState extends State<SearchPage>
     }
     await PostAPI.getPostList(
       'search',
-      false,
-      loadMore,
-      loadMore ? postList.last.id : 0,
+      isMore: loadMore,
+      lastValue: loadMore ? postList.last.id : 0,
       additionAttrs: <String, dynamic>{'words': searchQuery},
     ).then((Response<Map<String, dynamic>> response) {
       final List<dynamic> _ps = response.data['topics'] as List<dynamic>;

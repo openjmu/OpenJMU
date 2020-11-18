@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:loading_more_list/loading_more_list.dart';
 import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -31,40 +32,37 @@ class UserPage extends StatefulWidget {
 
 class UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
+  final ScrollController scrollController = ScrollController();
+
+  final StreamController<bool> titleAnimateStreamController =
+      StreamController<bool>.broadcast();
+
   final List<String> tabList = <String>['动态', '黑名单'];
 
-  double get tabBarHeight => 56.h;
-  final List<Post> posts = <Post>[];
   final List<UserTag> userTags = <UserTag>[];
+
+  double get tabBarHeight => 56.h;
 
   TabController tabController;
 
   UserLevelScore userLevelScore;
 
-  int total, userFans, userIdols;
-
-  bool get isFirstLoaded => total != null;
-
-  bool get canLoadMorePost => posts.length < total;
-
-  int get count => posts.length;
-
-  int get lastId => posts.last?.id;
+  int userFans, userIdols;
 
   int get uid => widget.uid ?? currentUser.uid;
 
   bool get isCurrentUser => uid == currentUser.uid;
 
-  final ScrollController scrollController = ScrollController();
-
   double get expandedHeight =>
       Screens.width / 1.25 + (isCurrentUser ? tabBarHeight : 0.0);
-  final StreamController<bool> titleAnimateStreamController =
-      StreamController<bool>.broadcast();
 
   Stream<bool> get titleAnimateStream => titleAnimateStreamController.stream;
 
   UserInfo user;
+
+  LoadingBase loadingBase;
+
+  ListConfig<Map<String, dynamic>> listConfig;
 
   @override
   void initState() {
@@ -73,8 +71,8 @@ class UserPageState extends State<UserPage>
     if (isCurrentUser) {
       tabController = TabController(length: tabList.length, vsync: this);
     }
-
-    loadData();
+    initializeLoadList();
+    fetchUserInformation();
   }
 
   @override
@@ -97,6 +95,37 @@ class UserPageState extends State<UserPage>
       triggerHeight -= tabBarHeight;
     }
     titleAnimateStreamController.add(scrollController.offset >= triggerHeight);
+  }
+
+  void initializeLoadList() {
+    loadingBase = LoadingBase(
+      request: (int id) => PostAPI.getPostList(
+        'user',
+        isMore: id != 0,
+        lastValue: id,
+        additionAttrs: <String, dynamic>{'uid': uid},
+      ),
+      contentFieldName: 'topics',
+    );
+    listConfig = ListConfig<Map<String, dynamic>>(
+      sourceList: loadingBase,
+      padding: EdgeInsets.symmetric(vertical: 10.w),
+      itemBuilder: (_, Map<String, dynamic> model, int index) {
+        final Post post = Post.fromJson(model['topic'] as Map<String, dynamic>);
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: PostCard(post, parentContext: context, fromPage: 'user'),
+        );
+      },
+      indicatorBuilder: (BuildContext context, IndicatorStatus status) {
+        return RefreshListWrapper.indicatorBuilder(
+          context,
+          status,
+          loadingBase,
+          isSliver: false,
+        );
+      },
+    );
   }
 
   Future<void> fetchUserInformation() async {
@@ -153,57 +182,7 @@ class UserPageState extends State<UserPage>
     userIdols = data['idols'].toString().toInt();
   }
 
-  Future<bool> onRefresh() async {
-    try {
-      await loadData();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<void> loadData({bool isLoadMore = false}) {
-    return Future.wait<void>(
-      <Future<dynamic>>[
-        if (!isLoadMore) fetchUserInformation(),
-        PostAPI.getPostList(
-          'user',
-          false,
-          isLoadMore,
-          posts.isNotEmpty ? posts.last.id : 0,
-          additionAttrs: <String, dynamic>{'uid': uid},
-        ).then<void>((Response<Map<String, dynamic>> response) {
-          addPostsData(response, isLoadMore: isLoadMore);
-        }),
-      ],
-    );
-  }
-
-  void addPostsData(
-    Response<Map<String, dynamic>> response, {
-    bool isLoadMore = false,
-  }) {
-    final Map<String, dynamic> data = response.data;
-    total = '${data['total']}'.toInt();
-    final List<Post> _postList =
-        (data['topics'] as List<dynamic>).map((dynamic element) {
-      final Map<String, dynamic> postData = element as Map<String, dynamic>;
-      final Post post = Post.fromJson(
-        postData['topic'] as Map<String, dynamic>,
-      );
-      return post;
-    }).toList();
-    if (isLoadMore) {
-      posts.addAll(_postList);
-    } else {
-      posts
-        ..clear()
-        ..addAll(_postList);
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  Future<bool> onRefresh() => loadingBase.refresh();
 
   void avatarTap() {
     navigatorState.pushNamed(
@@ -245,47 +224,6 @@ class UserPageState extends State<UserPage>
     if (confirm) {
       UserAPI.fRemoveFromBlacklist(user);
     }
-  }
-
-  Widget get postList {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: posts.length + 1,
-      itemBuilder: (
-        BuildContext context,
-        int index,
-      ) {
-        if (index == posts.length) {
-          if (canLoadMorePost) {
-            loadData(isLoadMore: true);
-          }
-          return LoadMoreIndicator(canLoadMore: canLoadMorePost);
-        }
-        return Container(
-          margin: index == 0 ? EdgeInsets.only(top: 10.h) : null,
-          padding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-          ),
-          child: PostCard(
-            posts[index],
-            parentContext: context,
-            fromPage: 'user',
-          ),
-        );
-      },
-    );
-  }
-
-  Widget get placeHolderWidget {
-    return Center(
-      child: () {
-        if (total == 0) {
-          return const Text(Constants.endLineTag);
-        } else {
-          return const SpinKitWidget();
-        }
-      }(),
-    );
   }
 
   Widget appbar(PullToRefreshScrollNotificationInfo info) {
@@ -820,6 +758,16 @@ class UserPageState extends State<UserPage>
 
   @override
   Widget build(BuildContext context) {
+    Widget body = LoadingMoreList<Map<String, dynamic>>(listConfig);
+    if (isCurrentUser) {
+      body = TabBarView(
+        controller: tabController,
+        children: <Widget>[
+          body,
+          if (isCurrentUser) banListWidget,
+        ],
+      );
+    }
     return Material(
       child: PullToRefreshNotification(
         color: Colors.blue,
@@ -827,23 +775,11 @@ class UserPageState extends State<UserPage>
         onRefresh: onRefresh,
         child: NestedScrollView(
           controller: scrollController,
-          physics: total != null
-              ? const AlwaysScrollableClampingScrollPhysics()
-              : const NeverScrollableScrollPhysics(),
+          physics: const AlwaysScrollableClampingScrollPhysics(),
           headerSliverBuilder: (BuildContext _, bool __) {
             return <Widget>[PullToRefreshContainer(appbar)];
           },
-          body: isCurrentUser
-              ? TabBarView(
-                  controller: tabController,
-                  children: <Widget>[
-                    if (total != null) postList else placeHolderWidget,
-                    if (isCurrentUser) banListWidget,
-                  ],
-                )
-              : total != null
-                  ? postList
-                  : placeHolderWidget,
+          body: body,
         ),
       ),
     );

@@ -46,6 +46,7 @@ dependencies:
   image_save: 4.0.1
   isolate: ^2.0.2
   like_button: ^1.0.4
+  loading_more_list: ^3.1.1
   oktoast: 2.3.2
   open_file: 3.0.3
   package_info: ^0.4.3+2

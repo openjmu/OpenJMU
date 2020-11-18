@@ -11,26 +11,27 @@ class PostAPI {
   const PostAPI._();
 
   static Future<Response<Map<String, dynamic>>> getPostList(
-    String postType,
-    bool isFollowed,
-    bool isMore,
-    int lastValue, {
+    String postType, {
+    bool isFollowed = false,
+    bool isMore = false,
+    int lastValue,
     Map<String, dynamic> additionAttrs,
-  }) async {
+  }) {
+    assert(!isMore || lastValue != null);
     String _postUrl;
     switch (postType) {
       case 'square':
         if (isMore) {
-          if (!isFollowed) {
-            _postUrl = '${API.postList}/id_max/$lastValue';
-          } else {
+          if (isFollowed) {
             _postUrl = '${API.postFollowedList}/id_max/$lastValue';
+          } else {
+            _postUrl = '${API.postList}/id_max/$lastValue';
           }
         } else {
-          if (!isFollowed) {
-            _postUrl = API.postList;
-          } else {
+          if (isFollowed) {
             _postUrl = API.postFollowedList;
+          } else {
+            _postUrl = API.postList;
           }
         }
         break;
@@ -76,7 +77,9 @@ class PostAPI {
   static Future<Response<dynamic>> glancePost(int postId) {
     return NetUtils.postWithCookieAndHeaderSet<dynamic>(
       API.postGlance,
-      data: <String, dynamic>{'tids': <int>[postId]},
+      data: <String, dynamic>{
+        'tids': <int>[postId]
+      },
     ).catchError((dynamic e) {
       LogUtils.e('$e');
       LogUtils.e('${e?.response}');

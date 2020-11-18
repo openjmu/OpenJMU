@@ -8,6 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 export 'package:openjmu/controller/comment_controller.dart';
 export 'package:openjmu/controller/post_controller.dart';
 export 'package:openjmu/controller/praise_controller.dart';
+export 'package:openjmu/model/loading_base.dart';
 export 'package:openjmu/model/special_text.dart';
 
 part 'models.g.dart';

@@ -38,7 +38,6 @@ class PostSquarePage extends StatelessWidget {
             lastValue: (int id) => id,
           ),
           needRefreshIndicator: true,
-          scrollController: ScrollController(),
         ),
       ),
     );

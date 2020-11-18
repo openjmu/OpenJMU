@@ -35,12 +35,10 @@ class PostList extends StatefulWidget {
     this.postController, {
     Key key,
     this.needRefreshIndicator = true,
-    this.scrollController,
   }) : super(key: key);
 
   final PostController postController;
   final bool needRefreshIndicator;
-  final ScrollController scrollController;
 
   @override
   State createState() => _PostListState();
@@ -50,7 +48,7 @@ class _PostListState extends State<PostList>
     with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  ScrollController _scrollController;
+  final ScrollController _scrollController = ScrollController();
 
   int _lastValue = 0;
   bool _isLoading = false;
@@ -72,7 +70,6 @@ class _PostListState extends State<PostList>
   void initState() {
     super.initState();
     widget.postController._postListState = this;
-    _scrollController = widget.scrollController;
 
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((ScrollToTopEvent event) {
@@ -161,9 +158,9 @@ class _PostListState extends State<PostList>
     }
     final Map<String, dynamic> result = (await PostAPI.getPostList(
       widget.postController.postType,
-      widget.postController.isFollowed,
-      true,
-      _lastValue,
+      isFollowed: widget.postController.isFollowed,
+      isMore: true,
+      lastValue: _lastValue,
       additionAttrs: widget.postController.additionAttrs,
     ))
         .data;
@@ -209,9 +206,9 @@ class _PostListState extends State<PostList>
     try {
       final Map<String, dynamic> result = (await PostAPI.getPostList(
         widget.postController.postType,
-        widget.postController.isFollowed,
-        false,
-        _lastValue,
+        isFollowed: widget.postController.isFollowed,
+        isMore: false,
+        lastValue: _lastValue,
         additionAttrs: widget.postController.additionAttrs,
       ))
           .data;
