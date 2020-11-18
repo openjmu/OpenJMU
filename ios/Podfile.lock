@@ -33,7 +33,7 @@ PODS:
   - Reachability (3.2)
   - url_launcher (0.0.1):
     - Flutter
-  - vibration (1.6.1):
+  - vibration (1.7.2):
     - Flutter
   - video_player (0.0.1):
     - Flutter
@@ -109,7 +109,7 @@ SPEC CHECKSUMS:
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_inappwebview: 69dfbac46157b336ffbec19ca6dfd4638c7bf189
-  flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   image_editor: c1d038630eedea60d2dee9c14f36aa66c7f9cfab
   image_save: 66ab41fa2c60bc9569e55563ea287cced7b79fd1
@@ -122,10 +122,10 @@ SPEC CHECKSUMS:
   r_scan: 73b806baa9094d33c2c3067f78fb76e350d57a93
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  vibration: 6023c44bd4ad0c83ffb284b9aa9ff37119084a3b
+  vibration: 528f5ef88e90d4a8fd1ef04afbf0ed3ac7c9801d
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   ZXingObjCCopy: 08aed07cb60e2a3ab79ae7ca298a3e7fd9ca4164
 
-PODFILE CHECKSUM: bf7d86e94d47b545f15fd14574d9a93abe5c9d1a
+PODFILE CHECKSUM: 2aaa5d4f6b2200569931c0dd0f3ac0f4a34abe04
 
 COCOAPODS: 1.10.0
