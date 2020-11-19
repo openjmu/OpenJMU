@@ -633,7 +633,7 @@ class _CourseOuterNetworkErrorDialog extends StatelessWidget {
             children: <Widget>[
               Icon(Icons.signal_wifi_off, size: 42.w),
               Text(
-                '由于外网网络限制\n无法访问课表数据\n请连接校园网后重试',
+                '由于外网网络限制\n无法获取最新数据\n请连接校园网后重试',
                 style: TextStyle(fontSize: 20.sp),
                 textAlign: TextAlign.center,
               ),
