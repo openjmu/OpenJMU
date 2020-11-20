@@ -230,8 +230,9 @@ class _NightModeCard extends StatelessWidget {
                 return CustomSwitch(
                   activeColor: context.themeData.accentColor,
                   value: provider.dark,
-                  onChanged: (bool value) =>
-                      provider.dark = value,
+                  onChanged: !provider.platformBrightness
+                      ? (bool value) => provider.dark = value
+                      : null,
                 );
               },
             ),
@@ -395,7 +396,11 @@ class _ThemeCard extends StatelessWidget {
                     child: AnimatedOpacity(
                       duration: kThemeChangeDuration,
                       opacity: isSelected ? 1.0 : 0.0,
-                      child: Icon(Icons.check, color: Colors.white, size: 30.w),
+                      child: Icon(
+                        Icons.check,
+                        color: adaptiveButtonColor(),
+                        size: 30.w,
+                      ),
                     ),
                   ),
                 );
