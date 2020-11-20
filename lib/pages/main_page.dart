@@ -48,7 +48,7 @@ class MainPage extends StatefulWidget {
   }
 
   static Widget notificationButton({
-    BuildContext context,
+    @required BuildContext context,
     bool isTeam = false,
   }) {
     return Consumer<NotificationProvider>(
@@ -96,7 +96,7 @@ class MainPage extends StatefulWidget {
                     child: Container(
                       width: 12.w,
                       height: 12.w,
-                      color: currentThemeColor,
+                      color: context.themeData.accentColor,
                     ),
                   ),
                 ),
@@ -108,11 +108,14 @@ class MainPage extends StatefulWidget {
     );
   }
 
-  static Widget publishButton(String route) {
+  static Widget publishButton({
+    @required BuildContext context,
+    @required String route,
+  }) {
     return Consumer<ThemesProvider>(
       builder: (_, ThemesProvider provider, __) {
         return MaterialButton(
-          color: currentThemeColor,
+          color: context.themeData.accentColor,
           elevation: 0.0,
           minWidth: 100.w,
           height: 56.w,
@@ -223,7 +226,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Announcement widget.
   /// 公告组件
-  Widget get announcementWidget {
+  Widget announcementWidget(BuildContext context) {
     return Positioned(
       bottom: 0.0,
       left: 0.0,
@@ -239,7 +242,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 height: 72.w,
                 gap: 24.0,
                 canClose: true,
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: context.themeData.accentColor,
                 radius: 15.w,
               );
             } else {
@@ -253,23 +256,25 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Bottom navigation bar.
   /// 底部导航栏
-  Widget get bottomNavigationBar => FABBottomAppBar(
-        color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
-        height: bottomBarHeight,
-        iconSize: bottomBarIconSize,
-        selectedColor: currentThemeColor,
-        itemFontSize: 16.0,
-        onTabSelected: _selectedTab,
-        showText: false,
-        initIndex: _currentIndex,
-        items: List<FABBottomAppBarItem>.generate(
-          pagesTitle.length,
-          (int i) => FABBottomAppBarItem(
-            iconPath: pagesIcon[i],
-            text: pagesTitle[i],
-          ),
+  Widget bottomNavigationBar(BuildContext context) {
+    return FABBottomAppBar(
+      color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
+      height: bottomBarHeight,
+      iconSize: bottomBarIconSize,
+      selectedColor: context.themeData.accentColor,
+      itemFontSize: 16.0,
+      onTabSelected: _selectedTab,
+      showText: false,
+      initIndex: _currentIndex,
+      items: List<FABBottomAppBarItem>.generate(
+        pagesTitle.length,
+        (int i) => FABBottomAppBarItem(
+          iconPath: pagesIcon[i],
+          text: pagesTitle[i],
         ),
-      );
+      ),
+    );
+  }
 
   @override
   @mustCallSuper
@@ -297,12 +302,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               ],
               index: _currentIndex,
             ),
-            announcementWidget,
+            announcementWidget(context),
           ],
         ),
         drawer: SelfPage(),
         drawerEdgeDragWidth: Screens.width * 0.0666,
-        bottomNavigationBar: bottomNavigationBar,
+        bottomNavigationBar: bottomNavigationBar(context),
         resizeToAvoidBottomInset: false,
       ),
     );

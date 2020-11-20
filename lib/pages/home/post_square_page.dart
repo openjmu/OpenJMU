@@ -24,7 +24,10 @@ class PostSquarePage extends StatelessWidget {
         actions: <Widget>[
           MainPage.notificationButton(context: context),
           SizedBox(width: 10.w),
-          MainPage.publishButton(Routes.openjmuPublishPost),
+          MainPage.publishButton(
+            context: context,
+            route: Routes.openjmuPublishPost,
+          ),
         ],
         actionsPadding: EdgeInsets.only(right: 20.w),
       ),
