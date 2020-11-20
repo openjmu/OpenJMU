@@ -104,8 +104,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
           Flexible(
             child: Consumer<MessagesProvider>(
               builder: (_, MessagesProvider provider, __) {
-                final List<AppMessage> messages =
-                    provider.appsMessages[widget.app.appId] as List<AppMessage>;
+                final List<AppMessage> messages = List<AppMessage>.from(
+                  provider.appsMessages[widget.app.appId],
+                );
                 return ListView.builder(
                   padding: EdgeInsets.zero,
                   controller: _scrollController,
@@ -127,7 +128,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
 
   Widget messageWidget(AppMessage message) {
     return Container(
-      margin: const EdgeInsets.all(8.0).copyWith(right: 40),
+      margin: EdgeInsets.all(12.w).copyWith(right: 48.w),
       width: Screens.width,
       child: Align(
         alignment: Alignment.centerLeft,
@@ -143,7 +144,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                 constraints: BoxConstraints(minHeight: 30.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.w),
-                  color: Theme.of(context).canvasColor,
+                  color: Theme.of(context).cardColor,
                 ),
                 child: ExtendedText(
                   message.content,
@@ -163,14 +164,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               padding: EdgeInsets.only(left: 8.w),
               child: Text(
                 timeHandler(message.sendTime),
-                style: TextStyle(
-                  color: Theme.of(context)
-                      .textTheme
-                      .caption
-                      .color
-                      .withOpacity(0.25),
-                  fontSize: 14.sp,
-                ),
+                style: Theme.of(context).textTheme.caption.copyWith(
+                      fontSize: 14.sp,
+                    ),
               ),
             )
           ],
@@ -207,8 +203,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   }
 
   void judgeMessageConfirm() {
-    final List<AppMessage> messages =
-        messagesProvider.appsMessages[widget.app.appId] as List<AppMessage>;
+    final List<AppMessage> messages = List<AppMessage>.from(
+      messagesProvider.appsMessages[widget.app.appId],
+    );
     final List<AppMessage> unreadMessages =
         messages.where((AppMessage appMessage) {
       return !appMessage.read;

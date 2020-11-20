@@ -13,7 +13,7 @@ import 'package:openjmu/constants/constants.dart';
 class NetUtils {
   const NetUtils._();
 
-  static const bool _isProxyEnabled = true;
+  static const bool _isProxyEnabled = false;
   static const String _proxyDestination = 'PROXY 172.17.0.111:8118';
 
   static const bool shouldLogRequest = false;

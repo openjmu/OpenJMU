@@ -27,8 +27,6 @@ class AppMessagePreviewWidget extends StatefulWidget {
 
 class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     with AutomaticKeepAliveClientMixin {
-  WebApp app;
-
   Timer timeUpdateTimer;
   String formattedTime;
 
@@ -37,9 +35,9 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
 
   @override
   void initState() {
-    timeFormat(null);
-    timeUpdateTimer = Timer.periodic(1.minutes, timeFormat);
     super.initState();
+    timeFormat();
+    timeUpdateTimer = Timer.periodic(1.minutes, (_) => timeFormat());
   }
 
   @override
@@ -48,11 +46,9 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     super.dispose();
   }
 
-  void timeFormat(Timer _, {bool fromBuild = false}) {
+  void timeFormat({bool fromBuild = false}) {
     final DateTime now = DateTime.now();
-    if (widget.message.sendTime.day == now.day &&
-        widget.message.sendTime.month == now.month &&
-        widget.message.sendTime.year == now.year) {
+    if (widget.message.sendTime.isTheSameDayOf(now)) {
       formattedTime = DateFormat('HH:mm').format(widget.message.sendTime);
     } else if (widget.message.sendTime.year == now.year) {
       formattedTime = DateFormat('MM-dd HH:mm').format(widget.message.sendTime);
@@ -65,49 +61,43 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     }
   }
 
-  Widget get unreadCounter => Consumer<MessagesProvider>(
-        builder: (_, MessagesProvider provider, __) {
-          final List<dynamic> messages =
-              provider.appsMessages[widget.message.appId];
-          final List<AppMessage> unreadMessages = messages
-              .where((dynamic message) => !(message as AppMessage).read)
-              ?.toList()
-              ?.cast<AppMessage>();
-          if (unreadMessages.isEmpty) {
-            return const SizedBox.shrink();
-          }
-          return Container(
-            width: 28.w,
-            height: 28.w,
-            decoration: BoxDecoration(
-              color: currentThemeColor.withOpacity(0.5),
-              shape: BoxShape.circle,
+  Widget unreadCounter(BuildContext context) {
+    return Selector<MessagesProvider, Map<int, List<dynamic>>>(
+      selector: (_, MessagesProvider provider) => provider.appsMessages,
+      builder: (_, Map<int, List<dynamic>> appsMessages, __) {
+        final List<dynamic> messages = appsMessages[widget.message.appId];
+        final List<AppMessage> unreadMessages = messages
+            .where((dynamic message) => !(message as AppMessage).read)
+            ?.toList()
+            ?.cast<AppMessage>();
+        if (unreadMessages.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          width: 28.w,
+          height: 28.w,
+          decoration: BoxDecoration(
+            color: currentThemeColor.withOpacity(0.5),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Selector<ThemesProvider, bool>(
+              selector: (_, ThemesProvider provider) => provider.dark,
+              builder: (_, bool dark, __) {
+                return Text(
+                  '${unreadMessages.length}',
+                  style: TextStyle(
+                    color: dark ? Colors.grey[300] : Colors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.normal,
+                  ),
+                );
+              },
             ),
-            child: Center(
-              child: Selector<ThemesProvider, bool>(
-                selector: (_, ThemesProvider provider) => provider.dark,
-                builder: (_, bool dark, __) {
-                  return Text(
-                    '${unreadMessages.length}',
-                    style: TextStyle(
-                      color: dark ? Colors.grey[300] : Colors.white,
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      );
-
-  void updateApp() {
-    final WebAppsProvider provider =
-        Provider.of<WebAppsProvider>(currentContext, listen: false);
-    app = provider.allApps
-        .where((dynamic app) => (app as WebApp).appId == widget.message.appId)
-        .elementAt(0);
+          ),
+        );
+      },
+    );
   }
 
   void tryDecodeContent() {
@@ -125,12 +115,54 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     }
   }
 
+  Widget _appIconWidget(BuildContext context, WebApp app) {
+    return Padding(
+      padding: EdgeInsets.only(right: 16.w),
+      child: WebAppIcon(app: app),
+    );
+  }
+
+  Widget _name(BuildContext context, WebApp app) {
+    return Text(
+      '${app.name ?? app.appId}',
+      style: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.w500,
+          ),
+    );
+  }
+
+  Widget _sendTimeWidget(BuildContext context) {
+    return Text(
+      ' $formattedTime',
+      style: Theme.of(context).textTheme.caption.copyWith(
+        fontSize: 16.sp,
+      ),
+    );
+  }
+
+  Widget _shortContent(BuildContext context) {
+    return Text(
+      widget.message.content ?? '',
+      style: Theme.of(context).textTheme.caption.copyWith(
+            fontSize: 19.sp,
+          ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    updateApp();
-    timeFormat(null, fromBuild: true);
+
+    final WebApp app = context
+        .select<WebAppsProvider, Set<WebApp>>((WebAppsProvider p) => p.allApps)
+        .where((WebApp app) => app.appId == widget.message.appId)
+        .elementAt(0);
+
+    timeFormat(fromBuild: true);
     tryDecodeContent();
 
     return GestureDetector(
@@ -146,61 +178,24 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
         height: widget.height.h,
         child: Row(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 16.w),
-              child: WebAppIcon(app: app),
-            ),
+            _appIconWidget(context, app),
             Expanded(
               child: SizedBox(
                 height: 60.h,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        SizedBox(
-                          height: 30.h,
-                          child: app != null
-                              ? Text(
-                                  '${app.name ?? app.appId}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      .copyWith(
-                                        fontSize: 22.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                        Text(
-                          ' $formattedTime',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .color
-                                    .withOpacity(0.5),
-                              ),
-                        ),
+                        if (app != null)
+                          _name(context, app),
+                        _sendTimeWidget(context),
                         const Spacer(),
-                        unreadCounter,
+                        unreadCounter(context),
                       ],
                     ),
-                    Text(
-                      widget.message.content ?? '',
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                .color
-                                .withOpacity(0.5),
-                            fontSize: 19.sp,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    _shortContent(context),
                   ],
                 ),
               ),

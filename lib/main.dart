@@ -192,7 +192,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   void checkIfNoConnectivity(ConnectivityResult result) {
     if (result == ConnectivityResult.none) {
-      connectivityToastFuture ??= showNoConnectivityDialog;
+      connectivityToastFuture ??= showNoConnectivityDialog(context);
     } else {
       connectivityToastFuture?.dismiss(showAnim: true);
       if (connectivityToastFuture != null) {
@@ -224,47 +224,51 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     }
   }
 
-  ToastFuture get showNoConnectivityDialog => showToastWidget(
-        noConnectivityWidget,
-        duration: 999.weeks,
-        handleTouch: true,
-      );
+  ToastFuture showNoConnectivityDialog(BuildContext context) {
+    return showToastWidget(
+      noConnectivityWidget(context),
+      duration: 999.weeks,
+      handleTouch: true,
+    );
+  }
 
-  Widget get noConnectivityWidget => Material(
-        color: Colors.black26,
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-          child: Center(
-            child: Container(
-              width: Screens.width / 2,
-              height: Screens.width / 2,
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                shape: BoxShape.circle,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.router,
-                    size: Screens.width / 6,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  SizedBox(height: Screens.width / 20),
-                  Text(
-                    '检查网络连接',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(fontSize: 20.0),
-                  ),
-                ],
-              ),
+  Widget noConnectivityWidget(BuildContext context) {
+    return Material(
+      color: Colors.black26,
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+        child: Center(
+          child: Container(
+            width: Screens.width / 2,
+            height: Screens.width / 2,
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: Theme.of(context).canvasColor,
+              shape: BoxShape.circle,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.router,
+                  size: Screens.width / 6,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                SizedBox(height: Screens.width / 20),
+                Text(
+                  '检查网络连接',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .copyWith(fontSize: 20.0),
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
