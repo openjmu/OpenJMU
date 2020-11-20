@@ -557,7 +557,8 @@ class _PostCardState extends State<PostCard> {
       children: <Widget>[
         ConfirmationBottomSheetAction(
           icon: SvgPicture.asset(
-              R.ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG),
+            R.ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG,
+          ),
           text: '${UserAPI.blacklist.contains(
             BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
           ) ? '移出' : '加入'}黑名单',

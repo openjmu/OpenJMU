@@ -233,10 +233,14 @@ class PostDetailPageState extends State<PostDetailPage> {
           username: widget.post.nickname,
         )))
           ConfirmationBottomSheetAction(
-            icon: const Icon(Icons.visibility_off),
+            icon: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG,
+            ),
             text: '${UserAPI.blacklist.contains(
               BlacklistUser(
-                  uid: widget.post.uid, username: widget.post.nickname),
+                uid: widget.post.uid,
+                username: widget.post.nickname,
+              ),
             ) ? '移出' : '加入'}黑名单',
             onTap: () => UserAPI.confirmBlock(
               context,
@@ -245,7 +249,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             ),
           ),
         ConfirmationBottomSheetAction(
-          icon: const Icon(Icons.report),
+          icon: SvgPicture.asset(R.ASSETS_ICONS_POST_ACTIONS_REPORT_SVG),
           text: '举报动态',
           onTap: () => confirmReport(context),
         ),
