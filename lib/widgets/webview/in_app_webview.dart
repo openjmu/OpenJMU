@@ -153,13 +153,26 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
     );
   }
 
-  Widget get _domainProvider => Padding(
-        padding: EdgeInsets.only(bottom: 10.h),
-        child: Text(
-          '网页由 $urlDomain 提供',
-          style: Theme.of(context).textTheme.caption.copyWith(fontSize: 18.sp),
-        ),
-      );
+  final Widget refreshIndicator = const Center(
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      child: SizedBox(
+        width: 24.0,
+        height: 24.0,
+        child: PlatformProgressIndicator(strokeWidth: 3.0),
+      ),
+    ),
+  );
+
+  Widget _domainProvider(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.h),
+      child: Text(
+        '网页由 $urlDomain 提供',
+        style: Theme.of(context).textTheme.caption.copyWith(fontSize: 18.sp),
+      ),
+    );
+  }
 
   Widget _moreAction({
     @required BuildContext context,
@@ -192,8 +205,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
           SizedBox(height: 10.h),
           Text(
             text,
-            style:
-                Theme.of(context).textTheme.caption.copyWith(fontSize: 15.sp),
+            style: Theme.of(context).textTheme.caption.copyWith(
+                  fontSize: 15.sp,
+                ),
           ),
         ],
       ),
@@ -245,7 +259,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
                 ],
               ),
             ),
-            if (urlDomain != null) _domainProvider,
+            if (urlDomain != null) _domainProvider(context),
             SizedBox(height: Screens.bottomSafeHeight),
           ],
         );
@@ -262,55 +276,30 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
     }
   }
 
-  PreferredSizeWidget get appBar {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(kAppBarHeight.h),
-      child: Container(
-        padding: EdgeInsets.only(top: Screens.topSafeHeight),
-        height: Screens.topSafeHeight + kAppBarHeight.h,
-        color: currentTheme.cardColor,
-        child: Stack(
-          children: <Widget>[
-            SizedBox(
-              height: kAppBarHeight.h,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.close),
-                    onPressed: Navigator.of(context).pop,
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        if (widget.app != null)
-                          WebAppIcon(app: widget.app, size: 60.0),
-                        Flexible(
-                          child: Text(
-                            title,
-                            style: TextStyle(fontSize: 22.sp),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.more_horiz),
-                    onPressed: () => showMore(context),
-                  ),
-                ],
-              ),
+  FixedAppBar get appBar {
+    return FixedAppBar(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          if (widget.app != null) WebAppIcon(app: widget.app, size: 60.0),
+          Flexible(
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 22.sp),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            progressBar,
-          ],
-        ),
+          ),
+        ],
       ),
+      actions: <Widget>[
+        IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(Icons.more_horiz),
+          onPressed: () => showMore(context),
+        ),
+      ],
     );
   }
 
@@ -318,7 +307,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
     return Positioned(
       left: 0.0,
       right: 0.0,
-      bottom: 0.0,
+      top: 0.0,
       height: 2.w,
       child: StreamBuilder<double>(
         initialData: 0.0,
@@ -333,170 +322,168 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
     );
   }
 
-  Widget get refreshIndicator => const Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: SizedBox(
-            width: 24.0,
-            height: 24.0,
-            child: PlatformProgressIndicator(strokeWidth: 3.0),
-          ),
+  List<Widget> get persistentFooterButtons {
+    return <Widget>[
+      SizedBox(
+        width: Screens.width,
+        height: 32.w,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.keyboard_arrow_left,
+                color: currentThemeColor,
+                size: 32.w,
+              ),
+              onPressed: _webViewController?.goBack,
+            ),
+            IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.keyboard_arrow_right,
+                color: currentThemeColor,
+                size: 32.w,
+              ),
+              onPressed: _webViewController?.goForward,
+            ),
+            IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.refresh,
+                color: currentThemeColor,
+                size: 32.w,
+              ),
+              onPressed: _webViewController?.reload,
+            ),
+          ],
         ),
-      );
-
-  List<Widget> get persistentFooterButtons => <Widget>[
-        SizedBox(
-          width: Screens.width,
-          height: 32.w,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.keyboard_arrow_left,
-                  color: currentThemeColor,
-                  size: 32.w,
-                ),
-                onPressed: _webViewController?.goBack,
-              ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.keyboard_arrow_right,
-                  color: currentThemeColor,
-                  size: 32.w,
-                ),
-                onPressed: _webViewController?.goForward,
-              ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.refresh,
-                  color: currentThemeColor,
-                  size: 32.w,
-                ),
-                onPressed: _webViewController?.reload,
-              ),
-            ],
-          ),
-        ),
-      ];
+      ),
+    ];
+  }
 
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
+    return FixedAppBarWrapper(
       appBar: (widget.withAppBar ?? true) ? appBar : null,
-      body: InAppWebView(
-        initialUrl: url,
-        initialOptions: InAppWebViewGroupOptions(
-          crossPlatform: InAppWebViewOptions(
-            applicationNameForUserAgent: 'openjmu-webview',
-            cacheEnabled: widget.withCookie ?? true,
-            clearCache: !widget.withCookie ?? false,
-            horizontalScrollBarEnabled: false,
-            javaScriptCanOpenWindowsAutomatically: true,
-            supportZoom: true,
-            transparentBackground: true,
-            useOnDownloadStart: true,
-            useShouldOverrideUrlLoading: true,
-            verticalScrollBarEnabled: false,
-          ),
-          android: AndroidInAppWebViewOptions(
-            allowFileAccessFromFileURLs: true,
-            allowUniversalAccessFromFileURLs: true,
-            builtInZoomControls: true,
-            displayZoomControls: false,
-            forceDark: currentIsDark
-                ? AndroidForceDark.FORCE_DARK_ON
-                : AndroidForceDark.FORCE_DARK_OFF,
-            loadWithOverviewMode: true,
-            mixedContentMode:
-                AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-            safeBrowsingEnabled: false,
-            useWideViewPort: true,
-          ),
-          ios: IOSInAppWebViewOptions(
-            allowsAirPlayForMediaPlayback: true,
-            allowsBackForwardNavigationGestures: true,
-            allowsLinkPreview: true,
-            allowsPictureInPictureMediaPlayback: true,
-            isFraudulentWebsiteWarningEnabled: false,
-            sharedCookiesEnabled: true,
-          ),
-        ),
-        onCreateWindow: (
-          InAppWebViewController controller,
-          CreateWindowRequest createWindowRequest,
-        ) async {
-          if (Uri.tryParse(createWindowRequest.url) != null) {
-            await controller.loadUrl(url: createWindowRequest.url);
-            return true;
-          }
-          return false;
-        },
-        onLoadStart: (InAppWebViewController controller, String url) {
-          LogUtils.d('Webview onLoadStart: $url');
-        },
-        onLoadStop: (InAppWebViewController controller, String url) async {
-          unawaited(controller.evaluateJavascript(
-            source: 'window.onbeforeunload=null',
-          ));
+      body: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            InAppWebView(
+              initialUrl: url,
+              initialOptions: InAppWebViewGroupOptions(
+                crossPlatform: InAppWebViewOptions(
+                  applicationNameForUserAgent: 'openjmu-webview',
+                  cacheEnabled: widget.withCookie ?? true,
+                  clearCache: !widget.withCookie ?? false,
+                  horizontalScrollBarEnabled: false,
+                  javaScriptCanOpenWindowsAutomatically: true,
+                  supportZoom: true,
+                  transparentBackground: true,
+                  useOnDownloadStart: true,
+                  useShouldOverrideUrlLoading: true,
+                  verticalScrollBarEnabled: false,
+                ),
+                android: AndroidInAppWebViewOptions(
+                  allowFileAccessFromFileURLs: true,
+                  allowUniversalAccessFromFileURLs: true,
+                  builtInZoomControls: true,
+                  displayZoomControls: false,
+                  forceDark: currentIsDark
+                      ? AndroidForceDark.FORCE_DARK_ON
+                      : AndroidForceDark.FORCE_DARK_OFF,
+                  loadWithOverviewMode: true,
+                  mixedContentMode:
+                      AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+                  safeBrowsingEnabled: false,
+                  useWideViewPort: true,
+                ),
+                ios: IOSInAppWebViewOptions(
+                  allowsAirPlayForMediaPlayback: true,
+                  allowsBackForwardNavigationGestures: true,
+                  allowsLinkPreview: true,
+                  allowsPictureInPictureMediaPlayback: true,
+                  isFraudulentWebsiteWarningEnabled: false,
+                  sharedCookiesEnabled: true,
+                ),
+              ),
+              onCreateWindow: (
+                InAppWebViewController controller,
+                CreateWindowRequest createWindowRequest,
+              ) async {
+                if (Uri.tryParse(createWindowRequest.url) != null) {
+                  await controller.loadUrl(url: createWindowRequest.url);
+                  return true;
+                }
+                return false;
+              },
+              onLoadStart: (_, String url) {
+                LogUtils.d('Webview onLoadStart: $url');
+              },
+              onLoadStop:
+                  (InAppWebViewController controller, String url) async {
+                unawaited(controller.evaluateJavascript(
+                  source: 'window.onbeforeunload=null',
+                ));
 
-          this.url = url;
-          final String _title = (await controller.getTitle())?.trim();
-          if (_title != null && _title.isNotEmpty && _title != this.url) {
-            title = _title;
-          } else {
-            final String ogTitle = await controller.evaluateJavascript(
-              source:
-                  'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
-                  'if (ogTitle != undefined) ogTitle.content;',
-            ) as String;
-            if (ogTitle != null) {
-              title = ogTitle;
-            }
-          }
-          if (mounted) {
-            setState(() {});
-          }
-          Future<void>.delayed(500.milliseconds, () {
-            progressController?.add(0.0);
-          });
-        },
-        onProgressChanged: (InAppWebViewController controller, int progress) {
-          progressController?.add(progress / 100);
-        },
-        onConsoleMessage:
-            (InAppWebViewController controller, ConsoleMessage consoleMessage) {
-          LogUtils.d('Console message: '
-              '${consoleMessage.messageLevel.toString()}'
-              ' - '
-              '${consoleMessage.message}');
-        },
-        onDownloadStart: (InAppWebViewController controller, String url) {
-          LogUtils.d('WebView started download from: $url');
-          NetUtils.download(url);
-        },
-        onWebViewCreated: (InAppWebViewController controller) {
-          _webViewController = controller;
-        },
-        shouldOverrideUrlLoading: (
-          InAppWebViewController controller,
-          ShouldOverrideUrlLoadingRequest request,
-        ) async {
-          if (checkSchemeLoad(controller, request.url)) {
-            return ShouldOverrideUrlLoadingAction.CANCEL;
-          } else {
-            return ShouldOverrideUrlLoadingAction.ALLOW;
-          }
-        },
+                this.url = url;
+                final String _title = (await controller.getTitle())?.trim();
+                if (_title != null && _title.isNotEmpty && _title != this.url) {
+                  title = _title;
+                } else {
+                  final String ogTitle = await controller.evaluateJavascript(
+                    source:
+                        'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
+                        'if (ogTitle != undefined) ogTitle.content;',
+                  ) as String;
+                  if (ogTitle != null) {
+                    title = ogTitle;
+                  }
+                }
+                if (mounted) {
+                  setState(() {});
+                }
+                Future<void>.delayed(500.milliseconds, () {
+                  progressController?.add(0.0);
+                });
+              },
+              onProgressChanged: (_, int progress) {
+                progressController?.add(progress / 100);
+              },
+              onConsoleMessage: (_, ConsoleMessage consoleMessage) {
+                LogUtils.d('Console message: '
+                    '${consoleMessage.messageLevel.toString()}'
+                    ' - '
+                    '${consoleMessage.message}');
+              },
+              onDownloadStart: (_, String url) {
+                LogUtils.d('WebView started download from: $url');
+                NetUtils.download(url);
+              },
+              onWebViewCreated: (InAppWebViewController controller) {
+                _webViewController = controller;
+              },
+              shouldOverrideUrlLoading: (
+                InAppWebViewController controller,
+                ShouldOverrideUrlLoadingRequest request,
+              ) async {
+                if (checkSchemeLoad(controller, request.url)) {
+                  return ShouldOverrideUrlLoadingAction.CANCEL;
+                } else {
+                  return ShouldOverrideUrlLoadingAction.ALLOW;
+                }
+              },
+            ),
+            progressBar,
+          ],
+        ),
+        persistentFooterButtons:
+            (widget.withAction ?? true) ? persistentFooterButtons : null,
       ),
-      persistentFooterButtons:
-          (widget.withAction ?? true) ? persistentFooterButtons : null,
     );
   }
 }
