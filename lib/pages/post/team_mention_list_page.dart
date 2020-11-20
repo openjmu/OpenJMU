@@ -55,14 +55,12 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
 
   Widget _header(BuildContext context, int index, TeamMentionItem item) {
     return Container(
-      height: 80.h,
-      padding: EdgeInsets.symmetric(
-        vertical: 8.h,
-      ),
+      height: 70.w,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
-          SizedBox(width: 16.w),
+          UserAPI.getAvatar(uid: item.fromUserId),
+          Gap(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -72,11 +70,14 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(fontSize: 22.sp),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
-                        margin: EdgeInsets.only(left: 14.w),
+                        margin: EdgeInsets.only(left: 10.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,
@@ -118,7 +119,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     return Text(
       time,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 18.sp,
+            fontSize: 17.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -129,15 +130,10 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
       padding: EdgeInsets.only(bottom: 10.h),
       child: ExtendedText(
         item.post?.content ?? item.comment?.content ?? '',
-        style: TextStyle(fontSize: 21.sp),
+        style: TextStyle(fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
-        overflowWidget: TextOverflowWidget(
-          child: Text(
-            '全文',
-            style: TextStyle(color: currentThemeColor),
-          ),
-        ),
+        overflowWidget: contentOverflowWidget,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       ),
     );
@@ -199,25 +195,24 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).canvasColor,
-      child: !loading
-          ? mentionedList.isNotEmpty
-              ? ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: mentionedList.length + 1,
-                  itemBuilder: mentionItemBuilder,
-                )
-              : Center(
-                  child: Text(
-                    '暂无内容',
-                    style: TextStyle(
-                      color: currentThemeColor,
-                      fontSize: 24.sp,
-                    ),
-                  ),
-                )
-          : const SpinKitWidget(),
+    if (loading) {
+      return const SpinKitWidget();
+    }
+    if (mentionedList.isEmpty) {
+      return Center(
+        child: Text(
+          '暂无内容',
+          style: TextStyle(
+            color: currentThemeColor,
+            fontSize: 24.sp,
+          ),
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: mentionedList.length + 1,
+      itemBuilder: mentionItemBuilder,
     );
   }
 }

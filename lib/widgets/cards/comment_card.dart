@@ -13,139 +13,13 @@ class CommentCard extends StatelessWidget {
   final Comment comment;
 
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: 18.sp);
+
   TextStyle get rootTopicMentionStyle => TextStyle(
         color: Colors.blue,
         fontSize: 18.sp,
       );
+
   Color get subIconColor => Colors.grey;
-
-  Widget getCommentNickname(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Text(
-          '${comment.fromUserName ?? comment.fromUserUid}',
-          style: TextStyle(fontSize: 20.sp),
-          textAlign: TextAlign.left,
-        ),
-        if (Constants.developerList.contains(comment.fromUserUid))
-          Container(
-            margin: EdgeInsets.only(left: 14.w),
-            child: DeveloperTag(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 4.h,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget get getCommentInfo {
-    return Text(
-      '${PostAPI.postTimeConverter(comment.commentTime)}  '
-      '来自${comment.from}客户端',
-      style: TextStyle(
-        color: currentTheme.textTheme.caption.color,
-        fontSize: 16.sp,
-      ),
-    );
-  }
-
-  Widget getCommentContent(BuildContext context, Comment comment) {
-    final String content = comment.content;
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                getExtendedText(context, content),
-                getRootContent(context, comment),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget getRootContent(BuildContext context, Comment comment) {
-    final String content = comment.toReplyContent ?? comment.toTopicContent;
-    if (content != null && content.isNotEmpty) {
-      String topic;
-      if (comment.toReplyExist) {
-        topic =
-            '<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ';
-      } else {
-        topic = '<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ';
-      }
-      topic += content;
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.all(16.w),
-        padding: EdgeInsets.all(10.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).canvasColor,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            getExtendedText(context, topic, isRoot: true),
-          ],
-        ),
-      );
-    } else {
-      return getPostBanned();
-    }
-  }
-
-  Widget getPostBanned() {
-    return Container(
-      color: currentThemeColor.withOpacity(0.4),
-      margin: EdgeInsets.only(top: 10.h),
-      padding: EdgeInsets.all(30.w),
-      child: Center(
-        child: Text(
-          '该条微博已被屏蔽或删除',
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 20.sp,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget getExtendedText(BuildContext context, String content,
-      {bool isRoot = false}) {
-    return Padding(
-      padding: isRoot
-          ? EdgeInsets.zero
-          : EdgeInsets.symmetric(horizontal: 24.w),
-      child: ExtendedText(
-        content != null ? '$content ' : null,
-        style: TextStyle(fontSize: 19.sp),
-        onSpecialTextTap: specialTextTapRecognizer,
-        maxLines: 8,
-        overflowWidget: TextOverflowWidget(
-          child: Text(
-            '全文',
-            style: TextStyle(
-              color: currentThemeColor,
-              fontSize: 19.sp,
-            ),
-          ),
-        ),
-        specialTextSpanBuilder:
-            StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
-      ),
-    );
-  }
 
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
@@ -215,14 +89,121 @@ class CommentCard extends StatelessWidget {
     }
   }
 
+  Widget getCommentNickname(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Text(
+          '${comment.fromUserName ?? comment.fromUserUid}',
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+        ),
+        if (Constants.developerList.contains(comment.fromUserUid))
+          Container(
+            margin: EdgeInsets.only(left: 10.w),
+            child: DeveloperTag(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.w,
+                vertical: 4.h,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget get getCommentInfo {
+    return Text(
+      '${PostAPI.postTimeConverter(comment.commentTime)}  '
+      '来自${comment.from}客户端',
+      style: TextStyle(
+        color: currentTheme.textTheme.caption.color,
+        fontSize: 16.sp,
+      ),
+    );
+  }
+
+  Widget getCommentContent(BuildContext context, Comment comment) {
+    final String content = comment.content;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 6.h),
+          child: getExtendedText(context, content),
+        ),
+        getRootContent(context, comment),
+      ],
+    );
+  }
+
+  Widget getRootContent(BuildContext context, Comment comment) {
+    final String content = comment.toReplyContent ?? comment.toTopicContent;
+    if (content != null && content.isNotEmpty) {
+      String topic;
+      if (comment.toReplyExist) {
+        topic =
+            '<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ';
+      } else {
+        topic = '<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ';
+      }
+      topic += content;
+      return Container(
+        width: double.maxFinite,
+        margin: EdgeInsets.only(top: 6.h, bottom: 12.h),
+        padding: EdgeInsets.all(8.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: Theme.of(context).canvasColor,
+        ),
+        child: getExtendedText(context, topic, isRoot: true),
+      );
+    } else {
+      return getPostBanned();
+    }
+  }
+
+  Widget getPostBanned() {
+    return Container(
+      color: currentThemeColor.withOpacity(0.4),
+      margin: EdgeInsets.only(top: 10.h),
+      padding: EdgeInsets.all(30.w),
+      child: Center(
+        child: Text(
+          '该条微博已被屏蔽或删除',
+          style: TextStyle(color: Colors.white70, fontSize: 20.sp),
+        ),
+      ),
+    );
+  }
+
+  Widget getExtendedText(
+    BuildContext context,
+    String content, {
+    bool isRoot = false,
+  }) {
+    return ExtendedText(
+      content != null ? '$content ' : null,
+      style: TextStyle(fontSize: 19.sp),
+      onSpecialTextTap: specialTextTapRecognizer,
+      maxLines: 8,
+      overflowWidget: contentOverflowWidget,
+      specialTextSpanBuilder:
+          StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => showAction(context),
       child: Container(
         margin: EdgeInsets.symmetric(
-          horizontal: 12.w,
-          vertical: 6.h,
+          horizontal: 16.w,
+          vertical: 10.w,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 24.w,
+          vertical: 8.w,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
@@ -231,28 +212,21 @@ class CommentCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.w,
-                vertical: 12.h,
-              ),
+            Container(
+              height: 70.w,
+              padding: EdgeInsets.symmetric(vertical: 6.w),
               child: Row(
                 children: <Widget>[
-                  UserAPI.getAvatar(size: 54.0, uid: comment.fromUserUid),
+                  UserAPI.getAvatar(uid: comment.fromUserUid),
+                  Gap(16.w),
                   Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          getCommentNickname(context),
-                          separator(context, height: 4.0),
-                          getCommentInfo,
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        getCommentNickname(context),
+                        getCommentInfo,
+                      ],
                     ),
                   ),
                 ],

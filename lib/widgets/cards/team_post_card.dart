@@ -52,36 +52,37 @@ class _TeamPostCardState extends State<TeamPostCard> {
       child: Row(
         children: <Widget>[
           UserAPI.getAvatar(uid: post.uid),
-          SizedBox(width: 16.w),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    post.nickname ?? post.uid.toString(),
-                    style: TextStyle(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  if (Constants.developerList.contains(post.uid))
-                    Container(
-                      margin: EdgeInsets.only(left: 14.w),
-                      child: DeveloperTag(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 4.h,
-                        ),
+          Gap(16.w),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(
+                      post.nickname ?? post.uid.toString(),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                ],
-              ),
-              _postTime(context),
-            ],
+                    if (Constants.developerList.contains(post.uid))
+                      Container(
+                        margin: EdgeInsets.only(left: 10.w),
+                        child: DeveloperTag(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 2.h,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                _postTime(context),
+              ],
+            ),
           ),
-          const Spacer(),
           SizedBox.fromSize(
             size: Size.square(50.w),
             child: IconButton(
@@ -103,7 +104,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
     return Text(
       TeamPostAPI.timeConverter(post),
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 18.sp,
+        fontSize: 16.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -113,7 +114,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
         padding: EdgeInsets.symmetric(vertical: 4.h),
         child: ExtendedText(
           post.article ?? post.content ?? '',
-          style: TextStyle(fontSize: 21.sp),
+          style: TextStyle(fontSize: 19.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),

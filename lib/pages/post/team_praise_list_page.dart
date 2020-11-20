@@ -56,14 +56,12 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
 
   Widget _header(BuildContext context, int index, TeamPraiseItem item) {
     return Container(
-      height: 80.h,
-      padding: EdgeInsets.symmetric(
-        vertical: 8.h,
-      ),
+      height: 70.w,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
-          SizedBox(width: 16.w),
+          UserAPI.getAvatar(uid: item.fromUserId),
+          Gap(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -73,11 +71,14 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(fontSize: 22.sp),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
-                        margin: EdgeInsets.only(left: 14.w),
+                        margin: EdgeInsets.only(left: 10.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,
@@ -117,7 +118,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     return Text(
       time,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 18.sp,
+            fontSize: 17.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -133,24 +134,19 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                 alignment: ui.PlaceholderAlignment.middle,
                 child: Icon(
                   Icons.thumb_up,
-                  size: 21.w,
+                  size: 19.sp,
                   color: currentThemeColor,
                 ),
               ),
             ],
           ),
-          style: TextStyle(
-            fontSize: 21.sp,
-          ),
+          style: TextStyle(fontSize: 19.sp),
         ),
       );
 
   Widget _rootContent(TeamPraiseItem item) => Container(
         width: double.maxFinite,
-        margin: EdgeInsets.only(
-          top: 6.h,
-          bottom: 12.h,
-        ),
+        margin: EdgeInsets.only(top: 6.h, bottom: 12.h),
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
@@ -158,9 +154,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
         ),
         child: ExtendedText(
           item.post.content,
-          style: TextStyle(
-            fontSize: 18.sp,
-          ),
+          style: TextStyle(fontSize: 18.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -222,25 +216,24 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).canvasColor,
-      child: !loading
-          ? praiseList.isNotEmpty
-              ? ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: praiseList.length + 1,
-                  itemBuilder: praiseItemBuilder,
-                )
-              : Center(
-                  child: Text(
-                    '暂无内容',
-                    style: TextStyle(
-                      color: currentThemeColor,
-                      fontSize: 24.sp,
-                    ),
-                  ),
-                )
-          : const SpinKitWidget(),
+    if (loading) {
+      return const SpinKitWidget();
+    }
+    if (praiseList.isEmpty) {
+      return Center(
+        child: Text(
+          '暂无内容',
+          style: TextStyle(
+            color: currentThemeColor,
+            fontSize: 24.sp,
+          ),
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: praiseList.length + 1,
+      itemBuilder: praiseItemBuilder,
     );
   }
 }

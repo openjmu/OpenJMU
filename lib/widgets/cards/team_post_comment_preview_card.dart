@@ -29,7 +29,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
         child: Row(
           children: <Widget>[
             UserAPI.getAvatar(uid: comment.uid),
-            SizedBox(width: 16.w),
+            Gap(16.w),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,15 +155,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
           ),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
-          overflowWidget: TextOverflowWidget(
-            child: Text(
-              '全文',
-              style: TextStyle(
-                color: currentThemeColor,
-                fontSize: 19.sp,
-              ),
-            ),
-          ),
+          overflowWidget: contentOverflowWidget,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
       );

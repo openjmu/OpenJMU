@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -288,6 +289,19 @@ class LoadMoreIndicator extends StatelessWidget {
             ),
     );
   }
+}
+
+TextOverflowWidget get contentOverflowWidget {
+  return TextOverflowWidget(
+    child: Text(
+      '全文',
+      style: TextStyle(
+        color: currentThemeColor,
+        fontSize: 19.sp,
+        height: 1.0,
+      ),
+    ),
+  );
 }
 
 /// Scaled image.

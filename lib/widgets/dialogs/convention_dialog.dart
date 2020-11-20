@@ -234,7 +234,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             confirmButton(context),
-            SizedBox(width: 16.w),
+            Gap(16.w),
             cancelButton(context),
           ],
         ),

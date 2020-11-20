@@ -55,12 +55,12 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   Widget _header(BuildContext context, int index, TeamReplyItem item) {
     return Container(
-      height: 80.h,
-      padding: EdgeInsets.symmetric(vertical: 8.h),
+      height: 70.w,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
-          SizedBox(width: 16.w),
+          UserAPI.getAvatar(uid: item.fromUserId),
+          Gap(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -70,11 +70,14 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(fontSize: 22.sp),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
-                        margin: EdgeInsets.only(left: 14.w),
+                        margin: EdgeInsets.only(left: 10.w),
                         child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,
@@ -115,34 +118,27 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     return Text(
       time,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 18.sp,
+            fontSize: 17.sp,
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget _content(TeamReplyItem item) => Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: 6.h,
-        ),
+        padding: EdgeInsets.symmetric(vertical: 6.h),
         child: ExtendedText(
           item.post?.content ?? item.comment?.content ?? '',
-          style: TextStyle(fontSize: 21.sp),
+          style: TextStyle(fontSize: 19.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
-          overflowWidget: TextOverflowWidget(
-            child: Text(
-              '全文',
-              style: TextStyle(color: currentThemeColor),
-            ),
-          ),
+          overflowWidget: contentOverflowWidget,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
       );
 
   Widget _rootContent(TeamReplyItem item) => Container(
         width: double.maxFinite,
-        margin: EdgeInsets.symmetric(vertical: 6.h),
+        margin: EdgeInsets.only(top: 6.h, bottom: 12.h),
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
@@ -150,7 +146,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
         ),
         child: ExtendedText(
           item.toPost.content,
-          style: TextStyle(fontSize: 20.sp),
+          style: TextStyle(fontSize: 18.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -159,7 +155,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               TextSpan(
                 text: item.type == TeamReplyType.post ? '回复我的帖子：' : '评论我的回帖：',
                 style: TextStyle(
-                    color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
+                  color: Theme.of(context).iconTheme.color.withOpacity(0.5),
+                ),
               ),
             ],
           ),
@@ -227,25 +224,24 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).canvasColor,
-      child: !loading
-          ? replyList.isNotEmpty
-              ? ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: replyList.length + 1,
-                  itemBuilder: replyItemBuilder,
-                )
-              : Center(
-                  child: Text(
-                    '暂无内容',
-                    style: TextStyle(
-                      color: currentThemeColor,
-                      fontSize: 24.sp,
-                    ),
-                  ),
-                )
-          : const SpinKitWidget(),
+    if (loading) {
+      return const SpinKitWidget();
+    }
+    if (replyList.isEmpty) {
+      return Center(
+        child: Text(
+          '暂无内容',
+          style: TextStyle(
+            color: currentThemeColor,
+            fontSize: 24.sp,
+          ),
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: replyList.length + 1,
+      itemBuilder: replyItemBuilder,
     );
   }
 }

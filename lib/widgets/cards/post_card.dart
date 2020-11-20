@@ -475,15 +475,7 @@ class _PostCardState extends State<PostCard> {
         maxLines: widget.isDetail ?? false ? null : 8,
         overflowWidget: widget.isDetail ?? false
             ? null
-            : TextOverflowWidget(
-                child: Text(
-                  '全文',
-                  style: TextStyle(
-                    color: currentThemeColor,
-                    fontSize: 19.sp,
-                  ),
-                ),
-              ),
+            : contentOverflowWidget,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       ),
     );
@@ -652,7 +644,7 @@ class _PostCardState extends State<PostCard> {
                           child: Row(
                             children: <Widget>[
                               UserAPI.getAvatar(uid: widget.post.uid),
-                              SizedBox(width: 16.w),
+                              Gap(16.w),
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment:

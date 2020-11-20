@@ -96,7 +96,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       child: Row(
         children: <Widget>[
           UserAPI.getAvatar(uid: post.uid),
-          SizedBox(width: 16.w),
+          Gap(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -162,12 +162,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           style: TextStyle(fontSize: 19.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
-          overflowWidget: TextOverflowWidget(
-            child: Text(
-              '全文',
-              style: TextStyle(color: currentThemeColor),
-            ),
-          ),
+          overflowWidget: contentOverflowWidget,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
       );
@@ -249,8 +244,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                         child: Container(
                           margin: EdgeInsets.symmetric(horizontal: 6.w),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 5.w,
-                            vertical: 0.5.h,
+                            horizontal: 6.w,
+                            vertical: 2.h,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5.w),
@@ -259,7 +254,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                           child: Text(
                             '楼主',
                             style: TextStyle(
-                              fontSize: 13.sp,
+                              height: 1.2,
+                              fontSize: 14.sp,
                               color: adaptiveButtonColor(),
                               fontWeight: FontWeight.bold,
                             ),

@@ -262,15 +262,6 @@ class PraiseListInPostState extends State<PraiseListInPost>
     _praises.clear();
   }
 
-  void _refreshData() {
-    isLoading = true;
-    _praises.clear();
-    if (mounted) {
-      setState(() {});
-    }
-    _refreshList();
-  }
-
   Future<void> _loadList() async {
     isLoading = true;
     try {

@@ -516,41 +516,44 @@ class NotificationsPageState extends State<NotificationsPage>
                             Row(children: <Widget>[const Spacer(), actionBar]),
                       ),
                       Expanded(
-                        child: IndexedStack(
-                          index: _index,
-                          children: <Widget>[
-                            IndexedStack(
-                              index: _squareIndex,
-                              children: <Widget>[
-                                NestedScrollViewInnerScrollPositionKeyWidget(
-                                  const Key('List-0-0'),
-                                  praiseList,
-                                ),
-                                NestedScrollViewInnerScrollPositionKeyWidget(
-                                  const Key('List-0-1'),
-                                  commentByReply,
-                                ),
-                                mentionList,
-                              ],
-                            ),
-                            IndexedStack(
-                              index: _teamIndex,
-                              children: <Widget>[
-                                NestedScrollViewInnerScrollPositionKeyWidget(
-                                  const Key('List-1-0'),
-                                  TeamPraiseListPage(),
-                                ),
-                                NestedScrollViewInnerScrollPositionKeyWidget(
-                                  const Key('List-1-1'),
-                                  TeamReplyListPage(),
-                                ),
-                                NestedScrollViewInnerScrollPositionKeyWidget(
-                                  const Key('List-1-2'),
-                                  TeamMentionListPage(),
-                                ),
-                              ],
-                            ),
-                          ],
+                        child: ColoredBox(
+                          color: Theme.of(context).canvasColor,
+                          child: IndexedStack(
+                            index: _index,
+                            children: <Widget>[
+                              IndexedStack(
+                                index: _squareIndex,
+                                children: <Widget>[
+                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                    const Key('List-0-0'),
+                                    praiseList,
+                                  ),
+                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                    const Key('List-0-1'),
+                                    commentByReply,
+                                  ),
+                                  mentionList,
+                                ],
+                              ),
+                              IndexedStack(
+                                index: _teamIndex,
+                                children: <Widget>[
+                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                    const Key('List-1-0'),
+                                    TeamPraiseListPage(),
+                                  ),
+                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                    const Key('List-1-1'),
+                                    TeamReplyListPage(),
+                                  ),
+                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                    const Key('List-1-2'),
+                                    TeamMentionListPage(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
