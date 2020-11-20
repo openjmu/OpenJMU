@@ -47,7 +47,7 @@ class MessagePageState extends State<MessagePage>
                     overflow: Overflow.visible,
                     children: <Widget>[
                       Positioned(
-                        top: kToolbarHeight / 4.h,
+                        top: 0.0,
                         right: -10.w,
                         child: Visibility(
                           visible: provider.unreadCount > 0,

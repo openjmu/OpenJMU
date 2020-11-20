@@ -167,120 +167,121 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _postInfo(BuildContext context, TeamPostProvider provider) =>
-      Container(
-        margin: EdgeInsets.symmetric(
-          vertical: 12.h,
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 12.h,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).canvasColor.withOpacity(0.5),
-        ),
-        child: ListView.builder(
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: provider.post.postInfo.length +
-              (provider.post.repliesCount > 2 ? 1 : 0),
-          itemBuilder: (_, int index) {
-            if (index == provider.post.postInfo.length) {
-              return Container(
-                margin: EdgeInsets.only(top: 12.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.expand_more,
-                      size: 20.w,
-                      color: Theme.of(context).textTheme.caption.color,
-                    ),
-                    Text(
-                      '查看更多回复',
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: 17.sp,
-                          ),
-                    ),
-                    Icon(
-                      Icons.expand_more,
-                      size: 20.w,
-                      color: Theme.of(context).textTheme.caption.color,
-                    ),
-                  ],
-                ),
-              );
-            }
-            final Map<String, dynamic> _post =
-                provider.post.postInfo[index].cast<String, dynamic>();
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 4.h,
+  Widget _postInfo(BuildContext context, TeamPostProvider provider) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: 12.h,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 12.h,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.w),
+        color: Theme.of(context).canvasColor,
+      ),
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: provider.post.postInfo.length +
+            (provider.post.repliesCount > 2 ? 1 : 0),
+        itemBuilder: (_, int index) {
+          if (index == provider.post.postInfo.length) {
+            return Container(
+              margin: EdgeInsets.only(top: 12.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.expand_more,
+                    size: 20.w,
+                    color: Theme.of(context).textTheme.caption.color,
+                  ),
+                  Text(
+                    '查看更多回复',
+                    style: Theme.of(context).textTheme.caption.copyWith(
+                          fontSize: 17.sp,
+                        ),
+                  ),
+                  Icon(
+                    Icons.expand_more,
+                    size: 20.w,
+                    color: Theme.of(context).textTheme.caption.color,
+                  ),
+                ],
               ),
-              child: ExtendedText(
-                _post['content'] as String ?? '',
-                specialTextSpanBuilder: StackSpecialTextSpanBuilder(
-                  prefixSpans: <InlineSpan>[
-                    TextSpan(
-                      text: '@${_post['user_info']['nickname']}',
-                      style: const TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          navigatorState.pushNamed(
-                            Routes.openjmuUserPage,
-                            arguments: <String, dynamic>{
-                              'uid':
-                                  (_post['user_info']['uid'] as String).toInt(),
-                            },
-                          );
-                        },
-                    ),
-                    if ((_post['user_info']['uid'] as String).toInt() ==
-                        provider.post.uid)
-                      WidgetSpan(
-                        alignment: ui.PlaceholderAlignment.middle,
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 6.w),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.w,
-                            vertical: 2.h,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.w),
-                            color: currentThemeColor,
-                          ),
-                          child: Text(
-                            '楼主',
-                            style: TextStyle(
-                              height: 1.2,
-                              fontSize: 14.sp,
-                              color: adaptiveButtonColor(),
-                              fontWeight: FontWeight.bold,
-                            ),
+            );
+          }
+          final Map<String, dynamic> _post =
+              provider.post.postInfo[index].cast<String, dynamic>();
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: 4.h,
+            ),
+            child: ExtendedText(
+              _post['content'] as String ?? '',
+              specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+                prefixSpans: <InlineSpan>[
+                  TextSpan(
+                    text: '@${_post['user_info']['nickname']}',
+                    style: const TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        navigatorState.pushNamed(
+                          Routes.openjmuUserPage,
+                          arguments: <String, dynamic>{
+                            'uid':
+                                (_post['user_info']['uid'] as String).toInt(),
+                          },
+                        );
+                      },
+                  ),
+                  if ((_post['user_info']['uid'] as String).toInt() ==
+                      provider.post.uid)
+                    WidgetSpan(
+                      alignment: ui.PlaceholderAlignment.middle,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 6.w),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.w),
+                          color: currentThemeColor,
+                        ),
+                        child: Text(
+                          '楼主',
+                          style: TextStyle(
+                            height: 1.2,
+                            fontSize: 14.sp,
+                            color: adaptiveButtonColor(),
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    const TextSpan(
-                      text: ': ',
-                      style: TextStyle(color: Colors.blue),
                     ),
-                  ],
-                ),
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 17.sp,
-                    ),
-                onSpecialTextTap: specialTextTapRecognizer,
-                maxLines: 3,
-                overflowWidget: const TextOverflowWidget(
-                  child: Text('......'),
-                ),
+                  const TextSpan(
+                    text: ': ',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-      );
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontSize: 17.sp,
+                  ),
+              onSpecialTextTap: specialTextTapRecognizer,
+              maxLines: 3,
+              overflowWidget: const TextOverflowWidget(
+                child: Text('......'),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   Widget _images(BuildContext context, TeamPost post) {
     final List<Widget> imagesWidget = <Widget>[];

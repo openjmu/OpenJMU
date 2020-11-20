@@ -158,66 +158,45 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
               ),
             ),
             if (index == 0)
-              Consumer<NotificationProvider>(
-                builder: (_, NotificationProvider provider, __) {
-                  return Positioned(
-                    top: widget.height / 7,
-                    right: Screens.width / widget.items.length / 4,
-                    child: Visibility(
-                      visible: provider.showNotification,
-                      child: ClipRRect(
-                        borderRadius: maxBorderRadius,
-                        child: Container(
-                          width: 12.w,
-                          height: 12.w,
-                          color: widget.selectedColor,
-                        ),
-                      ),
-                    ),
-                  );
+              Selector<NotificationProvider, bool>(
+                selector: (_, NotificationProvider provider) => provider.showNotification,
+                builder: (_, bool showNotification, __) {
+                  return dot(showNotification);
                 },
               ),
             if (index == 1)
-              Consumer<NotificationProvider>(
-                builder: (_, NotificationProvider provider, __) {
-                  return Positioned(
-                    top: widget.height / 8,
-                    right: Screens.width / widget.items.length / 5,
-                    child: Visibility(
-                      visible: provider.showTeamNotification,
-                      child: ClipRRect(
-                        borderRadius: maxBorderRadius,
-                        child: Container(
-                          width: 12.w,
-                          height: 12.w,
-                          color: widget.selectedColor,
-                        ),
-                      ),
-                    ),
-                  );
+              Selector<NotificationProvider, bool>(
+                selector: (_, NotificationProvider provider) => provider.showTeamNotification,
+                builder: (_, bool showNotification, __) {
+                  return dot(showNotification);
                 },
               ),
             if (index == 3)
-              Consumer<MessagesProvider>(
-                builder: (_, MessagesProvider provider, __) {
-                  return Positioned(
-                    top: widget.height / 6,
-                    right: Screens.width / widget.items.length / 5,
-                    child: Visibility(
-                      visible: provider.unreadCount > 0,
-                      child: ClipRRect(
-                        borderRadius: maxBorderRadius,
-                        child: Container(
-                          width: 12.w,
-                          height: 12.w,
-                          color: widget.selectedColor,
-                        ),
-                      ),
-                    ),
-                  );
+              Selector<MessagesProvider, int>(
+                selector: (_, MessagesProvider provider) => provider.unreadCount,
+                builder: (_, int unreadCount, __) {
+                  return dot(unreadCount > 0);
                 },
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget dot(bool shouldDisplay) {
+    return Positioned(
+      top: widget.height / 7,
+      right: Screens.width / widget.items.length / 4,
+      child: Visibility(
+        visible: shouldDisplay,
+        child: Container(
+          width: 12.w,
+          height: 12.w,
+          decoration: BoxDecoration(
+            borderRadius: maxBorderRadius,
+            color: widget.selectedColor,
+          ),
         ),
       ),
     );
