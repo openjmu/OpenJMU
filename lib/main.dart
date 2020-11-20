@@ -304,7 +304,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                       behavior: const NoGlowScrollBehavior(),
                       child: NoScaleTextWidget(child: w),
                     );
-                    if (Platform.isIOS && Screens.topSafeHeight == 44.0) {
+                    if (Platform.isIOS && Screens.topSafeHeight >= 42) {
                       widget = Stack(
                         children: <Widget>[
                           Positioned.fill(child: widget),
@@ -343,14 +343,15 @@ class _HiddenLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PositionedDirectional(
-      top: 0.0,
-      start: 0.0,
-      end: 0.0,
-      height: 30.0,
+      start: 0,
+      end: 0,
+      top: 0,
+      height: Screens.topSafeHeight,
       child: Center(
         child: SvgPicture.asset(
           R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
           color: defaultLightColor,
+          height: Screens.topSafeHeight * 0.3,
         ),
       ),
     );
