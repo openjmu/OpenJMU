@@ -239,7 +239,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 height: 72.w,
                 gap: 24.0,
                 canClose: true,
-                backgroundColor: currentThemeColor,
+                backgroundColor: Theme.of(context).accentColor,
                 radius: 15.w,
               );
             } else {
