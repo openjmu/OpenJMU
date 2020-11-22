@@ -480,7 +480,7 @@ class NotificationsPageState extends State<NotificationsPage>
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: navigatorState.maybePop,
-                      child: SizedBox(height: Screens.height),
+                      child: VGap(Screens.height),
                     ),
                   ),
                 ];

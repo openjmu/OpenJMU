@@ -77,7 +77,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
         ),
         actions: <Widget>[
           _refreshIcon,
-          SizedBox(width: 10.w),
+          Gap(10.w),
           switchButton,
         ],
         actionsPadding: EdgeInsets.only(right: 20.w),

@@ -535,7 +535,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              SizedBox(height: 10.h),
+                              VGap(10.h),
                               Row(
                                 children: <Widget>[
                                   getPostNickname(context, _posts[index]),
@@ -554,11 +554,11 @@ class ForwardListInPostState extends State<ForwardListInPost>
                                     ),
                                 ],
                               ),
-                              SizedBox(height: 4.h),
+                              VGap(4.h),
                               getExtendedText(context, _posts[index].content),
-                              SizedBox(height: 6.h),
+                              VGap(6.h),
                               getPostTime(context, _posts[index]),
-                              SizedBox(height: 10.h),
+                              VGap(10.h),
                             ],
                           ),
                         ),

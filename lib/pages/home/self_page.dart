@@ -124,7 +124,7 @@ class SelfPage extends StatelessWidget {
                   widget = Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      if (provider.hasSigned) SizedBox(height: 2.w),
+                      if (provider.hasSigned) VGap(2.w),
                       SvgPicture.asset(
                         provider.hasSigned
                             ? R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG
@@ -163,7 +163,7 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: 42.h,
+        height: 50.h,
         child: Row(
           children: <Widget>[
             Padding(
@@ -210,13 +210,14 @@ class SelfPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 20.w),
+              Gap(20.w),
               Expanded(
                 child: Text(
                   currentUser.name,
                   style: TextStyle(
-                    fontSize: 23.sp,
                     color: adaptiveButtonColor(),
+                    fontSize: 23.sp,
+                    fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

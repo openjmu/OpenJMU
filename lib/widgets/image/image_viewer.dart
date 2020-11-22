@@ -468,7 +468,7 @@ class ViewAppBar extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         UserAvatar(uid: post.uid),
-                        SizedBox(width: 10.w),
+                        Gap(10.w),
                         Text(
                           post.nickname,
                           style: TextStyle(

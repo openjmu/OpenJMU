@@ -103,7 +103,7 @@ class _MarketingPageState extends State<MarketingPage> {
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context, isTeam: true),
-          SizedBox(width: 10.w),
+          Gap(10.w),
           MainPage.publishButton(
             context: context,
             route: Routes.openjmuPublishTeamPost,

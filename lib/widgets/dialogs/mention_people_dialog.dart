@@ -203,7 +203,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
               ),
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).viewInsets.bottom)
+          VGap(MediaQuery.of(context).viewInsets.bottom)
         ],
       ),
     );

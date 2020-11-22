@@ -356,7 +356,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             ),
           ),
           emoticonPad,
-          SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          VGap(MediaQuery.of(context).viewInsets.bottom),
         ],
       ),
     );

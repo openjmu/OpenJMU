@@ -128,7 +128,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
               ),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).viewInsets.bottom ?? 0)
+          VGap(MediaQuery.of(context).viewInsets.bottom ?? 0)
         ],
       ),
     );

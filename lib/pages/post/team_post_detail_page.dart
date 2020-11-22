@@ -698,7 +698,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
               ),
               extendedPad,
               emoticonPad,
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
+              VGap(MediaQuery.of(context).padding.bottom),
             ],
           ),
         ],

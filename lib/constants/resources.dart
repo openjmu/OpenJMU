@@ -493,6 +493,9 @@ class R {
   static const String ASSETS_ICONS_IDOLS_LINE_SVG =
       'assets/icons/idols-line.svg';
 
+  static const String ASSETS_ICONS_LOAD_MORE_SVG =
+      'assets/icons/load-more.svg';
+
   static const String ASSETS_ICONS_NOTIFICATION_SVG =
       'assets/icons/notification.svg';
 

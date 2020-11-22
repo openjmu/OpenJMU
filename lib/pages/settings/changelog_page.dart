@@ -138,7 +138,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           else
             const Spacer(flex: 2),
           versionInfo(log),
-          SizedBox(height: 12.h),
+          VGap(12.h),
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -275,7 +275,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               height: 150.w,
             ),
           ),
-          SizedBox(height: 50.h),
+          VGap(50.h),
           Text(
             'Open The Sky',
             style: TextStyle(
@@ -284,7 +284,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               fontSize: 50.sp,
             ),
           ),
-          SizedBox(height: 20.h),
+          VGap(20.h),
           Text(
             '2019.03.17',
             style: TextStyle(
@@ -292,7 +292,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               fontSize: 30.sp,
             ),
           ),
-          SizedBox(height: 80.h),
+          VGap(80.h),
         ],
       );
 
@@ -302,7 +302,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             const SpinKitWidget(),
-            SizedBox(height: 40.h),
+            VGap(40.h),
             Text.rich(
               TextSpan(
                 children: <InlineSpan>[

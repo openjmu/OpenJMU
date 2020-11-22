@@ -688,7 +688,7 @@ class _PostCardState extends State<PostCard> {
                                 ),
                                 const Spacer(),
                                 if (widget.isDetail)
-                                  SizedBox(height: 16.w)
+                                  VGap(16.w)
                                 else
                                   postActions(context),
                               ],

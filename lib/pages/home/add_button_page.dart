@@ -373,7 +373,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                   (int i) => item(context, i),
                 ),
               ),
-              SizedBox(height: 120.h),
+              VGap(120.h),
             ],
           ),
         ),

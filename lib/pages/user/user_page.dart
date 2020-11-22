@@ -6,11 +6,8 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:loading_more_list/loading_more_list.dart';
-import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/cards/post_card.dart';
 
 @FFRoute(
   name: 'openjmu://user-page',
@@ -383,7 +380,7 @@ class UserPageState extends State<UserPage>
             children: <Widget>[
               usernameWidget,
               if (Constants.developerList.contains(user?.uid ?? 0))
-                SizedBox(width: 8.w),
+                Gap(8.w),
               if (Constants.developerList.contains(user?.uid ?? 0))
                 DeveloperTag(
                   padding: EdgeInsets.symmetric(
@@ -671,12 +668,12 @@ class UserPageState extends State<UserPage>
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text('关注', style: titleStyle),
-                SizedBox(width: 8.w),
+                Gap(8.w),
                 Text('${userIdols ?? ''}', style: countStyle),
               ],
             ),
           ),
-          SizedBox(width: 20.w),
+          Gap(20.w),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
@@ -692,7 +689,7 @@ class UserPageState extends State<UserPage>
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text('粉丝', style: titleStyle),
-                SizedBox(width: 8.w),
+                Gap(8.w),
                 Text('${userFans ?? ''}', style: countStyle),
               ],
             ),

@@ -161,7 +161,7 @@ class SplashState extends State<SplashPage> {
               ),
             ),
           ),
-          SizedBox(height: 30.h),
+          VGap(30.h),
         ],
       );
 

@@ -196,7 +196,7 @@ class SettingsProvider extends ChangeNotifier {
 //              crossAxisAlignment: CrossAxisAlignment.start,
 //              children: <Widget>[
 //                Text('检测到您的云设置与云端不匹配，请选择保留本机或云端设置：'),
-//                SizedBox(height: 10.h),
+//                VGap(10.h),
 //                Row(
 //                  children: <Widget>[
 //                    syncSettingWidget(currentModel),

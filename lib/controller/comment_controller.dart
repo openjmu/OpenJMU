@@ -549,7 +549,7 @@ class CommentListInPostState extends State<CommentListInPost>
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                SizedBox(height: 10.h),
+                                VGap(10.h),
                                 Row(
                                   children: <Widget>[
                                     getCommentNickname(
@@ -571,14 +571,14 @@ class CommentListInPostState extends State<CommentListInPost>
                                       ),
                                   ],
                                 ),
-                                SizedBox(height: 4.h),
+                                VGap(4.h),
                                 getExtendedText(
                                   context,
                                   _comments[index].content,
                                 ),
-                                SizedBox(height: 6.h),
+                                VGap(6.h),
                                 getCommentTime(context, _comments[index]),
-                                SizedBox(height: 10.h),
+                                VGap(10.h),
                               ],
                             ),
                           ),

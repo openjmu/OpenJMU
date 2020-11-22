@@ -119,7 +119,7 @@ class _BackpackPageState extends State<BackpackPage> {
           style: TextStyle(fontSize: 24.sp),
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 12.h),
+        VGap(12.h),
         Text(
           myItems[index].description,
           style: Theme.of(context).textTheme.bodyText2.copyWith(

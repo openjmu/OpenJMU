@@ -202,7 +202,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
               child: Center(child: Icon(icon, size: 30.w)),
             ),
           ),
-          SizedBox(height: 10.h),
+          VGap(10.h),
           Text(
             text,
             style: Theme.of(context).textTheme.caption.copyWith(
@@ -260,7 +260,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
               ),
             ),
             if (urlDomain != null) _domainProvider(context),
-            SizedBox(height: Screens.bottomSafeHeight),
+            VGap(Screens.bottomSafeHeight),
           ],
         );
       },

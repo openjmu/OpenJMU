@@ -140,7 +140,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                           ),
                         ),
                     if (widget.showText)
-                      SizedBox(height: (widget.iconSize / 8).w),
+                      VGap((widget.iconSize / 8).w),
                     if (widget.showText)
                       AnimatedDefaultTextStyle(
                         duration: 200.milliseconds,

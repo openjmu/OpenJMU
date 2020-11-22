@@ -124,7 +124,7 @@ class FixedAppBar extends StatelessWidget {
           if (automaticallyImplyLeading &&
               Navigator.of(context).canPop() &&
               (actions?.isEmpty ?? true))
-            const SizedBox(width: kMinInteractiveDimension)
+            const Gap(kMinInteractiveDimension)
           else if (actions?.isNotEmpty ?? false)
             PositionedDirectional(
               top: 0.0,

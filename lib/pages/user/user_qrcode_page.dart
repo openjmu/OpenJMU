@@ -152,7 +152,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                             sexualWidget(margin: EdgeInsets.zero),
                           ],
                         ),
-                        SizedBox(height: 30.w),
+                        VGap(30.w),
                         qrImage,
                       ],
                     ),

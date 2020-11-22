@@ -118,7 +118,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             title,
             style: TextStyle(fontSize: 18.sp),
           ),
-          SizedBox(height: 10.h),
+          VGap(10.h),
           DefaultTextStyle(
             style: context.themeData.textTheme.bodyText2.copyWith(
               fontSize: 22.sp,

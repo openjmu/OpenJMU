@@ -172,7 +172,7 @@ class ScorePage extends StatelessWidget {
                 itemCount: terms.length + 2,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0 || index == terms.length + 1) {
-                    return SizedBox(width: 10.w);
+                    return Gap(10.w);
                   } else {
                     return _term(
                       context,

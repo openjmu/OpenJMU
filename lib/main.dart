@@ -254,7 +254,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   size: Screens.width / 6,
                   color: Theme.of(context).iconTheme.color,
                 ),
-                SizedBox(height: Screens.width / 20),
+                VGap(Screens.width / 20),
                 Text(
                   '检查网络连接',
                   style: Theme.of(context)

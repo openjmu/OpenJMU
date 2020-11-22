@@ -156,7 +156,7 @@ class _UserListState extends State<UserListPage> {
               size: 64.0,
               uid: _user['uid'].toString().toInt(),
             ),
-            SizedBox(width: 12.w),
+            Gap(12.w),
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -188,7 +188,7 @@ class _UserListState extends State<UserListPage> {
                             ),
                           ],
                         ),
-                        SizedBox(width: 6.w),
+                        Gap(6.w),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[

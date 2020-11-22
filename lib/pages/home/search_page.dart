@@ -265,7 +265,7 @@ class SearchPageState extends State<SearchPage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           UserAvatar(uid: userList[index].id, size: 56.0),
-                          SizedBox(height: 8.h),
+                          VGap(8.h),
                           Text(
                             userList[index].nickname,
                             style: TextStyle(fontSize: 18.sp),

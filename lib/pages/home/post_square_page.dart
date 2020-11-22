@@ -23,7 +23,7 @@ class PostSquarePage extends StatelessWidget {
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context),
-          SizedBox(width: 10.w),
+          Gap(10.w),
           MainPage.publishButton(
             context: context,
             route: Routes.openjmuPublishPost,
@@ -31,17 +31,28 @@ class PostSquarePage extends StatelessWidget {
         ],
         actionsPadding: EdgeInsets.only(right: 20.w),
       ),
-      body: Container(
-        color: Theme.of(context).canvasColor,
-        child: PostList(
-          PostController(
-            postType: 'square',
-            isFollowed: false,
-            isMore: false,
-            lastValue: (int id) => id,
+      body: RefreshListWrapper(
+        loadingBase: LoadingBase(
+          request: (int id) => PostAPI.getPostList(
+            'square',
+            isMore: id != 0,
+            lastValue: id,
           ),
-          needRefreshIndicator: true,
+          contentFieldName: 'topics',
         ),
+        itemBuilder: (Map<String, dynamic> model) {
+          final Post post = Post.fromJson(
+            model['topic'] as Map<String, dynamic>,
+          );
+          return Container(
+            child: PostCard(
+              post,
+              key: ValueKey<String>('post-key-${post.id}'),
+              parentContext: context,
+              fromPage: 'square',
+            ),
+          );
+        },
       ),
     );
   }

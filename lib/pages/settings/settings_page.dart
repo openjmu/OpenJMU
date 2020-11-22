@@ -120,7 +120,7 @@ class _AboutCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 20.w),
+          Gap(20.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

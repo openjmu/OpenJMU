@@ -18,6 +18,7 @@ import '../constants/constants.dart';
 import '../controller/extended_typed_network_image_provider.dart';
 
 export '../widgets/announcement/announcement_widget.dart';
+export '../widgets/cards/post_card.dart';
 export '../widgets/custom_switch.dart';
 export '../widgets/dialogs/confirmation_bottom_sheet.dart';
 export '../widgets/dialogs/confirmation_dialog.dart';
@@ -172,7 +173,7 @@ Widget separator(
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).canvasColor,
       ),
-      child: SizedBox(height: (height ?? 8).h),
+      child: VGap((height ?? 8).h),
     );
 
 /// Empty divider. Used in widgets need empty placeholder.

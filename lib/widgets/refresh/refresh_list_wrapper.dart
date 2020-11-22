@@ -53,6 +53,9 @@ class RefreshListWrapper extends StatelessWidget {
         break;
       case IndicatorStatus.fullScreenBusying:
         indicator = const SpinKitWidget();
+        if (isSliver) {
+          indicator = SliverFillRemaining(child: indicator);
+        }
         break;
       case IndicatorStatus.error:
         indicator = ListEmptyIndicator(
