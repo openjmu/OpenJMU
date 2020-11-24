@@ -564,7 +564,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                     crossFadeState: !firstLoaded
                         ? CrossFadeState.showFirst
                         : CrossFadeState.showSecond,
-                    firstChild: const SpinKitWidget(),
+                    firstChild: const Center(
+                      child: LoadMoreSpinningIcon(isRefreshing: true, size: 60),
+                    ),
                     secondChild: Column(
                       children: <Widget>[
                         if (context.select<CoursesProvider, String>(

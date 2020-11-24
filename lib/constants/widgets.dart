@@ -262,9 +262,11 @@ class LoadMoreSpinningIcon extends StatefulWidget {
   const LoadMoreSpinningIcon({
     Key key,
     @required this.isRefreshing,
+    this.size,
   }) : super(key: key);
 
   final bool isRefreshing;
+  final double size;
 
   @override
   _LoadMoreSpinningIconState createState() => _LoadMoreSpinningIconState();
@@ -310,7 +312,7 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
       turns: _animation,
       child: SvgPicture.asset(
         R.ASSETS_ICONS_LOAD_MORE_SVG,
-        width: 32.w,
+        width: (widget.size ?? 32).w,
         color: context.themeData.textTheme.caption.color,
       ),
     );
