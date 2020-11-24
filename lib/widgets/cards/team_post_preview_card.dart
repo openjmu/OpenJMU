@@ -299,7 +299,9 @@ class TeamPostPreviewCard extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const Center(child: CupertinoActivityIndicator());
+              loader = const Center(
+                child: LoadMoreSpinningIcon(isRefreshing: true),
+              );
               break;
             case LoadState.completed:
               final ImageInfo info = state.extendedImageInfo;

@@ -11,10 +11,12 @@ class LoadingBase extends LoadingMoreBase<Map<String, dynamic>> {
   LoadingBase({
     @required this.request,
     @required this.contentFieldName,
+    this.lastIdBuilder,
   }) : assert(contentFieldName != null);
 
-  Future<Response<Map<String, dynamic>>> Function(int id) request;
+  final Future<Response<Map<String, dynamic>>> Function(int id) request;
   final String contentFieldName;
+  final int Function(Map<String, dynamic> data) lastIdBuilder;
 
   int lastId = 0;
   int total;
@@ -49,7 +51,11 @@ class LoadingBase extends LoadingMoreBase<Map<String, dynamic>> {
       addAll(List<Map<String, dynamic>>.from(contents));
       total = data['total'].toString().toInt();
       if (total > 0) {
-        lastId = (last ?? <String, dynamic>{})['id'] as int ?? 0;
+        if (lastIdBuilder != null) {
+          lastId = lastIdBuilder(data);
+        } else {
+          lastId = (last ?? <String, dynamic>{})['id'] as int ?? 0;
+        }
       }
       canRequestMore = total > length;
       setState();

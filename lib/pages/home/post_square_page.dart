@@ -67,13 +67,11 @@ class _PostSquarePageState extends State<PostSquarePage> {
           final Post post = Post.fromJson(
             model['topic'] as Map<String, dynamic>,
           );
-          return Container(
-            child: PostCard(
-              post,
-              key: ValueKey<String>('post-key-${post.id}'),
-              parentContext: context,
-              fromPage: 'square',
-            ),
+          return PostCard(
+            post,
+            key: ValueKey<String>('post-key-${post.id}'),
+            parentContext: context,
+            fromPage: 'square',
           );
         },
       ),
