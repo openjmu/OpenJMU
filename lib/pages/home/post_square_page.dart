@@ -8,8 +8,37 @@ import 'package:openjmu/constants/constants.dart';
 
 import '../main_page.dart';
 
-class PostSquarePage extends StatelessWidget {
+class PostSquarePage extends StatefulWidget {
   const PostSquarePage({Key key}) : super(key: key);
+
+  @override
+  _PostSquarePageState createState() => _PostSquarePageState();
+}
+
+class _PostSquarePageState extends State<PostSquarePage> {
+  final LoadingBase loadingBase = LoadingBase(
+    request: (int id) => PostAPI.getPostList(
+      'square',
+      isMore: id != 0,
+      lastValue: id,
+    ),
+    contentFieldName: 'topics',
+  );
+
+  final ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Instances.eventBus.on<ScrollToTopEvent>().listen((ScrollToTopEvent event) {
+      if (mounted && (event.tabIndex == 0 && event.type == '广场')) {
+        controller.jumpTo(0.0);
+        Future<void>.delayed(const Duration(milliseconds: 50), () {
+          loadingBase.refresh();
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +61,8 @@ class PostSquarePage extends StatelessWidget {
         actionsPadding: EdgeInsets.only(right: 20.w),
       ),
       body: RefreshListWrapper(
-        loadingBase: LoadingBase(
-          request: (int id) => PostAPI.getPostList(
-            'square',
-            isMore: id != 0,
-            lastValue: id,
-          ),
-          contentFieldName: 'topics',
-        ),
+        loadingBase: loadingBase,
+        controller: controller,
         itemBuilder: (Map<String, dynamic> model) {
           final Post post = Post.fromJson(
             model['topic'] as Map<String, dynamic>,

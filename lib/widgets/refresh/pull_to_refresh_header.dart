@@ -4,8 +4,6 @@
 ///
 import 'package:flutter/cupertino.dart' hide RefreshIndicatorMode;
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart'
-    hide CupertinoActivityIndicator;
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -33,7 +31,7 @@ class PullToRefreshHeader extends StatelessWidget {
         onTap: info?.pullToRefreshNotificationState?.show,
         child: SizedBox(
           height: offset,
-          child: const Center(child: Text('刷新失败，点击重试')),
+          child: const Center(child: Text('点击重试')),
         ),
       );
     } else {
@@ -42,9 +40,8 @@ class PullToRefreshHeader extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: DefaultTextStyle(
-        style: textStyle ?? TextStyle(
-          color: context.themeData.dividerColor.withOpacity(0.375),
-          fontSize: 14.sp,
+        style: textStyle ?? context.themeData.textTheme.caption.copyWith(
+          fontSize: 18.sp,
           height: 1.4,
         ),
         child: child,
@@ -64,14 +61,14 @@ class PullToRefreshHeader extends StatelessWidget {
       case RefreshIndicatorMode.snap:
       case RefreshIndicatorMode.refresh:
         isRefreshingMode = true;
-        text = '正在刷新...';
+        text = '正在刷新';
         break;
       case RefreshIndicatorMode.canceled:
       case RefreshIndicatorMode.drag:
         text = '下拉刷新';
         break;
       case RefreshIndicatorMode.armed:
-        text = '松手以刷新';
+        text = '松手刷新';
         break;
       case RefreshIndicatorMode.done:
         text = '刷新成功';
@@ -86,21 +83,17 @@ class PullToRefreshHeader extends StatelessWidget {
 
     final double dragOffset = info?.dragOffset ?? 0.0;
 
-    return SizedBox(
+    return Container(
       height: dragOffset,
+      padding: EdgeInsets.only(top: 18.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           AnimatedSwitcher(
             duration: kTabScrollDuration,
-            child: isRefreshingMode
-                ? CupertinoActivityIndicator(animating: isRefreshingMode)
-                : const SizedBox.shrink(),
+            child: LoadMoreSpinningIcon(isRefreshing: isRefreshingMode),
           ),
-          AnimatedContainer(
-            duration: kTabScrollDuration,
-            width: isRefreshingMode ? 10.w : 0,
-          ),
+          Gap(10.w),
           Text(text),
         ],
       ),

@@ -17,6 +17,7 @@ class RefreshListWrapper extends StatelessWidget {
     Key key,
     @required this.loadingBase,
     @required this.itemBuilder,
+    this.controller,
     this.refreshHeaderTextStyle,
     this.indicatorPlaceholder,
     this.indicatorTextStyle,
@@ -24,6 +25,7 @@ class RefreshListWrapper extends StatelessWidget {
   }) : super(key: key);
 
   final LoadingBase loadingBase;
+  final ScrollController controller;
   final EdgeInsetsGeometry padding;
   final Widget Function(Map<String, dynamic> model) itemBuilder;
 
@@ -45,17 +47,17 @@ class RefreshListWrapper extends StatelessWidget {
         indicator = const SizedBox.shrink();
         break;
       case IndicatorStatus.loadingMoreBusying:
-        indicator = ListMoreIndicator(
-          isSliver: isSliver,
-          isRequesting: true,
+        indicator = LoadMoreIndicator(
+          canLoadMore: true,
           textStyle: indicatorTextStyle,
         );
         break;
       case IndicatorStatus.fullScreenBusying:
-        indicator = const SpinKitWidget();
-        if (isSliver) {
-          indicator = SliverFillRemaining(child: indicator);
-        }
+        indicator = LoadMoreIndicator(
+          isSliver: isSliver,
+          canLoadMore: true,
+          textStyle: indicatorTextStyle,
+        );
         break;
       case IndicatorStatus.error:
         indicator = ListEmptyIndicator(
@@ -76,14 +78,11 @@ class RefreshListWrapper extends StatelessWidget {
         );
         break;
       case IndicatorStatus.noMoreLoad:
-        if (loadingBase.isOnlyFirstPage) {
-          indicator = const SizedBox.shrink();
-        } else {
-          indicator = ListMoreIndicator(
-            isSliver: isSliver,
-            textStyle: indicatorTextStyle,
-          );
-        }
+        indicator = LoadMoreIndicator(
+          isSliver: isSliver,
+          canLoadMore: false,
+          textStyle: indicatorTextStyle,
+        );
         break;
       case IndicatorStatus.empty:
         indicator = ListEmptyIndicator(
@@ -124,6 +123,7 @@ class RefreshListWrapper extends StatelessWidget {
       pullBackDuration: 1.seconds,
       child: LoadingMoreCustomScrollView(
         rebuildCustomScrollView: true,
+        controller: controller,
         slivers: <Widget>[
           PullToRefreshContainer((PullToRefreshScrollNotificationInfo info) {
             return PullToRefreshHeader.buildRefreshHeader(
@@ -227,8 +227,7 @@ class ListEmptyIndicator extends StatelessWidget {
     }
     return DefaultTextStyle(
       style: textStyle ??
-          TextStyle(
-            color: context.themeData.dividerColor.withOpacity(0.2),
+          context.themeData.textTheme.caption.copyWith(
             fontSize: 17.sp,
             height: 1.4,
           ),

@@ -146,7 +146,7 @@ class _UserListState extends State<UserListPage> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.w),
-          color: Theme.of(context).canvasColor,
+          color: Theme.of(context).cardColor,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

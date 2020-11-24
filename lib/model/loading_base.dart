@@ -59,6 +59,4 @@ class LoadingBase extends LoadingMoreBase<Map<String, dynamic>> {
       return false;
     }
   }
-
-  bool get isOnlyFirstPage => total <= 20 && !hasMore;
 }

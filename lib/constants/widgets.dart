@@ -258,36 +258,113 @@ class PlatformProgressIndicator extends StatelessWidget {
   }
 }
 
-/// Load more indicator.
-class LoadMoreIndicator extends StatelessWidget {
-  const LoadMoreIndicator({
+class LoadMoreSpinningIcon extends StatefulWidget {
+  const LoadMoreSpinningIcon({
     Key key,
-    this.canLoadMore = true,
+    @required this.isRefreshing,
   }) : super(key: key);
 
-  final bool canLoadMore;
+  final bool isRefreshing;
+
+  @override
+  _LoadMoreSpinningIconState createState() => _LoadMoreSpinningIconState();
+}
+
+class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animation = AnimationController(
+      duration: const Duration(milliseconds: 1800),
+      vsync: this,
+    );
+    updateAnimation();
+  }
+
+  @override
+  void dispose() {
+    _animation.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(LoadMoreSpinningIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    updateAnimation();
+  }
+
+  void updateAnimation() {
+    if (widget.isRefreshing) {
+      _animation.repeat();
+    } else {
+      _animation.stop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return RotationTransition(
+      turns: _animation,
+      child: SvgPicture.asset(
+        R.ASSETS_ICONS_LOAD_MORE_SVG,
+        width: 32.w,
+        color: context.themeData.textTheme.caption.color,
+      ),
+    );
+  }
+}
+
+/// Load more indicator.
+class LoadMoreIndicator extends StatefulWidget {
+  const LoadMoreIndicator({
+    Key key,
+    this.canLoadMore = true,
+    this.isSliver = false,
+    this.textStyle,
+  }) : super(key: key);
+
+  final bool canLoadMore;
+  final bool isSliver;
+  final TextStyle textStyle;
+
+  @override
+  _LoadMoreIndicatorState createState() => _LoadMoreIndicatorState();
+}
+
+class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
+  @override
+  Widget build(BuildContext context) {
+    Widget child = SizedBox(
       height: 50.h,
-      child: canLoadMore
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SpinKitWidget(size: 32.w),
-                Text(
-                  '　正在加载',
-                  style: TextStyle(fontSize: 18.sp),
-                ),
-              ],
-            )
-          : Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          if (widget.canLoadMore) ...<Widget>[
+            const LoadMoreSpinningIcon(isRefreshing: true),
+            Gap(10.w),
+            Text(
+              '正在加载',
+              style: TextStyle(fontSize: 18.sp),
+            ),
+          ] else
+            Center(
               child: Text(
                 Constants.endLineTag,
                 style: TextStyle(fontSize: 18.sp),
               ),
-            ),
+            )
+        ],
+      ),
+    );
+    if (widget.isSliver) {
+      child = SliverFillRemaining(child: Center(child: child));
+    }
+    return DefaultTextStyle.merge(
+      style: widget.textStyle ?? TextStyle(fontSize: 18.sp, height: 1.4),
+      child: child,
     );
   }
 }
