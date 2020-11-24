@@ -18,8 +18,8 @@ class NetUtils {
 
   static const bool shouldLogRequest = false;
 
-  static final Dio dio = Dio();
-  static final Dio tokenDio = Dio();
+  static final Dio dio = Dio(BaseOptions(connectTimeout: 15000));
+  static final Dio tokenDio = Dio(BaseOptions(connectTimeout: 15000));
 
   static final DefaultCookieJar cookieJar = DefaultCookieJar();
   static final CookieManager cookieManager = CookieManager(cookieJar);
@@ -188,7 +188,8 @@ class NetUtils {
         queryParameters: queryParameters,
         data: data,
         options: Options(
-            headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid)),
+          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+        ),
       );
 
   static Future<Response<T>> postWithCookieSet<T>(

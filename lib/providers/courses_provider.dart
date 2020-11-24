@@ -178,6 +178,11 @@ class CoursesProvider extends ChangeNotifier {
       if (!isOuterNetwork &&
           dioError.response?.statusCode == HttpStatus.forbidden) {
         updateCourses(isOuterNetwork: true);
+      } else {
+        _showError = true;
+        _firstLoaded = true;
+        _isOuterError = true;
+        notifyListeners();
       }
     } catch (e) {
       _showError = !_hasCourses; // 有课则不显示错误
