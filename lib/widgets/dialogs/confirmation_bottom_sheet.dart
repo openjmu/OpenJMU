@@ -129,7 +129,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         child: Center(
           child: Text(
             widget.confirmLabel ?? '确定',
-            style: TextStyle(color: Colors.white, fontSize: 23.sp),
+            style: TextStyle(color: adaptiveButtonColor(), fontSize: 23.sp),
           ),
         ),
       ),
@@ -149,15 +149,6 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       child: Stack(
         overflow: Overflow.visible,
         children: <Widget>[
-          Positioned(
-            top: -1.h,
-            left: 0.0,
-            right: 0.0,
-            height: 2.h,
-            child: ColoredBox(
-              color: widget.backgroundColor ?? Theme.of(context).primaryColor,
-            ),
-          ),
           Container(
             margin: EdgeInsets.all(20.w),
             width: Screens.width,
@@ -171,6 +162,15 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
                 widget.cancelLabel ?? '取消',
                 style: TextStyle(fontSize: 23.sp),
               ),
+            ),
+          ),
+          Positioned(
+            top: -8.w,
+            left: 0.0,
+            right: 0.0,
+            height: 5.w,
+            child: ColoredBox(
+              color: widget.backgroundColor ?? Theme.of(context).primaryColor,
             ),
           ),
         ],

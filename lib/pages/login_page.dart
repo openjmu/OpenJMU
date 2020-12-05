@@ -373,6 +373,7 @@ class LoginPageState extends State<LoginPage>
               margin: EdgeInsets.symmetric(vertical: 15.h),
               child: const AnnouncementWidget(
                 backgroundColor: Colors.black26,
+                contentColor: Colors.white,
                 radius: 10.0,
               ),
             );

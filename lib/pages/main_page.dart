@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/marketing_page.dart';
@@ -179,6 +180,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         fontWeight: FontWeight.w300,
       );
 
+  /// 是否展示公告
+  final ValueNotifier<bool> showAnnouncement = ValueNotifier<bool>(true);
+
   /// Index for pages.
   /// 当前页面索引
   int _currentIndex;
@@ -200,6 +204,15 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     _currentIndex = widget.initAction ??
         Provider.of<SettingsProvider>(currentContext, listen: false)
             .homeSplashIndex;
+
+    /// 进入首屏10秒后，公告默认消失
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Future<void>.delayed(10.seconds, () {
+        if (mounted && showAnnouncement.value) {
+          showAnnouncement.value = false;
+        }
+      });
+    });
 
     Instances.eventBus.on<ActionsEvent>().listen((ActionsEvent event) {
       /// Listen to actions event to react with quick actions both on Android and iOS.
@@ -227,30 +240,73 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// Announcement widget.
   /// 公告组件
   Widget announcementWidget(BuildContext context) {
-    return Positioned(
-      bottom: 0.0,
-      left: 0.0,
-      right: 0.0,
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Selector<SettingsProvider, bool>(
-          selector: (BuildContext _, SettingsProvider provider) =>
-              provider.announcementsUserEnabled,
-          builder: (BuildContext _, bool announcementsUserEnabled, Widget __) {
-            if (announcementsUserEnabled) {
-              return AnnouncementWidget(
-                height: 72.w,
-                gap: 24.0,
-                canClose: true,
-                backgroundColor: context.themeData.accentColor,
-                radius: 15.w,
+    if (!context.select<SettingsProvider, bool>(
+      (SettingsProvider p) => p.announcementsEnabled,
+    )) {
+      return const SizedBox.shrink();
+    }
+    return ValueListenableBuilder<bool>(
+      valueListenable: showAnnouncement,
+      builder: (_, bool isShowing, __) {
+        final Map<String, dynamic> announcement = context
+            .read<SettingsProvider>()
+            .announcements[0] as Map<String, dynamic>;
+        return AnimatedPositioned(
+          duration: 1.seconds,
+          curve: Curves.fastLinearToSlowEaseIn,
+          bottom: isShowing ? 0.0 : -72.w,
+          left: 0.0,
+          right: 0.0,
+          height: 72.w,
+          child: GestureDetector(
+            onTap: () {
+              ConfirmationDialog.show(
+                context,
+                title: announcement['title'] as String,
+                content: announcement['content'] as String,
+                cancelLabel: '朕已阅',
               );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        ),
-      ),
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.w),
+                  topRight: Radius.circular(20.w),
+                ),
+                color: context.themeData.colorScheme.primary,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      announcement['title'] as String,
+                      style: TextStyle(
+                        color: adaptiveButtonColor(),
+                        fontSize: 19.sp,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (showAnnouncement.value) {
+                        showAnnouncement.value = false;
+                      }
+                    },
+                    child: Icon(
+                      Icons.keyboard_arrow_down_sharp,
+                      color: adaptiveButtonColor(),
+                      size: 40.w,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

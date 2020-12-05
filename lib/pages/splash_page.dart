@@ -143,7 +143,7 @@ class SplashState extends State<SplashPage> {
             R.IMAGES_SPLASH_PAGE_LOGO_SVG,
             width: 150.w,
             height: 150.h,
-            color: currentIsDark ? currentThemeColor : Colors.white,
+            color: currentIsDark ? currentThemeColor : adaptiveButtonColor(),
           ),
         ),
       );
@@ -156,7 +156,8 @@ class SplashState extends State<SplashPage> {
                 bottom: 10.h,
               ),
               child: SpinKitWidget(
-                color: currentIsDark ? currentThemeColor : Colors.white,
+                color:
+                    currentIsDark ? currentThemeColor : adaptiveButtonColor(),
                 size: 36.0,
               ),
             ),
@@ -173,7 +174,8 @@ class SplashState extends State<SplashPage> {
               child: Center(
                 child: Icon(
                   Icons.signal_wifi_off,
-                  color: currentIsDark ? currentThemeColor : Colors.white,
+                  color:
+                      currentIsDark ? currentThemeColor : adaptiveButtonColor(),
                   size: 48.w,
                 ),
               ),
@@ -185,7 +187,8 @@ class SplashState extends State<SplashPage> {
               child: Text(
                 '请检查联网状态',
                 style: TextStyle(
-                  color: currentIsDark ? currentThemeColor : Colors.white,
+                  color:
+                      currentIsDark ? currentThemeColor : adaptiveButtonColor(),
                   fontSize: 24.sp,
                 ),
               ),
@@ -199,7 +202,9 @@ class SplashState extends State<SplashPage> {
     return WillPopScope(
       onWillPop: () async => false,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
+        value: currentIsDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         child: AnimatedOpacity(
           duration: 500.milliseconds,
           curve: Curves.easeInOut,
