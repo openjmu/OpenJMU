@@ -7,6 +7,8 @@ import 'package:extended_list/extended_list.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NewsListPage extends StatefulWidget {
+  const NewsListPage({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => NewsListPageState();
 }
@@ -29,7 +31,7 @@ class NewsListPageState extends State<NewsListPage>
   @override
   void initState() {
     super.initState();
-    getNewsList(isLoadMore: false);
+    getNewsList(isLoadMore: true);
   }
 
   @override
@@ -38,7 +40,7 @@ class NewsListPageState extends State<NewsListPage>
     super.dispose();
   }
 
-  Future<void> getNewsList({bool isLoadMore}) async {
+  Future<void> getNewsList({bool isLoadMore = false}) async {
     if (!_isLoading) {
       _isLoading = true;
       if (!isLoadMore) {
@@ -49,9 +51,9 @@ class NewsListPageState extends State<NewsListPage>
       );
       final Map<String, dynamic> data =
           (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
-        _url,
-        headers: Constants.teamHeader,
-      ))
+            _url,
+            headers: Constants.teamHeader,
+          ))
               .data;
 
       final List<News> _newsList = <News>[];
@@ -115,6 +117,7 @@ class NewsListPageState extends State<NewsListPage>
           child: Text(
             news.summary,
             style: TextStyle(color: Colors.grey, fontSize: 16.sp),
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -153,16 +156,11 @@ class NewsListPageState extends State<NewsListPage>
   }
 
   Widget coverImg(News news) {
-    final String imageUrl =
-        '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}';
-    final ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
     return SizedBox(
       width: 80.w,
       height: 80.w,
-      child: FadeInImage(
-        fadeInDuration: 100.milliseconds,
-        placeholder: const AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
-        image: coverImg,
+      child: ExtendedImage.network(
+        '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}',
         fit: BoxFit.cover,
       ),
     );
@@ -216,37 +214,38 @@ class NewsListPageState extends State<NewsListPage>
     if (!_showLoading) {
       if (_firstLoadComplete) {
         return RefreshIndicator(
-          onRefresh: () => getNewsList(isLoadMore: false),
+          onRefresh: () => getNewsList(),
           child: newsList.isEmpty
               ? const SizedBox.shrink()
               : ExtendedListView.separated(
-                  extendedListDelegate: ExtendedListDelegate(
-                    collectGarbage: (List<int> garbage) {
-                      for (final int index in garbage) {
-                        if (newsList.length >= index + 1) {
-                          final News element = newsList.elementAt(index);
-                          ExtendedNetworkImageProvider(
-                            '${API.showFile}${element.cover}'
-                            '/sid/${UserAPI.currentUser.sid}',
-                          ).evict();
-                        }
-                      }
-                    },
-                  ),
-                  shrinkWrap: true,
-                  controller: _scrollController,
-                  separatorBuilder: (_, __) => VGap(1.w),
-                  itemCount: newsList.length + 1,
-                  itemBuilder: (_, int index) {
-                    if (index == newsList.length) {
-                      return LoadMoreIndicator(canLoadMore: _canLoadMore);
-                    } else if (index < newsList.length) {
-                      return newsItem(newsList[index]);
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                ),
+            extendedListDelegate: ExtendedListDelegate(
+              collectGarbage: (List<int> garbage) {
+                for (final int index in garbage) {
+                  if (newsList.length >= index + 1) {
+                    final News element = newsList.elementAt(index);
+                    ExtendedNetworkImageProvider(
+                      '${API.showFile}${element.cover}'
+                          '/sid/${UserAPI.currentUser.sid}',
+                    ).evict();
+                  }
+                }
+              },
+            ),
+            shrinkWrap: true,
+            controller: _scrollController,
+            separatorBuilder: (_, __) => VGap(1.w),
+            itemCount: newsList.length + 1,
+            itemBuilder: (_, int index) {
+              if (index == newsList.length) {
+                getNewsList(isLoadMore: true);
+                return LoadMoreIndicator(canLoadMore: _canLoadMore);
+              }
+              if (index < newsList.length) {
+                return newsItem(newsList[index]);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         );
       } else {
         return const SpinKitWidget();

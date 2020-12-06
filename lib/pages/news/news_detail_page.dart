@@ -45,16 +45,16 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
       newsId: widget.news.id,
     ))
         .data;
-    pageContent = '''<!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="UTF-8" />
-                        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no" />'
-                        <title>${widget.news.title}</title>
-                    </head>
-                    <body>${data['content']}</body>
-                </html>
-            ''';
+    pageContent = '<!DOCTYPE html>'
+        '<html>'
+        '<head>'
+        '<meta charset="UTF-8" />'
+        '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no" />'
+        '<title>${widget.news.title}</title>'
+        '<style>body, img {width: 96%}</style>'
+        '</head>'
+        '<body>${data['content']}</body>'
+        '</html>';
     pageContent = Uri.dataFromString(
       pageContent,
       mimeType: 'text/html',
@@ -68,25 +68,27 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FixedAppBarWrapper(
-      appBar: FixedAppBar(title: Text(widget.news.title)),
-      body: (pageContent != null && _contentLoaded)
-          ? InAppWebView(
-              initialUrl: pageContent,
-              initialOptions: InAppWebViewGroupOptions(
-                crossPlatform: InAppWebViewOptions(
-                  applicationNameForUserAgent: 'openjmu-webview',
-                  horizontalScrollBarEnabled: false,
-                  javaScriptCanOpenWindowsAutomatically: true,
-                  supportZoom: true,
-                  transparentBackground: true,
-                  useOnDownloadStart: true,
-                  useShouldOverrideUrlLoading: true,
-                  verticalScrollBarEnabled: false,
+    return Scaffold(
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(title: Text(widget.news.title)),
+        body: (pageContent != null && _contentLoaded)
+            ? InAppWebView(
+                initialUrl: pageContent,
+                initialOptions: InAppWebViewGroupOptions(
+                  crossPlatform: InAppWebViewOptions(
+                    applicationNameForUserAgent: 'openjmu-webview',
+                    horizontalScrollBarEnabled: false,
+                    javaScriptCanOpenWindowsAutomatically: true,
+                    supportZoom: true,
+                    transparentBackground: true,
+                    useOnDownloadStart: true,
+                    useShouldOverrideUrlLoading: true,
+                    verticalScrollBarEnabled: false,
+                  ),
                 ),
-              ),
-            )
-          : const SpinKitWidget(),
+              )
+            : const SpinKitWidget(),
+      ),
     );
   }
 }
