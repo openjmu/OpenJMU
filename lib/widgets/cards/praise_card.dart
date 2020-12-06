@@ -127,7 +127,7 @@ class PraiseCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         getPraiseNickname(context, praise),
-                        separator(context, height: 4.0),
+                        VGap(4.w),
                         getPraiseInfo(praise),
                       ],
                     ),

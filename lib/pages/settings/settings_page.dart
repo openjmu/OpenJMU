@@ -198,7 +198,6 @@ class _AboutCard extends StatelessWidget {
           item: _SettingItem(
             name: '前往官网',
             description: 'openjmu.jmu.edu.cn',
-            hideArrow: true,
             url: API.homePage,
             urlTitle: 'OpenJMU',
           ),
@@ -270,7 +269,7 @@ class _StartPageCard extends StatelessWidget {
           item: _SettingItem(
             name: '主页',
             description: MainPageState.pagesTitle[
-                context.watch<SettingsProvider>().homeStartUpIndex[0]],
+                context.watch<SettingsProvider>().homeSplashIndex],
             route: Routes.openjmuSwitchStartup,
           ),
         ),
@@ -541,7 +540,7 @@ class _SettingItemWidget extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
             if (item.widget != null) item.widget,
-            if ((item.route != null || item.onTap != null) && !item.hideArrow)
+            if (item.url != null || item.route != null || item.onTap != null)
               Container(
                 margin: EdgeInsets.only(left: 16.w),
                 width: (iconSize / 1.25).w / 2,
@@ -574,7 +573,6 @@ class _SettingItem {
     this.widget,
     this.route,
     this.onTap,
-    this.hideArrow = false,
     this.url,
     this.urlTitle = '',
   });
@@ -584,7 +582,6 @@ class _SettingItem {
   final Widget widget;
   final String route;
   final VoidCallback onTap;
-  final bool hideArrow;
   final String url;
   final String urlTitle;
 }

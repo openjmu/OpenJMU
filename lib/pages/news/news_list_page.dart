@@ -235,8 +235,7 @@ class NewsListPageState extends State<NewsListPage>
                   ),
                   shrinkWrap: true,
                   controller: _scrollController,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      separator(context, height: 1.0),
+                  separatorBuilder: (_, __) => VGap(1.w),
                   itemCount: newsList.length + 1,
                   itemBuilder: (_, int index) {
                     if (index == newsList.length) {

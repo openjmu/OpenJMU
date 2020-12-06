@@ -211,11 +211,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
         ),
         body: ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: 40.w),
-          separatorBuilder: (_, int index) => separator(
-            context,
-            color: Colors.transparent,
-            height: 20.0,
-          ),
+          separatorBuilder: (_, __) => VGap(20.w),
           itemCount: pageSection.length,
           itemBuilder: (_, int sectionIndex) => ListView.builder(
             padding: EdgeInsets.zero,

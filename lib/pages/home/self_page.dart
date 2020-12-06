@@ -494,10 +494,7 @@ class SelfPage extends StatelessWidget {
                 Expanded(
                   child: ListView.separated(
                     padding: EdgeInsets.symmetric(vertical: 12.w),
-                    separatorBuilder: (BuildContext _, int __) => separator(
-                      context,
-                      height: 24.h,
-                    ),
+                    separatorBuilder: (_, __) => VGap(24.h),
                     itemCount: settingsSection.length,
                     itemBuilder: (BuildContext _, int index) =>
                         settingItem(context, index),

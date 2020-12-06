@@ -332,42 +332,35 @@ class NotificationsPageState extends State<NotificationsPage>
         ),
       );
 
-  Widget get actionBar => IndexedStack(
-        index: _index,
-        children: List<Widget>.generate(
-          actions.length,
-          (int i) {
-            final String key = actions[i].keys.elementAt(0);
-            return Row(
-              children: List<Widget>.generate(
-                (actions[i][key]['content'] as List<dynamic>).length,
-                (int j) {
-                  final Map<String, dynamic> item = actions[i]
-                      .values
-                      .elementAt(0)['content'][j] as Map<String, dynamic>;
-                  final int count = item['field'] as int;
-                  return GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      (item['select'] as void Function(int index))(j);
-                      (item['action'] as VoidCallback)();
-                    },
-                    child: Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 21.w),
-                      child: badgeIcon(
-                        content: count == 0 ? '' : count,
-                        icon: getActionIcon(i, j),
-                        showBadge: count != 0,
-                      ),
-                    ),
-                  );
-                },
+  Widget get actionBar {
+    final String key = actions[_index].keys.elementAt(0);
+    return Row(
+      children: List<Widget>.generate(
+        (actions[_index][key]['content'] as List<dynamic>).length,
+            (int j) {
+          final Map<String, dynamic> item = actions[_index]
+              .values
+              .elementAt(0)['content'][j] as Map<String, dynamic>;
+          final int count = item['field'] as int;
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              (item['select'] as void Function(int index))(j);
+              (item['action'] as VoidCallback)();
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 21.w),
+              child: badgeIcon(
+                content: count == 0 ? '' : count,
+                icon: getActionIcon(_index, j),
+                showBadge: count != 0,
               ),
-            );
-          },
-        ),
-      );
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   Widget getActionIcon(int sectionIndex, int actionIndex) {
     final Map<String, dynamic> item = actions[sectionIndex]
@@ -500,8 +493,7 @@ class NotificationsPageState extends State<NotificationsPage>
                     children: <Widget>[
                       backButton,
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20.w),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
                         height: kAppBarHeight.h,
                         decoration: BoxDecoration(
                           border: Border(

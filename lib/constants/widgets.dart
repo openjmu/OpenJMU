@@ -163,19 +163,6 @@ Widget sexualWidget({
   );
 }
 
-/// A common separator. Used in setting separate.
-Widget separator(
-  BuildContext context, {
-  Color color,
-  double height,
-}) =>
-    DecoratedBox(
-      decoration: BoxDecoration(
-        color: color ?? Theme.of(context).canvasColor,
-      ),
-      child: VGap((height ?? 8).h),
-    );
-
 /// Empty divider. Used in widgets need empty placeholder.
 Widget emptyDivider({double width, double height}) => SizedBox(
       width: width != null ? width.w : null,
