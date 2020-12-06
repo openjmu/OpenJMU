@@ -529,7 +529,9 @@ class _PublishPostPageState extends State<PublishPostPage>
             curve: Curves.easeInOut,
             duration: kThemeAnimationDuration,
             height: selectedAssets.isNotEmpty
-                ? isAssetListViewCollapsed ? 72.w : 140.w
+                ? isAssetListViewCollapsed
+                    ? 72.w
+                    : 140.w
                 : 0.0,
             margin: EdgeInsets.all(
               isAssetListViewCollapsed ? 12.w : 0,

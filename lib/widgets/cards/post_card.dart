@@ -474,9 +474,7 @@ class _PostCardState extends State<PostCard> {
         style: TextStyle(fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: widget.isDetail ?? false ? null : 8,
-        overflowWidget: widget.isDetail ?? false
-            ? null
-            : contentOverflowWidget,
+        overflowWidget: widget.isDetail ?? false ? null : contentOverflowWidget,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       ),
     );
@@ -650,9 +648,8 @@ class _PostCardState extends State<PostCard> {
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     getPostNickname(context, post),
                                     getPostInfo(post),

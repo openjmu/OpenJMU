@@ -1,13 +1,8 @@
 /// Generate by [resource_generator](https://github.com/CaiJingLong/flutter_resource_generator) library.
 /// PLEASE DO NOT EDIT MANUALLY.
 class R {
-  static const String ASSETS__DS_STORE = 'assets/.DS_Store';
-
   static const String ASSETS_AVATAR_PLACEHOLDER_PNG =
       'assets/avatar_placeholder.png';
-
-  static const String ASSETS_EMOTION_ICONS__DS_STORE =
-      'assets/emotion-icons/.DS_Store';
 
   static const String ASSETS_EMOTION_ICONS_NO_PNG =
       'assets/emotion-icons/NO.png';
@@ -279,11 +274,6 @@ class R {
   static const String ASSETS_EMOTION_ICONS_ZUQIU_PNG =
       'assets/emotion-icons/zuqiu.png';
 
-  static const String ASSETS_ICONS__DS_STORE = 'assets/icons/.DS_Store';
-
-  static const String ASSETS_ICONS_ADD_BUTTON__DS_STORE =
-      'assets/icons/add-button/.DS_Store';
-
   static const String ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG =
       'assets/icons/add-button/guangchang.svg';
 
@@ -291,9 +281,6 @@ class R {
       'assets/icons/add-button/jishi.svg';
 
   static const String ASSETS_ICONS_ADD_TOPIC_SVG = 'assets/icons/add-topic.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER__DS_STORE =
-      'assets/icons/app-center/.DS_Store';
 
   static const String ASSETS_ICONS_APP_CENTER_ADD_SVG =
       'assets/icons/app-center/add.svg';
@@ -469,9 +456,6 @@ class R {
   static const String ASSETS_ICONS_ARROW_RIGHT_SVG =
       'assets/icons/arrow-right.svg';
 
-  static const String ASSETS_ICONS_BOTTOM_NAVIGATION__DS_STORE =
-      'assets/icons/bottom-navigation/.DS_Store';
-
   static const String ASSETS_ICONS_BOTTOM_NAVIGATION_MARKET_SVG =
       'assets/icons/bottom-navigation/market.svg';
 
@@ -493,20 +477,10 @@ class R {
   static const String ASSETS_ICONS_IDOLS_LINE_SVG =
       'assets/icons/idols-line.svg';
 
-  static const String ASSETS_ICONS_LOAD_MORE_SVG =
-      'assets/icons/load-more.svg';
+  static const String ASSETS_ICONS_LOAD_MORE_SVG = 'assets/icons/load-more.svg';
 
   static const String ASSETS_ICONS_NOTIFICATION_SVG =
       'assets/icons/notification.svg';
-
-  static const String ASSETS_ICONS_REFRESH_SVG =
-      'assets/icons/refresh.svg';
-
-  static const String ASSETS_ICONS_TEAM_BADGE_SVG =
-      'assets/icons/team-badge.svg';
-
-  static const String ASSETS_ICONS_POST_ACTIONS__DS_STORE =
-      'assets/icons/post-actions/.DS_Store';
 
   static const String ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG =
       'assets/icons/post-actions/add-to-block-list.svg';
@@ -526,8 +500,7 @@ class R {
   static const String ASSETS_ICONS_POST_ACTIONS_REPORT_SVG =
       'assets/icons/post-actions/report.svg';
 
-  static const String ASSETS_ICONS_SELF_PAGE__DS_STORE =
-      'assets/icons/self-page/.DS_Store';
+  static const String ASSETS_ICONS_REFRESH_SVG = 'assets/icons/refresh.svg';
 
   static const String ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG =
       'assets/icons/self-page/avatar_corner.svg';
@@ -558,9 +531,6 @@ class R {
 
   static const String ASSETS_ICONS_SEND_SVG = 'assets/icons/send.svg';
 
-  static const String ASSETS_ICONS_SETTINGS__DS_STORE =
-      'assets/icons/settings/.DS_Store';
-
   static const String ASSETS_ICONS_SETTINGS_AMOLED_BLACK_SVG =
       'assets/icons/settings/amoled_black.svg';
 
@@ -585,6 +555,9 @@ class R {
   static const String ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG =
       'assets/icons/settings/theme_color.svg';
 
+  static const String ASSETS_ICONS_TEAM_BADGE_SVG =
+      'assets/icons/team-badge.svg';
+
   static const String ASSETS_ICONS_USER_FOLLOW_SVG =
       'assets/icons/user/follow.svg';
 
@@ -594,7 +567,8 @@ class R {
   static const String ASSETS_ICONS_USER_SAVE_CODE_SVG =
       'assets/icons/user/save-code.svg';
 
-  static const String IMAGES__DS_STORE = 'images/.DS_Store';
+  static const String ASSETS_LOGIN_BACKGROUND_VIDEO_MP4 =
+      'assets/login-background-video.mp4';
 
   static const String IMAGES_JMU_LOGO_PNG = 'images/jmu_logo.png';
 

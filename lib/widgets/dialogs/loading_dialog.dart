@@ -192,8 +192,7 @@ class LoadingDialogController {
       case 'success':
         dialogState?.updateContent(
           type: 'success',
-          icon: Icon(Icons.check_circle,
-              color: Colors.green, size: 60.w),
+          icon: Icon(Icons.check_circle, color: Colors.green, size: 60.w),
           text: text,
           duration: duration,
           customPop: customPop,
@@ -204,8 +203,7 @@ class LoadingDialogController {
           type: 'failed',
           icon: RotationTransition(
             turns: const AlwaysStoppedAnimation<double>(45 / 360),
-            child: Icon(Icons.add_circle,
-                color: Colors.redAccent, size: 60.w),
+            child: Icon(Icons.add_circle, color: Colors.redAccent, size: 60.w),
           ),
           text: text,
           duration: duration,

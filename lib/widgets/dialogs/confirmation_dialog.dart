@@ -79,8 +79,7 @@ class ConfirmationDialog extends StatelessWidget {
         children: <Widget>[
           Text(
             title,
-            style:
-                TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),
@@ -174,13 +173,12 @@ class ConfirmationDialog extends StatelessWidget {
                   child
                 else
                   Padding(
-                    padding: contentPadding ??
-                        EdgeInsets.symmetric(vertical: 20.h),
+                    padding:
+                        contentPadding ?? EdgeInsets.symmetric(vertical: 20.h),
                     child: ExtendedText(
                       content,
                       style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.normal),
+                          fontSize: 20.sp, fontWeight: FontWeight.normal),
                       textAlign: contentAlignment,
                       specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
                       onSpecialTextTap: (dynamic data) {

@@ -77,10 +77,8 @@ class ScorePage extends StatelessWidget {
                   const TextSpan(text: ' (校园内网)\n未教学评测的科目成绩将不予显示'),
                 ],
               ),
-              style: Theme.of(context)
-                  .textTheme
-                  .caption
-                  .copyWith(fontSize: 19.sp),
+              style:
+                  Theme.of(context).textTheme.caption.copyWith(fontSize: 19.sp),
               textAlign: TextAlign.center,
             ),
           ),
@@ -212,8 +210,7 @@ class ScorePage extends StatelessWidget {
           const TextSpan(text: ' / '),
           TextSpan(text: '${score.scorePoint}'),
         ],
-        style:
-            Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 20.sp),
+        style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 20.sp),
       ),
     );
   }

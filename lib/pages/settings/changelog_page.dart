@@ -133,7 +133,8 @@ class _ChangeLogPageState extends State<ChangeLogPage>
             Expanded(
               flex: 3,
               child: Center(
-                  child: Text('📍', style: TextStyle(fontSize: 40.sp))),
+                child: Text('📍', style: TextStyle(fontSize: 40.sp)),
+              ),
             )
           else
             const Spacer(flex: 2),
@@ -238,10 +239,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           (int i) => contentColumn(sections, i),
         ),
       ),
-      style: Theme.of(context)
-          .textTheme
-          .bodyText2
-          .copyWith(fontSize: 20.sp),
+      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20.sp),
     );
   }
 

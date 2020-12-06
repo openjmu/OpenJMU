@@ -394,8 +394,7 @@ class ImageList extends StatelessWidget {
                 child: AnimatedContainer(
                   curve: Curves.fastOutSlowIn,
                   duration: kTabScrollDuration,
-                  margin:
-                      EdgeInsets.all((i == data.data ? 0 : 6).w),
+                  margin: EdgeInsets.all((i == data.data ? 0 : 6).w),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.w),
                     border: Border.all(

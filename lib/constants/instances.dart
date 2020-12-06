@@ -51,6 +51,8 @@ class Instances {
     });
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
+  static final RouteObserver<Route<dynamic>> routeObserver =
+      RouteObserver<Route<dynamic>>();
   static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;
   static ConnectivityResult connectivityResult;
 

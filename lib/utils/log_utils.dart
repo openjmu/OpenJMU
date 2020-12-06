@@ -27,7 +27,11 @@ class LogUtils {
     _printLog(message, tag, stackTrace);
   }
 
-  static void json(dynamic message, {String tag = _TAG, StackTrace stackTrace}) {
+  static void json(
+    dynamic message, {
+    String tag = _TAG,
+    StackTrace stackTrace,
+  }) {
     _printLog(message, tag, stackTrace);
   }
 

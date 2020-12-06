@@ -62,6 +62,7 @@ dependencies:
   url_launcher: 5.7.10
   uuid: 2.2.2
   vibration: 1.7.3
+  video_player: ^1.0.1
   wechat_assets_picker: ^4.2.2
 
 dev_dependencies:

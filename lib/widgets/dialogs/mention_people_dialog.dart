@@ -60,10 +60,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
   Widget get title => Center(
         child: Text(
           '提到用户',
-          style: Theme.of(context)
-              .textTheme
-              .headline6
-              .copyWith(fontSize: 24.sp),
+          style:
+              Theme.of(context).textTheme.headline6.copyWith(fontSize: 24.sp),
         ),
       );
 
@@ -127,8 +125,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           child: Row(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(
-                    left: 24.w, right: 30.w),
+                margin: EdgeInsets.only(left: 24.w, right: 30.w),
                 child: UserAvatar(uid: users[index].id, size: 54.0),
               ),
               Expanded(
@@ -168,8 +165,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                     title,
                     Container(
                       margin: EdgeInsets.all(20.w),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w),
                       height: 60.h,
                       decoration: BoxDecoration(
                         border: Border(

@@ -119,8 +119,7 @@ class MessagePage extends StatelessWidget {
         return ListView.builder(
           itemCount: messageProvider.appsMessages.keys.length,
           itemBuilder: (_, int index) {
-            final Map<int, List<dynamic>> _list =
-                messageProvider.appsMessages;
+            final Map<int, List<dynamic>> _list = messageProvider.appsMessages;
             final int _index = _list.keys.length - 1 - index;
             final int appId = _list.keys.elementAt(_index);
             final AppMessage message = _list[appId][0] as AppMessage;
@@ -182,43 +181,31 @@ class _AnnouncementItemWidget extends StatelessWidget {
 
   final Map<String, dynamic> item;
 
-  void showAnnouncement(BuildContext context) {
-    ConfirmationDialog.show(
-      context,
-      title: item['title'] as String,
-      content: item['content'] as String,
-      cancelLabel: '朕已阅',
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => showAnnouncement(context),
-      child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: 16.w,
-        ).copyWith(top: 16.w),
-        padding: EdgeInsets.all(18.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15.w),
-          color: context.themeData.colorScheme.primary,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              item['title'] as String,
-              style: TextStyle(
-                fontSize: 21.sp,
-                fontWeight: FontWeight.bold,
-              ),
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 16.w,
+      ).copyWith(top: 16.w),
+      padding: EdgeInsets.all(18.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.w),
+        color: context.themeData.colorScheme.primary,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            item['title'] as String,
+            style: TextStyle(
+              fontSize: 21.sp,
+              fontWeight: FontWeight.bold,
             ),
-            VGap(5.w),
-            Text(item['content'] as String),
-          ],
-        ),
+          ),
+          VGap(5.w),
+          Text(item['content'] as String),
+        ],
       ),
     );
   }

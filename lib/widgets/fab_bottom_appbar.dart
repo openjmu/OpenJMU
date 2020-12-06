@@ -139,8 +139,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                             height: widget.iconSize.w,
                           ),
                         ),
-                    if (widget.showText)
-                      VGap((widget.iconSize / 8).w),
+                    if (widget.showText) VGap((widget.iconSize / 8).w),
                     if (widget.showText)
                       AnimatedDefaultTextStyle(
                         duration: 200.milliseconds,
@@ -159,21 +158,24 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
             ),
             if (index == 0)
               Selector<NotificationProvider, bool>(
-                selector: (_, NotificationProvider provider) => provider.showNotification,
+                selector: (_, NotificationProvider provider) =>
+                    provider.showNotification,
                 builder: (_, bool showNotification, __) {
                   return dot(showNotification);
                 },
               ),
             if (index == 1)
               Selector<NotificationProvider, bool>(
-                selector: (_, NotificationProvider provider) => provider.showTeamNotification,
+                selector: (_, NotificationProvider provider) =>
+                    provider.showTeamNotification,
                 builder: (_, bool showNotification, __) {
                   return dot(showNotification);
                 },
               ),
             if (index == 3)
               Selector<MessagesProvider, int>(
-                selector: (_, MessagesProvider provider) => provider.unreadCount,
+                selector: (_, MessagesProvider provider) =>
+                    provider.unreadCount,
                 builder: (_, int unreadCount, __) {
                   return dot(unreadCount > 0);
                 },

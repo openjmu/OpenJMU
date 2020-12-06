@@ -111,8 +111,7 @@ class PackageUtils {
                   children: <Widget>[
                     Center(
                       child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 6.h),
+                        margin: EdgeInsets.symmetric(vertical: 6.h),
                         child: Text(
                           'OpenJmu has new version',
                           style: TextStyle(
@@ -125,8 +124,7 @@ class PackageUtils {
                     ),
                     Center(
                       child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 6.h),
+                        margin: EdgeInsets.symmetric(vertical: 6.h),
                         child: Text(
                           text,
                           style: TextStyle(

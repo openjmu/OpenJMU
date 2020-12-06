@@ -136,8 +136,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return Text(
       ' $formattedTime',
       style: Theme.of(context).textTheme.caption.copyWith(
-        fontSize: 16.sp,
-      ),
+            fontSize: 16.sp,
+          ),
     );
   }
 
@@ -188,8 +188,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        if (app != null)
-                          _name(context, app),
+                        if (app != null) _name(context, app),
                         _sendTimeWidget(context),
                         const Spacer(),
                         unreadCounter(context),

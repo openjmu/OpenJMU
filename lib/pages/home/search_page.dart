@@ -243,8 +243,7 @@ class SearchPageState extends State<SearchPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(
-                    top: 16.h, left: 12.w),
+                padding: EdgeInsets.only(top: 16.h, left: 12.w),
                 child: Text(
                   '相关用户 (${userList.length})',
                   style: Theme.of(context)
@@ -259,8 +258,7 @@ class SearchPageState extends State<SearchPage>
                   itemCount: userList.length,
                   itemBuilder: (BuildContext _, int index) {
                     return Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15.h),
+                      padding: EdgeInsets.symmetric(horizontal: 15.h),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[

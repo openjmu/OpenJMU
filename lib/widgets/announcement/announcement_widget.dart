@@ -89,9 +89,8 @@ class AnnouncementWidget extends StatelessWidget {
               vertical: 10.h,
             ),
             decoration: BoxDecoration(
-              borderRadius: radius != null
-                  ? BorderRadius.circular(radius.w)
-                  : null,
+              borderRadius:
+                  radius != null ? BorderRadius.circular(radius.w) : null,
               color: backgroundColor ?? defaultLightColor,
             ),
             child: Row(

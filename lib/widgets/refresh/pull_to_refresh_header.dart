@@ -40,10 +40,11 @@ class PullToRefreshHeader extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: DefaultTextStyle(
-        style: textStyle ?? context.themeData.textTheme.caption.copyWith(
-          fontSize: 18.sp,
-          height: 1.4,
-        ),
+        style: textStyle ??
+            context.themeData.textTheme.caption.copyWith(
+              fontSize: 18.sp,
+              height: 1.4,
+            ),
         child: child,
       ),
     );

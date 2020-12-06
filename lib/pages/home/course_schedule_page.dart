@@ -772,13 +772,13 @@ class CourseWidget extends StatelessWidget {
               TextSpan(text: '\n📍${course.location}'),
           ],
           style: Theme.of(context).textTheme.bodyText2.copyWith(
-            color: !CourseAPI.inCurrentWeek(course,
-                currentWeek: currentWeek) &&
-                !isOutOfTerm
-                ? Colors.grey
-                : Colors.black,
-            fontSize: 18.sp,
-          ),
+                color: !CourseAPI.inCurrentWeek(course,
+                            currentWeek: currentWeek) &&
+                        !isOutOfTerm
+                    ? Colors.grey
+                    : Colors.black,
+                fontSize: 18.sp,
+              ),
         ),
         overflow: TextOverflow.fade,
       );

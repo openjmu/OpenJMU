@@ -55,9 +55,9 @@ class NewsListPageState extends State<NewsListPage>
       );
       final Map<String, dynamic> data =
           (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
-            _url,
-            headers: Constants.teamHeader,
-          ))
+        _url,
+        headers: Constants.teamHeader,
+      ))
               .data;
 
       final List<News> _newsList = <News>[];
@@ -222,34 +222,34 @@ class NewsListPageState extends State<NewsListPage>
           child: newsList.isEmpty
               ? const SizedBox.shrink()
               : ExtendedListView.separated(
-            extendedListDelegate: ExtendedListDelegate(
-              collectGarbage: (List<int> garbage) {
-                for (final int index in garbage) {
-                  if (newsList.length >= index + 1) {
-                    final News element = newsList.elementAt(index);
-                    ExtendedNetworkImageProvider(
-                      '${API.showFile}${element.cover}'
-                          '/sid/${UserAPI.currentUser.sid}',
-                    ).evict();
-                  }
-                }
-              },
-            ),
-            shrinkWrap: true,
-            controller: _scrollController,
-            separatorBuilder: (_, __) => VGap(1.w),
-            itemCount: newsList.length + 1,
-            itemBuilder: (_, int index) {
-              if (index == newsList.length) {
-                getNewsList(isLoadMore: true);
-                return LoadMoreIndicator(canLoadMore: _canLoadMore);
-              }
-              if (index < newsList.length) {
-                return newsItem(newsList[index]);
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+                  extendedListDelegate: ExtendedListDelegate(
+                    collectGarbage: (List<int> garbage) {
+                      for (final int index in garbage) {
+                        if (newsList.length >= index + 1) {
+                          final News element = newsList.elementAt(index);
+                          ExtendedNetworkImageProvider(
+                            '${API.showFile}${element.cover}'
+                            '/sid/${UserAPI.currentUser.sid}',
+                          ).evict();
+                        }
+                      }
+                    },
+                  ),
+                  shrinkWrap: true,
+                  controller: _scrollController,
+                  separatorBuilder: (_, __) => VGap(1.w),
+                  itemCount: newsList.length + 1,
+                  itemBuilder: (_, int index) {
+                    if (index == newsList.length) {
+                      getNewsList(isLoadMore: true);
+                      return LoadMoreIndicator(canLoadMore: _canLoadMore);
+                    }
+                    if (index < newsList.length) {
+                      return newsItem(newsList[index]);
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
         );
       } else {
         return const SpinKitWidget();

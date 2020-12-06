@@ -315,11 +315,13 @@ class LoadMoreIndicator extends StatefulWidget {
     Key key,
     this.canLoadMore = true,
     this.isSliver = false,
+    this.showText = true,
     this.textStyle,
   }) : super(key: key);
 
   final bool canLoadMore;
   final bool isSliver;
+  final bool showText;
   final TextStyle textStyle;
 
   @override
@@ -336,11 +338,13 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
         children: <Widget>[
           if (widget.canLoadMore) ...<Widget>[
             const LoadMoreSpinningIcon(isRefreshing: true),
-            Gap(10.w),
-            Text(
-              '正在加载',
-              style: TextStyle(fontSize: 18.sp),
-            ),
+            if (widget.showText) ...<Widget>[
+              Gap(10.w),
+              Text(
+                '正在加载',
+                style: TextStyle(fontSize: 18.sp),
+              ),
+            ],
           ] else
             Center(
               child: Text(

@@ -99,7 +99,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
     return Text(
       TeamPostAPI.timeConverter(post),
       style: Theme.of(context).textTheme.caption.copyWith(
-        fontSize: 16.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.normal,
           ),
     );

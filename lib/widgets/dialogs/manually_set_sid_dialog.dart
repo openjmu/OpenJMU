@@ -72,8 +72,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                       maxLength: 32,
                       maxLines: null,
                       decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 6.h),
+                        contentPadding: EdgeInsets.symmetric(vertical: 6.h),
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]),
                         ),

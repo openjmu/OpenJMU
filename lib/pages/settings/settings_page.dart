@@ -268,8 +268,8 @@ class _StartPageCard extends StatelessWidget {
         _SettingItemWidget(
           item: _SettingItem(
             name: '主页',
-            description: MainPageState.pagesTitle[
-                context.watch<SettingsProvider>().homeSplashIndex],
+            description: MainPageState
+                .pagesTitle[context.watch<SettingsProvider>().homeSplashIndex],
             route: Routes.openjmuSwitchStartup,
           ),
         ),

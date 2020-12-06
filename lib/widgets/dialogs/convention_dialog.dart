@@ -53,13 +53,11 @@ class _ConventionDialogState extends State<ConventionDialog> {
   }
 
   Widget get header => Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
         child: Center(
           child: Text(
             '发布提醒',
-            style:
-                TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
           ),
         ),
       );
