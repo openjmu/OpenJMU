@@ -64,14 +64,9 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                         ),
                       ),
                     if (Constants.developerList.contains(comment.uid))
-                      Container(
-                        margin: EdgeInsets.only(left: 14.w),
-                        child: DeveloperTag(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 3.h,
-                          ),
-                        ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 6.w),
+                        child: const DeveloperTag(),
                       ),
                   ],
                 ),

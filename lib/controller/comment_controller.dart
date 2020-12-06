@@ -558,16 +558,9 @@ class CommentListInPostState extends State<CommentListInPost>
                                     ),
                                     if (Constants.developerList
                                         .contains(_comments[index].fromUserUid))
-                                      Container(
-                                        margin: EdgeInsets.only(
-                                          left: 14.w,
-                                        ),
-                                        child: DeveloperTag(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 8.w,
-                                            vertical: 4.h,
-                                          ),
-                                        ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 6.w),
+                                        child: const DeveloperTag(),
                                       ),
                                   ],
                                 ),

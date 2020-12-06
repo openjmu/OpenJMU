@@ -114,14 +114,9 @@ class TeamPostPreviewCard extends StatelessWidget {
                       ),
                     ),
                     if (Constants.developerList.contains(post.uid))
-                      Container(
-                        margin: EdgeInsets.only(left: 14.w),
-                        child: DeveloperTag(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 2.h,
-                          ),
-                        ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 6.w),
+                        child: const DeveloperTag(),
                       ),
                   ],
                 ),

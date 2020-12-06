@@ -1,3 +1,7 @@
+///
+/// [Author] Alex (https://github.com/AlexV525)
+/// [Date] 2019-03-22 12:43
+///
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

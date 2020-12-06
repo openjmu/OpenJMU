@@ -132,7 +132,7 @@ class DeveloperTag extends StatelessWidget {
   const DeveloperTag({
     Key key,
     this.padding,
-    this.height = 26.0,
+    this.height = 20,
   }) : super(key: key);
 
   final EdgeInsetsGeometry padding;
@@ -250,10 +250,12 @@ class LoadMoreSpinningIcon extends StatefulWidget {
     Key key,
     @required this.isRefreshing,
     this.size,
+    this.color,
   }) : super(key: key);
 
   final bool isRefreshing;
   final double size;
+  final Color color;
 
   @override
   _LoadMoreSpinningIconState createState() => _LoadMoreSpinningIconState();
@@ -275,7 +277,7 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
 
   @override
   void dispose() {
-    _animation.dispose();
+    _animation?.dispose();
     super.dispose();
   }
 
@@ -300,7 +302,8 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
       child: SvgPicture.asset(
         R.ASSETS_ICONS_LOAD_MORE_SVG,
         width: (widget.size ?? 32).w,
-        color: context.themeData.textTheme.caption.color,
+        color: widget.color ??
+            context.themeData.textTheme.caption.color.withOpacity(0.5),
       ),
     );
   }
@@ -393,61 +396,65 @@ class ScaledImage extends StatelessWidget {
   final double num400;
   final ExtendedTypedNetworkImageProvider provider;
 
-  Widget longImageIndicator(BuildContext context) => Positioned(
-        right: 5.w,
-        bottom: 5.w,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.w),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 4.h,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.w),
-                color: Theme.of(context).primaryColor.withOpacity(0.7),
-              ),
-              child: Text(
-                '长图',
-                style: TextStyle(
-                  color: Theme.of(context).iconTheme.color.withOpacity(0.8),
-                  fontSize: 16.sp,
-                ),
+  Widget longImageIndicator(BuildContext context) {
+    return Positioned(
+      right: 5.w,
+      bottom: 5.w,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5.w),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 8.w,
+              vertical: 4.h,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.w),
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
+            ),
+            child: Text(
+              '长图',
+              style: TextStyle(
+                color: Theme.of(context).iconTheme.color.withOpacity(0.8),
+                fontSize: 16.sp,
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget gifImageIndicator(BuildContext context) => Positioned(
-        right: 5.w,
-        bottom: 5.w,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.w),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 4.h,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.w),
-                color: Theme.of(context).primaryColor.withOpacity(0.7),
-              ),
-              child: Text(
-                '动图',
-                style: TextStyle(
-                  color: Theme.of(context).iconTheme.color.withOpacity(0.9),
-                  fontSize: 16.sp,
-                ),
+  Widget gifImageIndicator(BuildContext context) {
+    return Positioned(
+      right: 5.w,
+      bottom: 5.w,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5.w),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 8.w,
+              vertical: 4.h,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.w),
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
+            ),
+            child: Text(
+              '动图',
+              style: TextStyle(
+                color: Theme.of(context).iconTheme.color.withOpacity(0.9),
+                fontSize: 16.sp,
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

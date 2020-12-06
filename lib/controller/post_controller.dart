@@ -541,16 +541,9 @@ class ForwardListInPostState extends State<ForwardListInPost>
                                   getPostNickname(context, _posts[index]),
                                   if (Constants.developerList
                                       .contains(_posts[index].uid))
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        left: 14.w,
-                                      ),
-                                      child: DeveloperTag(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8.w,
-                                          vertical: 4.h,
-                                        ),
-                                      ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 6.w),
+                                      child: const DeveloperTag(),
                                     ),
                                 ],
                               ),

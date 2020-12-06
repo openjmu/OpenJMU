@@ -5,9 +5,10 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
+    as ex;
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -35,9 +36,9 @@ class NotificationsPage extends StatefulWidget {
 
 class NotificationsPageState extends State<NotificationsPage>
     with TickerProviderStateMixin {
-  Duration get duration => 200.milliseconds;
+  final Duration duration = 200.milliseconds;
 
-  double get maximumOpacity => 0.4;
+  final double maximumOpacity = 0.4;
 
   double get maximumSheetHeight => Screens.height * 0.75;
 
@@ -45,71 +46,75 @@ class NotificationsPageState extends State<NotificationsPage>
 
   double get shouldPopOffset => maximumSheetHeight / 2;
 
-  List<Map<String, Map<String, dynamic>>> get actions =>
-      <Map<String, Map<String, dynamic>>>[
-        <String, Map<String, dynamic>>{
-          '广场': <String, dynamic>{
-            'icon': R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
-            'notification': notificationProvider.notifications,
-            'content': <Map<String, dynamic>>[
-              <String, dynamic>{
-                'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                'field': notificationProvider.notifications.praise,
-                'action': notificationProvider.readPraise,
-                'select': selectSquareIndex,
-                'index': _squareIndex,
-              },
-              <String, dynamic>{
-                'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                'field': notificationProvider.notifications.comment,
-                'action': notificationProvider.readReply,
-                'select': selectSquareIndex,
-                'index': _squareIndex,
-              },
-              <String, dynamic>{
-                'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                'field': notificationProvider.notifications.at,
-                'action': notificationProvider.readMention,
-                'select': selectSquareIndex,
-                'index': _squareIndex,
-              },
-            ],
-          },
+  List<Map<String, Map<String, dynamic>>> get actions {
+    return <Map<String, Map<String, dynamic>>>[
+      <String, Map<String, dynamic>>{
+        '广场': <String, dynamic>{
+          'icon': R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
+          'notification': notificationProvider.notifications,
+          'content': <Map<String, dynamic>>[
+            <String, dynamic>{
+              'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
+              'field': notificationProvider.notifications.praise,
+              'action': notificationProvider.readPraise,
+              'select': selectSquareIndex,
+              'index': _squareIndex,
+            },
+            <String, dynamic>{
+              'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
+              'field': notificationProvider.notifications.comment,
+              'action': notificationProvider.readReply,
+              'select': selectSquareIndex,
+              'index': _squareIndex,
+            },
+            <String, dynamic>{
+              'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
+              'field': notificationProvider.notifications.at,
+              'action': notificationProvider.readMention,
+              'select': selectSquareIndex,
+              'index': _squareIndex,
+            },
+          ],
         },
-        <String, Map<String, dynamic>>{
-          '集市': <String, dynamic>{
-            'icon': R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
-            'notification': notificationProvider.teamNotifications,
-            'content': <Map<String, dynamic>>[
-              <String, dynamic>{
-                'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                'field': notificationProvider.teamNotifications.praise,
-                'action': notificationProvider.readTeamPraise,
-                'select': selectTeamIndex,
-                'index': _teamIndex,
-              },
-              <String, dynamic>{
-                'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                'field': notificationProvider.teamNotifications.reply,
-                'action': notificationProvider.readTeamReply,
-                'select': selectTeamIndex,
-                'index': _teamIndex,
-              },
-              <String, dynamic>{
-                'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                'field': notificationProvider.teamNotifications.mention,
-                'action': notificationProvider.readTeamMention,
-                'select': selectTeamIndex,
-                'index': _teamIndex,
-              },
-            ],
-          },
+      },
+      <String, Map<String, dynamic>>{
+        '集市': <String, dynamic>{
+          'icon': R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
+          'notification': notificationProvider.teamNotifications,
+          'content': <Map<String, dynamic>>[
+            <String, dynamic>{
+              'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
+              'field': notificationProvider.teamNotifications.praise,
+              'action': notificationProvider.readTeamPraise,
+              'select': selectTeamIndex,
+              'index': _teamIndex,
+            },
+            <String, dynamic>{
+              'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
+              'field': notificationProvider.teamNotifications.reply,
+              'action': notificationProvider.readTeamReply,
+              'select': selectTeamIndex,
+              'index': _teamIndex,
+            },
+            <String, dynamic>{
+              'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
+              'field': notificationProvider.teamNotifications.mention,
+              'action': notificationProvider.readTeamMention,
+              'select': selectTeamIndex,
+              'index': _teamIndex,
+            },
+          ],
         },
-      ];
+      },
+    ];
+  }
 
-  List<String> get squareMentionActions => <String>['动态', '评论'];
-
+  final List<String> squareMentionActions = <String>['动态', '评论'];
   final ScrollController scrollController = ScrollController();
+  final Color iconColor = Colors.grey[600].withOpacity(
+    currentIsDark ? 0.8 : 0.4,
+  );
+
   AnimationController backgroundOpacityController;
   NotificationProvider notificationProvider;
   int _index = 0, _squareIndex = 0, _teamIndex = 0, _mentionIndex = 0;
@@ -302,42 +307,26 @@ class NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  Widget get backButton => Center(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: navigatorState.maybePop,
-          child: Container(
-            width: 76.w,
-            height: 40.w,
-            decoration: BoxDecoration(
-              borderRadius: maxBorderRadius,
-              color: Theme.of(context).dividerColor,
-            ),
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  top: -1.w,
-                  bottom: -1.w,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.black38,
-                    size: 42.w,
-                  ),
-                ),
-              ],
-            ),
-          ),
+  Widget get backButton {
+    return Center(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: navigatorState.maybePop,
+        child: Icon(
+          Icons.close,
+          color: iconColor,
+          size: 42.w,
         ),
-      );
+      ),
+    );
+  }
 
   Widget get actionBar {
     final String key = actions[_index].keys.elementAt(0);
     return Row(
       children: List<Widget>.generate(
         (actions[_index][key]['content'] as List<dynamic>).length,
-            (int j) {
+        (int j) {
           final Map<String, dynamic> item = actions[_index]
               .values
               .elementAt(0)['content'][j] as Map<String, dynamic>;
@@ -378,60 +367,59 @@ class NotificationsPageState extends State<NotificationsPage>
         color: currentThemeColor,
         width: 32.w,
       ),
-      secondChild: SvgPicture.asset(
-        icon,
-        color: Theme.of(context).dividerColor,
-        width: 32.w,
-      ),
+      secondChild: SvgPicture.asset(icon, color: iconColor, width: 32.w),
     );
   }
 
   Widget get mentionList {
     return Column(
       children: <Widget>[
-        Row(
-          children: List<Widget>.generate(squareMentionActions.length, (int i) {
-            return Expanded(
-              child: AnimatedContainer(
-                duration: duration,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 24.w,
-                  vertical: 10.h,
-                ),
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                decoration: BoxDecoration(
-                  borderRadius: maxBorderRadius,
-                  color: _mentionIndex == i
-                      ? currentThemeColor.withOpacity(currentIsDark ? 0.5 : 0.4)
-                      : null,
-                ),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => selectMentionIndex(i),
-                  child: Center(
-                    child: Text(
-                      '@我的${squareMentionActions[i]}',
+        Container(
+          margin: EdgeInsets.only(top: 12.w),
+          padding: EdgeInsets.symmetric(horizontal: 8.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.w),
+            color: context.themeData.cardColor,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List<Widget>.generate(
+              squareMentionActions.length,
+              (int i) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.w,
+                    vertical: 16.h,
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => selectMentionIndex(i),
+                    child: AnimatedDefaultTextStyle(
+                      duration: duration,
                       style: TextStyle(
                         color: _mentionIndex == i && !currentIsDark
-                            ? currentThemeColor.withOpacity(0.75)
-                            : null,
+                            ? currentThemeColor
+                            : iconColor,
+                        height: 1.25,
+                        fontSize: 18.sp,
                       ),
+                      child: Text('@我的${squareMentionActions[i]}'),
                     ),
                   ),
-                ),
-              ),
-            );
-          }),
+                );
+              },
+            ),
+          ),
         ),
         Expanded(
           child: IndexedStack(
             index: _mentionIndex,
             children: <Widget>[
-              NestedScrollViewInnerScrollPositionKeyWidget(
+              ex.NestedScrollViewInnerScrollPositionKeyWidget(
                 const Key('List-0-2-0'),
                 postByMention,
               ),
-              NestedScrollViewInnerScrollPositionKeyWidget(
+              ex.NestedScrollViewInnerScrollPositionKeyWidget(
                 const Key('List-0-2-1'),
                 commentByMention,
               ),
@@ -464,7 +452,7 @@ class NotificationsPageState extends State<NotificationsPage>
                   Colors.black.withOpacity(backgroundOpacityController.value),
               child: child,
             ),
-            child: NestedScrollView(
+            child: ex.NestedScrollView(
               controller: scrollController,
               physics: const BouncingScrollPhysics(),
               headerSliverBuilder: (_, __) {
@@ -487,25 +475,20 @@ class NotificationsPageState extends State<NotificationsPage>
                 ),
                 child: Container(
                   constraints: BoxConstraints(maxHeight: maximumSheetHeight),
-                  padding: EdgeInsets.only(top: 20.h),
                   color: Theme.of(context).primaryColor,
                   child: Column(
                     children: <Widget>[
-                      backButton,
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         height: kAppBarHeight.h,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Theme.of(context).canvasColor,
-                              width: 1.w,
-                            ),
-                          ),
-                          color: Theme.of(context).primaryColor,
+                        color: Theme.of(context).primaryColor,
+                        child: Row(
+                          children: <Widget>[
+                            actionBar,
+                            const Spacer(),
+                            backButton,
+                          ],
                         ),
-                        child:
-                            Row(children: <Widget>[const Spacer(), actionBar]),
                       ),
                       Expanded(
                         child: ColoredBox(
@@ -516,11 +499,11 @@ class NotificationsPageState extends State<NotificationsPage>
                               IndexedStack(
                                 index: _squareIndex,
                                 children: <Widget>[
-                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
                                     const Key('List-0-0'),
                                     praiseList,
                                   ),
-                                  NestedScrollViewInnerScrollPositionKeyWidget(
+                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
                                     const Key('List-0-1'),
                                     commentByReply,
                                   ),
@@ -529,17 +512,17 @@ class NotificationsPageState extends State<NotificationsPage>
                               ),
                               IndexedStack(
                                 index: _teamIndex,
-                                children: <Widget>[
-                                  NestedScrollViewInnerScrollPositionKeyWidget(
-                                    const Key('List-1-0'),
+                                children: const <Widget>[
+                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-1-0'),
                                     TeamPraiseListPage(),
                                   ),
-                                  NestedScrollViewInnerScrollPositionKeyWidget(
-                                    const Key('List-1-1'),
+                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-1-1'),
                                     TeamReplyListPage(),
                                   ),
-                                  NestedScrollViewInnerScrollPositionKeyWidget(
-                                    const Key('List-1-2'),
+                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-1-2'),
                                     TeamMentionListPage(),
                                   ),
                                 ],

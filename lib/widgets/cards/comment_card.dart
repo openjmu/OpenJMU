@@ -97,14 +97,9 @@ class CommentCard extends StatelessWidget {
           style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
         ),
         if (Constants.developerList.contains(comment.fromUserUid))
-          Container(
-            margin: EdgeInsets.only(left: 10.w),
-            child: DeveloperTag(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 4.h,
-              ),
-            ),
+          Padding(
+            padding: EdgeInsets.only(left: 6.w),
+            child: const DeveloperTag(),
           ),
       ],
     );

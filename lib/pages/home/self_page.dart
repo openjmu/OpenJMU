@@ -302,7 +302,7 @@ class SelfPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 4.sp, bottom: 8.sp),
               child: Text(
                 app.name,
-                style: TextStyle(fontSize: 16.sp),
+                style: TextStyle(height: 1.15, fontSize: 16.sp),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

@@ -380,14 +380,9 @@ class UserPageState extends State<UserPage>
             children: <Widget>[
               usernameWidget,
               if (Constants.developerList.contains(user?.uid ?? 0))
-                Gap(8.w),
-              if (Constants.developerList.contains(user?.uid ?? 0))
-                DeveloperTag(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8.w,
-                    vertical: 4.h,
-                  ),
-                  height: 32.h,
+                Padding(
+                  padding: EdgeInsets.only(left: 8.w),
+                  child: const DeveloperTag(height: 26),
                 ),
             ],
           ),

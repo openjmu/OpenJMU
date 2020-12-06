@@ -11,6 +11,8 @@ import 'package:extended_text/extended_text.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamPraiseListPage extends StatefulWidget {
+  const TeamPraiseListPage({Key key}) : super(key: key);
+
   @override
   _TeamPraiseListPageState createState() => _TeamPraiseListPageState();
 }
@@ -77,14 +79,9 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                       ),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
-                      Container(
-                        margin: EdgeInsets.only(left: 10.w),
-                        child: DeveloperTag(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
-                          ),
-                        ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 6.w),
+                        child: const DeveloperTag(),
                       ),
                     const Spacer(),
                     _postTime(context, item.time),

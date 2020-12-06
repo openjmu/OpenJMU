@@ -5,40 +5,23 @@ import 'package:extended_text/extended_text.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class PraiseCard extends StatelessWidget {
-  PraiseCard(
+  const PraiseCard(
     this.praise, {
     Key key,
   }) : super(key: key);
 
   final Praise praise;
 
-  final TextStyle rootTopicTextStyle = TextStyle(
-    fontSize: 18.sp,
-  );
-  final TextStyle rootTopicMentionStyle = TextStyle(
-    color: Colors.blue,
-    fontSize: 18.sp,
-  );
-  final Color subIconColor = Colors.grey;
-
   Widget getPraiseNickname(BuildContext context, Praise praise) => Row(
         children: <Widget>[
           Text(
             '${praise.nickname ?? praise.uid}',
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           if (Constants.developerList.contains(praise.uid))
-            Container(
-              margin: EdgeInsets.only(left: 10.w),
-              child: DeveloperTag(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8.w,
-                  vertical: 4.h,
-                ),
-              ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: const DeveloperTag(),
             ),
         ],
       );
@@ -47,17 +30,14 @@ class PraiseCard extends StatelessWidget {
     return Text(
       PostAPI.postTimeConverter(praise.praiseTime),
       style: TextStyle(
+        height: 1.3,
         color: currentTheme.textTheme.caption.color,
-        fontSize: 16.sp,
       ),
     );
   }
 
   Widget getPraiseContent(BuildContext context, Praise praise) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6.h),
-      child: Text('赞了这条微博', style: TextStyle(fontSize: 19.sp)),
-    );
+    return Text('赞了这条微博', style: TextStyle(fontSize: 19.sp));
   }
 
   Widget getRootContent(BuildContext context, Praise praise) {
@@ -89,14 +69,17 @@ class PraiseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Post _post = Post.fromJson(praise.post);
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
           Routes.openjmuPostDetail,
-          arguments: <String, dynamic>{'post': _post, 'parentContext': context},
+          arguments: <String, dynamic>{
+            'post': Post.fromJson(praise.post),
+            'parentContext': context,
+          },
         );
       },
+      behavior: HitTestBehavior.opaque,
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: 16.w,
@@ -114,28 +97,32 @@ class PraiseCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: 70.w,
-              padding: EdgeInsets.symmetric(vertical: 6.w),
-              child: Row(
-                children: <Widget>[
-                  UserAPI.getAvatar(uid: praise.uid),
-                  Gap(16.w),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        getPraiseNickname(context, praise),
-                        VGap(4.w),
-                        getPraiseInfo(praise),
-                      ],
+            DefaultTextStyle.merge(
+              style: TextStyle(height: 1.2, fontSize: 19.sp),
+              child: Container(
+                height: 32.w,
+                margin: EdgeInsets.symmetric(vertical: 6.w),
+                child: Row(
+                  children: <Widget>[
+                    UserAPI.getAvatar(uid: praise.uid, size: 32),
+                    Gap(16.w),
+                    getPraiseNickname(context, praise),
+                    Container(
+                      width: 4.w,
+                      height: 4.w,
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: context.themeData.textTheme.bodyText2.color,
+                      ),
                     ),
-                  ),
-                ],
+                    getPraiseInfo(praise),
+                    Gap(10.w),
+                    getPraiseContent(context, praise),
+                  ],
+                ),
               ),
             ),
-            getPraiseContent(context, praise),
             getRootContent(context, praise),
           ],
         ),

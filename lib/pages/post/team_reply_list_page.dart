@@ -10,6 +10,8 @@ import 'package:extended_text/extended_text.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamReplyListPage extends StatefulWidget {
+  const TeamReplyListPage({Key key}) : super(key: key);
+
   @override
   _TeamReplyListPageState createState() => _TeamReplyListPageState();
 }
@@ -76,14 +78,9 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                       ),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
-                      Container(
-                        margin: EdgeInsets.only(left: 10.w),
-                        child: DeveloperTag(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
-                          ),
-                        ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 6.w),
+                        child: const DeveloperTag(),
                       ),
                     const Spacer(),
                     _postTime(

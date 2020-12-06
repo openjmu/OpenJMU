@@ -1,3 +1,7 @@
+///
+/// [Author] Alex (https://github.com/AlexV525)
+/// [Date] 2019-03-28 20:24
+///
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -92,14 +96,9 @@ class _PostCardState extends State<PostCard> {
           textAlign: TextAlign.left,
         ),
         if (Constants.developerList.contains(post.uid))
-          Container(
-            margin: EdgeInsets.only(left: 14.w),
-            child: DeveloperTag(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 4.h,
-              ),
-            ),
+          Padding(
+            padding: EdgeInsets.only(left: 6.w),
+            child: const DeveloperTag(),
           ),
       ],
     );
@@ -227,7 +226,9 @@ class _PostCardState extends State<PostCard> {
             Widget loader;
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
-                loader = const SizedBox.shrink();
+                loader = const Center(
+                  child: LoadMoreSpinningIcon(isRefreshing: true),
+                );
                 break;
               case LoadState.completed:
                 final ImageInfo info = state.extendedImageInfo;

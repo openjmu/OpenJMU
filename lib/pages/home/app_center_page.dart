@@ -184,6 +184,7 @@ class AppCenterPage extends StatelessWidget {
                       child: Text(
                         webApp.name,
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          height: 1.2,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.normal,
                             ),
