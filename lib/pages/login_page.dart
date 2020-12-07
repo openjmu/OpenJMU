@@ -264,7 +264,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   Widget get topLogo {
     return SvgPicture.asset(
       R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
-      color: defaultLightColor,
+      color: Colors.white,
       height: 20.w,
     );
   }
@@ -290,7 +290,11 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         if (announcementEnabled) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 15.w),
-            child: AnnouncementWidget(height: 60.w, radius: 15.0),
+            child: AnnouncementWidget(
+              backgroundColor: defaultLightColor.withOpacity(0.75),
+              height: 60.w,
+              radius: 15.0,
+            ),
           );
         } else {
           return const SizedBox.shrink();
@@ -451,9 +455,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
               duration: animateDuration,
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               height: 72.h,
-              color: isEnabled
-                  ? defaultLightColor
-                  : context.themeData.dividerColor,
+              color: isEnabled ? defaultLightColor : Colors.black54,
               child: Center(
                 child: ValueListenableBuilder<bool>(
                   valueListenable: _isLogin,
@@ -488,50 +490,54 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     setAlignment(context);
-    return WillPopScope(
-      onWillPop: doubleBackExit,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: DefaultTextStyle.merge(
-          style: TextStyle(color: Colors.white, fontSize: 18.sp),
-          child: Stack(
-            children: <Widget>[
-              videoWidget(context),
-              videoFilter(context),
-              contentWrapper(
-                children: <Widget>[
-                  topLogo,
-                  welcomeTip,
-                  const Spacer(),
-                  Expanded(
-                    flex: 30,
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: _keyboardAppeared,
-                      builder: (_, bool isAppear, __) {
-                        return AnimatedAlign(
-                          duration: animateDuration,
-                          curve: Curves.easeInOut,
-                          alignment:
-                              isAppear ? Alignment.topCenter : Alignment.center,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              announcementWidget,
-                              usernameField,
-                              passwordField,
-                              agreementWidget,
-                            ],
-                          ),
-                        );
-                      },
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: WillPopScope(
+        onWillPop: doubleBackExit,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: DefaultTextStyle.merge(
+            style: TextStyle(color: Colors.white, fontSize: 18.sp),
+            child: Stack(
+              children: <Widget>[
+                videoWidget(context),
+                videoFilter(context),
+                contentWrapper(
+                  children: <Widget>[
+                    topLogo,
+                    welcomeTip,
+                    const Spacer(),
+                    Expanded(
+                      flex: 30,
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: _keyboardAppeared,
+                        builder: (_, bool isAppear, __) {
+                          return AnimatedAlign(
+                            duration: animateDuration,
+                            curve: Curves.easeInOut,
+                            alignment: isAppear
+                                ? Alignment.topCenter
+                                : Alignment.center,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                announcementWidget,
+                                usernameField,
+                                passwordField,
+                                agreementWidget,
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  const Spacer(flex: 8),
-                ],
-              ),
-              loginButton(context),
-            ],
+                    const Spacer(flex: 8),
+                  ],
+                ),
+                loginButton(context),
+              ],
+            ),
           ),
         ),
       ),

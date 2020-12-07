@@ -33,7 +33,7 @@ PODS:
   - Reachability (3.2)
   - url_launcher (0.0.1):
     - Flutter
-  - vibration (1.7.2):
+  - vibration (1.7.3):
     - Flutter
   - video_player (0.0.1):
     - Flutter
@@ -122,7 +122,7 @@ SPEC CHECKSUMS:
   r_scan: 73b806baa9094d33c2c3067f78fb76e350d57a93
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  vibration: 528f5ef88e90d4a8fd1ef04afbf0ed3ac7c9801d
+  vibration: b5a33e764c3f609a975b9dca73dce20fdde627dc
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   ZXingObjCCopy: 08aed07cb60e2a3ab79ae7ca298a3e7fd9ca4164
 
