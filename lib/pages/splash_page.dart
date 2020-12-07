@@ -33,6 +33,7 @@ class SplashState extends State<SplashPage> {
   bool isInLoginProcess = false;
   bool isUserLogin = false;
   bool showLoading = false;
+  bool isNavigating = false;
 
   Timer _forceToLoginTimer;
   Timer _showLoginIndicatorTimer;
@@ -114,6 +115,10 @@ class SplashState extends State<SplashPage> {
   }
 
   void navigate({bool forceToLogin = false}) {
+    if (isNavigating) {
+      return;
+    }
+    isNavigating = true;
     try {
       navigatorState.pushAndRemoveUntil<void>(
         PageRouteBuilder<void>(
@@ -132,6 +137,7 @@ class SplashState extends State<SplashPage> {
       _showLoginIndicatorTimer?.cancel();
     } catch (e) {
       LogUtils.e('Error when navigating: $e');
+      isNavigating = false;
     }
   }
 

@@ -74,15 +74,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     _usernameController.addListener(usernameListener);
     _passwordController.addListener(passwordListener);
 
-    // 进入页面后开始播放视频
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await Future.wait<void>(<Future<void>>[
-        videoController.setLooping(true),
-        videoController.setVolume(0.0),
-        videoController.initialize(),
-      ]);
-      videoController.play();
-    });
+    initializeVideo();
   }
 
   @override
@@ -132,6 +124,16 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   void passwordListener() {
     _password.value = _passwordController.text;
     validateForm();
+  }
+
+  /// 初始化视频控制器及配置
+  Future<void> initializeVideo() async {
+    await Future.wait(<Future<void>>[
+      videoController.setLooping(true),
+      videoController.setVolume(0.0),
+      videoController.initialize(),
+    ]);
+    videoController.play();
   }
 
   /// Function called after login button pressed.
