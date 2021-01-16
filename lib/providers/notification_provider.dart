@@ -2,11 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-23 07:07
 ///
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class NotificationProvider extends ChangeNotifier {
   Notifications _notifications = const Notifications();

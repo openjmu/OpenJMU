@@ -155,12 +155,12 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       /// Push to user page if a user scheme is being detect.
       /// 如果检测到用户scheme则跳转到用户页
       unawaited(Navigator.of(context).pushReplacementNamed(
-        Routes.openjmuUserPage,
-        arguments: <String, dynamic>{
-          'uid': scanResult.message
+        Routes.openjmuUserPage.name,
+        arguments: Routes.openjmuUserPage.d(
+          uid: scanResult.message
               .substring(API.schemeUserPage.pattern.length - 2)
-              .toInt()
-        },
+              .toInt(),
+        ),
       ));
     } else {
       /// Other types of result will show a dialog to copy.

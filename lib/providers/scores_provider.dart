@@ -2,12 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-21 11:33
 ///
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class ScoresProvider extends ChangeNotifier {
   final Box<Map<dynamic, dynamic>> _scoreBox = HiveBoxes.scoresBox;

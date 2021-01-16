@@ -201,7 +201,7 @@ class SelfPage extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  navigatorState.pushNamed(Routes.openjmuUserPage);
+                  navigatorState.pushNamed(Routes.openjmuUserPage.name);
                 },
                 child: ClipOval(
                   child: Image(

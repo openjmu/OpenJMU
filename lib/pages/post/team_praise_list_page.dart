@@ -176,11 +176,11 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
           behavior: HitTestBehavior.opaque,
           onTap: () {
             navigatorState.pushNamed(
-              Routes.openjmuTeamPostDetail,
-              arguments: <String, dynamic>{
-                'provider': provider,
-                'type': TeamPostType.post,
-              },
+              Routes.openjmuTeamPostDetail.name,
+              arguments: Routes.openjmuTeamPostDetail.d(
+                provider: provider,
+                type: TeamPostType.post,
+              ),
             );
           },
           child: Container(

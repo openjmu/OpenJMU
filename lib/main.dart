@@ -97,9 +97,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       })
       ..on<LogoutEvent>().listen((LogoutEvent event) {
         navigatorState.pushNamedAndRemoveUntil(
-          Routes.openjmuLogin,
+          Routes.openjmuLogin.name,
           (_) => false,
-          arguments: <String, dynamic>{'initAction': initAction},
+          arguments: Routes.openjmuLogin.d(initAction: initAction),
         );
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {

@@ -64,22 +64,22 @@ class CommentCard extends StatelessWidget {
             text: '回复评论',
             icon: const Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
-              Routes.openjmuAddComment,
-              arguments: <String, dynamic>{
-                'post': comment.post,
-                'comment': comment
-              },
+              Routes.openjmuAddComment.name,
+              arguments: Routes.openjmuAddComment.d(
+                post: comment.post,
+                comment: comment
+              ),
             ),
           ),
           ConfirmationBottomSheetAction(
             text: '查看动态',
             icon: const Icon(Icons.pageview),
             onTap: () => navigatorState.pushNamed(
-              Routes.openjmuPostDetail,
-              arguments: <String, dynamic>{
-                'post': comment.post,
-                'parentContext': context
-              },
+              Routes.openjmuPostDetail.name,
+              arguments: Routes.openjmuPostDetail.d(
+                post: comment.post,
+                parentContext: context,
+              ),
             ),
           ),
         ],

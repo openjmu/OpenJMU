@@ -13,7 +13,6 @@ import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
-import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class TeamCommentPreviewCard extends StatelessWidget {
   const TeamCommentPreviewCard({
@@ -173,11 +172,11 @@ class TeamCommentPreviewCard extends StatelessWidget {
             ? () {
                 final TeamPostProvider provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
-                  Routes.openjmuTeamPostDetail,
-                  arguments: <String, dynamic>{
-                    'provider': provider,
-                    'type': TeamPostType.comment,
-                  },
+                  Routes.openjmuTeamPostDetail.name,
+                  arguments: Routes.openjmuTeamPostDetail.d(
+                    provider: provider,
+                    type: TeamPostType.comment,
+                  ),
                 );
               }
             : null,
@@ -241,12 +240,12 @@ class TeamCommentPreviewCard extends StatelessWidget {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   navigatorState.pushNamed(
-                                    Routes.openjmuUserPage,
-                                    arguments: <String, dynamic>{
-                                      'uid': _post['user']['uid']
+                                    Routes.openjmuUserPage.name,
+                                    arguments: Routes.openjmuUserPage.d(
+                                      uid: _post['user']['uid']
                                           .toString()
                                           .toInt(),
-                                    },
+                                    ),
                                   );
                                 },
                             ),
@@ -334,10 +333,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.openjmuImageViewer,
-            arguments: <String, dynamic>{
-              'index': index,
-              'pics': post.pics.map<ImageBean>((dynamic _) {
+            Routes.openjmuImageViewer.name,
+            arguments: Routes.openjmuImageViewer.d(
+              index: index,
+              pics: post.pics.map<ImageBean>((dynamic _) {
                 return ImageBean(
                   id: imageId,
                   imageUrl: imageUrl,
@@ -345,7 +344,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   postId: post.tid,
                 );
               }).toList(),
-            },
+            ),
           );
         },
         child: _exImage,

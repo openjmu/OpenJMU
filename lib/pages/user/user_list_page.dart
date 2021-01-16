@@ -5,12 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: 'openjmu://user-list-page',
-  routeName: '用户列表页',
-  argumentNames: <String>['user', 'type'],
-  argumentTypes: <String>['UserInfo', 'int'],
-)
+@FFRoute(name: 'openjmu://user-list-page', routeName: '用户列表页')
 class UserListPage extends StatefulWidget {
   const UserListPage({
     Key key,
@@ -132,10 +127,10 @@ class _UserListState extends State<UserListPage> {
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
-          Routes.openjmuUserPage,
-          arguments: <String, dynamic>{
-            'uid': int.parse(_user['uid'].toString()),
-          },
+          Routes.openjmuUserPage.name,
+          arguments: Routes.openjmuUserPage.d(
+            uid: int.parse(_user['uid'].toString()),
+          ),
         );
       },
       child: Container(

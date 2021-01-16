@@ -177,8 +177,8 @@ class NewsListPageState extends State<NewsListPage>
       child: InkWell(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.openjmuNewsDetail,
-            arguments: <String, dynamic>{'news': news},
+            Routes.openjmuNewsDetail.name,
+            arguments: Routes.openjmuNewsDetail.d(news: news),
           );
         },
         child: Row(

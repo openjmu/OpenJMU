@@ -19,7 +19,6 @@ import 'package:openjmu/pages/post/team_reply_list_page.dart';
 @FFRoute(
   name: 'openjmu://notifications',
   routeName: '通知页',
-  argumentNames: <String>['initialPage'],
   pageRouteType: PageRouteType.transparent,
 )
 class NotificationsPage extends StatefulWidget {

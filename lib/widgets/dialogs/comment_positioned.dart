@@ -16,7 +16,6 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 @FFRoute(
   name: 'openjmu://add-comment',
   routeName: '新增评论',
-  argumentNames: <String>['post', 'comment'],
   pageRouteType: PageRouteType.transparent,
 )
 class CommentPositioned extends StatefulWidget {

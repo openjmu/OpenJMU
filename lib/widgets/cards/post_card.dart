@@ -14,7 +14,6 @@ import 'package:like_button/like_button.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
-import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard(
@@ -153,13 +152,13 @@ class _PostCardState extends State<PostCard> {
           child: GestureDetector(
             onTap: () {
               navigatorState.pushNamed(
-                Routes.openjmuPostDetail,
-                arguments: <String, dynamic>{
-                  'post': _post,
-                  'index': widget.index,
-                  'fromPage': widget.fromPage,
-                  'parentContext': context,
-                },
+                Routes.openjmuPostDetail.name,
+                arguments: Routes.openjmuPostDetail.d(
+                  post: _post,
+                  index: widget.index,
+                  fromPage: widget.fromPage,
+                  parentContext: context,
+                ),
               );
             },
             child: Container(
@@ -251,10 +250,10 @@ class _PostCardState extends State<PostCard> {
         _exImage = GestureDetector(
           onTap: () {
             navigatorState.pushNamed(
-              Routes.openjmuImageViewer,
-              arguments: <String, dynamic>{
-                'index': index,
-                'pics': data.map<ImageBean>((dynamic f) {
+              Routes.openjmuImageViewer.name,
+              arguments: Routes.openjmuImageViewer.d(
+                index: index,
+                pics: data.map<ImageBean>((dynamic f) {
                   return ImageBean(
                     id: imageId,
                     imageUrl: f['image_original'] as String,
@@ -262,10 +261,10 @@ class _PostCardState extends State<PostCard> {
                     postId: widget.post.id,
                   );
                 }).toList(),
-                'post': widget.post,
-                'heroPrefix': 'square-post-image-hero-'
+                post: widget.post,
+                heroPrefix: 'square-post-image-hero-'
                     '${widget.isDetail ? 'isDetail-' : ''}',
-              },
+              ),
             );
           },
           child: _exImage,
@@ -401,8 +400,8 @@ class _PostCardState extends State<PostCard> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onPressed: () {
                 navigatorState.pushNamed(
-                  Routes.openjmuAddForward,
-                  arguments: <String, dynamic>{'post': widget.post},
+                  Routes.openjmuAddForward.name,
+                  arguments: Routes.openjmuAddForward.d(post: widget.post),
                 );
               },
               icon: SvgPicture.asset(
@@ -597,13 +596,13 @@ class _PostCardState extends State<PostCard> {
 
   void pushToDetail() {
     navigatorState.pushNamed(
-      Routes.openjmuPostDetail,
-      arguments: <String, dynamic>{
-        'post': widget.post,
-        'index': widget.index,
-        'fromPage': widget.fromPage,
-        'parentContext': context,
-      },
+      Routes.openjmuPostDetail.name,
+      arguments: Routes.openjmuPostDetail.d(
+        post: widget.post,
+        index: widget.index,
+        fromPage: widget.fromPage,
+        parentContext: context,
+      ),
     );
   }
 

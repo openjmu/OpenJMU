@@ -2,24 +2,30 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-08 10:53
 ///
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 export 'package:provider/provider.dart';
-export 'package:openjmu/providers/courses_provider.dart';
-export 'package:openjmu/providers/date_provider.dart';
-export 'package:openjmu/providers/messages_provider.dart';
-export 'package:openjmu/providers/notification_provider.dart';
-export 'package:openjmu/providers/report_records_provider.dart';
-export 'package:openjmu/providers/scores_provider.dart';
-export 'package:openjmu/providers/settings_provider.dart';
-export 'package:openjmu/providers/sign_provider.dart';
-export 'package:openjmu/providers/team_post_provider.dart';
-export 'package:openjmu/providers/themes_provider.dart';
-export 'package:openjmu/providers/webapps_provider.dart';
+
+part 'courses_provider.dart';
+part 'date_provider.dart';
+part 'messages_provider.dart';
+part 'notification_provider.dart';
+part 'report_records_provider.dart';
+part 'scores_provider.dart';
+part 'settings_provider.dart';
+part 'sign_provider.dart';
+part 'team_post_provider.dart';
+part 'themes_provider.dart';
+part 'webapps_provider.dart';
 
 ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
   return ChangeNotifierProvider<T>.value(value: value);

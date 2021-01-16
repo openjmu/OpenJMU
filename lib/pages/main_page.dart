@@ -12,11 +12,7 @@ import 'package:openjmu/pages/home/post_square_page.dart';
 import 'package:openjmu/pages/home/school_work_page.dart';
 import 'package:openjmu/pages/home/self_page.dart';
 
-@FFRoute(
-  name: 'openjmu://home',
-  routeName: '首页',
-  argumentNames: <String>['initAction'],
-)
+@FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
   const MainPage({
     Key key,
@@ -81,10 +77,10 @@ class MainPage extends StatefulWidget {
                 onPressed: () async {
                   provider.stopNotification();
                   await navigatorState.pushNamed(
-                    Routes.openjmuNotifications,
-                    arguments: <String, dynamic>{
-                      'initialPage': isTeam ? '集市' : '广场',
-                    },
+                    Routes.openjmuNotifications.name,
+                    arguments: Routes.openjmuNotifications.d(
+                      initialPage: isTeam ? '集市' : '广场',
+                    ),
                   );
                   provider.initNotification();
                 },

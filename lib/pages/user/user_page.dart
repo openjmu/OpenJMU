@@ -9,12 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: 'openjmu://user-page',
-  routeName: '用户页',
-  argumentNames: <String>['uid'],
-  argumentTypes: <String>['int'],
-)
+@FFRoute(name: 'openjmu://user-page', routeName: '用户页')
 class UserPage extends StatefulWidget {
   const UserPage({
     Key key,
@@ -183,17 +178,17 @@ class UserPageState extends State<UserPage>
 
   void avatarTap() {
     navigatorState.pushNamed(
-      Routes.openjmuImageViewer,
-      arguments: <String, dynamic>{
-        'index': 0,
-        'pics': <ImageBean>[
+      Routes.openjmuImageViewer.name,
+      arguments: Routes.openjmuImageViewer.d(
+        index: 0,
+        pics: <ImageBean>[
           ImageBean(
             id: widget.uid,
             imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
           ),
         ],
-        'needsClear': true,
-      },
+        needsClear: true,
+      ),
     );
   }
 
@@ -652,11 +647,11 @@ class UserPageState extends State<UserPage>
             behavior: HitTestBehavior.opaque,
             onTap: () {
               navigatorState.pushNamed(
-                Routes.openjmuUserListPage,
-                arguments: <String, dynamic>{
-                  'user': user,
-                  'type': 1,
-                },
+                Routes.openjmuUserListPage.name,
+                arguments: Routes.openjmuUserListPage.d(
+                  user: user,
+                  type: 1,
+                ),
               );
             },
             child: Row(
@@ -673,11 +668,11 @@ class UserPageState extends State<UserPage>
             behavior: HitTestBehavior.opaque,
             onTap: () {
               navigatorState.pushNamed(
-                Routes.openjmuUserListPage,
-                arguments: <String, dynamic>{
-                  'user': user,
-                  'type': 2,
-                },
+                Routes.openjmuUserListPage.name,
+                arguments: Routes.openjmuUserListPage.d(
+                  user: user,
+                  type: 2,
+                ),
               );
             },
             child: Row(

@@ -2,9 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-03-09 19:26
 ///
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class SignProvider extends ChangeNotifier {
   bool _isSigning = false;

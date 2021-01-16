@@ -15,7 +15,6 @@ import 'package:like_button/like_button.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
-import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
   const TeamPostPreviewCard({@required Key key}) : super(key: key);
@@ -226,11 +225,11 @@ class TeamPostPreviewCard extends StatelessWidget {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         navigatorState.pushNamed(
-                          Routes.openjmuUserPage,
-                          arguments: <String, dynamic>{
-                            'uid':
+                          Routes.openjmuUserPage.name,
+                          arguments: Routes.openjmuUserPage.d(
+                            uid:
                                 (_post['user_info']['uid'] as String).toInt(),
-                          },
+                          ),
                         );
                       },
                   ),
@@ -319,10 +318,10 @@ class TeamPostPreviewCard extends StatelessWidget {
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.openjmuImageViewer,
-            arguments: <String, dynamic>{
-              'index': i,
-              'pics': post.pics.map((Map<dynamic, dynamic> pic) {
+            Routes.openjmuImageViewer.name,
+            arguments: Routes.openjmuImageViewer.d(
+              index: i,
+              pics: post.pics.map((Map<dynamic, dynamic> pic) {
                 final int id = (pic['fid'] as String).toInt();
                 final String imageUrl = API.teamFile(fid: id);
                 return ImageBean(
@@ -332,8 +331,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                   postId: post.tid,
                 );
               }).toList(),
-              'heroPrefix': 'team-post-preview-image-',
-            },
+              heroPrefix: 'team-post-preview-image-',
+            ),
           );
         },
         child: _exImage,
@@ -473,11 +472,11 @@ class TeamPostPreviewCard extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 navigatorState.pushNamed(
-                  Routes.openjmuTeamPostDetail,
-                  arguments: <String, dynamic>{
-                    'provider': provider,
-                    'type': TeamPostType.post
-                  },
+                  Routes.openjmuTeamPostDetail.name,
+                  arguments: Routes.openjmuTeamPostDetail.d(
+                    provider: provider,
+                    type: TeamPostType.post
+                  ),
                 );
               },
               child: Container(

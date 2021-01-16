@@ -2,11 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-13 16:52
 ///
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class SettingsProvider extends ChangeNotifier {
   SettingsProvider() {

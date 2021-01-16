@@ -27,6 +27,8 @@ part 'comment.dart';
 
 part 'course.dart';
 
+part 'image_bean.dart';
+
 part 'json_model.dart';
 
 part 'message.dart';

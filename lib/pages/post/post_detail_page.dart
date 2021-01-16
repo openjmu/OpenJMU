@@ -11,7 +11,9 @@ import 'package:openjmu/widgets/cards/post_card.dart';
 @FFRoute(
   name: 'openjmu://post-detail',
   routeName: '动态详情页',
-  argumentNames: <String>['post', 'index', 'fromPage', 'parentContext'],
+  argumentImports: <String>[
+    'import \'package:flutter/widgets.dart\';',
+  ],
 )
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
@@ -339,8 +341,8 @@ class PostDetailPageState extends State<PostDetailPage> {
             child: FlatButton.icon(
               onPressed: () {
                 navigatorState.pushNamed(
-                  Routes.openjmuAddForward,
-                  arguments: <String, dynamic>{'post': widget.post},
+                  Routes.openjmuAddForward.name,
+                  arguments: Routes.openjmuAddForward.d(post: widget.post),
                 );
               },
               icon: SvgPicture.asset(
@@ -359,8 +361,8 @@ class PostDetailPageState extends State<PostDetailPage> {
             child: FlatButton.icon(
               onPressed: () {
                 navigatorState.pushNamed(
-                  Routes.openjmuAddComment,
-                  arguments: <String, dynamic>{'post': widget.post},
+                  Routes.openjmuAddComment.name,
+                  arguments: Routes.openjmuAddComment.d(post: widget.post),
                 );
               },
               icon: SvgPicture.asset(

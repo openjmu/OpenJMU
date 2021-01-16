@@ -9,20 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: 'openjmu://in-app-webview',
-  routeName: '网页浏览',
-  argumentNames: <String>[
-    'url',
-    'title',
-    'app',
-    'withCookie',
-    'withAppBar',
-    'withAction',
-    'withScaffold',
-    'keepAlive',
-  ],
-)
+@FFRoute(name: 'openjmu://in-app-webview', routeName: '网页浏览')
 class InAppWebViewPage extends StatefulWidget {
   const InAppWebViewPage({
     Key key,

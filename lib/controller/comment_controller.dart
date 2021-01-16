@@ -330,11 +330,11 @@ class CommentListInPostState extends State<CommentListInPost>
   void replyTo(int index) {
     if (_comments.length >= index && _comments[index] != null) {
       navigatorState.pushNamed(
-        Routes.openjmuAddComment,
-        arguments: <String, dynamic>{
-          'post': widget.post,
-          'comment': _comments?.elementAt(index),
-        },
+        Routes.openjmuAddComment.name,
+        arguments: Routes.openjmuAddComment.d(
+          post: widget.post,
+          comment: _comments.elementAt(index),
+        ),
       );
     }
   }

@@ -12,7 +12,6 @@ import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
-import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class TeamPostCard extends StatefulWidget {
   const TeamPostCard({
@@ -154,10 +153,10 @@ class _TeamPostCardState extends State<TeamPostCard> {
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.openjmuImageViewer,
-            arguments: <String, dynamic>{
-              'index': index,
-              'pics': post.pics.map<ImageBean>((Map<dynamic, dynamic> f) {
+            Routes.openjmuImageViewer.name,
+            arguments: Routes.openjmuImageViewer.d(
+              index: index,
+              pics: post.pics.map<ImageBean>((Map<dynamic, dynamic> f) {
                 final int imageId = f['fid'].toString().toInt();
                 final String imageUrl = API.teamFile(fid: imageId);
                 return ImageBean(
@@ -167,8 +166,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
                   postId: post.tid,
                 );
               }).toList(),
-              'heroPrefix': 'team-post-image-',
-            },
+              heroPrefix: 'team-post-image-',
+            ),
           );
         },
         child: _exImage,

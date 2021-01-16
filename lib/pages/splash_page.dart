@@ -10,11 +10,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/login_page.dart';
 import 'package:openjmu/pages/main_page.dart';
 
-@FFRoute(
-  name: 'openjmu://splash',
-  routeName: '启动页',
-  argumentNames: <String>['initAction'],
-)
+@FFRoute(name: 'openjmu://splash', routeName: '启动页')
 class SplashPage extends StatefulWidget {
   const SplashPage({
     Key key,

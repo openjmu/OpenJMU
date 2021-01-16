@@ -2,12 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-12-18 16:52
 ///
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class DateProvider extends ChangeNotifier {
   DateProvider() {

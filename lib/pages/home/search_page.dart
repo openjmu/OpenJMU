@@ -6,11 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
 
-@FFRoute(
-  name: 'openjmu://search',
-  routeName: '搜索页',
-  argumentNames: <String>['content'],
-)
+@FFRoute(name: 'openjmu://search', routeName: '搜索页')
 class SearchPage extends StatefulWidget {
   const SearchPage({this.content});
 
@@ -81,8 +77,8 @@ class SearchPageState extends State<SearchPage>
       }
       if (userList != null && userList.length == 1) {
         navigatorState.pushReplacementNamed(
-          Routes.openjmuUserPage,
-          arguments: <String, dynamic>{'uid': userList[0].id},
+          Routes.openjmuUserPage.name,
+          arguments: Routes.openjmuUserPage.d(uid: userList[0].id),
         );
       }
     }).catchError((dynamic e) {

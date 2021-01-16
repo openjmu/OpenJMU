@@ -15,6 +15,10 @@ import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://login', routeName: '登录页')
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key key, this.initAction}) : super(key: key);
+
+  final int initAction;
+
   @override
   LoginPageState createState() => LoginPageState();
 }
@@ -144,9 +148,9 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       DataUtils.login(_username.value, _password.value).then((bool result) {
         if (result) {
           navigatorState.pushNamedAndRemoveUntil(
-            Routes.openjmuHome,
+            Routes.openjmuHome.name,
             (_) => false,
-            arguments: <String, dynamic>{'initAction': null},
+            arguments: Routes.openjmuHome.d(initAction: widget.initAction),
           );
         } else {
           _isLogin.value = false;

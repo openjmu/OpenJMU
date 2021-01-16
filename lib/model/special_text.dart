@@ -526,15 +526,15 @@ void specialTextTapRecognizer(dynamic data) {
   final String text = data['content'] as String;
   if (text.startsWith('#')) {
     navigatorState.pushNamed(
-      Routes.openjmuSearch,
-      arguments: <String, dynamic>{
-        'content': text.substring(1, text.length - 1),
-      },
+      Routes.openjmuSearch.name,
+      arguments: Routes.openjmuSearch.d(
+        content: text.substring(1, text.length - 1),
+      ),
     );
   } else if (text.startsWith('@')) {
     navigatorState.pushNamed(
-      Routes.openjmuUserPage,
-      arguments: <String, dynamic>{'uid': data['uid']},
+      Routes.openjmuUserPage.name,
+      arguments: Routes.openjmuUserPage.d(uid: data['uid'] as int),
     );
   } else if (text.startsWith('https://')) {
     API.launchWeb(url: text, title: '网页链接');
@@ -544,13 +544,13 @@ void specialTextTapRecognizer(dynamic data) {
     final int imageId = data['image'] as int;
     final String imageUrl = API.commentImageUrl(imageId, 'o');
     navigatorState.pushNamed(
-      Routes.openjmuImageViewer,
-      arguments: <String, dynamic>{
-        'index': 0,
-        'pics': <ImageBean>[
-          ImageBean(id: imageId, imageUrl: imageUrl, postId: null)
+      Routes.openjmuImageViewer.name,
+      arguments: Routes.openjmuImageViewer.d(
+        index: 0,
+        pics: <ImageBean>[
+          ImageBean(id: imageId, imageUrl: imageUrl, postId: null),
         ],
-      },
+      ),
     );
   }
 }

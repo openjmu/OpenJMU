@@ -2,11 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-08 10:52
 ///
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class MessagesProvider with ChangeNotifier {
   MessagesProvider() {

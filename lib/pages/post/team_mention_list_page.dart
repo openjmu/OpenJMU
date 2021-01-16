@@ -153,14 +153,14 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
           behavior: HitTestBehavior.opaque,
           onTap: () {
             navigatorState.pushNamed(
-              Routes.openjmuTeamPostDetail,
-              arguments: <String, dynamic>{
-                'provider': provider,
-                'type': item.type == TeamMentionType.post
+              Routes.openjmuTeamPostDetail.name,
+              arguments: Routes.openjmuTeamPostDetail.d(
+                provider: provider,
+                type: item.type == TeamMentionType.post
                     ? TeamPostType.post
                     : TeamPostType.comment,
-                'postId': item.comment?.originId,
-              },
+                postId: item.comment?.originId,
+              ),
             );
           },
           child: Container(

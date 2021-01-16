@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -18,14 +17,13 @@ import 'package:openjmu/widgets/image/image_gesture_detector.dart';
 @FFRoute(
   name: 'openjmu://image-viewer',
   routeName: '图片浏览',
-  argumentNames: <String>['index', 'pics', 'needsClear', 'post', 'heroPrefix'],
   pageRouteType: PageRouteType.transparent,
 )
 class ImageViewer extends StatefulWidget {
   const ImageViewer({
     @required this.index,
     @required this.pics,
-    @required this.heroPrefix,
+    this.heroPrefix,
     this.needsClear = false,
     this.post,
   });
@@ -292,7 +290,7 @@ class ImageViewerState extends State<ImageViewer>
             child: Stack(
               children: <Widget>[
                 ExtendedImageGesturePageView.builder(
-                  physics: const CustomScrollPhysics(),
+                  physics: const _CustomScrollPhysics(),
                   controller: _controller,
                   itemCount: widget.pics.length,
                   itemBuilder: pageBuilder,
@@ -313,7 +311,7 @@ class ImageViewerState extends State<ImageViewer>
                         (BuildContext context, AsyncSnapshot<double> data) {
                       return Opacity(
                         opacity: popping ? 0.0 : data.data,
-                        child: ViewAppBar(
+                        child: _ViewAppBar(
                           post: widget.post,
                           onMoreClicked: () => onLongPress(context),
                         ),
@@ -333,7 +331,7 @@ class ImageViewerState extends State<ImageViewer>
                           (BuildContext context, AsyncSnapshot<double> data) =>
                               Opacity(
                         opacity: popping ? 0.0 : data.data,
-                        child: ImageList(
+                        child: _ImageList(
                           controller: _controller,
                           pageStreamController: pageStreamController,
                           index: currentIndex,
@@ -351,8 +349,8 @@ class ImageViewerState extends State<ImageViewer>
   }
 }
 
-class ImageList extends StatelessWidget {
-  const ImageList({
+class _ImageList extends StatelessWidget {
+  const _ImageList({
     this.controller,
     this.pageStreamController,
     this.index,
@@ -430,8 +428,8 @@ class ImageList extends StatelessWidget {
   }
 }
 
-class ViewAppBar extends StatelessWidget {
-  const ViewAppBar({
+class _ViewAppBar extends StatelessWidget {
+  const _ViewAppBar({
     Key key,
     this.post,
     this.onMoreClicked,
@@ -493,31 +491,8 @@ class ViewAppBar extends StatelessWidget {
   }
 }
 
-class ImageBean {
-  const ImageBean({this.id, this.imageUrl, this.imageThumbUrl, this.postId});
-
-  final int id;
-  final String imageUrl;
-  final String imageThumbUrl;
-  final int postId;
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'id': id,
-      'imageUrl': imageUrl,
-      'imageThumbUrl': imageThumbUrl,
-      'postId': postId,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'ImageBean ${const JsonEncoder.withIndent('  ').convert(toJson())}';
-  }
-}
-
-class CustomScrollPhysics extends BouncingScrollPhysics {
-  const CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
+class _CustomScrollPhysics extends BouncingScrollPhysics {
+  const _CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
 
   @override
   SpringDescription get spring => SpringDescription.withDampingRatio(

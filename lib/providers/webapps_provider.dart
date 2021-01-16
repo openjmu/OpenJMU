@@ -2,9 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-08 15:54
 ///
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
+part of 'providers.dart';
 
 class WebAppsProvider extends ChangeNotifier {
   final Box<List<dynamic>> _box = HiveBoxes.webAppsBox;

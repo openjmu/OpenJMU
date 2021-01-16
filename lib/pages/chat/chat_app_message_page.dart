@@ -14,7 +14,9 @@ import 'package:openjmu/constants/constants.dart';
 @FFRoute(
   name: 'openjmu://chat-app-message-page',
   routeName: '应用消息页',
-  argumentNames: <String>['app'],
+  argumentImports: <String>[
+    'import \'model/models.dart\';',
+  ],
 )
 class ChatAppMessagePage extends StatefulWidget {
   const ChatAppMessagePage({

@@ -44,21 +44,21 @@ class UserAvatar extends StatelessWidget {
             ? () {
                 final RouteSettings _routeSettings =
                     ModalRoute.of(context).settings;
-                final Map<String, dynamic> _routeArguments = <String, dynamic>{
-                  'uid': _uid,
-                };
+                final Map<String, dynamic> _routeArguments =
+                    Routes.openjmuUserPage.d(uid: _uid);
+
                 if (_routeSettings is FFRouteSettings) {
-                  if (_routeSettings.name != Routes.openjmuUserPage ||
+                  if (_routeSettings.name != Routes.openjmuUserPage.name ||
                       _routeSettings.arguments.toString() !=
                           _routeArguments.toString()) {
                     navigatorState.pushNamed(
-                      Routes.openjmuUserPage,
+                      Routes.openjmuUserPage.name,
                       arguments: _routeArguments,
                     );
                   }
                 } else {
                   navigatorState.pushNamed(
-                    Routes.openjmuUserPage,
+                    Routes.openjmuUserPage.name,
                     arguments: _routeArguments,
                   );
                 }

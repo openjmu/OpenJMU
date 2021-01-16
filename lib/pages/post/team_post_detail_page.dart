@@ -16,7 +16,9 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 @FFRoute(
   name: 'openjmu://team-post-detail',
   routeName: '小组动态详情页',
-  argumentNames: <String>['provider', 'type', 'postId'],
+  argumentImports: <String>[
+    'import \'providers/providers.dart\';',
+  ],
 )
 class TeamPostDetailPage extends StatefulWidget {
   const TeamPostDetailPage({

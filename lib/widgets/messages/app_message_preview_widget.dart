@@ -169,8 +169,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       behavior: HitTestBehavior.opaque,
       onTap: () {
         navigatorState.pushNamed(
-          Routes.openjmuChatAppMessagePage,
-          arguments: <String, dynamic>{'app': app},
+          Routes.openjmuChatAppMessagePage.name,
+          arguments: Routes.openjmuChatAppMessagePage.d(app: app),
         );
       },
       child: Container(
