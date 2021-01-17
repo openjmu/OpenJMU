@@ -423,7 +423,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
-                assets: selectedAssets,
+                previewAssets: selectedAssets,
                 themeData: AssetPicker.themeData(currentThemeColor),
               );
               if (result != selectedAssets && result != null) {
