@@ -260,7 +260,7 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: IconTheme(
-                data: Theme.of(context).iconTheme.copyWith(size: 36.w),
+                data: context.iconTheme.copyWith(size: 36.w),
                 child: icon,
               ),
             ),

@@ -436,10 +436,10 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     hintText: replyHint == null ? '给你一个神评的机会...' : null,
                   ),
                   cursorColor: currentThemeColor,
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontSize: 20.sp,
-                        textBaseline: TextBaseline.alphabetic,
-                      ),
+                  style: context.textTheme.bodyText2.copyWith(
+                    fontSize: 20.sp,
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
                   maxLines: null,
                 ),
               ),

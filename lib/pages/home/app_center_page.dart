@@ -57,7 +57,7 @@ class AppCenterPage extends StatelessWidget {
                   child: Container(
                     margin: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
-                      color: context.themeData.canvasColor,
+                      color: context.theme.canvasColor,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
@@ -65,7 +65,7 @@ class AppCenterPage extends StatelessWidget {
                         R.ASSETS_ICONS_SEND_SVG,
                         width: 24.w,
                         height: 24.w,
-                        color: context.themeData.iconTheme.color,
+                        color: context.iconTheme.color,
                       ),
                     ),
                   ),
@@ -103,7 +103,7 @@ class AppCenterPage extends StatelessWidget {
           height: (isEditing ? 120.0 : 156.0).h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.w),
-            color: context.themeData.colorScheme.surface,
+            color: context.theme.colorScheme.surface,
           ),
           child: Column(
             children: <Widget>[
@@ -183,11 +183,11 @@ class AppCenterPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 10.sp),
                       child: Text(
                         webApp.name,
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              height: 1.2,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.normal,
-                            ),
+                        style: context.textTheme.bodyText2.copyWith(
+                          height: 1.2,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.normal,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.fade,
                       ),
@@ -237,7 +237,7 @@ class AppCenterPage extends StatelessWidget {
     final bool isCommon = provider.commonWebApps.contains(webApp);
     final bool isEditing = provider.isEditingCommonApps;
     final IconThemeData iconTheme = IconThemeData(
-      color: context.themeData.iconTheme.color.withOpacity(0.5),
+      color: context.iconTheme.color.withOpacity(0.5),
       size: 12.w,
     );
     return PositionedDirectional(
@@ -248,7 +248,7 @@ class AppCenterPage extends StatelessWidget {
               width: 28.w,
               height: 28.w,
               decoration: BoxDecoration(
-                color: context.themeData.canvasColor,
+                color: context.theme.canvasColor,
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -283,7 +283,7 @@ class AppCenterPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.w),
-              color: context.themeData.colorScheme.surface,
+              color: context.theme.colorScheme.surface,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -298,10 +298,10 @@ class AppCenterPage extends StatelessWidget {
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
                       WebApp.category[name],
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style: context.textTheme.bodyText2.copyWith(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -349,8 +349,8 @@ class AppCenterPage extends StatelessWidget {
           },
           child: Scaffold(
             backgroundColor: Color.lerp(
-              context.themeData.canvasColor,
-              context.themeData.colorScheme.surface,
+              context.theme.canvasColor,
+              context.theme.colorScheme.surface,
               0.5,
             ),
             body: FixedAppBarWrapper(

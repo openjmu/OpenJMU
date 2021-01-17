@@ -57,17 +57,17 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                   Center(
                     child: Text(
                       'Set SID Manually (DEBUG)',
-                      style: Theme.of(context).textTheme.headline6,
+                      style: context.textTheme.headline6,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(20.w),
                     child: TextField(
                       autofocus: true,
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 18.sp,
-                            textBaseline: TextBaseline.alphabetic,
-                          ),
+                      style: context.textTheme.bodyText2.copyWith(
+                        fontSize: 18.sp,
+                        textBaseline: TextBaseline.alphabetic,
+                      ),
                       controller: _textEditingController,
                       maxLength: 32,
                       maxLines: null,

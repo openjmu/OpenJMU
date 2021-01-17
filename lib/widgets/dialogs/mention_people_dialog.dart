@@ -60,8 +60,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
   Widget get title => Center(
         child: Text(
           '提到用户',
-          style:
-              Theme.of(context).textTheme.headline6.copyWith(fontSize: 24.sp),
+          style: context.textTheme.headline6.copyWith(fontSize: 24.sp),
         ),
       );
 
@@ -77,10 +76,10 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             hintStyle: TextStyle(textBaseline: TextBaseline.alphabetic),
           ),
           textInputAction: TextInputAction.search,
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontSize: 20.sp,
-                textBaseline: TextBaseline.alphabetic,
-              ),
+          style: context.textTheme.bodyText2.copyWith(
+            fontSize: 20.sp,
+            textBaseline: TextBaseline.alphabetic,
+          ),
           scrollPadding: EdgeInsets.zero,
           maxLines: 1,
           onChanged: (String value) {
@@ -98,7 +97,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         child: Icon(
           Icons.search,
           size: 32.w,
-          color: Theme.of(context).textTheme.bodyText2.color,
+          color: context.textTheme.bodyText2.color,
         ),
       );
 

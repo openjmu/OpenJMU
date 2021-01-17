@@ -11,7 +11,9 @@ class ScoresProvider extends ChangeNotifier {
   String _scoreData = '';
 
   bool _loaded = false;
+
   bool get loaded => _loaded;
+
   set loaded(bool value) {
     assert(value != null);
     if (value == _loaded) {
@@ -22,7 +24,9 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   bool _loading = true;
+
   bool get loading => _loading;
+
   set loading(bool value) {
     assert(value != null);
     if (value == _loading) {
@@ -33,12 +37,16 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   bool _loadError = false;
+
   bool get loadError => _loadError;
   String _errorString = '';
+
   String get errorString => _errorString;
 
   List<String> _terms;
+
   List<String> get terms => _terms;
+
   set terms(List<String> value) {
     assert(value != null);
     if (value == _terms) {
@@ -49,7 +57,9 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   String _selectedTerm;
+
   String get selectedTerm => _selectedTerm;
+
   set selectedTerm(String value) {
     assert(value != null);
     if (value == _selectedTerm) {
@@ -62,7 +72,9 @@ class ScoresProvider extends ChangeNotifier {
   bool get hasScore => _scores?.isNotEmpty ?? false;
 
   List<Score> _scores;
+
   List<Score> get scores => _scores;
+
   set scores(List<Score> value) {
     assert(value != null);
     if (value == _scores) {
@@ -75,16 +87,20 @@ class ScoresProvider extends ChangeNotifier {
   List<Score> get filteredScores =>
       _scores?.filter((Score score) => score.termId == _selectedTerm)?.toList();
 
+  List<Score> scoresByTerm(String term) {
+    return _scores?.filter((Score score) => score.termId == term)?.toList();
+  }
+
   Future<void> initScore() async {
-    final Map<String, dynamic> data =
-        _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
+    final Map<dynamic, dynamic> data = _scoreBox.get(currentUser.uid);
     if (data != null && data['terms'] != null && data['scores'] != null) {
-      _terms = (data['terms'] as List<dynamic>).cast<String>();
+      _terms =
+          (data['terms'] as List<dynamic>).reversed.toList().cast<String>();
       _scores = (data['scores'] as List<dynamic>).cast<Score>();
       _loaded = true;
     }
     if (await initSocket()) {
-      unawaited(requestScore());
+      requestScore();
     }
   }
 
@@ -138,8 +154,8 @@ class ScoresProvider extends ChangeNotifier {
 
   void tryDecodeScores() {
     try {
-      final Map<String, dynamic> response = (jsonDecode(_scoreData)
-          as Map<String, dynamic>)['obj'] as Map<String, dynamic>;
+      final Map<dynamic, dynamic> response =
+          jsonDecode(_scoreData)['obj'] as Map<dynamic, dynamic>;
       if ((response['terms'] as List<dynamic>).isNotEmpty &&
           (response['scores'] as List<dynamic>).isNotEmpty) {
         final List<Score> scoreList = <Score>[];
@@ -185,9 +201,9 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  void selectTerm(int index) {
-    if (_selectedTerm != _terms[index]) {
-      selectedTerm = _terms[index];
+  void selectTerm(String term) {
+    if (_selectedTerm != term) {
+      selectedTerm = term;
     }
   }
 

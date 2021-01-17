@@ -59,22 +59,8 @@ class MainPage extends StatefulWidget {
           child: Stack(
             overflow: Overflow.visible,
             children: <Widget>[
-              MaterialButton(
-                elevation: 0.0,
-                minWidth: 56.w,
-                height: 56.w,
-                padding: EdgeInsets.zero,
-                color: context.themeData.canvasColor,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13.w),
-                ),
-                child: SvgPicture.asset(
-                  R.ASSETS_ICONS_NOTIFICATION_SVG,
-                  color: currentTheme.iconTheme.color,
-                  width: 24.w,
-                ),
-                onPressed: () async {
+              GestureDetector(
+                onTap: () async {
                   provider.stopNotification();
                   await navigatorState.pushNamed(
                     Routes.openjmuNotifications.name,
@@ -84,6 +70,21 @@ class MainPage extends StatefulWidget {
                   );
                   provider.initNotification();
                 },
+                child: Container(
+                  width: 56.w,
+                  height: 56.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(13.w),
+                    color: context.theme.canvasColor,
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      R.ASSETS_ICONS_NOTIFICATION_SVG,
+                      color: context.textTheme.bodyText2.color,
+                      width: 24.w,
+                    ),
+                  ),
+                ),
               ),
               Positioned(
                 top: 5.w,
@@ -97,7 +98,7 @@ class MainPage extends StatefulWidget {
                     child: Container(
                       width: 12.w,
                       height: 12.w,
-                      color: context.themeData.accentColor,
+                      color: context.themeColor,
                     ),
                   ),
                 ),
@@ -113,18 +114,18 @@ class MainPage extends StatefulWidget {
     @required BuildContext context,
     @required String route,
   }) {
-    return Consumer<ThemesProvider>(
-      builder: (_, ThemesProvider provider, __) {
-        return MaterialButton(
-          color: context.themeData.accentColor,
-          elevation: 0.0,
-          minWidth: 100.w,
-          height: 56.w,
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(13.w),
-          ),
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    return GestureDetector(
+      onTap: () {
+        navigatorState.pushNamed(route);
+      },
+      child: Container(
+        width: 100.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.themeColor,
+        ),
+        child: Center(
           child: Text(
             '发动态',
             style: TextStyle(
@@ -134,11 +135,8 @@ class MainPage extends StatefulWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          onPressed: () {
-            navigatorState.pushNamed(route);
-          },
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -159,7 +157,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Bottom navigation bar's height;
   /// 底部导航的高度
-  static const double bottomBarHeight = 72.0;
+  static const double bottomBarHeight = 80.0;
 
   /// Base text style for [TabBar].
   /// 顶部Tab的文字样式基类
@@ -189,7 +187,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Icon size for bottom navigation bar's item.
   /// 底部导航的图标大小
-  double get bottomBarIconSize => bottomBarHeight / 1.75;
+  double get bottomBarIconSize => bottomBarHeight / 1.875;
 
   @override
   bool get wantKeepAlive => true;
@@ -274,7 +272,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                   topLeft: Radius.circular(20.w),
                   topRight: Radius.circular(20.w),
                 ),
-                color: context.themeData.colorScheme.primary,
+                color: context.theme.colorScheme.primary,
               ),
               child: Row(
                 children: <Widget>[
@@ -317,8 +315,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
       height: bottomBarHeight,
       iconSize: bottomBarIconSize,
-      selectedColor: context.themeData.accentColor,
-      itemFontSize: 16.0,
+      selectedColor: context.themeColor,
+      itemFontSize: 16.sp,
       onTabSelected: _selectedTab,
       showText: false,
       initIndex: _currentIndex,

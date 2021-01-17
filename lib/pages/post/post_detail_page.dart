@@ -328,7 +328,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       );
 
   Widget get toolbar {
-    final TextStyle bodyTextStyle = Theme.of(context).textTheme.bodyText2;
+    final TextStyle bodyTextStyle = context.textTheme.bodyText2;
     return Container(
       height: Screens.bottomSafeHeight + 70.h,
       padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),

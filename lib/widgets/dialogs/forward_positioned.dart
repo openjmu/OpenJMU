@@ -88,10 +88,10 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               : null,
         ),
         enabled: !_forwarding,
-        style: Theme.of(context).textTheme.bodyText2.copyWith(
-              fontSize: 20.sp,
-              textBaseline: TextBaseline.alphabetic,
-            ),
+        style: context.textTheme.bodyText2.copyWith(
+          fontSize: 20.sp,
+          textBaseline: TextBaseline.alphabetic,
+        ),
         cursorColor: currentThemeColor,
         autofocus: true,
         maxLines: 3,
@@ -280,7 +280,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                   size: 32.w,
                   color: emoticonPadActive
                       ? currentThemeColor
-                      : Theme.of(context).iconTheme.color,
+                      : context.iconTheme.color,
                 ),
               ),
             ),

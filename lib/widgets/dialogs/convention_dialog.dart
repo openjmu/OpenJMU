@@ -247,7 +247,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.w),
           ),
-          color: context.themeData.canvasColor,
+          color: context.theme.canvasColor,
           onPressed: canSend
               ? () {
                   Navigator.of(context).pop(true);

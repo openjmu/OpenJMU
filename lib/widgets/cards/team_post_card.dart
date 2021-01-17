@@ -97,10 +97,10 @@ class _TeamPostCardState extends State<TeamPostCard> {
   Widget _postTime(BuildContext context) {
     return Text(
       TeamPostAPI.timeConverter(post),
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.normal,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.normal,
+      ),
     );
   }
 
@@ -249,9 +249,9 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     ].join('、')}'
                     '${post.praisesCount > 3 ? '等${post.praisesCount}人' : ''}'
                     '觉得很赞',
-                    style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: 14.sp,
-                        ),
+                    style: context.textTheme.caption.copyWith(
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ),
               ],

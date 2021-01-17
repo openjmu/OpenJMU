@@ -157,29 +157,29 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   Widget versionInfo(ChangeLog log) {
     return Text(
       log.version,
-      style: Theme.of(context).textTheme.headline6.copyWith(
-            fontSize: suSetSp(
-                log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
-            fontWeight: FontWeight.bold,
-          ),
+      style: context.textTheme.headline6.copyWith(
+        fontSize:
+            suSetSp(log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 
   Widget dateInfo(ChangeLog log) {
     return Text(
       '${log.date} ',
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 20.sp,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 20.sp,
+      ),
     );
   }
 
   Widget buildNumberInfo(ChangeLog log) {
     return Text(
       '(${log.buildNumber})',
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 20.sp,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 20.sp,
+      ),
     );
   }
 
@@ -239,7 +239,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           (int i) => contentColumn(sections, i),
         ),
       ),
-      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20.sp),
+      style: context.textTheme.bodyText2.copyWith(fontSize: 20.sp),
     );
   }
 

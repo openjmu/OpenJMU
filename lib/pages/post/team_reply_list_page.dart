@@ -114,10 +114,10 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     }
     return Text(
       time,
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.normal,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 17.sp,
+        fontWeight: FontWeight.normal,
+      ),
     );
   }
 
@@ -152,7 +152,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               TextSpan(
                 text: item.type == TeamReplyType.post ? '回复我的帖子：' : '评论我的回帖：',
                 style: TextStyle(
-                  color: Theme.of(context).iconTheme.color.withOpacity(0.5),
+                  color: context.iconTheme.color.withOpacity(0.5),
                 ),
               ),
             ],
@@ -185,10 +185,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
           onTap: () {
             navigatorState.pushNamed(
               Routes.openjmuTeamPostDetail.name,
-              arguments: Routes.openjmuTeamPostDetail.d(
-                provider: provider,
-                type: TeamPostType.comment
-              ),
+              arguments: Routes.openjmuTeamPostDetail
+                  .d(provider: provider, type: TeamPostType.comment),
             );
           },
           child: Container(

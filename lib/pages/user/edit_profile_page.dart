@@ -120,7 +120,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           VGap(10.h),
           DefaultTextStyle(
-            style: context.themeData.textTheme.bodyText2.copyWith(
+            style: context.textTheme.bodyText2.copyWith(
               fontSize: 22.sp,
             ),
             child: child,

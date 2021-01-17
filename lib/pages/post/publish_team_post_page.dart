@@ -344,17 +344,18 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
 
   /// Publish button.
   /// 发布按钮
-  Widget get publishButton => MaterialButton(
-        color: currentThemeColor,
-        minWidth: 120.w,
+  Widget get publishButton {
+    return GestureDetector(
+      onTap: checkConvention,
+      child: Container(
+        width: 120.w,
         height: 50.h,
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
+          color: currentThemeColor,
         ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(right: 6.w),
@@ -374,8 +375,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             ),
           ],
         ),
-        onPressed: checkConvention,
-      );
+      ),
+    );
+  }
 
   /// [TextField] for content.
   /// 内容输入区

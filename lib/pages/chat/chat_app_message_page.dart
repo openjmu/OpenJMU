@@ -166,9 +166,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               padding: EdgeInsets.only(left: 8.w),
               child: Text(
                 timeHandler(message.sendTime),
-                style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: 14.sp,
-                    ),
+                style: context.textTheme.caption.copyWith(
+                  fontSize: 14.sp,
+                ),
               ),
             )
           ],

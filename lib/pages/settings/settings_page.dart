@@ -135,7 +135,7 @@ class _AboutCard extends StatelessWidget {
                 ),
                 Text(
                   'V${PackageUtils.version}+${PackageUtils.buildNumber}',
-                  style: context.themeData.textTheme.caption.copyWith(
+                  style: context.textTheme.caption.copyWith(
                     fontSize: 17.sp,
                   ),
                 ),
@@ -146,7 +146,7 @@ class _AboutCard extends StatelessWidget {
             minWidth: 84.w,
             height: 60.w,
             elevation: 0.0,
-            color: context.themeData.canvasColor,
+            color: context.theme.canvasColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.w),
             ),
@@ -227,7 +227,7 @@ class _NightModeCard extends StatelessWidget {
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
-                  activeColor: context.themeData.accentColor,
+                  activeColor: context.themeColor,
                   value: provider.dark,
                   onChanged: !provider.platformBrightness
                       ? (bool value) => provider.dark = value
@@ -243,7 +243,7 @@ class _NightModeCard extends StatelessWidget {
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
-                  activeColor: context.themeData.accentColor,
+                  activeColor: context.themeColor,
                   value: provider.platformBrightness,
                   onChanged: (bool value) =>
                       provider.platformBrightness = value,
@@ -300,7 +300,7 @@ class _EnhanceCard extends StatelessWidget {
                   provider.hideShieldPost,
               builder: (BuildContext _, bool hideShieldPost, Widget __) {
                 return CustomSwitch(
-                  activeColor: context.themeData.accentColor,
+                  activeColor: context.themeColor,
                   value: hideShieldPost,
                   onChanged: (bool value) async {
                     await HiveFieldUtils.setEnabledHideShieldPost(value);
@@ -322,7 +322,7 @@ class _EnhanceCard extends StatelessWidget {
                       provider.newAppCenterIcon,
                   builder: (_, bool newAppCenterIcon, __) {
                     return CustomSwitch(
-                      activeColor: context.themeData.accentColor,
+                      activeColor: context.themeColor,
                       value: newAppCenterIcon,
                       onChanged: (bool value) async {
                         await HiveFieldUtils.setEnabledNewAppsIcon(value);
@@ -342,7 +342,7 @@ class _EnhanceCard extends StatelessWidget {
               builder:
                   (BuildContext _, bool launchFromSystemBrowser, Widget __) {
                 return CustomSwitch(
-                  activeColor: context.themeData.accentColor,
+                  activeColor: context.themeColor,
                   value: launchFromSystemBrowser,
                   onChanged: (bool value) async {
                     await HiveFieldUtils.setLaunchFromSystemBrowser(value);
@@ -483,7 +483,7 @@ class _SettingsCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.w),
-        color: context.themeData.cardColor,
+        color: context.theme.cardColor,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -534,8 +534,7 @@ class _SettingItemWidget extends StatelessWidget {
             if (item.description != null)
               Text(
                 item.description,
-                style: context.themeData.textTheme.caption
-                    .copyWith(fontSize: 22.sp),
+                style: context.textTheme.caption.copyWith(fontSize: 22.sp),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
               ),
@@ -547,7 +546,7 @@ class _SettingItemWidget extends StatelessWidget {
                 height: (iconSize / 1.25).w,
                 child: SvgPicture.asset(
                   R.ASSETS_ICONS_ARROW_RIGHT_SVG,
-                  color: context.themeData.iconTheme.color,
+                  color: context.iconTheme.color,
                   fit: BoxFit.cover,
                 ),
               ),

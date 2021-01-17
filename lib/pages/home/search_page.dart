@@ -176,7 +176,7 @@ class SearchPageState extends State<SearchPage>
           child: Icon(
             Icons.clear,
             size: 24.w,
-            color: Theme.of(context).iconTheme.color,
+            color: context.iconTheme.color,
           ),
         ),
       );
@@ -339,10 +339,9 @@ class SearchPageState extends State<SearchPage>
                             ),
                             child: Text(
                               '相关动态',
-                              style:
-                                  Theme.of(context).textTheme.caption.copyWith(
-                                        fontSize: 19.sp,
-                                      ),
+                              style: context.textTheme.caption.copyWith(
+                                fontSize: 19.sp,
+                              ),
                             ),
                           );
                         } else if (index == postList.length + 1) {

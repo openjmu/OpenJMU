@@ -302,8 +302,7 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
       child: SvgPicture.asset(
         R.ASSETS_ICONS_LOAD_MORE_SVG,
         width: (widget.size ?? 32).w,
-        color: widget.color ??
-            context.themeData.textTheme.caption.color.withOpacity(0.5),
+        color: widget.color ?? context.textTheme.caption.color.withOpacity(0.5),
       ),
     );
   }
@@ -420,7 +419,7 @@ class ScaledImage extends StatelessWidget {
             child: Text(
               '长图',
               style: TextStyle(
-                color: Theme.of(context).iconTheme.color.withOpacity(0.8),
+                color: context.iconTheme.color.withOpacity(0.8),
                 fontSize: 16.sp,
               ),
             ),
@@ -450,7 +449,7 @@ class ScaledImage extends StatelessWidget {
             child: Text(
               '动图',
               style: TextStyle(
-                color: Theme.of(context).iconTheme.color.withOpacity(0.9),
+                color: context.iconTheme.color.withOpacity(0.9),
                 fontSize: 16.sp,
               ),
             ),

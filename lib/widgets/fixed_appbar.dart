@@ -111,10 +111,10 @@ class FixedAppBar extends StatelessWidget {
                     : AlignmentDirectional.centerStart,
                 child: DefaultTextStyle(
                   child: _title,
-                  style: Theme.of(context).textTheme.headline6.copyWith(
-                        fontSize: 23.sp,
-                        fontWeight: FontWeight.normal,
-                      ),
+                  style: context.textTheme.headline6.copyWith(
+                    fontSize: 23.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
                   maxLines: 1,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,

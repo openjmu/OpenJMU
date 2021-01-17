@@ -227,7 +227,7 @@ class ListEmptyIndicator extends StatelessWidget {
     }
     return DefaultTextStyle(
       style: textStyle ??
-          context.themeData.textTheme.caption.copyWith(
+          context.textTheme.caption.copyWith(
             fontSize: 17.sp,
             height: 1.4,
           ),

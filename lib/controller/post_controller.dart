@@ -480,9 +480,9 @@ class ForwardListInPostState extends State<ForwardListInPost>
   Text getPostTime(BuildContext context, Post post) {
     return Text(
       PostAPI.postTimeConverter(post.postTime),
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+      ),
     );
   }
 

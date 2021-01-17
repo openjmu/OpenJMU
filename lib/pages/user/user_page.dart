@@ -235,9 +235,8 @@ class UserPageState extends State<UserPage>
       builder: (BuildContext _, AsyncSnapshot<bool> data) {
         final bool shouldTitleDisplay = data.data;
         return SliverAppBar(
-          brightness: shouldTitleDisplay
-              ? context.themeData.brightness
-              : Brightness.dark,
+          brightness:
+              shouldTitleDisplay ? context.theme.brightness : Brightness.dark,
           expandedHeight: expandedHeight + offset,
           elevation: 0.0,
           pinned: true,
@@ -280,7 +279,7 @@ class UserPageState extends State<UserPage>
         Text(
           user?.name ?? '',
           style: TextStyle(
-            color: context.themeData.textTheme.bodyText1.color,
+            color: context.textTheme.bodyText1.color,
             fontSize: 21.sp,
           ),
         ),
@@ -326,7 +325,7 @@ class UserPageState extends State<UserPage>
             topLeft: Radius.circular(18.w),
             topRight: Radius.circular(18.w),
           ),
-          color: context.themeData.primaryColor,
+          color: context.theme.primaryColor,
         ),
         alignment: AlignmentDirectional.centerStart,
         child: TabBar(

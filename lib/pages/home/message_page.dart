@@ -190,7 +190,7 @@ class _AnnouncementItemWidget extends StatelessWidget {
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.w),
-        color: context.themeData.colorScheme.primary,
+        color: context.theme.colorScheme.primary,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

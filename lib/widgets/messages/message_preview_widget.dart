@@ -119,13 +119,13 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                       ),
                       Text(
                         ' $formattedTime',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .color
-                                  .withOpacity(0.5),
-                            ),
+                        style: context.textTheme.bodyText2.copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              .color
+                              .withOpacity(0.5),
+                        ),
                       ),
                       const Spacer(),
                       Container(
@@ -149,14 +149,14 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   ),
                   Text(
                     '${widget.message.content['content']}',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          color: Theme.of(context)
-                              .textTheme
-                              .bodyText2
-                              .color
-                              .withOpacity(0.5),
-                          fontSize: 19.sp,
-                        ),
+                    style: context.textTheme.bodyText2.copyWith(
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .color
+                          .withOpacity(0.5),
+                      fontSize: 19.sp,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

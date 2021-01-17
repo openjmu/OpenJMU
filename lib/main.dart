@@ -252,7 +252,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                 Icon(
                   Icons.router,
                   size: Screens.width / 6,
-                  color: Theme.of(context).iconTheme.color,
+                  color: context.iconTheme.color,
                 ),
                 VGap(Screens.width / 20),
                 Text(

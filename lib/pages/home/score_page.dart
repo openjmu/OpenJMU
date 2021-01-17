@@ -5,7 +5,23 @@ import 'package:flutter/gestures.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class ScorePage extends StatelessWidget {
+class ScorePage extends StatefulWidget {
+  const ScorePage({Key key}) : super(key: key);
+
+  @override
+  _ScorePageState createState() => _ScorePageState();
+}
+
+class _ScorePageState extends State<ScorePage>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   void gotoEvaluate() {
     String url;
     if (UserAPI.currentUser.isCY) {
@@ -49,11 +65,11 @@ class ScorePage extends StatelessWidget {
   Widget evaluateTips(BuildContext context) {
     final Widget dot = Container(
       margin: EdgeInsets.symmetric(horizontal: 30.w),
-      width: 14.w,
-      height: 14.h,
+      width: 10.w,
+      height: 10.w,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Theme.of(context).textTheme.caption.color,
+        color: context.textTheme.caption.color,
       ),
     );
     return Padding(
@@ -74,11 +90,12 @@ class ScorePage extends StatelessWidget {
                     ),
                     recognizer: TapGestureRecognizer()..onTap = gotoEvaluate,
                   ),
-                  const TextSpan(text: ' (校园内网)\n未教学评测的科目成绩将不予显示'),
+                  const TextSpan(
+                    text: ' (校园内网)\n未教学评测的科目成绩将不予显示',
+                  ),
                 ],
               ),
-              style:
-                  Theme.of(context).textTheme.caption.copyWith(fontSize: 19.sp),
+              style: context.textTheme.caption.copyWith(fontSize: 19.sp),
               textAlign: TextAlign.center,
             ),
           ),
@@ -88,168 +105,73 @@ class ScorePage extends StatelessWidget {
     );
   }
 
-  Widget _term(BuildContext context, String term, int index) {
-    final String _term = term;
-    final int currentYear = _term.substring(0, 4).toInt();
-    final int currentTerm = _term.substring(4, 5).toInt();
-    return Consumer<ScoresProvider>(
-      builder: (BuildContext _, ScoresProvider provider, Widget __) {
-        final String selectedTerm = provider.selectedTerm;
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => provider.selectTerm(index),
-          child: AnimatedContainer(
-            duration: 200.milliseconds,
-            margin: EdgeInsets.all(6.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.w),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    blurRadius: 5.0, color: Theme.of(context).canvasColor),
-              ],
-              color: _term == selectedTerm
-                  ? currentThemeColor
-                  : Theme.of(context).canvasColor,
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.sp),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '$currentYear-${currentYear + 1}',
-                    style: TextStyle(
-                      color: _term == selectedTerm
-                          ? Colors.white
-                          : Theme.of(context)
-                              .textTheme
-                              .caption
-                              .color
-                              .withOpacity(0.3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                  Text(
-                    '第$currentTerm学期',
-                    style: TextStyle(
-                      color: _term == selectedTerm
-                          ? Colors.white
-                          : Theme.of(context)
-                              .textTheme
-                              .caption
-                              .color
-                              .withOpacity(0.3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.sp,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  Widget _term(BuildContext context, String term) {
+    final int currentYear = term.substring(0, 4).toInt();
+    final int currentTerm = term.substring(4, 5).toInt();
 
-  Widget get termsWidget => Container(
-        padding: EdgeInsets.symmetric(vertical: 5.h),
-        width: Screens.width,
-        height: 86.h,
-        child: Center(
-          child: Selector<ScoresProvider, List<String>>(
-            selector: (BuildContext _, ScoresProvider provider) =>
-                provider.terms,
-            builder: (BuildContext context, List<String> terms, Widget __) {
-              return ListView.builder(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: terms.length + 2,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0 || index == terms.length + 1) {
-                    return Gap(10.w);
-                  } else {
-                    return _term(
-                      context,
-                      terms[terms.length - index],
-                      terms.length - index,
-                    );
-                  }
-                },
-              );
-            },
+    return Selector<ScoresProvider, String>(
+      selector: (_, ScoresProvider p) => p.selectedTerm,
+      builder: (_, String selectedTerm, __) => DefaultTextStyle.merge(
+        style: TextStyle(
+          fontSize: 20.sp,
+          fontWeight: FontWeight.w500,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('$currentYear-${currentYear + 1}'),
+              Text('第$currentTerm学期'),
+            ],
           ),
         ),
-      );
-
-  Widget _name(BuildContext context, Score score) {
-    return Text(
-      score.courseName,
-      style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 24.sp),
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _score(BuildContext context, Score score) {
-    return Text.rich(
-      TextSpan(
-        children: <TextSpan>[
-          TextSpan(
-            text: score.formattedScore,
-            style: TextStyle(
-              fontSize: 36.sp,
-              fontWeight: FontWeight.bold,
-              color: !score.isPass
-                  ? Colors.red
-                  : Theme.of(context).textTheme.headline6.color,
-            ),
-          ),
-          const TextSpan(text: ' / '),
-          TextSpan(text: '${score.scorePoint}'),
-        ],
-        style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 20.sp),
       ),
     );
   }
 
-  Widget _timeAndPoint(BuildContext context, Score score) {
-    return Text(
-      '学时: ${score.creditHour}　'
-      '学分: ${score.credit.toStringAsFixed(1)}',
-      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20.sp),
-    );
-  }
-
-  Widget get scoreGrid {
-    return Selector<ScoresProvider, List<Score>>(
-      selector: (BuildContext _, ScoresProvider provider) =>
-          provider.filteredScores,
-      builder: (BuildContext context, List<Score> filteredScores, Widget __) {
-        return GridView.count(
-          padding: EdgeInsets.zero,
-          crossAxisCount: 2,
-          childAspectRatio: 1.5,
-          children: List<Widget>.generate(
-            filteredScores.length,
-            (int i) => Card(
-              child: Padding(
-                padding: EdgeInsets.all(12.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    _name(context, filteredScores[i]),
-                    _score(context, filteredScores[i]),
-                    _timeAndPoint(context, filteredScores[i]),
-                  ],
+  Widget termsWidget(BuildContext context) {
+    return Selector<ScoresProvider, List<String>>(
+      selector: (_, ScoresProvider p) => p.terms,
+      builder: (_, List<String> terms, __) {
+        if (terms?.isNotEmpty == true) {
+          return Container(
+            height: 70.w,
+            alignment: Alignment.center,
+            color: context.theme.cardColor,
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              physics: const BouncingScrollPhysics(),
+              labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
+              labelColor: context.themeColor,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorWeight: 4.w,
+              tabs: List<Widget>.generate(
+                terms.length,
+                (int index) => _term(
+                  context,
+                  terms[terms.length - index - 1],
                 ),
               ),
             ),
-          ),
-        );
+          );
+        }
+        return const SizedBox.shrink();
       },
+    );
+  }
+
+  Widget scoreGrid(BuildContext context) {
+    return Selector<ScoresProvider, List<String>>(
+      selector: (_, ScoresProvider p) => p.terms,
+      builder: (_, List<String> terms, __) => TabBarView(
+        controller: _tabController,
+        children: List<Widget>.generate(
+          terms.length,
+          (int i) => _ScoresGridView(term: terms[terms.length - i - 1]),
+        ),
+      ),
     );
   }
 
@@ -267,7 +189,16 @@ class ScorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScoresProvider>(
-      builder: (BuildContext _, ScoresProvider provider, Widget __) {
+      builder: (_, ScoresProvider provider, __) {
+        if (provider.hasScore) {
+          if (_tabController == null ||
+              _tabController.length != provider.terms.length) {
+            _tabController = TabController(
+              length: provider.terms.length,
+              vsync: this,
+            );
+          }
+        }
         return Stack(
           children: <Widget>[
             if (provider.loaded)
@@ -279,10 +210,10 @@ class ScorePage extends StatelessWidget {
                         : provider.hasScore
                             ? Column(
                                 children: <Widget>[
-                                  if (provider.terms != null) termsWidget,
+                                  termsWidget(context),
                                   Expanded(
                                     child: provider.filteredScores != null
-                                        ? scoreGrid
+                                        ? scoreGrid(context)
                                         : noScoreWidget,
                                   ),
                                 ],
@@ -291,13 +222,93 @@ class ScorePage extends StatelessWidget {
                   ),
                   evaluateTips(context),
                 ],
-              )
-            else
-              const SpinKitWidget(),
+              ),
             if (provider.loaded && provider.loading) refreshIndicator(context),
           ],
         );
       },
+    );
+  }
+}
+
+class _ScoresGridView extends StatelessWidget {
+  const _ScoresGridView({
+    Key key,
+    @required this.term,
+  })  : assert(term != null),
+        super(key: key);
+
+  final String term;
+
+  Widget _name(BuildContext context, Score score) {
+    return Text(
+      score.courseName,
+      style: context.textTheme.headline6.copyWith(fontSize: 20.sp),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+    );
+  }
+
+  Widget _score(BuildContext context, Score score) {
+    return Text.rich(
+      TextSpan(
+        children: <TextSpan>[
+          TextSpan(
+            text: score.formattedScore,
+            style: TextStyle(
+              fontSize: 36.sp,
+              fontWeight: FontWeight.bold,
+              color: !score.isPass
+                  ? Colors.red
+                  : context.textTheme.headline6.color,
+            ),
+          ),
+          const TextSpan(text: ' / '),
+          TextSpan(text: '${score.scorePoint}'),
+        ],
+        style: context.textTheme.subtitle2.copyWith(
+          height: 1.2,
+          fontSize: 20.sp,
+        ),
+      ),
+    );
+  }
+
+  Widget _timeAndPoint(BuildContext context, Score score) {
+    return Text(
+      '学时: ${score.creditHour}　'
+      '学分: ${score.credit.toStringAsFixed(1)}',
+      style: context.textTheme.caption.copyWith(fontSize: 20.sp),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Score> scores =
+        context.watch<ScoresProvider>().scoresByTerm(term);
+    return GridView.count(
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.w),
+      crossAxisCount: 2,
+      childAspectRatio: 1.5,
+      children: List<Widget>.generate(
+        scores.length,
+        (int i) => Container(
+          margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.w),
+          padding: EdgeInsets.all(12.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.w),
+            color: context.theme.cardColor,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _name(context, scores[i]),
+              _score(context, scores[i]),
+              _timeAndPoint(context, scores[i]),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

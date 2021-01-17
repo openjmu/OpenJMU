@@ -85,8 +85,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         version: 3,
         data: '${Routes.openjmuUserPage}/${currentUser.uid}',
         padding: EdgeInsets.zero,
-        backgroundColor: context.themeData.colorScheme.surface,
-        foregroundColor: context.themeData.textTheme.bodyText2.color,
+        backgroundColor: context.theme.colorScheme.surface,
+        foregroundColor: context.textTheme.bodyText2.color,
         embeddedImage: const AssetImage(R.IMAGES_LOGO_1024_ROUNDED_PNG),
         embeddedImageStyle: QrEmbeddedImageStyle(
           size: Size.square(minWidth * 0.1),
@@ -103,13 +103,13 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         width: 80.w,
         height: 80.w,
         decoration: BoxDecoration(
-          color: context.themeData.canvasColor,
+          color: context.theme.canvasColor,
           shape: BoxShape.circle,
         ),
         child: Center(
           child: SvgPicture.asset(
             R.ASSETS_ICONS_USER_SAVE_CODE_SVG,
-            color: context.themeData.iconTheme.color,
+            color: context.iconTheme.color,
             width: minWidth * 0.05,
             height: minWidth * 0.05,
           ),
@@ -140,7 +140,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                     padding: EdgeInsets.all(25.w),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.w),
-                      color: context.themeData.colorScheme.surface,
+                      color: context.theme.colorScheme.surface,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

@@ -335,9 +335,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           ),
                           TextSpan(text: remark),
                         ],
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontSize: 20.sp,
-                            ),
+                        style: context.textTheme.bodyText2.copyWith(
+                          fontSize: 20.sp,
+                        ),
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
@@ -771,14 +771,13 @@ class CourseWidget extends StatelessWidget {
             if (course.location != null)
               TextSpan(text: '\n📍${course.location}'),
           ],
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                color: !CourseAPI.inCurrentWeek(course,
-                            currentWeek: currentWeek) &&
-                        !isOutOfTerm
-                    ? Colors.grey
-                    : Colors.black,
-                fontSize: 18.sp,
-              ),
+          style: context.textTheme.bodyText2.copyWith(
+            color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
+                    !isOutOfTerm
+                ? Colors.grey
+                : Colors.black,
+            fontSize: 18.sp,
+          ),
         ),
         overflow: TextOverflow.fade,
       );
@@ -978,7 +977,7 @@ class _CourseInfoRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: context.themeData.textTheme.caption.copyWith(
+      style: context.textTheme.caption.copyWith(
         fontSize: 18.sp,
       ),
       child: Padding(
@@ -993,7 +992,7 @@ class _CourseInfoRowWidget extends StatelessWidget {
               child: Text(
                 value,
                 style: TextStyle(
-                  color: context.themeData.textTheme.bodyText2.color,
+                  color: context.textTheme.bodyText2.color,
                 ),
               ),
             ),
@@ -1023,7 +1022,7 @@ class _CourseDetailDialog extends StatelessWidget {
       padding: EdgeInsets.all(30.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
-        color: context.themeData.colorScheme.surface,
+        color: context.theme.colorScheme.surface,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1238,7 +1237,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
-                  color: context.themeData.colorScheme.surface,
+                  color: context.theme.colorScheme.surface,
                   padding: EdgeInsets.all(30.w),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

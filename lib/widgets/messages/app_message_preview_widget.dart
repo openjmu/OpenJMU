@@ -125,28 +125,28 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   Widget _name(BuildContext context, WebApp app) {
     return Text(
       '${app.name ?? app.appId}',
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.w500,
-          ),
+      style: context.textTheme.bodyText2.copyWith(
+        fontSize: 22.sp,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 
   Widget _sendTimeWidget(BuildContext context) {
     return Text(
       ' $formattedTime',
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+      ),
     );
   }
 
   Widget _shortContent(BuildContext context) {
     return Text(
       widget.message.content ?? '',
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 19.sp,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 19.sp,
+      ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );

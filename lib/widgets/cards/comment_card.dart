@@ -65,10 +65,8 @@ class CommentCard extends StatelessWidget {
             icon: const Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
               Routes.openjmuAddComment.name,
-              arguments: Routes.openjmuAddComment.d(
-                post: comment.post,
-                comment: comment
-              ),
+              arguments: Routes.openjmuAddComment
+                  .d(post: comment.post, comment: comment),
             ),
           ),
           ConfirmationBottomSheetAction(

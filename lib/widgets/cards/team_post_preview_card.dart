@@ -144,10 +144,10 @@ class TeamPostPreviewCard extends StatelessWidget {
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
       TeamPostAPI.timeConverter(post),
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.normal,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.normal,
+      ),
     );
   }
 
@@ -192,18 +192,18 @@ class TeamPostPreviewCard extends StatelessWidget {
                   Icon(
                     Icons.expand_more,
                     size: 20.w,
-                    color: Theme.of(context).textTheme.caption.color,
+                    color: context.textTheme.caption.color,
                   ),
                   Text(
                     '查看更多回复',
-                    style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: 17.sp,
-                        ),
+                    style: context.textTheme.caption.copyWith(
+                      fontSize: 17.sp,
+                    ),
                   ),
                   Icon(
                     Icons.expand_more,
                     size: 20.w,
-                    color: Theme.of(context).textTheme.caption.color,
+                    color: context.textTheme.caption.color,
                   ),
                 ],
               ),
@@ -227,8 +227,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                         navigatorState.pushNamed(
                           Routes.openjmuUserPage.name,
                           arguments: Routes.openjmuUserPage.d(
-                            uid:
-                                (_post['user_info']['uid'] as String).toInt(),
+                            uid: (_post['user_info']['uid'] as String).toInt(),
                           ),
                         );
                       },
@@ -264,9 +263,9 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ),
                 ],
               ),
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 17.sp,
-                  ),
+              style: context.textTheme.bodyText2.copyWith(
+                fontSize: 17.sp,
+              ),
               onSpecialTextTap: specialTextTapRecognizer,
               maxLines: 3,
               overflowWidget: const TextOverflowWidget(
@@ -473,10 +472,8 @@ class TeamPostPreviewCard extends StatelessWidget {
               onTap: () {
                 navigatorState.pushNamed(
                   Routes.openjmuTeamPostDetail.name,
-                  arguments: Routes.openjmuTeamPostDetail.d(
-                    provider: provider,
-                    type: TeamPostType.post
-                  ),
+                  arguments: Routes.openjmuTeamPostDetail
+                      .d(provider: provider, type: TeamPostType.post),
                 );
               },
               child: Container(

@@ -45,7 +45,7 @@ export 'resources.dart';
 export 'screens.dart';
 export 'widgets.dart';
 
-const double kAppBarHeight = 75.0;
+const double kAppBarHeight = 82.0;
 
 class Constants {
   const Constants._();

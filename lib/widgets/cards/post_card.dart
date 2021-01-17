@@ -107,7 +107,7 @@ class _PostCardState extends State<PostCard> {
     return Text(
       '${PostAPI.postTimeConverter(post.postTime)}  来自${post.from}客户端',
       style: TextStyle(
-        color: Theme.of(context).textTheme.caption.color,
+        color: context.textTheme.caption.color,
         fontSize: 16.sp,
       ),
     );
@@ -311,35 +311,46 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
+  Widget _action(int value, [Color color]) {
+    return SizedBox(
+      width: 34.w,
+      child: Text(
+        value == 0
+            ? ''
+            : value > 999
+                ? '999+'
+                : '$value',
+        style: TextStyle(
+          color: color ??
+              (currentIsDark ? actionTextColorDark : actionTextColorLight),
+          fontSize: 18.sp,
+          fontWeight: FontWeight.normal,
+        ),
+        maxLines: 1,
+      ),
+    );
+  }
+
   Widget postActions(BuildContext context) {
     final int forwards = widget.post.forwards;
     final int comments = widget.post.comments;
     final int praises = widget.post.praises;
 
     return SizedBox(
-      width: Screens.width * 0.5,
+      width: Screens.width * 0.45,
       child: Row(
         children: <Widget>[
           Expanded(
             child: LikeButton(
               padding: EdgeInsets.zero,
               size: 26.w,
-              circleColor:
-                  CircleColor(start: currentThemeColor, end: currentThemeColor),
-              countBuilder: (int count, bool isLiked, String text) => SizedBox(
-                width: 40.w,
-                child: Text(
-                  count > 0 ? text : '',
-                  style: TextStyle(
-                    color: isLiked
-                        ? currentThemeColor
-                        : currentIsDark
-                            ? actionTextColorDark
-                            : actionTextColorLight,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+              circleColor: CircleColor(
+                start: currentThemeColor,
+                end: currentThemeColor,
+              ),
+              countBuilder: (int count, bool isLiked, String text) => _action(
+                count,
+                isLiked ? currentThemeColor : null,
               ),
               bubblesColor: BubblesColor(
                 dotPrimaryColor: currentThemeColor,
@@ -377,19 +388,7 @@ class _PostCardState extends State<PostCard> {
                     currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: 26.w,
               ),
-              label: SizedBox(
-                width: 40.w,
-                child: Text(
-                  comments == 0 ? '' : '$comments',
-                  style: TextStyle(
-                    color: currentIsDark
-                        ? actionTextColorDark
-                        : actionTextColorLight,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
+              label: _action(comments),
               highlightColor: Theme.of(context).cardColor,
               splashColor: Theme.of(context).cardColor,
             ),
@@ -410,19 +409,7 @@ class _PostCardState extends State<PostCard> {
                     currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: 26.w,
               ),
-              label: SizedBox(
-                width: 40.w,
-                child: Text(
-                  forwards == 0 ? '' : '$forwards',
-                  style: TextStyle(
-                    color: currentIsDark
-                        ? actionTextColorDark
-                        : actionTextColorLight,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
+              label: _action(forwards),
               splashColor: Theme.of(context).cardColor,
               highlightColor: Theme.of(context).cardColor,
             ),
@@ -670,26 +657,24 @@ class _PostCardState extends State<PostCard> {
                         ),
                         Container(
                           margin: EdgeInsets.only(top: 6.h),
-                          height: 44.h,
-                          child: OverflowBox(
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  '浏览${post.glances}次　',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption
-                                      .copyWith(
-                                        fontSize: 16.sp,
-                                      ),
-                                ),
-                                const Spacer(),
-                                if (widget.isDetail)
-                                  VGap(16.w)
-                                else
-                                  postActions(context),
-                              ],
-                            ),
+                          height: 50.h,
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                '浏览${post.glances}次　',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption
+                                    .copyWith(
+                                      fontSize: 16.sp,
+                                    ),
+                              ),
+                              const Spacer(),
+                              if (widget.isDetail)
+                                VGap(16.w)
+                              else
+                                postActions(context),
+                            ],
                           ),
                         ),
                       ]

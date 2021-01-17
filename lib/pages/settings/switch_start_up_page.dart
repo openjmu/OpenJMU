@@ -52,17 +52,17 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               children: <Widget>[
                 Text(
                   '${page['name']}',
-                  style: Theme.of(context).textTheme.headline6.copyWith(
-                        fontSize: 26.sp,
-                        fontWeight: FontWeight.normal,
-                      ),
+                  style: context.textTheme.headline6.copyWith(
+                    fontSize: 26.sp,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
                 Text(
                   '${page['pages'][page['index']]}',
-                  style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.normal,
-                      ),
+                  style: context.textTheme.caption.copyWith(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ],
             ),
@@ -195,16 +195,16 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
             children: <Widget>[
               Text(
                 '启动页设置',
-                style: Theme.of(context).textTheme.headline6.copyWith(
-                      fontSize: 26.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: context.textTheme.headline6.copyWith(
+                  fontSize: 26.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 '选择您偏好的启动页面',
-                style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: 18.sp,
-                    ),
+                style: context.textTheme.caption.copyWith(
+                  fontSize: 18.sp,
+                ),
               ),
             ],
           ),

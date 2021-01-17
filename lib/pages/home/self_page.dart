@@ -14,7 +14,7 @@ class SelfPage extends StatelessWidget {
         // {
         //   'name': '背包',
         //   'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
-        //   'route': Routes.openjmuBackpack,
+        //   'route': Routes.openjmuBackpack.name,
         // },
         <String, dynamic>{
           'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
@@ -42,12 +42,12 @@ class SelfPage extends StatelessWidget {
         <String, dynamic>{
           'icon': R.ASSETS_ICONS_SELF_PAGE_SEARCH_SVG,
           'name': '搜索',
-          'route': Routes.openjmuSearch,
+          'route': Routes.openjmuSearch.name,
         },
         <String, dynamic>{
           'name': '偏好设置',
           'icon': R.ASSETS_ICONS_SELF_PAGE_SETTINGS_SVG,
-          'route': Routes.openjmuSettings,
+          'route': Routes.openjmuSettings.name,
         },
         <String, dynamic>{
           'name': '退出账号',
@@ -108,7 +108,7 @@ class SelfPage extends StatelessWidget {
               width: 64.w,
               height: 64.w,
               decoration: BoxDecoration(
-                color: _.themeData.colorScheme.surface,
+                color: _.theme.colorScheme.surface,
                 shape: BoxShape.circle,
               ),
               child: () {
@@ -170,7 +170,7 @@ class SelfPage extends StatelessWidget {
               padding: EdgeInsets.only(left: 12.w, right: 24.w),
               child: SvgPicture.asset(
                 item['icon'] as String,
-                color: context.themeData.iconTheme.color.withOpacity(0.5),
+                color: context.iconTheme.color.withOpacity(0.5),
                 width: 45.w,
               ),
             ),
@@ -248,7 +248,7 @@ class SelfPage extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.w),
-                color: context.themeData.colorScheme.surface,
+                color: context.theme.colorScheme.surface,
               ),
               child: Row(
                 children: <Widget>[
@@ -330,7 +330,7 @@ class SelfPage extends StatelessWidget {
               width: 56.w,
               height: 56.w,
               decoration: BoxDecoration(
-                color: context.themeData.canvasColor,
+                color: context.theme.canvasColor,
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -448,9 +448,9 @@ class SelfPage extends StatelessWidget {
                         const TextSpan(text: '周'),
                       ]),
                   ],
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontSize: 18.sp,
-                      ),
+                  style: context.textTheme.bodyText2.copyWith(
+                    fontSize: 18.sp,
+                  ),
                 ),
                 textAlign: TextAlign.start,
               ),
@@ -467,7 +467,7 @@ class SelfPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: Screens.width * 0.8,
-      color: context.themeData.canvasColor,
+      color: context.theme.canvasColor,
       child: Column(
         children: <Widget>[
           headerWrapper(

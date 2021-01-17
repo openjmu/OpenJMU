@@ -342,17 +342,18 @@ class _PublishPostPageState extends State<PublishPostPage>
 
   /// Publish button.
   /// 发布按钮
-  Widget get publishButton => MaterialButton(
-        color: currentThemeColor,
-        minWidth: 120.w,
+  Widget get publishButton {
+    return GestureDetector(
+      onTap: checkContentEmptyWhenPublish,
+      child: Container(
+        width: 120.w,
         height: 50.h,
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
+          color: currentThemeColor,
         ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(right: 6.w),
@@ -372,8 +373,9 @@ class _PublishPostPageState extends State<PublishPostPage>
             ),
           ],
         ),
-        onPressed: checkContentEmptyWhenPublish,
-      );
+      ),
+    );
+  }
 
   /// [TextField] for content.
   /// 内容输入区

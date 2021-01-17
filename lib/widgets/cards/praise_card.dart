@@ -113,7 +113,7 @@ class PraiseCard extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: context.themeData.textTheme.bodyText2.color,
+                        color: context.textTheme.bodyText2.color,
                       ),
                     ),
                     getPraiseInfo(praise),

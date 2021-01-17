@@ -378,7 +378,7 @@ class NotificationsPageState extends State<NotificationsPage>
           padding: EdgeInsets.symmetric(horizontal: 8.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.w),
-            color: context.themeData.cardColor,
+            color: context.theme.cardColor,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

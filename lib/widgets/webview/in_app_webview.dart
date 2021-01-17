@@ -156,7 +156,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       padding: EdgeInsets.only(bottom: 10.h),
       child: Text(
         '网页由 $urlDomain 提供',
-        style: Theme.of(context).textTheme.caption.copyWith(fontSize: 18.sp),
+        style: context.textTheme.caption.copyWith(fontSize: 18.sp),
       ),
     );
   }
@@ -192,9 +192,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
           VGap(10.h),
           Text(
             text,
-            style: Theme.of(context).textTheme.caption.copyWith(
-                  fontSize: 15.sp,
-                ),
+            style: context.textTheme.caption.copyWith(
+              fontSize: 15.sp,
+            ),
           ),
         ],
       ),
@@ -221,7 +221,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
               height: 8.w,
               decoration: BoxDecoration(
                 borderRadius: maxBorderRadius,
-                color: Theme.of(context).iconTheme.color.withOpacity(0.7),
+                color: context.iconTheme.color.withOpacity(0.7),
               ),
             ),
             Container(

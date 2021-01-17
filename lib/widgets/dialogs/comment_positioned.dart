@@ -136,10 +136,10 @@ class CommentPositionedState extends State<CommentPositioned> {
             : null,
       ),
       enabled: !_commenting,
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
-            fontSize: 20.sp,
-            textBaseline: TextBaseline.alphabetic,
-          ),
+      style: context.textTheme.bodyText2.copyWith(
+        fontSize: 20.sp,
+        textBaseline: TextBaseline.alphabetic,
+      ),
       cursorColor: currentThemeColor,
       autofocus: true,
       maxLines: 3,
@@ -306,7 +306,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                   size: 32.w,
                   color: emoticonPadActive
                       ? currentThemeColor
-                      : Theme.of(context).iconTheme.color,
+                      : context.iconTheme.color,
                 ),
               ),
             ),

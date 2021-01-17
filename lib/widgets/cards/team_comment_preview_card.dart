@@ -142,10 +142,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
       '第${post.floor}楼 · ${TeamPostAPI.timeConverter(post)}',
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.normal,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.normal,
+      ),
     );
   }
 
@@ -206,18 +206,18 @@ class TeamCommentPreviewCard extends StatelessWidget {
                       Icon(
                         Icons.expand_more,
                         size: 20.w,
-                        color: Theme.of(context).textTheme.caption.color,
+                        color: context.textTheme.caption.color,
                       ),
                       Text(
                         '查看更多回复',
-                        style: Theme.of(context).textTheme.caption.copyWith(
-                              fontSize: 15.sp,
-                            ),
+                        style: context.textTheme.caption.copyWith(
+                          fontSize: 15.sp,
+                        ),
                       ),
                       Icon(
                         Icons.expand_more,
                         size: 20.w,
-                        color: Theme.of(context).textTheme.caption.color,
+                        color: context.textTheme.caption.color,
                       ),
                     ],
                   ),
@@ -280,9 +280,9 @@ class TeamCommentPreviewCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontSize: 19.sp,
-                            ),
+                        style: context.textTheme.bodyText2.copyWith(
+                          fontSize: 19.sp,
+                        ),
                         onSpecialTextTap: specialTextTapRecognizer,
                       ),
                     ),

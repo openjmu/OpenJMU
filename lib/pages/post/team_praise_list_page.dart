@@ -114,10 +114,10 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     }
     return Text(
       time,
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.normal,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 17.sp,
+        fontWeight: FontWeight.normal,
+      ),
     );
   }
 

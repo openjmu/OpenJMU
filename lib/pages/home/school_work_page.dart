@@ -22,7 +22,6 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       ];
 
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
-  final ScrollController _scrollController = ScrollController();
 
   int currentIndex = 0;
 
@@ -49,12 +48,6 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
           Provider.of<ScoresProvider>(currentContext, listen: false)
               .requestScore();
           break;
-        case '应用':
-          if (_scrollController.hasClients) {
-            _scrollController.jumpTo(0.0);
-          }
-          refreshIndicatorKey.currentState?.show();
-          break;
       }
       if (mounted) {
         setState(() {});
@@ -62,70 +55,50 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
     });
   }
 
-  @override
-  void dispose() {
-    _scrollController?.dispose();
-    super.dispose();
+  FixedAppBar get _appBar {
+    return FixedAppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      title: Container(
+        alignment: AlignmentDirectional.centerStart,
+        padding: EdgeInsets.only(right: 20.w),
+        child: MainPage.selfPageOpener,
+      ),
+      actions: <Widget>[
+        _refreshIcon,
+        Gap(10.w),
+        switchButton,
+      ],
+      actionsPadding: EdgeInsets.only(right: 20.w),
+    );
   }
 
-  FixedAppBar get _appBar => FixedAppBar(
-        automaticallyImplyLeading: false,
-        title: Container(
-          alignment: AlignmentDirectional.centerStart,
-          padding: EdgeInsets.only(right: 20.w),
-          child: MainPage.selfPageOpener,
-        ),
-        actions: <Widget>[
-          _refreshIcon,
-          Gap(10.w),
-          switchButton,
-        ],
-        actionsPadding: EdgeInsets.only(right: 20.w),
-      );
-
   Widget get _refreshIcon {
-    return MaterialButton(
-      elevation: 0.0,
-      minWidth: 56.w,
-      height: 56.w,
-      padding: EdgeInsets.zero,
-      color: context.themeData.canvasColor,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(13.w),
-      ),
-      child: SvgPicture.asset(
-        R.ASSETS_ICONS_REFRESH_SVG,
-        color: context.themeData.iconTheme.color,
-        width: 24.w,
-      ),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         Instances.eventBus.fire(AppCenterRefreshEvent(currentIndex));
       },
+      child: Container(
+        width: 56.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            R.ASSETS_ICONS_REFRESH_SVG,
+            color: context.textTheme.bodyText2.color,
+            width: 24.w,
+          ),
+        ),
+      ),
     );
   }
 
   Widget get switchButton {
-    return MaterialButton(
-      color: currentThemeColor,
-      elevation: 0.0,
-      minWidth: 100.w,
-      height: 56.w,
-      padding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(13.w),
-      ),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: Text(
-        currentIndex == 0 ? '成绩单' : '课程表',
-        style: TextStyle(
-          color: adaptiveButtonColor(),
-          fontSize: 20.sp,
-          height: 1.24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         setState(() {
           if (currentIndex == 0) {
             currentIndex = 1;
@@ -134,6 +107,25 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
           }
         });
       },
+      child: Container(
+        width: 100.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.themeColor,
+        ),
+        child: Center(
+          child: Text(
+            currentIndex == 0 ? '成绩单' : '课程表',
+            style: TextStyle(
+              color: adaptiveButtonColor(),
+              fontSize: 20.sp,
+              height: 1.2,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -165,7 +157,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
                           key: Instances.courseSchedulePageStateKey,
                         )
                   : const SizedBox.shrink(),
-            if (tabs.contains('成绩')) ScorePage(),
+            if (tabs.contains('成绩')) const ScorePage(),
           ],
         ),
       ),

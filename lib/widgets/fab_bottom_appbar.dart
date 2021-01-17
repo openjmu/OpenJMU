@@ -147,7 +147,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                           color: _selectedIndex == index
                               ? widget.selectedColor
                               : widget.color,
-                          fontSize: widget.itemFontSize.sp,
+                          fontSize: widget.itemFontSize,
                           fontWeight: FontWeight.normal,
                         ),
                         child: Text(item.text),
@@ -238,7 +238,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BottomAppBar(
-      elevation: isDark ? 0 : 10.w,
+      elevation: isDark ? 0 : 5.w,
       color: widget.backgroundColor ??
           (isDark ? Colors.black : Theme.of(context).primaryColor),
       shape: widget.notchedShape,

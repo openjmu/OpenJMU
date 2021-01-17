@@ -168,9 +168,9 @@ class _ImageCropPageState extends State<ImageCropPage> {
                         emptyDivider(height: 20.0),
                         Text(
                           '选择需要上传的头像',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 20.sp,
-                              ),
+                          style: context.textTheme.bodyText2.copyWith(
+                            fontSize: 20.sp,
+                          ),
                         ),
                       ],
                     ),

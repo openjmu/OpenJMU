@@ -132,10 +132,10 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
   Widget _postTime(BuildContext context) {
     return Text(
       '第${comment.floor}楼 · ${TeamPostAPI.timeConverter(comment.postTime)}',
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.normal,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.normal,
+      ),
     );
   }
 

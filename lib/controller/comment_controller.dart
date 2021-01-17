@@ -477,9 +477,9 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget getCommentTime(BuildContext context, Comment comment) {
     return Text(
       PostAPI.postTimeConverter(comment.commentTime),
-      style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: 16.sp,
-          ),
+      style: context.textTheme.caption.copyWith(
+        fontSize: 16.sp,
+      ),
     );
   }
 
