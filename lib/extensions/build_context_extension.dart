@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 extension BuildContextExtension on BuildContext {
   MediaQueryData get mediaQuery => MediaQuery.of(this);
 
+  NavigatorState get navigator => Navigator.of(this);
+
   ThemeData get theme => Theme.of(this);
 
   TextTheme get textTheme => theme.textTheme;

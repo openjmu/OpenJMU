@@ -1,6 +1,8 @@
 /// Generate by [resource_generator](https://github.com/CaiJingLong/flutter_resource_generator) library.
 /// PLEASE DO NOT EDIT MANUALLY.
 class R {
+  const R._();
+
   static const String ASSETS_AVATAR_PLACEHOLDER_PNG =
       'assets/avatar_placeholder.png';
 
@@ -456,6 +458,9 @@ class R {
   static const String ASSETS_ICONS_ARROW_RIGHT_SVG =
       'assets/icons/arrow-right.svg';
 
+  static const String ASSETS_ICONS_BACK_BUTTON_SVG =
+      'assets/icons/back-button.svg';
+
   static const String ASSETS_ICONS_BOTTOM_NAVIGATION_MARKET_SVG =
       'assets/icons/bottom-navigation/market.svg';
 
@@ -467,6 +472,9 @@ class R {
 
   static const String ASSETS_ICONS_BOTTOM_NAVIGATION_SQUARE_SVG =
       'assets/icons/bottom-navigation/square.svg';
+
+  static const String ASSETS_ICONS_COMMON_APPS_EDIT_SVG =
+      'assets/icons/common-apps-edit.svg';
 
   static const String ASSETS_ICONS_GENDER_FEMALE_SVG =
       'assets/icons/gender/female.svg';

@@ -62,10 +62,10 @@ class AppCenterPage extends StatelessWidget {
                     ),
                     child: Center(
                       child: SvgPicture.asset(
-                        R.ASSETS_ICONS_SEND_SVG,
+                        R.ASSETS_ICONS_COMMON_APPS_EDIT_SVG,
                         width: 24.w,
                         height: 24.w,
-                        color: context.iconTheme.color,
+                        color: context.textTheme.bodyText2.color,
                       ),
                     ),
                   ),
@@ -90,17 +90,14 @@ class AppCenterPage extends StatelessWidget {
   /// Section widget for common apps.
   /// 常用应用的区域部件
   Widget commonAppsSection(BuildContext context) {
-    final TextStyle style = TextStyle(fontSize: 16.sp);
     return Consumer<WebAppsProvider>(
       builder: (BuildContext _, WebAppsProvider provider, Widget __) {
         final bool isEditing = provider.isEditingCommonApps;
         return AnimatedContainer(
           duration: kThemeChangeDuration,
           margin: EdgeInsets.only(bottom: 10.h),
-          padding: EdgeInsets.symmetric(
-            vertical: 10.h,
-          ),
-          height: (isEditing ? 120.0 : 156.0).h,
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+          height: (isEditing ? 120.0 : 176.0).h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.w),
             color: context.theme.colorScheme.surface,
@@ -108,40 +105,43 @@ class AppCenterPage extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    if (provider.commonWebApps.isEmpty)
-                      Expanded(
-                        flex: 3,
-                        child: Center(
-                          child: Text(
-                            '置顶应用会显示在这里',
-                            style: TextStyle(fontSize: 18.sp),
-                          ),
-                        ),
-                      )
-                    else ...<Widget>[
-                      ...List<Widget>.generate(
-                        provider.commonWebApps.length,
-                        (int index) {
-                          return Expanded(
-                            child: appWidget(
-                              context,
-                              provider.commonWebApps.elementAt(index),
-                              needIndicator: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      if (provider.commonWebApps.isEmpty)
+                        Expanded(
+                          flex: 3,
+                          child: Center(
+                            child: Text(
+                              '置顶应用会显示在这里',
+                              style: TextStyle(fontSize: 18.sp),
                             ),
-                          );
-                        },
-                      ),
-                      ...List<Widget>.generate(
-                        provider.maxCommonWebApps -
-                            provider.commonWebApps.length,
-                        (int _) => const Spacer(),
-                      ),
+                          ),
+                        )
+                      else ...<Widget>[
+                        ...List<Widget>.generate(
+                          provider.commonWebApps.length,
+                          (int index) {
+                            return Expanded(
+                              child: appWidget(
+                                context,
+                                provider.commonWebApps.elementAt(index),
+                                needIndicator: false,
+                              ),
+                            );
+                          },
+                        ),
+                        ...List<Widget>.generate(
+                          provider.maxCommonWebApps -
+                              provider.commonWebApps.length,
+                          (int _) => const Spacer(),
+                        ),
+                      ],
+                      editingButton(context)
                     ],
-                    editingButton(context)
-                  ],
+                  ),
                 ),
               ),
               AnimatedContainer(
@@ -150,7 +150,7 @@ class AppCenterPage extends StatelessWidget {
                 child: Center(
                   child: Text(
                     isEditing ? '' : '点击编辑对常用应用进行调整',
-                    style: style,
+                    style: context.textTheme.caption.copyWith(fontSize: 16.sp),
                   ),
                 ),
               ),

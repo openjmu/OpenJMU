@@ -95,7 +95,7 @@ class FixedAppBar extends StatelessWidget {
               bottom: 0.0,
               start: 0.0,
               width: kMinInteractiveDimension,
-              child: leading ?? const BackButton(),
+              child: leading ?? const FixedBackButton(),
             ),
           if (_title != null)
             Positioned(
@@ -189,6 +189,45 @@ class FixedAppBarWrapper extends StatelessWidget {
           ),
           Positioned(top: 0.0, left: 0.0, right: 0.0, child: appBar),
         ],
+      ),
+    );
+  }
+}
+
+class FixedBackButton extends StatelessWidget {
+  const FixedBackButton({
+    Key key,
+    this.color,
+    this.onPressed,
+  }) : super(key: key);
+
+  final Color color;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      child: GestureDetector(
+        onTap: () {
+          if (onPressed != null) {
+            onPressed();
+          } else {
+            Navigator.maybePop(context);
+          }
+        },
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox.fromSize(
+          size: Size.square(48.w),
+          child: Center(
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_BACK_BUTTON_SVG,
+              width: 24.w,
+              height: 24.w,
+              color: color,
+              semanticsLabel: MaterialLocalizations.of(context).backButtonTooltip,
+            ),
+          ),
+        ),
       ),
     );
   }
