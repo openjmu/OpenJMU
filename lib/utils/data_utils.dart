@@ -58,14 +58,10 @@ class DataUtils {
         ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
             .cast<Map<dynamic, dynamic>>(),
       );
-      final bool isCookieInitialized = await initializeWebViewCookie();
-      if (isCookieInitialized) {
-        showToast('登录成功！');
-        Instances.eventBus.fire(TicketGotEvent(isWizard));
-      } else {
-        showToast('登录失败');
-      }
-      return isCookieInitialized;
+      await initializeWebViewCookie();
+      showToast('登录成功！');
+      Instances.eventBus.fire(TicketGotEvent(isWizard));
+      return true;
     } catch (e) {
       LogUtils.e('Failed when login: $e');
       showToast('登录失败');

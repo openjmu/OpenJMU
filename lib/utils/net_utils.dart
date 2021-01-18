@@ -61,6 +61,7 @@ class NetUtils {
             if (e?.response?.statusCode == 401) {
               updateTicket();
             }
+            LogUtils.e('Error when requesting: ${e.response?.data}');
             return e;
           },
         ),
