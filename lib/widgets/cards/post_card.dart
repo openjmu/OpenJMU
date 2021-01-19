@@ -484,26 +484,36 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton {
-    return IconButton(
-      alignment: Alignment.topRight,
-      icon: Icon(
-        Icons.delete_outline,
-        color: Theme.of(context).dividerColor,
-        size: 30.w,
+    return GestureDetector(
+      onTap: () => confirmDelete(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: AlignmentDirectional.topEnd,
+        child: Icon(
+          Icons.delete_outline,
+          color: Theme.of(context).dividerColor,
+          size: 30.w,
+        ),
       ),
-      onPressed: () => confirmDelete(context),
     );
   }
 
   Widget get postActionButton {
-    return IconButton(
-      alignment: Alignment.topRight,
-      icon: Icon(
-        Icons.expand_more,
-        color: Theme.of(context).dividerColor,
-        size: 30.w,
+    return GestureDetector(
+      onTap: () => postExtraActions(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: AlignmentDirectional.topEnd,
+        child: Icon(
+          Icons.more_horiz,
+          color: Theme.of(context).dividerColor,
+          size: 30.w,
+        ),
       ),
-      onPressed: () => postExtraActions(context),
     );
   }
 
@@ -599,88 +609,91 @@ class _PostCardState extends State<PostCard> {
     final bool hideShield = post.isShield &&
         Provider.of<SettingsProvider>(currentContext, listen: false)
             .hideShieldPost;
-    return hideShield
-        ? const SizedBox.shrink()
-        : GestureDetector(
-            onTap: widget.isDetail || post.isShield ? null : pushToDetail,
-            onLongPress: post.isShield ? pushToDetail : null,
-            child: Container(
-              margin: widget.isDetail
-                  ? EdgeInsets.zero
-                  : EdgeInsets.symmetric(
-                      horizontal: widget.fromPage == 'user' ? 0 : 16.w,
-                      vertical: 10.w,
-                    ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.w,
-                vertical: 8.w,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
-                color: Theme.of(context).cardColor,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+    if (hideShield) {
+      return const SizedBox.shrink();
+    }
+
+    return GestureDetector(
+      onTap: widget.isDetail || post.isShield ? null : pushToDetail,
+      onLongPress: post.isShield ? pushToDetail : null,
+      child: Container(
+        margin: widget.isDetail
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(
+          horizontal: widget.fromPage == 'user' ? 0 : 16.w,
+          vertical: 10.w,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 24.w,
+          vertical: 8.w,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: Theme.of(context).cardColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: !post.isShield
+              ? <Widget>[
+            Container(
+              height: 70.w,
+              padding: EdgeInsets.symmetric(vertical: 6.w),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: !post.isShield
-                    ? <Widget>[
-                        Container(
-                          height: 70.w,
-                          padding: EdgeInsets.symmetric(vertical: 6.w),
-                          child: Row(
-                            children: <Widget>[
-                              UserAPI.getAvatar(uid: widget.post.uid),
-                              Gap(16.w),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    getPostNickname(context, post),
-                                    getPostInfo(post),
-                                  ],
-                                ),
-                              ),
-                              if (!widget.isDetail)
-                                post.uid == currentUser.uid
-                                    ? deleteButton
-                                    : postActionButton,
-                            ],
-                          ),
-                        ),
-                        getPostContent(context, post),
-                        getPostImages(context, post),
-                        Padding(
-                          padding: EdgeInsets.only(top: 12.w),
-                          child: Divider(thickness: 1.w, height: 1.w),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 6.h),
-                          height: 50.h,
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                '浏览${post.glances}次　',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .copyWith(
-                                      fontSize: 16.sp,
-                                    ),
-                              ),
-                              const Spacer(),
-                              if (widget.isDetail)
-                                VGap(16.w)
-                              else
-                                postActions(context),
-                            ],
-                          ),
-                        ),
-                      ]
-                    : <Widget>[getPostBanned('shield')],
+                children: <Widget>[
+                  UserAPI.getAvatar(uid: widget.post.uid),
+                  Gap(16.w),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        getPostNickname(context, post),
+                        getPostInfo(post),
+                      ],
+                    ),
+                  ),
+                  if (!widget.isDetail)
+                    post.uid == currentUser.uid
+                        ? deleteButton
+                        : postActionButton,
+                ],
               ),
             ),
-          );
+            getPostContent(context, post),
+            getPostImages(context, post),
+            Padding(
+              padding: EdgeInsets.only(top: 12.w),
+              child: Divider(thickness: 1.w, height: 1.w),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 6.h),
+              height: 50.h,
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    '浏览${post.glances}次　',
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption
+                        .copyWith(
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (widget.isDetail)
+                    VGap(16.w)
+                  else
+                    postActions(context),
+                ],
+              ),
+            ),
+          ]
+              : <Widget>[getPostBanned('shield')],
+        ),
+      ),
+    );
   }
 }
