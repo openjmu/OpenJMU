@@ -203,24 +203,12 @@ class TeamPostPreviewCard extends StatelessWidget {
                       provider.post.uid)
                     WidgetSpan(
                       alignment: ui.PlaceholderAlignment.middle,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 6.w),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 6.w,
-                          vertical: 2.h,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.w),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3.w),
+                        child: SvgPicture.asset(
+                          R.ASSETS_ICONS_FIRST_FLOOR_SVG,
+                          height: 17.sp,
                           color: currentThemeColor,
-                        ),
-                        child: Text(
-                          '楼主',
-                          style: TextStyle(
-                            height: 1.2,
-                            fontSize: 14.sp,
-                            color: adaptiveButtonColor(),
-                            fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ),
                     ),

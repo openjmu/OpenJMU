@@ -476,6 +476,9 @@ class R {
   static const String ASSETS_ICONS_COMMON_APPS_EDIT_SVG =
       'assets/icons/common-apps-edit.svg';
 
+  static const String ASSETS_ICONS_FIRST_FLOOR_SVG =
+      'assets/icons/first-floor.svg';
+
   static const String ASSETS_ICONS_GENDER_FEMALE_SVG =
       'assets/icons/gender/female.svg';
 

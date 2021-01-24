@@ -14,7 +14,7 @@ class NetUtils {
   const NetUtils._();
 
   static const bool _isProxyEnabled = false;
-  static const String _proxyDestination = 'PROXY 192.168.1.124:8118';
+  static const String _proxyDestination = 'PROXY 192.168.1.9:8764';
 
   static const bool shouldLogRequest = false;
 

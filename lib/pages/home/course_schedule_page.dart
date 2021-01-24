@@ -28,7 +28,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   /// Week widget width in switcher.
   /// 周数切换内的每周部件宽度
-  final double weekSize = 100.0;
+  final double weekSize = 80.0;
 
   /// Week widget height in switcher.
   /// 周数切换器部件宽度
@@ -40,7 +40,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   /// Weekday indicator widget's height.
   /// 天数指示器高度
-  final double weekdayIndicatorHeight = 60.0;
+  final double weekdayIndicatorHeight = 64.0;
 
   /// Week switcher animation controller.
   /// 周数切换器的动画控制器
@@ -50,6 +50,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// 周数切换器的滚动控制器
   ScrollController weekScrollController;
 
+  TabController weekTabController;
+
   CoursesProvider get coursesProvider => currentContext.read<CoursesProvider>();
 
   bool get firstLoaded => coursesProvider.firstLoaded;
@@ -57,6 +59,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   bool get hasCourse => coursesProvider.hasCourses;
 
   bool get showError => coursesProvider.showError;
+
+  bool get isOuterError => coursesProvider.isOuterError;
 
   DateTime get now => coursesProvider.now;
 
@@ -162,45 +166,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
-  /// Listener for pointer move.
-  /// 触摸点移动时的监听
-  ///
-  /// Sum delta in the event to update week switcher's height.
-  /// 将事件的位移与动画控制器的值相加，变换切换器的高度
-  void weekSwitcherPointerMoveListener(PointerMoveEvent event) {
-    weekSwitcherAnimationController.value += event.delta.dy;
-  }
-
-  /// Listener for pointer up.
-  /// 触摸点抬起时的监听
-  ///
-  /// When the pointer is up, calculate current height's distance between 0 and
-  /// the switcher's max height. if current height was under 1/2 of the
-  /// max height, then collapse the widget. Otherwise, expand it.
-  /// 当触摸点抬起时，计算当前切换器的高度偏差。
-  /// 如果小于最大高度的二分之一，则收缩部件，反之扩大。
-  void weekSwitcherPointerUpListener(PointerUpEvent event) {
-    final double percent = math.max(
-      0.000001,
-      math.min(
-        0.999999,
-        weekSwitcherAnimationController.value / weekSwitcherHeight,
-      ),
-    );
-    final double currentHeight = weekSwitcherAnimationController.value;
-    if (currentHeight < weekSwitcherHeight / 2) {
-      weekSwitcherAnimationController.animateTo(
-        0,
-        duration: animateDuration * percent,
-      );
-    } else {
-      weekSwitcherAnimationController.animateTo(
-        weekSwitcherHeight,
-        duration: animateDuration * (percent - 0.5),
-      );
-    }
-  }
-
   /// Return scroll offset according to given week.
   /// 根据给定的周数返回滚动偏移量
   double currentWeekOffset(int week) {
@@ -228,10 +193,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     return _maxWeekday;
   }
 
-  String get _month => DateFormat('MMM', 'zh_CN').format(
-        now.add(selectedWeekDaysDuration).subtract((now.weekday - 1).days),
-      );
-
   String _weekday(int i) => DateFormat('EEE', 'zh_CN').format(
         now.add(selectedWeekDaysDuration).subtract((now.weekday - 1 - i).days),
       );
@@ -251,39 +212,27 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         width: weekSize.w,
         padding: EdgeInsets.all(10.w),
         child: Selector<DateProvider, int>(
-          selector: (BuildContext _, DateProvider provider) =>
-              provider.currentWeek,
-          builder: (BuildContext _, int week, Widget __) {
-            return DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.w),
-                border: (week == index + 1 && currentWeek != week)
-                    ? Border.all(
-                        color: currentThemeColor.withOpacity(0.35),
-                        width: 2.0,
-                      )
-                    : null,
-                color: currentWeek == index + 1
-                    ? currentThemeColor.withOpacity(0.35)
-                    : null,
-              ),
-              child: Center(
-                child: RichText(
-                  text: TextSpan(
-                    children: <InlineSpan>[
-                      const TextSpan(text: '第'),
-                      TextSpan(
-                        text: '${index + 1}',
-                        style: TextStyle(fontSize: 30.sp),
-                      ),
-                      const TextSpan(text: '周'),
-                    ],
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        .copyWith(fontSize: 18.w),
-                  ),
+          selector: (_, DateProvider provider) => provider.currentWeek,
+          builder: (_, int week, __) {
+            final bool isSelected = currentWeek == index + 1;
+            final bool isCurrentWeek = week == index + 1;
+            return AnimatedContainer(
+              duration: animateDuration,
+              alignment: Alignment.center,
+              child: AnimatedDefaultTextStyle(
+                duration: animateDuration,
+                style: TextStyle(
+                  color: isSelected
+                      ? currentThemeColor
+                      : isCurrentWeek
+                          ? context.textTheme.bodyText2.color
+                          : context.textTheme.caption.color,
+                  fontSize: 18.w,
+                  fontWeight: isSelected || isCurrentWeek
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                 ),
+                child: Text('第${index + 1}周'),
               ),
             );
           },
@@ -298,55 +247,30 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         behavior: HitTestBehavior.opaque,
         onTap: () => showRemarkDetail(context),
         child: Container(
+          alignment: Alignment.center,
           width: Screens.width,
           constraints: BoxConstraints(maxHeight: 54.h),
-          child: Stack(
-            children: <Widget>[
-              AnimatedBuilder(
-                animation: weekSwitcherAnimationController,
-                builder: (BuildContext _, Widget child) {
-                  final double percent = moreThanZero(
-                        math.min(weekSwitcherHeight,
-                            weekSwitcherAnimationController.value),
-                      ) /
-                      weekSwitcherHeight;
-                  return Opacity(
-                    opacity: percent,
-                    child: SizedBox.expand(
-                      child: Container(color: Theme.of(context).primaryColor),
-                    ),
-                  );
-                },
-              ),
-              AnimatedContainer(
-                duration: animateDuration,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.w,
-                ),
-                child: Center(
-                  child: Selector<CoursesProvider, String>(
-                    selector: (_, CoursesProvider provider) => provider.remark,
-                    builder: (_, String remark, __) => Text.rich(
-                      TextSpan(
-                        children: <InlineSpan>[
-                          const TextSpan(
-                            text: '班级备注: ',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(text: remark),
-                        ],
-                        style: context.textTheme.bodyText2.copyWith(
-                          fontSize: 20.sp,
-                        ),
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          color: context.theme.canvasColor,
+          child: Selector<CoursesProvider, String>(
+            selector: (_, CoursesProvider provider) => provider.remark,
+            builder: (_, String remark, __) => Text.rich(
+              TextSpan(
+                children: <InlineSpan>[
+                  const TextSpan(
+                    text: '班级备注: ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  TextSpan(text: remark),
+                ],
+                style: context.textTheme.bodyText2.copyWith(
+                  fontSize: 20.sp,
                 ),
               ),
-            ],
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       );
@@ -354,83 +278,146 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// Week switcher widget.
   /// 周数切换器部件
   Widget weekSelection(BuildContext context) {
+    if (weekTabController == null) {
+      weekTabController = TabController(length: 20, vsync: this);
+    } else if (weekTabController.index != currentWeek - 1) {
+      weekTabController
+        ..index = currentWeek - 1
+        ..animateTo(currentWeek - 1);
+    }
     return AnimatedBuilder(
       animation: weekSwitcherAnimationController,
-      builder: (BuildContext _, Widget child) {
-        return Container(
-          width: Screens.width,
-          height: moreThanZero(
-            math.min(weekSwitcherHeight, weekSwitcherAnimationController.value),
-          ).toDouble(),
-          color: Theme.of(context).primaryColor,
-          child: ListView.builder(
-            controller: weekScrollController,
-            physics: const ClampingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: _week,
+      builder: (_, __) => Container(
+        width: Screens.width,
+        height: moreThanZero(
+          math.min(
+            weekSwitcherHeight,
+            weekSwitcherAnimationController.value,
           ),
+        ).toDouble(),
+        color: Theme.of(context).primaryColor,
+        child: TabBar(
+          controller: weekTabController,
+          isScrollable: true,
+          indicatorWeight: 4.w,
+          tabs: List<Widget>.generate(20, (int i) => _week(context, i)),
+          labelPadding: EdgeInsets.zero,
+        ),
+      ),
+    );
+  }
+
+  /// The toggle button to expand/collapse week switcher.
+  /// 触发周数切换器显示隐藏的按钮
+  Widget _weekSwitcherToggleButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        weekSwitcherAnimationController.animateTo(
+          weekSwitcherAnimationController.value > weekSwitcherHeight / 2
+              ? 0
+              : weekSwitcherHeight,
+          duration: animateDuration * 0.75,
+          curve: Curves.easeOutQuart,
         );
       },
+      child: Container(
+        width: monthWidth,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(10.w),
+            bottomRight: Radius.circular(10.w),
+          ),
+          color: currentThemeColor,
+        ),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.bold,
+            height: 1.2,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('第', textAlign: TextAlign.center),
+              Text(
+                '$currentWeek',
+                style: TextStyle(fontSize: 12.sp),
+                textAlign: TextAlign.center,
+              ),
+              const Text('周', textAlign: TextAlign.center),
+              VGap(4.w),
+              AnimatedBuilder(
+                animation: weekSwitcherAnimationController,
+                builder: (_, __) => RotatedBox(
+                  quarterTurns: weekSwitcherAnimationController.value >
+                          weekSwitcherHeight / 2
+                      ? 3
+                      : 1,
+                  child: SvgPicture.asset(
+                    R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
+                    height: 10.w,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   /// The current week's weekday indicator.
   /// 本周的天数指示器
-  Widget get weekDayIndicator => Container(
-        color: Theme.of(context).canvasColor,
-        height: weekdayIndicatorHeight.h,
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              width: monthWidth,
-              child: Center(
-                child: Text(
-                  '${_month.substring(0, _month.length - 1)}'
-                  '\n'
-                  '${_month.substring(_month.length - 1, _month.length)}',
-                  style: TextStyle(fontSize: 18.sp),
-                  textAlign: TextAlign.center,
+  Widget get weekDayIndicator {
+    return Container(
+      color: Theme.of(context).canvasColor,
+      height: weekdayIndicatorHeight.h,
+      child: Row(
+        children: <Widget>[
+          _weekSwitcherToggleButton(context),
+          for (int i = 0; i < maxWeekDay; i++)
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.w),
+                  color: DateFormat('MM/dd').format(
+                            now.subtract(selectedWeekDaysDuration +
+                                (now.weekday - 1 - i).days),
+                          ) ==
+                          DateFormat('MM/dd').format(now)
+                      ? currentThemeColor.withOpacity(0.35)
+                      : null,
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        _weekday(i),
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      VGap(5.w),
+                      Text(
+                        _date(i),
+                        style: context.textTheme.caption.copyWith(
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            for (int i = 0; i < maxWeekDay; i++)
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.w),
-                    color: DateFormat('MM/dd').format(
-                              now.subtract(selectedWeekDaysDuration +
-                                  (now.weekday - 1 - i).days),
-                            ) ==
-                            DateFormat('MM/dd').format(now)
-                        ? currentThemeColor.withOpacity(0.35)
-                        : null,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          _weekday(i),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
-                          ),
-                        ),
-                        Text(
-                          _date(i),
-                          style: TextStyle(fontSize: 14.sp),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      );
+        ],
+      ),
+    );
+  }
 
   /// Course time column widget on the left side.
   /// 左侧的课时组件
@@ -455,7 +442,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   ),
                   Text(
                     CourseAPI.getCourseTime(i + 1),
-                    style: TextStyle(fontSize: 12.sp),
+                    style: context.textTheme.caption.copyWith(fontSize: 12.sp),
                   ),
                 ],
               ),
@@ -521,27 +508,31 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
-  Widget get emptyTips => Expanded(
-        child: Center(
-          child: Text(
-            '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
-            style: TextStyle(fontSize: 30.sp),
-            strutStyle: const StrutStyle(height: 1.8),
-            textAlign: TextAlign.center,
-          ),
+  Widget get emptyTips {
+    return Expanded(
+      child: Center(
+        child: Text(
+          '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
+          style: TextStyle(fontSize: 30.sp),
+          strutStyle: const StrutStyle(height: 1.8),
+          textAlign: TextAlign.center,
         ),
-      );
+      ),
+    );
+  }
 
-  Widget get errorTips => Expanded(
-        child: Center(
-          child: Text(
-            '课表看起来还未准备好\n不如到广场放松一下？\n🤒',
-            style: TextStyle(fontSize: 30.sp),
-            strutStyle: const StrutStyle(height: 1.8),
-            textAlign: TextAlign.center,
-          ),
+  Widget get errorTips {
+    return Expanded(
+      child: Center(
+        child: Text(
+          '课表看起来还未准备好\n不如到广场放松一下？\n🤒',
+          style: TextStyle(fontSize: 30.sp),
+          strutStyle: const StrutStyle(height: 1.8),
+          textAlign: TextAlign.center,
         ),
-      );
+      ),
+    );
+  }
 
   @mustCallSuper
   @override
@@ -549,42 +540,46 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     super.build(context);
     return Stack(
       children: <Widget>[
-        Listener(
-          onPointerUp: weekSwitcherPointerUpListener,
-          onPointerMove: weekSwitcherPointerMoveListener,
-          child: RefreshIndicator(
-            key: refreshIndicatorKey,
-            onRefresh: coursesProvider.updateCourses,
-            child: Column(
-              children: <Widget>[
-                weekSelection(context),
-                Expanded(
-                  child: AnimatedCrossFade(
-                    duration: animateDuration,
-                    crossFadeState: !firstLoaded
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    firstChild: const Center(
-                      child: LoadMoreSpinningIcon(isRefreshing: true, size: 60),
-                    ),
-                    secondChild: Column(
-                      children: <Widget>[
-                        if (context.select<CoursesProvider, String>(
-                                (CoursesProvider p) => p.remark) !=
-                            null)
-                          remarkWidget,
-                        if (firstLoaded && hasCourse && !showError)
-                          weekDayIndicator,
-                        if (firstLoaded && hasCourse && !showError)
-                          courseLineGrid(context),
-                        if (firstLoaded && !hasCourse && !showError) emptyTips,
-                        if (firstLoaded && showError) errorTips,
-                      ],
-                    ),
+        RefreshIndicator(
+          key: refreshIndicatorKey,
+          onRefresh: coursesProvider.updateCourses,
+          child: Column(
+            children: <Widget>[
+              weekSelection(context),
+              Expanded(
+                child: AnimatedCrossFade(
+                  duration: animateDuration,
+                  crossFadeState: !firstLoaded
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: const Center(
+                    child: LoadMoreSpinningIcon(isRefreshing: true, size: 60),
+                  ),
+                  secondChild: Column(
+                    children: <Widget>[
+                      if (context.select<CoursesProvider, String>(
+                              (CoursesProvider p) => p.remark) !=
+                          null)
+                        remarkWidget,
+                      if (firstLoaded &&
+                          hasCourse &&
+                          !(showError && !isOuterError))
+                        weekDayIndicator,
+                      if (firstLoaded &&
+                          hasCourse &&
+                          !(showError && !isOuterError))
+                        courseLineGrid(context),
+                      if (firstLoaded &&
+                          !hasCourse &&
+                          !(showError && !isOuterError))
+                        emptyTips,
+                      if (firstLoaded && (showError && !isOuterError))
+                        errorTips,
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         if (context.select<CoursesProvider, bool>(
@@ -763,30 +758,31 @@ class CourseWidget extends StatelessWidget {
                 0,
                 math.min(10, course.name.length),
               ),
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
             ),
-            if (course.name.length > 10) const TextSpan(text: '...'),
+            if (course.isCustom
+                ? course.name.length > 20
+                : course.name.length > 10)
+              const TextSpan(text: '...'),
             if (!course.isCustom)
               TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
             if (course.location != null)
               TextSpan(text: '\n📍${course.location}'),
           ],
-          style: context.textTheme.bodyText2.copyWith(
-            color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
-                    !isOutOfTerm
-                ? Colors.grey
-                : Colors.black,
-            fontSize: 18.sp,
-          ),
+        ),
+        style: context.textTheme.bodyText2.copyWith(
+          color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
+                  !isOutOfTerm
+              ? Colors.grey
+              : Colors.black,
+          fontSize: 13.sp,
         ),
         overflow: TextOverflow.fade,
       );
     } else {
       child = Icon(
         Icons.add,
-        color: Theme.of(context)
-            .iconTheme
-            .color
+        color: context.iconTheme.color
             .withOpacity(0.15)
             .withRed(180)
             .withBlue(180)
@@ -821,12 +817,12 @@ class CourseWidget extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(1.5),
+                  padding: EdgeInsets.all(2.w),
                   child: Material(
                     type: MaterialType.transparency,
                     child: InkWell(
                       customBorder: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
+                        borderRadius: BorderRadius.circular(8.w),
                       ),
                       splashFactory: InkSplash.splashFactory,
                       hoverColor: Colors.black,
@@ -847,7 +843,7 @@ class CourseWidget extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.w),
+                          borderRadius: BorderRadius.circular(8.w),
                           color: courseList.isNotEmpty
                               ? CourseAPI.inCurrentWeek(course,
                                           currentWeek: currentWeek) ||
@@ -1057,10 +1053,11 @@ class _CourseDetailDialog extends StatelessWidget {
               name: '教室',
               value: course.location,
             ),
-          _CourseInfoRowWidget(
-            name: '教师',
-            value: course.teacher,
-          ),
+          if (course.teacher != null)
+            _CourseInfoRowWidget(
+              name: '教师',
+              value: course.teacher,
+            ),
           _CourseInfoRowWidget(
             name: '周数',
             value: course.weekDurationString,
