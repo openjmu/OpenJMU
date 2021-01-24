@@ -66,10 +66,10 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       ),
       actions: <Widget>[
         _refreshIcon,
-        Gap(10.w),
+        Gap(16.w),
         switchButton,
       ],
-      actionsPadding: EdgeInsets.only(right: 20.w),
+      actionsPadding: EdgeInsets.only(right: 16.w),
     );
   }
 

@@ -55,13 +55,13 @@ class _MarketingPageState extends State<MarketingPage> {
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context, isTeam: true),
-          Gap(10.w),
+          Gap(16.w),
           MainPage.publishButton(
             context: context,
             route: Routes.openjmuPublishTeamPost,
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 20.w),
+        actionsPadding: EdgeInsets.only(right: 16.w),
       ),
       body: RefreshListWrapper(
         loadingBase: loadingBase,

@@ -109,7 +109,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
                         fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     if (Constants.developerList.contains(post.uid))
@@ -123,16 +123,20 @@ class TeamPostPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            alignment: Alignment.topRight,
-            icon: Icon(
-              post.uid == UserAPI.currentUser.uid
-                  ? Icons.delete_outline
-                  : Icons.keyboard_arrow_down,
-              size: 30.w,
-              color: Theme.of(context).dividerColor,
+          GestureDetector(
+            child: Container(
+              width: 48.w,
+              height: 48.w,
+              alignment: AlignmentDirectional.topEnd,
+              child: Icon(
+                post.uid == UserAPI.currentUser.uid
+                    ? Icons.delete_outline
+                    : Icons.more_horiz,
+                size: 30.w,
+                color: Theme.of(context).dividerColor,
+              ),
             ),
-            onPressed: post.uid == UserAPI.currentUser.uid
+            onTap: post.uid == UserAPI.currentUser.uid
                 ? () => confirmDelete(context)
                 : () => confirmAction(context),
           ),
@@ -165,50 +169,13 @@ class TeamPostPreviewCard extends StatelessWidget {
 
   Widget _postInfo(BuildContext context, TeamPostProvider provider) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: 12.h,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: 12.h,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.w),
-        color: Theme.of(context).canvasColor,
-      ),
+      margin: EdgeInsets.symmetric(vertical: 12.h),
       child: ListView.builder(
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: provider.post.postInfo.length +
-            (provider.post.repliesCount > 2 ? 1 : 0),
+        itemCount: provider.post.postInfo.length,
         itemBuilder: (_, int index) {
-          if (index == provider.post.postInfo.length) {
-            return Container(
-              margin: EdgeInsets.only(top: 12.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.expand_more,
-                    size: 20.w,
-                    color: context.textTheme.caption.color,
-                  ),
-                  Text(
-                    '查看更多回复',
-                    style: context.textTheme.caption.copyWith(
-                      fontSize: 17.sp,
-                    ),
-                  ),
-                  Icon(
-                    Icons.expand_more,
-                    size: 20.w,
-                    color: context.textTheme.caption.color,
-                  ),
-                ],
-              ),
-            );
-          }
           final Map<String, dynamic> _post =
               provider.post.postInfo[index].cast<String, dynamic>();
           return Padding(
@@ -263,7 +230,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ),
                 ],
               ),
-              style: context.textTheme.bodyText2.copyWith(
+              style: context.textTheme.caption.copyWith(
                 fontSize: 17.sp,
               ),
               onSpecialTextTap: specialTextTapRecognizer,
@@ -354,94 +321,97 @@ class TeamPostPreviewCard extends StatelessWidget {
         padding: EdgeInsets.zero,
         shrinkWrap: true,
         primary: false,
-        mainAxisSpacing: 10.sp,
+        mainAxisSpacing: 12.w,
         crossAxisCount: 3,
-        crossAxisSpacing: 10.sp,
+        crossAxisSpacing: 12.w,
         children: imagesWidget,
       );
     }
     _image = Padding(
-      padding: EdgeInsets.only(top: 6.h),
+      padding: EdgeInsets.only(top: 12.w),
       child: _image,
     );
     return _image;
   }
 
-  Widget _actions(BuildContext context, TeamPostProvider provider) => Container(
-        margin: EdgeInsets.only(top: 8.h),
-        height: 44.h,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(
-              child: FlatButton.icon(
-                onPressed: null,
-                icon: SvgPicture.asset(
-                  R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                  color: currentIsDark
-                      ? actionIconColorDark
-                      : actionIconColorLight,
-                  width: 26.w,
-                ),
-                label: Text(
-                  provider.post.repliesCount == 0
-                      ? '评论'
-                      : '${provider.post.repliesCount}',
-                  style: TextStyle(
-                    color: currentIsDark
+  Widget _actions(BuildContext context, TeamPostProvider p) {
+    return Container(
+      margin: EdgeInsets.only(top: 6.w),
+      height: 50.h,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          LikeButton(
+            size: 48.w,
+            bubblesColor: BubblesColor(
+              dotPrimaryColor: currentThemeColor,
+              dotSecondaryColor: currentThemeColor,
+            ),
+            circleColor: CircleColor(
+              start: currentThemeColor,
+              end: currentThemeColor,
+            ),
+            countBuilder: (int count, bool isLiked, String text) => Text(
+              count > 0 ? text : '赞',
+              style: TextStyle(
+                color: isLiked
+                    ? currentThemeColor
+                    : currentIsDark
                         ? actionTextColorDark
                         : actionTextColorLight,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                splashColor: Theme.of(context).cardColor,
-                highlightColor: Theme.of(context).cardColor,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.normal,
               ),
             ),
-            Expanded(
-              child: LikeButton(
-                size: 26.w,
-                bubblesColor: BubblesColor(
-                  dotPrimaryColor: currentThemeColor,
-                  dotSecondaryColor: currentThemeColor,
-                ),
-                circleColor: CircleColor(
-                    start: currentThemeColor, end: currentThemeColor),
-                countBuilder: (int count, bool isLiked, String text) => Text(
-                  count > 0 ? text : '赞',
-                  style: TextStyle(
-                    color: isLiked
-                        ? currentThemeColor
-                        : currentIsDark
-                            ? actionTextColorDark
-                            : actionTextColorLight,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                isLiked: provider.post.isLike,
-                likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                  color: isLiked
-                      ? currentThemeColor
-                      : currentIsDark
-                          ? actionIconColorDark
-                          : actionIconColorLight,
-                  width: 26.w,
-                ),
-                likeCount: provider.post.isLike
-                    ? moreThanOne(provider.post.praisesCount)
-                    : moreThanZero(provider.post.praisesCount),
-                likeCountAnimationType: LikeCountAnimationType.none,
-                likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
-                onTap: (bool isLiked) async =>
-                    onLikeButtonTap(isLiked, provider),
+            isLiked: p.post.isLike,
+            likeBuilder: (bool isLiked) => Center(
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
+                color: isLiked
+                    ? currentThemeColor
+                    : currentIsDark
+                        ? actionIconColorDark
+                        : actionIconColorLight,
+                width: 26.w,
               ),
             ),
-          ],
-        ),
-      );
+            likeCount: p.post.isLike
+                ? moreThanOne(p.post.praisesCount)
+                : moreThanZero(p.post.praisesCount),
+            likeCountAnimationType: LikeCountAnimationType.none,
+            likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
+            onTap: (bool isLiked) => onLikeButtonTap(isLiked, p),
+          ),
+          FlatButton.icon(
+            onPressed: null,
+            padding: EdgeInsets.zero,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            minWidth: 120.w,
+            icon: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
+              color: currentIsDark ? actionIconColorDark : actionIconColorLight,
+              width: 26.w,
+            ),
+            label: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
+              child: Text(
+                p.post.repliesCount == 0 ? '评论' : '${p.post.repliesCount}',
+                style: TextStyle(
+                  color: currentIsDark
+                      ? actionTextColorDark
+                      : actionTextColorLight,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            splashColor: Theme.of(context).cardColor,
+            highlightColor: Theme.of(context).cardColor,
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<bool> onLikeButtonTap(bool isLiked, TeamPostProvider provider) {
     final Completer<bool> completer = Completer<bool>();
@@ -462,51 +432,49 @@ class TeamPostPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TeamPostProvider>(
-      builder: (_, TeamPostProvider provider, __) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                navigatorState.pushNamed(
-                  Routes.openjmuTeamPostDetail.name,
-                  arguments: Routes.openjmuTeamPostDetail
-                      .d(provider: provider, type: TeamPostType.post),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 10.w,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24.w,
-                  vertical: 8.w,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.w),
-                  color: Theme.of(context).cardColor,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _header(context, provider.post),
-                    _content(provider.post),
-                    if (provider.post.pics != null &&
-                        provider.post.pics.isNotEmpty)
-                      _images(context, provider.post),
-                    if (provider.post.postInfo != null &&
-                        provider.post.postInfo.isNotEmpty)
-                      _postInfo(context, provider),
-                    _actions(context, provider),
-                  ],
-                ),
+      builder: (_, TeamPostProvider p, __) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            navigatorState.pushNamed(
+              Routes.openjmuTeamPostDetail.name,
+              arguments: Routes.openjmuTeamPostDetail.d(
+                provider: p,
+                type: TeamPostType.post,
               ),
+            );
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 8.w,
             ),
-          ],
+            padding: EdgeInsets.symmetric(
+              horizontal: 24.w,
+              vertical: 8.w,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.w),
+              color: Theme.of(context).cardColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _header(context, p.post),
+                _content(p.post),
+                if (p.post.pics != null && p.post.pics.isNotEmpty)
+                  _images(context, p.post),
+                if (p.post.postInfo != null && p.post.postInfo.isNotEmpty)
+                  _postInfo(context, p),
+                Padding(
+                  padding: EdgeInsets.only(top: 12.w),
+                  child: Divider(thickness: 1.w, height: 1.w),
+                ),
+                _actions(context, p),
+              ],
+            ),
+          ),
         );
       },
     );

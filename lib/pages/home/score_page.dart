@@ -63,44 +63,34 @@ class _ScorePageState extends State<ScorePage>
       );
 
   Widget evaluateTips(BuildContext context) {
-    final Widget dot = Container(
-      margin: EdgeInsets.symmetric(horizontal: 30.w),
-      width: 10.w,
-      height: 10.w,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: context.textTheme.caption.color,
-      ),
-    );
-    return Padding(
+    return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: Row(
-        children: <Widget>[
-          dot,
-          Expanded(
-            child: Text.rich(
-              TextSpan(
-                children: <InlineSpan>[
-                  const TextSpan(text: '请及时完成 '),
-                  TextSpan(
-                    text: '教学评测',
-                    style: const TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    recognizer: TapGestureRecognizer()..onTap = gotoEvaluate,
-                  ),
-                  const TextSpan(
-                    text: ' (校园内网)\n未教学评测的科目成绩将不予显示',
-                  ),
-                ],
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 0.5.w, color: context.theme.dividerColor),
+        ),
+        color: context.theme.brightness == Brightness.dark
+            ? Colors.black
+            : context.theme.primaryColor,
+      ),
+      child: Text.rich(
+        TextSpan(
+          children: <InlineSpan>[
+            const TextSpan(text: '未进行 '),
+            TextSpan(
+              text: '教学评测 (内网)',
+              style: const TextStyle(
+                decoration: TextDecoration.underline,
+                fontWeight: FontWeight.bold,
               ),
-              style: context.textTheme.caption.copyWith(fontSize: 19.sp),
-              textAlign: TextAlign.center,
+              recognizer: TapGestureRecognizer()..onTap = gotoEvaluate,
             ),
-          ),
-          dot,
-        ],
+            const TextSpan(text: ' 的科目成绩将不予显示'),
+          ],
+        ),
+        style: context.textTheme.caption.copyWith(fontSize: 19.sp),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -111,20 +101,14 @@ class _ScorePageState extends State<ScorePage>
 
     return Selector<ScoresProvider, String>(
       selector: (_, ScoresProvider p) => p.selectedTerm,
-      builder: (_, String selectedTerm, __) => DefaultTextStyle.merge(
-        style: TextStyle(
-          fontSize: 20.sp,
-          fontWeight: FontWeight.w500,
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('$currentYear-${currentYear + 1}'),
-              Text('第$currentTerm学期'),
-            ],
-          ),
+      builder: (_, String selectedTerm, __) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('$currentYear-${currentYear + 1}'),
+            Text('第$currentTerm学期'),
+          ],
         ),
       ),
     );
@@ -136,13 +120,22 @@ class _ScorePageState extends State<ScorePage>
       builder: (_, List<String> terms, __) {
         if (terms?.isNotEmpty == true) {
           return Container(
-            height: 70.w,
+            height: 80.w,
             alignment: Alignment.center,
-            color: context.theme.cardColor,
+            color: context.theme.brightness == Brightness.dark
+                ? Colors.black
+                : context.theme.primaryColor,
             child: TabBar(
               controller: _tabController,
               isScrollable: true,
               physics: const BouncingScrollPhysics(),
+              labelStyle: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.normal,
+              ),
               labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
               labelColor: context.themeColor,
               indicatorSize: TabBarIndicatorSize.label,

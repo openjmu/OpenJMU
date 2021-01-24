@@ -52,13 +52,13 @@ class _PostSquarePageState extends State<PostSquarePage> {
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context),
-          Gap(10.w),
+          Gap(16.w),
           MainPage.publishButton(
             context: context,
             route: Routes.openjmuPublishPost,
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 20.w),
+        actionsPadding: EdgeInsets.only(right: 16.w),
       ),
       body: RefreshListWrapper(
         loadingBase: loadingBase,

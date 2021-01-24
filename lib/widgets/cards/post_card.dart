@@ -484,17 +484,19 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton {
-    return GestureDetector(
-      onTap: () => confirmDelete(context),
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        width: 48.w,
-        height: 48.w,
-        alignment: AlignmentDirectional.topEnd,
-        child: Icon(
-          Icons.delete_outline,
-          color: Theme.of(context).dividerColor,
-          size: 30.w,
+    return Align(
+      alignment: AlignmentDirectional.topEnd,
+      child: GestureDetector(
+        onTap: () => confirmDelete(context),
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          width: 48.w,
+          height: 48.w,
+          child: Icon(
+            Icons.delete_outline,
+            color: Theme.of(context).dividerColor,
+            size: 30.w,
+          ),
         ),
       ),
     );
@@ -621,7 +623,7 @@ class _PostCardState extends State<PostCard> {
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
           horizontal: widget.fromPage == 'user' ? 0 : 16.w,
-          vertical: 10.w,
+          vertical: 8.w,
         ),
         padding: EdgeInsets.symmetric(
           horizontal: 24.w,
@@ -640,7 +642,6 @@ class _PostCardState extends State<PostCard> {
               height: 70.w,
               padding: EdgeInsets.symmetric(vertical: 6.w),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   UserAPI.getAvatar(uid: widget.post.uid),
                   Gap(16.w),
@@ -669,7 +670,7 @@ class _PostCardState extends State<PostCard> {
               child: Divider(thickness: 1.w, height: 1.w),
             ),
             Container(
-              margin: EdgeInsets.only(top: 6.h),
+              margin: EdgeInsets.only(top: 6.w),
               height: 50.h,
               child: Row(
                 children: <Widget>[
