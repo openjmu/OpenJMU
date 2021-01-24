@@ -143,6 +143,9 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Function called after login button pressed.
   /// 登录按钮的回调
   void loginButtonPressed(BuildContext context) {
+    if (_isLogin.value) {
+      return;
+    }
     try {
       _isLogin.value = true;
       DataUtils.login(_username.value, _password.value).then((bool result) {
