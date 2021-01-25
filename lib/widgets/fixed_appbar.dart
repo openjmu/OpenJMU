@@ -19,11 +19,11 @@ class FixedAppBar extends StatelessWidget {
     this.centerTitle = true,
     this.automaticallyImplyActions = true,
     this.backgroundColor,
-    this.elevation,
     this.actions,
     this.actionsPadding,
     this.height,
     this.blurRadius = 0.0,
+    this.withBorder = true,
   }) : super(key: key);
 
   /// Title widget.
@@ -58,10 +58,6 @@ class FixedAppBar extends StatelessWidget {
   /// 背景颜色
   final Color backgroundColor;
 
-  /// The size of the shadow below the app bar.
-  /// 底部阴影的大小
-  final double elevation;
-
   /// Height of the app bar.
   /// 高度
   final double height;
@@ -69,6 +65,10 @@ class FixedAppBar extends StatelessWidget {
   /// Value that can enable the app bar using filter with [ui.ImageFilter]
   /// 实现高斯模糊效果的值
   final double blurRadius;
+
+  /// Whether the app bar should implement a border below it.
+  /// 是否在底部展示细线
+  final bool withBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -146,11 +146,13 @@ class FixedAppBar extends StatelessWidget {
         ),
       );
     }
-    return Material(
-      color: Colors.transparent,
-      elevation: elevation ?? (isDark ? 0 : 1.w),
-      child: child,
-    );
+    if (withBorder) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[child, VGap(0.5, color: context.theme.dividerColor)],
+      );
+    }
+    return Material(color: Colors.transparent, child: child);
   }
 }
 
@@ -224,7 +226,8 @@ class FixedBackButton extends StatelessWidget {
               width: 24.w,
               height: 24.w,
               color: color,
-              semanticsLabel: MaterialLocalizations.of(context).backButtonTooltip,
+              semanticsLabel:
+                  MaterialLocalizations.of(context).backButtonTooltip,
             ),
           ),
         ),

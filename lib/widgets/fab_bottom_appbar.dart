@@ -237,12 +237,22 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return BottomAppBar(
-      elevation: isDark ? 0 : 5.w,
+    appBar = BottomAppBar(
       color: widget.backgroundColor ??
           (isDark ? Colors.black : Theme.of(context).primaryColor),
       shape: widget.notchedShape,
+      elevation: 0,
       child: appBar,
     );
+    if (Platform.isAndroid) {
+      appBar = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          VGap(0.5.w, color: context.theme.dividerColor),
+          appBar,
+        ],
+      );
+    }
+    return appBar;
   }
 }

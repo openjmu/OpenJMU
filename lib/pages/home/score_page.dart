@@ -80,8 +80,8 @@ class _ScorePageState extends State<ScorePage>
             const TextSpan(text: '未进行 '),
             TextSpan(
               text: '教学评测 (内网)',
-              style: const TextStyle(
-                decoration: TextDecoration.underline,
+              style: TextStyle(
+                color: currentThemeColor,
                 fontWeight: FontWeight.bold,
               ),
               recognizer: TapGestureRecognizer()..onTap = gotoEvaluate,
@@ -89,7 +89,7 @@ class _ScorePageState extends State<ScorePage>
             const TextSpan(text: ' 的科目成绩将不予显示'),
           ],
         ),
-        style: context.textTheme.caption.copyWith(fontSize: 19.sp),
+        style: context.textTheme.caption.copyWith(height: 1.2, fontSize: 19.sp),
         textAlign: TextAlign.center,
       ),
     );

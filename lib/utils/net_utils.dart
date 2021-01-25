@@ -16,7 +16,7 @@ class NetUtils {
   static const bool _isProxyEnabled = false;
   static const String _proxyDestination = 'PROXY 192.168.1.9:8764';
 
-  static const bool shouldLogRequest = false;
+  static const bool shouldLogRequest = true;
 
   static final Dio dio = Dio(BaseOptions(connectTimeout: 15000));
   static final Dio tokenDio = Dio(BaseOptions(connectTimeout: 15000));

@@ -3,7 +3,6 @@
 /// [Date] 2019-11-17 06:15
 ///
 import 'dart:async';
-import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -201,17 +200,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ),
                   if ((_post['user_info']['uid'] as String).toInt() ==
                       provider.post.uid)
-                    WidgetSpan(
-                      alignment: ui.PlaceholderAlignment.middle,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 3.w),
-                        child: SvgPicture.asset(
-                          R.ASSETS_ICONS_FIRST_FLOOR_SVG,
-                          height: 17.sp,
-                          color: currentThemeColor,
-                        ),
-                      ),
-                    ),
+                    const TextSpan(text: '(楼主)'),
                   const TextSpan(
                     text: ': ',
                     style: TextStyle(color: Colors.blue),

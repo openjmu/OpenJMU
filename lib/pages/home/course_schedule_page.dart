@@ -586,7 +586,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             (CoursesProvider p) => p.isOuterError))
           Positioned(
             right: 10.w,
-            top: 10.w,
+            bottom: 10.w,
             child: FloatingActionButton(
               heroTag: 'CoursesOuterNetworkErrorFAB',
               onPressed: () {

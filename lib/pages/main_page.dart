@@ -38,8 +38,8 @@ class MainPage extends StatefulWidget {
             padding: EdgeInsets.only(left: 15.w, right: 10.w),
             child: SvgPicture.asset(
               R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
-              color: currentTheme.iconTheme.color,
-              height: 15.w,
+              color: currentTheme.textTheme.bodyText2.color,
+              height: 14.w,
             ),
           ),
           const UserAvatar(size: 54.0, canJump: false)
@@ -81,7 +81,7 @@ class MainPage extends StatefulWidget {
                     child: SvgPicture.asset(
                       R.ASSETS_ICONS_NOTIFICATION_SVG,
                       color: context.textTheme.bodyText2.color,
-                      width: 24.w,
+                      width: 28.w,
                     ),
                   ),
                 ),

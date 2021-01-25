@@ -58,7 +58,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
   FixedAppBar get _appBar {
     return FixedAppBar(
       automaticallyImplyLeading: false,
-      elevation: 0,
+      withBorder: false,
       title: Container(
         alignment: AlignmentDirectional.centerStart,
         padding: EdgeInsets.only(right: 20.w),
@@ -89,7 +89,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
           child: SvgPicture.asset(
             R.ASSETS_ICONS_REFRESH_SVG,
             color: context.textTheme.bodyText2.color,
-            width: 24.w,
+            width: 28.w,
           ),
         ),
       ),
