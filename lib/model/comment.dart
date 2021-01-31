@@ -30,7 +30,8 @@ class Comment {
     this.post,
   });
 
-  final int id, fromUserUid, floor;
+  final int id, floor;
+  final String fromUserUid;
   final String fromUserName;
   final String fromUserAvatar;
   final String content;

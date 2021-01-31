@@ -256,7 +256,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         name: name,
         widget: UserPage(
           key: arguments['key'] as Key,
-          uid: arguments['uid'] as int,
+          uid: arguments['uid'] as String,
         ),
         routeName: '用户页',
       );

@@ -23,7 +23,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['uid'].toString().toInt(),
+      id: json['uid'].toString(),
       nickname:
           (json['nickname'] ?? json['username'] ?? json['name'] ?? json['uid'])
               .toString(),
@@ -36,7 +36,7 @@ class User {
     );
   }
 
-  final int id;
+  final String id;
   final String nickname;
   final int gender;
   final int topics;

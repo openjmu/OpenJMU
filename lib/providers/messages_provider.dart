@@ -55,7 +55,7 @@ class MessagesProvider with ChangeNotifier {
   }
 
   void incomingMessage(MessageReceivedEvent event) {
-    if (event.senderUid == 0) {
+    if (event.senderUid == '0') {
       _incomingAppsMessage(event);
     } else {
       _incomingPersonalMessage(event);

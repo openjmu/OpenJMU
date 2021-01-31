@@ -27,7 +27,7 @@ class Message with HiveObject {
   factory Message.fromEvent(MessageReceivedEvent event) {
     return Message(
       type: event.type,
-      senderUid: event.senderUid,
+      senderUid: event.senderUid.toInt(),
       senderMultiPortId: event.senderMultiPortId,
       sendTime: event.sendTime,
       ackId: event.ackId,
@@ -50,5 +50,5 @@ class Message with HiveObject {
   @HiveField(6)
   bool read;
 
-  bool get isSelf => senderUid == currentUser.uid;
+  bool get isSelf => senderUid.toString() == currentUser.uid;
 }

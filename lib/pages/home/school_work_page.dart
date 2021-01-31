@@ -59,10 +59,14 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
     return FixedAppBar(
       automaticallyImplyLeading: false,
       withBorder: false,
-      title: Container(
-        alignment: AlignmentDirectional.centerStart,
+      title: Padding(
         padding: EdgeInsets.only(right: 20.w),
-        child: MainPage.selfPageOpener,
+        child: Row(
+          children: <Widget>[
+            MainPage.selfPageOpener,
+            MainPage.outerNetworkIndicator(),
+          ],
+        ),
       ),
       actions: <Widget>[
         _refreshIcon,
@@ -159,6 +163,40 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
                   : const SizedBox.shrink(),
             if (tabs.contains('成绩')) const ScorePage(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class OuterNetworkErrorDialog extends StatelessWidget {
+  const OuterNetworkErrorDialog({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Card(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.w),
+        ),
+        child: Container(
+          width: 300.w,
+          height: 180.w,
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.signal_wifi_off, size: 42.w),
+              VGap(10.w),
+              Text(
+                '由于外网网络限制\n无法获取最新数据\n请连接校园网后重试',
+                style: TextStyle(fontSize: 20.sp),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

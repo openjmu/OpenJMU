@@ -110,6 +110,55 @@ class MainPage extends StatefulWidget {
     );
   }
 
+  static Widget outerNetworkIndicator() {
+    return ValueListenableBuilder<bool>(
+      valueListenable: NetUtils.isOuterNetwork,
+      builder: (BuildContext c, bool value, Widget w) {
+        final bool isDark = c.theme.brightness == Brightness.dark;
+        return AnimatedSwitcher(
+          duration: kThemeChangeDuration,
+          child: value
+              ? GestureDetector(
+                  onTap: () {
+                    ConfirmationDialog.show(
+                      c,
+                      title: '内网未连接',
+                      content: '由于外网网络限制，部分页面可能无法获取最新数据，'
+                          '请连接校园内网后重试。',
+                      cancelLabel: '朕知道了',
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.w),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Gap(10.w),
+                        Container(
+                          width: 14.w,
+                          height: 14.w,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? defaultThemeGroup.darkThemeColor
+                                : defaultThemeGroup.lightThemeColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Gap(8.w),
+                        Text(
+                          '内网不可用',
+                          style: TextStyle(height: 1.2, fontSize: 16.sp),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        );
+      },
+    );
+  }
+
   static Widget publishButton({
     @required BuildContext context,
     @required String route,

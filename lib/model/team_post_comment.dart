@@ -40,7 +40,7 @@ class TeamPostComment {
     return TeamPostComment(
       rid: int.parse(json['rid'].toString()),
       originId: int.parse(json['oid'].toString()),
-      uid: int.parse(json['uid'].toString()),
+      uid: json['uid'].toString(),
       originType: json['otype'] as String,
       postTime: DateTime.fromMillisecondsSinceEpoch(
         int.parse(json['post_time'].toString()),
@@ -51,7 +51,8 @@ class TeamPostComment {
     );
   }
 
-  final int rid, originId, uid;
+  final int rid, originId;
+  final String uid;
   final String originType;
   final DateTime postTime;
   final String content;

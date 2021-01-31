@@ -62,7 +62,7 @@ class TeamPost {
     });
     final TeamPost _post = TeamPost(
       tid: json['tid'].toString().toIntOrNull(),
-      uid: _user['uid'].toString().toIntOrNull(),
+      uid: _user['uid'].toString(),
       rootTid: json['root_tid'].toString().toIntOrNull(),
       rootUid: json['root_uid'].toString().toIntOrNull(),
       nickname: ((_user['nickname'] ?? _user['uid']) as dynamic).toString(),
@@ -91,7 +91,8 @@ class TeamPost {
     return _post;
   }
 
-  final int tid, uid, rootTid, rootUid;
+  final int tid, rootTid, rootUid;
+  final String uid;
   final String nickname;
   final DateTime postTime;
   final String category;

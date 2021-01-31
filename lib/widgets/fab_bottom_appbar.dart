@@ -248,7 +248,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       appBar = Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          VGap(0.5.w, color: context.theme.dividerColor),
+          Divider(thickness: 1.w, height: 1.w),
           appBar,
         ],
       );

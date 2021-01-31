@@ -117,9 +117,11 @@ class _UserListState extends State<UserListPage> {
   }
 
   Widget userCard(BuildContext context, Map<String, dynamic> userData) {
-    final Map<String, dynamic> _user = userData['user'] as Map<String, dynamic>;
+    final PostUser _user = PostUser.fromJson(
+      userData['user'] as Map<String, dynamic>,
+    );
     String name;
-    name = _user['nickname'] as String;
+    name = _user.nickname;
     if (name.length > 3) {
       name = '${name.substring(0, 3)}...';
     }
@@ -128,9 +130,7 @@ class _UserListState extends State<UserListPage> {
       onTap: () {
         navigatorState.pushNamed(
           Routes.openjmuUserPage.name,
-          arguments: Routes.openjmuUserPage.d(
-            uid: int.parse(_user['uid'].toString()),
-          ),
+          arguments: Routes.openjmuUserPage.d(uid: _user.uid),
         );
       },
       child: Container(
@@ -147,10 +147,7 @@ class _UserListState extends State<UserListPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            UserAPI.getAvatar(
-              size: 64.0,
-              uid: _user['uid'].toString().toInt(),
-            ),
+            UserAPI.getAvatar(size: 64.0, uid: _user.uid),
             Gap(12.w),
             Row(
               mainAxisSize: MainAxisSize.min,

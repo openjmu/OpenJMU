@@ -85,7 +85,7 @@ class CommentAPI {
     final Comment _comment = Comment(
       id: itemData['rid']?.toString()?.toIntOrNull(),
       floor: null,
-      fromUserUid: itemData['user']['uid']?.toString()?.toIntOrNull(),
+      fromUserUid: itemData['user']['uid']?.toString(),
       fromUserName: itemData['user']['nickname']?.toString(),
       fromUserAvatar: _avatar,
       content: itemData['content']?.toString(),
@@ -127,7 +127,7 @@ class CommentAPI {
     final Comment _comment = Comment(
       id: int.parse(itemData['rid'].toString()),
       floor: null,
-      fromUserUid: int.parse(itemData['user']['uid'].toString()),
+      fromUserUid: itemData['user']['uid'].toString(),
       fromUserName: itemData['user']['nickname']?.toString(),
       fromUserAvatar: _avatar,
       content: itemData['content']?.toString(),

@@ -14,10 +14,10 @@ import 'package:openjmu/constants/constants.dart';
 class ChatPersonPage extends StatefulWidget {
   const ChatPersonPage({
     Key key,
-    this.uid = 164466,
+    this.uid = '164466',
   }) : super(key: key);
 
-  final int uid;
+  final String uid;
 
   @override
   _ChatPersonPageState createState() => _ChatPersonPageState();
@@ -84,7 +84,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              UserAPI.getAvatar(size: 50.0, uid: 164466),
+              UserAPI.getAvatar(size: 50.0, uid: '164466'),
               Text(
                 '陈嘉旺',
                 style: context.textTheme.bodyText2.copyWith(

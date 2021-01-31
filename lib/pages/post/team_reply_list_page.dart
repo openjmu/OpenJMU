@@ -263,7 +263,7 @@ class TeamReplyItem {
       ),
       toPost: toPost,
       scope: json['to_post_info']['scope'] as Map<String, dynamic>,
-      fromUserId: user['uid'].toString().toInt(),
+      fromUserId: user['uid'].toString(),
       fromUsername: user['nickname'] as String,
       type: json['to_post_info']['type'] == 'first'
           ? TeamReplyType.post
@@ -275,7 +275,7 @@ class TeamReplyItem {
   final TeamPostComment comment;
   final TeamPost toPost;
   final Map<String, dynamic> scope;
-  final int fromUserId;
+  final String fromUserId;
   final String fromUsername;
   final TeamReplyType type;
 

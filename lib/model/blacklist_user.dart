@@ -10,12 +10,12 @@ class BlacklistUser {
 
   factory BlacklistUser.fromJson(Map<String, dynamic> json) {
     return BlacklistUser(
-      uid: json['uid']?.toString()?.toInt(),
+      uid: json['uid']?.toString(),
       username: json['username']?.toString(),
     );
   }
 
-  final int uid;
+  final String uid;
   final String username;
 
   Map<String, dynamic> toJson() {

@@ -71,9 +71,9 @@ class API {
 
   /// 用户相关
   static const String userInfo = '$oap99Host/user/info'; // 用户信息
-  static String studentInfo({int uid = 0}) =>
+  static String studentInfo({String uid = '0'}) =>
       '$oa99Host/v2/api/class/studentinfo?uid=$uid'; // 学生信息
-  static String userLevel({int uid = 0}) =>
+  static String userLevel({String uid = '0'}) =>
       '$oa99Host/ajax/score/info?uid=$uid'; // 用户等级
   static const String userAvatar = '$oap99Host/face'; // 用户头像
   static const String userAvatarUpload = '$oap99Host/face/upload'; // 上传用户头像

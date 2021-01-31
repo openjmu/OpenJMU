@@ -31,7 +31,7 @@ class DataUtils {
         ticket: loginData['ticket'] as String,
       );
       final Response<dynamic> userInfoResponse = await UserAPI.getUserInfo(
-        uid: loginData['uid'] as int,
+        uid: loginData['uid'].toString(),
       ) as Response<dynamic>;
       final Map<String, dynamic> user =
           (userInfoResponse.data as Map<dynamic, dynamic>)
@@ -58,9 +58,9 @@ class DataUtils {
         ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
             .cast<Map<dynamic, dynamic>>(),
       );
-      await initializeWebViewCookie();
       showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
+      initializeWebViewCookie();
       return true;
     } catch (e) {
       LogUtils.e('Failed when login: $e');
@@ -77,6 +77,7 @@ class DataUtils {
       NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
+      NetUtils.isOuterNetwork.value = false;
       clearLoginInfo();
     });
     showToast('退出登录成功');
@@ -115,10 +116,8 @@ class DataUtils {
               .cast<Map<dynamic, dynamic>>(),
         );
       }
-      final bool isCookieInitialized = await initializeWebViewCookie();
-      if (isCookieInitialized) {
-        Instances.eventBus.fire(TicketGotEvent(isWizard));
-      }
+      Instances.eventBus.fire(TicketGotEvent(isWizard));
+      initializeWebViewCookie();
     } catch (e) {
       LogUtils.e('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
@@ -226,7 +225,7 @@ class DataUtils {
     currentUser = currentUser.copyWith(
       sid: response['sid'] as String,
       ticket: response['sid'] as String,
-      uid: settingsBox.get(spUserUid) as int,
+      uid: settingsBox.get(spUserUid).toString(),
     );
   }
 

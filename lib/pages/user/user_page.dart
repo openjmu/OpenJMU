@@ -16,7 +16,7 @@ class UserPage extends StatefulWidget {
     @required this.uid,
   }) : super(key: key);
 
-  final int uid;
+  final String uid;
 
   @override
   UserPageState createState() => UserPageState();
@@ -41,7 +41,7 @@ class UserPageState extends State<UserPage>
 
   int userFans, userIdols;
 
-  int get uid => widget.uid ?? currentUser.uid;
+  String get uid => widget.uid ?? currentUser.uid;
 
   bool get isCurrentUser => uid == currentUser.uid;
 
@@ -183,7 +183,7 @@ class UserPageState extends State<UserPage>
         index: 0,
         pics: <ImageBean>[
           ImageBean(
-            id: widget.uid,
+            id: widget.uid.toInt(),
             imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
           ),
         ],

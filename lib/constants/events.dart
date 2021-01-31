@@ -224,7 +224,7 @@ class MessageReceivedEvent {
 
   final bool isSelf;
   final int type;
-  final int senderUid;
+  final String senderUid;
   final String senderMultiPortId;
   final DateTime sendTime;
   final int messageId;

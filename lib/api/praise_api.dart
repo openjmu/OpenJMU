@@ -51,7 +51,7 @@ class PraiseAPI {
     ).toString().substring(0, 16);
     final Praise _praise = Praise(
       id: itemData['id'] as int,
-      uid: itemData['user']['uid'] as int,
+      uid: itemData['user']['uid'].toString(),
       avatar: _avatar,
       postId: null,
       praiseTime: _praiseTime,
@@ -74,7 +74,7 @@ class PraiseAPI {
     ).toString().substring(0, 16);
     final Praise _praise = Praise(
       id: itemData['id'] as int,
-      uid: itemData['user']['uid'] as int,
+      uid: itemData['user']['uid'].toString(),
       avatar: _avatar,
       postId: int.parse(itemData['topic']['tid'].toString()),
       praiseTime: _praiseTime,

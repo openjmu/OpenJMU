@@ -158,8 +158,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
         Routes.openjmuUserPage.name,
         arguments: Routes.openjmuUserPage.d(
           uid: scanResult.message
-              .substring(API.schemeUserPage.pattern.length - 2)
-              .toInt(),
+              .substring(API.schemeUserPage.pattern.length - 2),
         ),
       ));
     } else {

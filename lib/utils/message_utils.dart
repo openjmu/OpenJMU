@@ -73,7 +73,7 @@ class MessageUtils {
     _uc
       ..add(54328, 32) // Fixed prefix.
       ..add(0, 16) // Status.
-      ..add(UserAPI.currentUser.uid, 64) // User id.
+      ..add(UserAPI.currentUser.uid.toInt(), 64) // User id.
       ..add(0, 32) // Session id.
       ..add(command, 16)
       ..add(packageSequence, 32)
@@ -279,10 +279,10 @@ class MessageUtils {
 
   static void sendGetOfflineMessage() => addPackage('WY_GET_OFFLINEMSG');
 
-  static void sendTextMessage(String message, int uid) {
+  static void sendTextMessage(String message, String uid) {
     addPackage(
       'WY_MSG',
-      M_WY_MSG(type: 'MSG_A2A', uid: uid, message: message),
+      M_WY_MSG(type: 'MSG_A2A', uid: uid.toInt(), message: message),
     );
     Instances.eventBus.fire(MessageReceivedEvent(
       isSelf: true,
@@ -361,7 +361,7 @@ class MessageUtils {
     final MessageReceivedEvent event = MessageReceivedEvent(
       messageId: messageId,
       type: _type,
-      senderUid: _senderUid,
+      senderUid: _senderUid.toString(),
       senderMultiPortId: _senderMultiPortId.toString(),
       sendTime: DateTime.fromMillisecondsSinceEpoch(_sendTime * 1000),
       ackId: _ackId,

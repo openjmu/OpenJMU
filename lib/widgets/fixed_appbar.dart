@@ -149,7 +149,7 @@ class FixedAppBar extends StatelessWidget {
     if (withBorder) {
       child = Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[child, VGap(0.5, color: context.theme.dividerColor)],
+        children: <Widget>[child, Divider(thickness: 1.w, height: 1.w)],
       );
     }
     return Material(color: Colors.transparent, child: child);
@@ -225,7 +225,7 @@ class FixedBackButton extends StatelessWidget {
               R.ASSETS_ICONS_BACK_BUTTON_SVG,
               width: 24.w,
               height: 24.w,
-              color: color,
+              color: color ?? context.theme.iconTheme.color,
               semanticsLabel:
                   MaterialLocalizations.of(context).backButtonTooltip,
             ),

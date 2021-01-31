@@ -27,7 +27,7 @@ class TeamMentionItem {
         json['reply_info'] as Map<String, dynamic>,
       ),
       scope: json['scope'] as Map<String, dynamic>,
-      fromUserId: int.parse(user['uid'].toString()),
+      fromUserId: user['uid'].toString(),
       fromUsername: user['nickname'] as String,
       type: json['type'] == 't' ? TeamMentionType.post : TeamMentionType.thread,
     );
@@ -37,7 +37,7 @@ class TeamMentionItem {
   final TeamPost post;
   final TeamPostComment comment;
   final Map<String, dynamic> scope;
-  final int fromUserId;
+  final String fromUserId;
   final String fromUsername;
   final TeamMentionType type;
 

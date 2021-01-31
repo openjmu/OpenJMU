@@ -19,14 +19,14 @@ class UserAvatar extends StatelessWidget {
         super(key: key);
 
   final double size;
-  final int uid;
+  final String uid;
   final int timestamp;
   final double radius;
   final bool canJump;
 
   @override
   Widget build(BuildContext context) {
-    final int _uid = uid ?? currentUser.uid;
+    final String _uid = uid ?? currentUser.uid;
     return SizedBox.fromSize(
       size: Size.square(size.w),
       child: GestureDetector(

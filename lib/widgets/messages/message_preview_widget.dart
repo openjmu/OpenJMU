@@ -19,7 +19,7 @@ class MessagePreviewWidget extends StatefulWidget {
   })  : assert(uid != null || app != null),
         super(key: key);
 
-  final int uid;
+  final String uid;
   final WebApp app;
   final Message message;
   final List<Message> unreadMessages;
@@ -106,7 +106,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         height: 30.w,
                         child: user != null
                             ? Text(
-                                '${user.name ?? user.uid}',
+                                user.name ?? user.uid,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2

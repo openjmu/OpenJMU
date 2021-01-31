@@ -257,7 +257,7 @@ class TeamPraiseItem {
         json['post_time'].toString().toInt(),
       ),
       scope: json['post_info']['scope'] as Map<String, dynamic>,
-      fromUserId: user['uid'].toString().toInt(),
+      fromUserId: user['uid'].toString(),
       fromUsername: user['nickname'] as String,
     );
   }
@@ -266,7 +266,7 @@ class TeamPraiseItem {
   final String from;
   final DateTime time;
   final Map<String, dynamic> scope;
-  final int fromUserId;
+  final String fromUserId;
   final String fromUsername;
 
   Map<String, dynamic> toJson() {

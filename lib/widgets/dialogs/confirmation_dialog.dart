@@ -79,7 +79,7 @@ class ConfirmationDialog extends StatelessWidget {
         children: <Widget>[
           Text(
             title,
-            style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),

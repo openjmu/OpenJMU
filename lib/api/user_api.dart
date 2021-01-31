@@ -46,11 +46,11 @@ class UserAPI {
   /// Update cache network image provider after avatar is updated.
   static int avatarLastModified = currentTimeStamp;
 
-  static Widget getAvatar({double size = 48.0, int uid, int t}) {
+  static Widget getAvatar({double size = 48.0, String uid, int t}) {
     return UserAvatar(uid: uid ?? currentUser.uid, size: size, timestamp: t);
   }
 
-  static ImageProvider getAvatarProvider({int uid, int t, int size}) {
+  static ImageProvider getAvatarProvider({String uid, int t, int size}) {
     return ExtendedNetworkImageProvider(
       '${API.userAvatar}'
       '?uid=${uid ?? currentUser.uid}'
@@ -77,7 +77,7 @@ class UserAPI {
     avatarLastModified = currentTimeStamp;
   }
 
-  static Future<dynamic> getUserInfo({int uid}) async {
+  static Future<dynamic> getUserInfo({String uid}) async {
     if (uid == null) {
       return currentUser;
     } else {
@@ -89,39 +89,42 @@ class UserAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> getStudentInfo({
-    int uid,
+    String uid,
   }) async {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
         API.studentInfo(uid: uid ?? currentUser.uid));
   }
 
-  static Future<Response<Map<String, dynamic>>> getLevel(int uid) {
+  static Future<Response<Map<String, dynamic>>> getLevel(String uid) {
     return NetUtils.getWithCookieSet(API.userLevel(uid: uid));
   }
 
-  static Future<Response<Map<String, dynamic>>> getTags(int uid) {
+  static Future<Response<Map<String, dynamic>>> getTags(String uid) {
     return NetUtils.getWithCookieAndHeaderSet(
       API.userTags,
       data: <String, dynamic>{'uid': uid},
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getFans(int uid) {
+  static Future<Response<Map<String, dynamic>>> getFans(String uid) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFans}$uid');
   }
 
-  static Future<Response<Map<String, dynamic>>> getIdols(int uid) {
+  static Future<Response<Map<String, dynamic>>> getIdols(String uid) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userIdols}$uid');
   }
 
-  static Future<Response<Map<String, dynamic>>> getFansList(int uid, int page) {
+  static Future<Response<Map<String, dynamic>>> getFansList(
+    String uid,
+    int page,
+  ) {
     return NetUtils.getWithCookieAndHeaderSet(
       '${API.userFans}$uid/page/$page/page_size/20',
     );
   }
 
   static Future<Response<Map<String, dynamic>>> getIdolsList(
-    int uid,
+    String uid,
     int page,
   ) {
     return NetUtils.getWithCookieAndHeaderSet(
@@ -130,7 +133,7 @@ class UserAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(
-    int uid,
+    String uid,
   ) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
   }
@@ -138,7 +141,7 @@ class UserAPI {
   static Future<Response<Map<String, dynamic>>> getNotifications() async =>
       NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(API.postUnread);
 
-  static Future<void> follow(int uid) async {
+  static Future<void> follow(String uid) async {
     try {
       await NetUtils.postWithCookieAndHeaderSet<dynamic>(
           '${API.userRequestFollow}$uid');
@@ -152,7 +155,7 @@ class UserAPI {
     }
   }
 
-  static Future<void> unFollow(int uid, {bool fromBlacklist = false}) async {
+  static Future<void> unFollow(String uid, {bool fromBlacklist = false}) async {
     try {
       await NetUtils.deleteWithCookieAndHeaderSet<dynamic>(
         '${API.userRequestFollow}$uid',

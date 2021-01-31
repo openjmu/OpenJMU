@@ -23,7 +23,8 @@ class Praise {
     this.pics,
   });
 
-  final int id, uid, postId;
+  final int id, postId;
+  final String uid;
   final String avatar;
   final String praiseTime;
   final String nickname;

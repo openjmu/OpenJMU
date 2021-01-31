@@ -15,7 +15,7 @@ class PraiseCard extends StatelessWidget {
   Widget getPraiseNickname(BuildContext context, Praise praise) => Row(
         children: <Widget>[
           Text(
-            '${praise.nickname ?? praise.uid}',
+            praise.nickname ?? praise.uid,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           if (Constants.developerList.contains(praise.uid))

@@ -7,7 +7,7 @@ part of 'models.dart';
 
 /// 动态实体
 ///
-/// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像,
+/// [id] 动态id, [uid] 用户 uid, [user] 用户实体,
 /// [postTime] 动态时间, [from] 动态来源, [glances] 被查看次数,
 /// [category] 动态类型, [content] 动态内容, [pics] 动态图片,
 /// [forwards] 转发次数, [comments] 评论次数, [praises] 点赞次数,
@@ -16,8 +16,6 @@ class Post {
   Post({
     this.id,
     this.uid,
-    this.nickname,
-    this.avatar,
     this.postTime,
     this.from,
     this.glances,
@@ -25,11 +23,11 @@ class Post {
     this.content,
     this.pics,
     this.rootTopic,
-    this.isDefaultAvatar,
     this.forwards,
     this.comments,
     this.praises,
     this.isLike = false,
+    this.user,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -38,25 +36,12 @@ class Post {
         json[k] = null;
       }
     });
-    final Map<String, dynamic> _user = json['user'] as Map<String, dynamic>;
-    _user.forEach((String k, dynamic v) {
-      if (_user[k] == '') {
-        _user[k] = null;
-      }
-    });
-
-    final String _avatar = '${API.userAvatar}'
-        '?uid=${_user['uid']}'
-        '&size=f152'
-        '&_t=${DateTime.now().millisecondsSinceEpoch}';
     final String _postTime = DateTime.fromMillisecondsSinceEpoch(
       json['post_time'].toString().toInt() * 1000,
     ).toString().substring(0, 16);
     return Post(
       id: int.parse(json['tid'].toString()),
-      uid: int.parse(json['uid'].toString()),
-      nickname: (_user['nickname'] ?? _user['uid']).toString(),
-      avatar: _avatar,
+      uid: json['uid'].toString(),
       postTime: _postTime,
       from: json['from_string'] as String,
       glances: int.parse(json['glances'].toString()),
@@ -66,24 +51,22 @@ class Post {
       forwards: json['forwards'].toString().toInt(),
       comments: json['replys'].toString().toInt(),
       rootTopic: json['root_topic'] as Map<String, dynamic>,
-      isDefaultAvatar: _user['sysavatar'] == 1,
       praises: int.parse(json['praises'].toString()),
       isLike: int.parse(json['praised'].toString()) == 1,
+      user: PostUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
   final int id;
-  final int uid;
-  final String nickname;
-  final String avatar;
+  final String uid;
   final String postTime;
   final String from;
   final int glances;
   final String category;
   final String content;
   final List<Map<String, dynamic>> pics;
-  final bool isDefaultAvatar;
   final Map<String, dynamic> rootTopic;
+  final PostUser user;
   int forwards;
   int comments;
   int praises;
@@ -91,12 +74,17 @@ class Post {
 
   bool get isShield => content == '此微博已经被屏蔽';
 
+  String get avatar => '${API.userAvatar}'
+      '?uid=${user.uid}'
+      '&size=f152'
+      '&_t=${DateTime.now().millisecondsSinceEpoch}';
+
+  String get nickname => (user.nickname ?? user.uid).toString();
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
       'uid': uid,
-      'nickname': nickname,
-      'avatar': avatar,
       'postTime': postTime,
       'from': from,
       'glances': glances,
@@ -104,11 +92,11 @@ class Post {
       'content': content,
       'pics': pics,
       'rootTopic': rootTopic,
-      'isDefaultAvatar': isDefaultAvatar,
       'forwards': forwards,
       'comments': comments,
       'praises': praises,
       'isLike': isLike,
+      'user': user.toJson(),
     };
   }
 
@@ -126,5 +114,37 @@ class Post {
   @override
   String toString() {
     return 'Post ${const JsonEncoder.withIndent(' ').convert(toJson())}';
+  }
+}
+
+class PostUser {
+  const PostUser({this.uid, this.nickname, this.gender, this.sysavatar});
+
+  factory PostUser.fromJson(Map<String, dynamic> json) {
+    json.forEach((String k, dynamic v) {
+      if (json[k] == '' || json[k] == <dynamic>[]) {
+        json[k] = null;
+      }
+    });
+    return PostUser(
+      uid: json['uid']?.toString(),
+      nickname: json['nickname'] as String,
+      gender: json['gender'] as int,
+      sysavatar: json['sysavatar'] as int,
+    );
+  }
+
+  final String uid;
+  final String nickname;
+  final int gender;
+  final int sysavatar;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'uid': uid,
+      'nickname': nickname,
+      'gender': gender,
+      'sysavatar': sysavatar,
+    };
   }
 }

@@ -231,7 +231,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     itemCount: math.min(post.praisor.length, 9),
                     itemBuilder: (_, int index) => UnconstrainedBox(
                       child: UserAPI.getAvatar(
-                        uid: post.praisor[index]['uid'].toString().toInt(),
+                        uid: post.praisor[index]['uid'].toString(),
                         size: 40.0,
                       ),
                     ),

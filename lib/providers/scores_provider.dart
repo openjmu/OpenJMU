@@ -128,7 +128,7 @@ class ScoresProvider extends ChangeNotifier {
     }
     try {
       _socket?.add(jsonEncode(<String, dynamic>{
-        'uid': '${currentUser.uid}',
+        'uid': currentUser.uid,
         'sid': currentUser.sid,
         'workid': currentUser.workId,
       }).toUtf8());

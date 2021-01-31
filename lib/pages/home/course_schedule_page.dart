@@ -295,7 +295,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             weekSwitcherAnimationController.value,
           ),
         ).toDouble(),
-        color: Theme.of(context).primaryColor,
+        color: context.theme.brightness == Brightness.dark
+            ? Colors.black
+            : context.theme.primaryColor,
         child: TabBar(
           controller: weekTabController,
           isScrollable: true,
@@ -383,6 +385,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 margin: const EdgeInsets.symmetric(horizontal: 1.5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.w),
+                  // color: i == 2 ? currentThemeColor.withOpacity(0.35) : null,
                   color: DateFormat('MM/dd').format(
                             now.subtract(selectedWeekDaysDuration +
                                 (now.weekday - 1 - i).days),
@@ -582,62 +585,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             ],
           ),
         ),
-        if (context.select<CoursesProvider, bool>(
-            (CoursesProvider p) => p.isOuterError))
-          Positioned(
-            right: 10.w,
-            bottom: 10.w,
-            child: FloatingActionButton(
-              heroTag: 'CoursesOuterNetworkErrorFAB',
-              onPressed: () {
-                showModal<void>(
-                  context: context,
-                  builder: (_) => const _CourseOuterNetworkErrorDialog(),
-                );
-              },
-              tooltip: '无法获取最新课表',
-              mini: true,
-              child: Icon(
-                Icons.warning,
-                size: 28.w,
-                color: adaptiveButtonColor(),
-              ),
-            ),
-          ),
       ],
-    );
-  }
-}
-
-class _CourseOuterNetworkErrorDialog extends StatelessWidget {
-  const _CourseOuterNetworkErrorDialog({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.w),
-        ),
-        child: Container(
-          width: _dialogWidth,
-          height: _dialogHeight / 2,
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Icon(Icons.signal_wifi_off, size: 42.w),
-              Text(
-                '由于外网网络限制\n无法获取最新数据\n请连接校园网后重试',
-                style: TextStyle(fontSize: 20.sp),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
@@ -767,7 +715,7 @@ class CourseWidget extends StatelessWidget {
             if (!course.isCustom)
               TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
             if (course.location != null)
-              TextSpan(text: '\n📍${course.location}'),
+              TextSpan(text: '\n📍${course.location.notBreak}'),
           ],
         ),
         style: context.textTheme.bodyText2.copyWith(

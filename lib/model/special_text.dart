@@ -534,7 +534,7 @@ void specialTextTapRecognizer(dynamic data) {
   } else if (text.startsWith('@')) {
     navigatorState.pushNamed(
       Routes.openjmuUserPage.name,
-      arguments: Routes.openjmuUserPage.d(uid: data['uid'] as int),
+      arguments: Routes.openjmuUserPage.d(uid: data['uid'].toString()),
     );
   } else if (text.startsWith('https://')) {
     API.launchWeb(url: text, title: '网页链接');

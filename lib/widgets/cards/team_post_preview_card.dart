@@ -193,13 +193,12 @@ class TeamPostPreviewCard extends StatelessWidget {
                         navigatorState.pushNamed(
                           Routes.openjmuUserPage.name,
                           arguments: Routes.openjmuUserPage.d(
-                            uid: (_post['user_info']['uid'] as String).toInt(),
+                            uid: _post['user_info']['uid'] as String,
                           ),
                         );
                       },
                   ),
-                  if ((_post['user_info']['uid'] as String).toInt() ==
-                      provider.post.uid)
+                  if (_post['user_info']['uid'] as String == provider.post.uid)
                     const TextSpan(text: '(楼主)'),
                   const TextSpan(
                     text: ': ',

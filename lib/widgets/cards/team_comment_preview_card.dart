@@ -242,15 +242,12 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                   navigatorState.pushNamed(
                                     Routes.openjmuUserPage.name,
                                     arguments: Routes.openjmuUserPage.d(
-                                      uid: _post['user']['uid']
-                                          .toString()
-                                          .toInt(),
+                                      uid: _post['user']['uid'].toString(),
                                     ),
                                   );
                                 },
                             ),
-                            if (_post['user']['uid'].toString().toInt() ==
-                                topPost.uid)
+                            if (_post['user']['uid'].toString() == topPost.uid)
                               WidgetSpan(
                                 alignment: ui.PlaceholderAlignment.middle,
                                 child: Container(

@@ -297,7 +297,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// UserPage : [Key key, int(required) uid]
+  /// UserPage : [Key key, String(required) uid]
   static const _OpenjmuUserPage openjmuUserPage = _OpenjmuUserPage();
 
   /// '用户二维码页'
@@ -569,7 +569,7 @@ class _OpenjmuUserPage {
 
   String get name => 'openjmu://user-page';
 
-  Map<String, dynamic> d({Key key, @required int uid}) => <String, dynamic>{
+  Map<String, dynamic> d({Key key, @required String uid}) => <String, dynamic>{
         'key': key,
         'uid': uid,
       };

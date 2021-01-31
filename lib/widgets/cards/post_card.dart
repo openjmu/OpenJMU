@@ -90,7 +90,7 @@ class _PostCardState extends State<PostCard> {
     return Row(
       children: <Widget>[
         Text(
-          '${post.nickname ?? post.uid}',
+          post.nickname ?? post.uid,
           style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
           textAlign: TextAlign.left,
         ),
@@ -148,7 +148,7 @@ class _PostCardState extends State<PostCard> {
             '<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ';
         topic += (content['article'] ?? content['content']).toString();
         return Container(
-          margin: EdgeInsets.only(top: 8.h),
+          margin: EdgeInsets.only(top: 10.w, bottom: 4.w),
           child: GestureDetector(
             onTap: () {
               navigatorState.pushNamed(
@@ -207,10 +207,18 @@ class _PostCardState extends State<PostCard> {
     BuildContext context,
     Map<String, dynamic> rootTopic,
   ) {
-    return getImages(context, rootTopic['image'] as List<dynamic>);
+    return getImages(
+      context,
+      rootTopic['image'] as List<dynamic>,
+      isInRootPost: true,
+    );
   }
 
-  Widget getImages(BuildContext context, List<dynamic> data) {
+  Widget getImages(
+    BuildContext context,
+    List<dynamic> data, {
+    bool isInRootPost = false,
+  }) {
     if (data != null) {
       final List<Widget> imagesWidget = <Widget>[];
       for (int index = 0; index < data.length; index++) {
@@ -305,7 +313,13 @@ class _PostCardState extends State<PostCard> {
           children: imagesWidget,
         );
       }
-      return _image;
+      return Padding(
+        padding: EdgeInsets.only(
+          top: isInRootPost ? 5.w : 10.w,
+          bottom: isInRootPost ? 5.w : 10.w,
+        ),
+        child: _image,
+      );
     } else {
       return const SizedBox.shrink();
     }
@@ -622,9 +636,9 @@ class _PostCardState extends State<PostCard> {
         margin: widget.isDetail
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
-          horizontal: widget.fromPage == 'user' ? 0 : 16.w,
-          vertical: 8.w,
-        ),
+                horizontal: widget.fromPage == 'user' ? 0 : 16.w,
+                vertical: 8.w,
+              ),
         padding: EdgeInsets.symmetric(
           horizontal: 24.w,
           vertical: 8.w,
@@ -638,60 +652,60 @@ class _PostCardState extends State<PostCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: !post.isShield
               ? <Widget>[
-            Container(
-              height: 70.w,
-              padding: EdgeInsets.symmetric(vertical: 6.w),
-              child: Row(
-                children: <Widget>[
-                  UserAPI.getAvatar(uid: widget.post.uid),
-                  Gap(16.w),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Container(
+                    height: 70.w,
+                    padding: EdgeInsets.symmetric(vertical: 6.w),
+                    child: Row(
                       children: <Widget>[
-                        getPostNickname(context, post),
-                        getPostInfo(post),
+                        UserAPI.getAvatar(uid: widget.post.uid),
+                        Gap(16.w),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              getPostNickname(context, post),
+                              getPostInfo(post),
+                            ],
+                          ),
+                        ),
+                        if (!widget.isDetail)
+                          post.uid == currentUser.uid
+                              ? deleteButton
+                              : postActionButton,
                       ],
                     ),
                   ),
-                  if (!widget.isDetail)
-                    post.uid == currentUser.uid
-                        ? deleteButton
-                        : postActionButton,
-                ],
-              ),
-            ),
-            getPostContent(context, post),
-            getPostImages(context, post),
-            Padding(
-              padding: EdgeInsets.only(top: 12.w),
-              child: Divider(thickness: 1.w, height: 1.w),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 6.w),
-              height: 50.h,
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    '浏览${post.glances}次　',
-                    style: Theme.of(context)
-                        .textTheme
-                        .caption
-                        .copyWith(
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                  const Spacer(),
+                  getPostContent(context, post),
+                  getPostImages(context, post),
                   if (widget.isDetail)
-                    VGap(16.w)
+                    VGap(2.w)
                   else
-                    postActions(context),
-                ],
-              ),
-            ),
-          ]
+                    Padding(
+                      padding: EdgeInsets.only(top: 12.w),
+                      child: Divider(thickness: 1.w, height: 1.w),
+                    ),
+                  if (!widget.isDetail)
+                    Container(
+                      margin: EdgeInsets.only(top: 6.w),
+                      height: 50.h,
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            '浏览${post.glances}次　',
+                            style: Theme.of(context).textTheme.caption.copyWith(
+                                  fontSize: 16.sp,
+                                ),
+                          ),
+                          const Spacer(),
+                          if (widget.isDetail)
+                            VGap(16.w)
+                          else
+                            postActions(context),
+                        ],
+                      ),
+                    ),
+                ]
               : <Widget>[getPostBanned('shield')],
         ),
       ),

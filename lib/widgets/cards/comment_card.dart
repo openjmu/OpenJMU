@@ -91,7 +91,7 @@ class CommentCard extends StatelessWidget {
     return Row(
       children: <Widget>[
         Text(
-          '${comment.fromUserName ?? comment.fromUserUid}',
+          comment.fromUserName ?? comment.fromUserUid,
           style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
         ),
         if (Constants.developerList.contains(comment.fromUserUid))

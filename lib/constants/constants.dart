@@ -78,7 +78,7 @@ class Constants {
     162026,
   ];
 
-  static const String endLineTag = '👀 没有更多了';
+  static const String endLineTag = '没有更多了';
 
   /// Fow news list.
   static final int appId = Platform.isIOS ? 274 : 273;

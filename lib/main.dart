@@ -206,9 +206,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       final Map<String, dynamic> data = <String, dynamic>{
         'token': DeviceUtils.devicePushToken,
         'date': DateFormat('yyyy/MM/dd HH:mm:ss', 'en').format(DateTime.now()),
-        'uid': '${currentUser.uid}',
-        'name': '${currentUser.name ?? currentUser.uid}',
-        'workid': '${currentUser.workId ?? currentUser.uid}',
+        'uid': currentUser.uid,
+        'name': currentUser.name ?? currentUser.uid,
+        'workid': currentUser.workId ?? currentUser.uid,
         'buildnumber': PackageUtils.buildNumber,
         'uuid': DeviceUtils.deviceUuid,
         'platform': Platform.isIOS ? 'ios' : 'android',

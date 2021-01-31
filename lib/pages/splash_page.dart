@@ -123,7 +123,7 @@ class SplashState extends State<SplashPage> {
           pageBuilder: (_, Animation<double> animation, __) => FadeTransition(
             opacity: animation,
             child: !isUserLogin || forceToLogin
-                ? LoginPage()
+                ? const LoginPage()
                 : MainPage(initAction: widget.initAction),
           ),
         ),

@@ -94,6 +94,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     _usernameController?.dispose();
     _passwordController?.dispose();
     videoController
+      ..setLooping(false)
       ..pause()
       ..dispose();
     super.dispose();
@@ -142,36 +143,31 @@ class LoginPageState extends State<LoginPage> with RouteAware {
 
   /// Function called after login button pressed.
   /// 登录按钮的回调
-  void loginButtonPressed(BuildContext context) {
+  Future<void> loginButtonPressed(BuildContext context) async {
     if (_isLogin.value) {
       return;
     }
     try {
       _isLogin.value = true;
-      DataUtils.login(_username.value, _password.value).then((bool result) {
-        if (result) {
-          navigatorState.pushNamedAndRemoveUntil(
-            Routes.openjmuHome.name,
-            (_) => false,
-            arguments: Routes.openjmuHome.d(initAction: widget.initAction),
-          );
-        } else {
-          _isLogin.value = false;
-          if (mounted) {
-            setState(() {});
-          }
-        }
-      }).catchError((dynamic e) {
-        LogUtils.e('Failed when login: $e');
-        showCenterErrorToast('登录失败');
+      final bool result = await DataUtils.login(
+        _username.value,
+        _password.value,
+      );
+      if (result) {
+        await videoController.setLooping(false);
+        await videoController.pause();
+        navigatorState.pushNamedAndRemoveUntil(
+          Routes.openjmuHome.name,
+          (_) => false,
+          arguments: Routes.openjmuHome.d(initAction: widget.initAction),
+        );
+      } else {
         _isLogin.value = false;
-        if (mounted) {
-          setState(() {});
-        }
-      });
+      }
     } catch (e) {
       LogUtils.e('Failed when login: $e');
       showCenterErrorToast('登录失败');
+      _isLogin.value = false;
     }
   }
 

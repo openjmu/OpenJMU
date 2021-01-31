@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
+    as ex;
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
 
@@ -34,7 +37,8 @@ class PostDetailPage extends StatefulWidget {
   }
 }
 
-class PostDetailPageState extends State<PostDetailPage> {
+class PostDetailPageState extends State<PostDetailPage>
+    with SingleTickerProviderStateMixin {
   final ForwardListInPostController forwardListInPostController =
       ForwardListInPostController();
   final CommentListInPostController commentListInPostController =
@@ -43,50 +47,28 @@ class PostDetailPageState extends State<PostDetailPage> {
   final double iconSize = 26.0;
   final double actionFontSize = 20.0;
   final double sectionButtonWidth = 92.0;
-  final Color activeColor = currentThemeColor;
 
-  TextStyle get textActiveStyle => TextStyle(
-        color: adaptiveButtonColor(),
-        fontSize: 20.sp,
-        fontWeight: FontWeight.bold,
-      );
+  double get tabHeight => 60.w;
 
-  TextStyle get textInActiveStyle => TextStyle(
-        color: Colors.grey,
-        fontSize: 18.sp,
-      );
+  TabController _tabController;
 
-  ShapeBorder get sectionButtonShape => RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.w),
-      );
+  int get forwards => widget.post.forwards;
 
-  int _tabIndex = 1;
-  bool isLike;
-  int forwards, comments, praises;
+  int get comments => widget.post.comments;
+
+  int get praises => widget.post.praises;
+
+  bool get isLike => widget.post.isLike;
   bool forwardAtTheMeanTime = false;
   bool commentAtTheMeanTime = false;
 
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
-  Widget _post;
-  Widget _forwardsList;
-  Widget _commentsList;
-  Widget _praisesList;
-
   @override
   void initState() {
     super.initState();
-    _post = postCard;
-    forwards = widget.post.forwards;
-    comments = widget.post.comments;
-    praises = widget.post.praises;
-    isLike = widget.post.isLike;
+    _tabController = TabController(length: 3, initialIndex: 1, vsync: this);
 
-    _forwardsList = ForwardListInPost(widget.post, forwardListInPostController);
-    _commentsList = CommentListInPost(widget.post, commentListInPostController);
-    _praisesList = PraiseListInPost(widget.post);
-
-    setCurrentTabActive(widget.parentContext, 1, 'comments');
     PostAPI.glancePost(widget.post.id);
 
     Instances.eventBus
@@ -100,7 +82,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       ..on<PostForwardedEvent>().listen((PostForwardedEvent event) {
         if (mounted && event.postId == widget.post.id && forwards != null) {
           setState(() {
-            forwards++;
+            widget.post.forwards++;
           });
           forwardListInPostController.reload();
         }
@@ -108,7 +90,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       ..on<PostForwardDeletedEvent>().listen((PostForwardDeletedEvent event) {
         if (mounted && event.postId == widget.post.id && forwards != null) {
           setState(() {
-            forwards--;
+            widget.post.forwards--;
           });
           forwardListInPostController.reload();
         }
@@ -116,7 +98,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       ..on<PostCommentedEvent>().listen((PostCommentedEvent event) {
         if (mounted && event.postId == widget.post.id && comments != null) {
           setState(() {
-            comments++;
+            widget.post.comments++;
           });
           commentListInPostController.reload();
         }
@@ -124,7 +106,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       ..on<PostCommentDeletedEvent>().listen((PostCommentDeletedEvent event) {
         if (mounted && event.postId == widget.post.id && comments != null) {
           setState(() {
-            comments--;
+            widget.post.comments--;
           });
           commentListInPostController.reload();
         }
@@ -138,7 +120,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             );
           }
           setState(() {
-            forwards = event.count;
+            widget.post.forwards = event.count;
           });
         }
       })
@@ -146,37 +128,26 @@ class PostDetailPageState extends State<PostDetailPage> {
           .listen((CommentInPostUpdatedEvent event) {
         if (mounted && event.postId == widget.post.id && comments != null) {
           setState(() {
-            comments = event.count;
+            widget.post.comments = event.count;
           });
         }
       })
       ..on<PraiseInPostUpdatedEvent>().listen((PraiseInPostUpdatedEvent event) {
         if (mounted && event.postId == widget.post.id && praises != null) {
           setState(() {
-            praises = event.count;
+            widget.post.praises = event.count;
           });
         }
       });
   }
 
-  void setTabIndex(int index) {
-    setState(() {
-      _tabIndex = index;
-    });
-  }
-
-  void setCurrentTabActive(BuildContext context, int index, String tab) {
-    setState(() {
-      _tabIndex = index;
-
-      forwardsStyle = tab == 'forwards' ? textActiveStyle : textInActiveStyle;
-      commentsStyle = tab == 'comments' ? textActiveStyle : textInActiveStyle;
-      praisesStyle = tab == 'praises' ? textActiveStyle : textInActiveStyle;
-    });
+  /// Build current scroll view key for specific scroll view.
+  ValueKey<String> innerScrollPositionKeyBuilder() {
+    return ValueKey<String>('Detail-List-Key-${_tabController.index}');
   }
 
   Widget get postCard => Padding(
-        padding: EdgeInsets.all(10.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.w),
         child: PostCard(
           widget.post,
           index: widget.index,
@@ -280,62 +251,65 @@ class PostDetailPageState extends State<PostDetailPage> {
     }
   }
 
-  Widget get actionLists => Container(
-        width: Screens.width,
-        color: Theme.of(context).cardColor,
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Row(
-          children: <Widget>[
-            MaterialButton(
-              color: _tabIndex == 0 ? activeColor : Theme.of(context).cardColor,
-              elevation: 0,
-              padding: EdgeInsets.zero,
-              minWidth: sectionButtonWidth.w,
-              shape: sectionButtonShape,
-              child: Text('转发 ${moreThanZero(forwards)}', style: forwardsStyle),
-              onPressed: () {
-                setCurrentTabActive(context, 0, 'forwards');
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  Widget actionLists(BuildContext context) {
+    return Container(
+      height: tabHeight,
+      color: context.theme.cardColor,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    tabs: <Tab>[
+                      Tab(text: '转发 ${moreThanZero(forwards)}'),
+                      Tab(text: '评论 ${moreThanZero(comments)}'),
+                      Tab(text: '赞 ${moreThanZero(praises)}'),
+                    ],
+                    indicatorWeight: 4.w,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: currentThemeColor,
+                    labelPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 4.w,
+                    ).copyWith(bottom: 0),
+                    labelStyle: TextStyle(
+                      height: 1.2,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    unselectedLabelStyle:
+                        const TextStyle(fontWeight: FontWeight.normal),
+                  ),
+                ),
+                Text(
+                  '浏览${widget.post.glances}次',
+                  style: context.textTheme.caption.copyWith(
+                    height: 1.2,
+                    fontSize: 18.sp,
+                  ),
+                ),
+              ],
             ),
-            MaterialButton(
-              color: _tabIndex == 1 ? activeColor : Theme.of(context).cardColor,
-              elevation: 0,
-              padding: EdgeInsets.zero,
-              minWidth: sectionButtonWidth.w,
-              shape: sectionButtonShape,
-              child: Text('评论 ${moreThanZero(comments)}', style: commentsStyle),
-              onPressed: () {
-                setCurrentTabActive(context, 1, 'comments');
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            Expanded(child: Container()),
-            MaterialButton(
-              color: _tabIndex == 2 ? activeColor : Theme.of(context).cardColor,
-              elevation: 0,
-              padding: EdgeInsets.zero,
-              minWidth: sectionButtonWidth.w,
-              shape: sectionButtonShape,
-              child: Text('赞 ${moreThanZero(praises)}', style: praisesStyle),
-              onPressed: () {
-                setCurrentTabActive(context, 2, 'praises');
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-          ],
-        ),
-      );
+          ),
+          Divider(thickness: 1.w, height: 1.w),
+        ],
+      ),
+    );
+  }
 
   Widget get toolbar {
     final TextStyle bodyTextStyle = context.textTheme.bodyText2;
     return Container(
-      height: Screens.bottomSafeHeight + 70.h,
+      height: Screens.bottomSafeHeight + 72.w,
       padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
       color: Theme.of(context).cardColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
             child: FlatButton.icon(
@@ -461,24 +435,41 @@ class PostDetailPageState extends State<PostDetailPage> {
             Expanded(
               child: ScrollConfiguration(
                 behavior: const NoGlowScrollBehavior(),
-                child: NestedScrollView(
+                child: ex.NestedScrollView(
                   physics: const ClampingScrollPhysics(),
+                  innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,
                   headerSliverBuilder: (_, __) => <Widget>[
-                    SliverToBoxAdapter(child: _post),
+                    SliverToBoxAdapter(child: postCard),
                     SliverPersistentHeader(
-                      delegate: CommonSliverPersistentHeaderDelegate(
-                        child: actionLists,
-                        height: 74.h,
+                      delegate: _SliverDelegate(
+                        child: actionLists(context),
+                        height: tabHeight,
                       ),
                       pinned: true,
                     ),
                   ],
-                  body: IndexedStack(
-                    index: _tabIndex,
+                  body: ExtendedTabBarView(
+                    cacheExtent: 3,
+                    controller: _tabController,
                     children: <Widget>[
-                      _forwardsList,
-                      _commentsList,
-                      _praisesList
+                      ex.NestedScrollViewInnerScrollPositionKeyWidget(
+                        const Key('Detail-List-Key-0'),
+                        ForwardListInPost(
+                          widget.post,
+                          forwardListInPostController,
+                        ),
+                      ),
+                      ex.NestedScrollViewInnerScrollPositionKeyWidget(
+                        const Key('Detail-List-Key-1'),
+                        CommentListInPost(
+                          widget.post,
+                          commentListInPostController,
+                        ),
+                      ),
+                      ex.NestedScrollViewInnerScrollPositionKeyWidget(
+                        const Key('Detail-List-Key-2'),
+                        PraiseListInPost(widget.post),
+                      ),
                     ],
                   ),
                 ),
@@ -492,9 +483,8 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 }
 
-class CommonSliverPersistentHeaderDelegate
-    extends SliverPersistentHeaderDelegate {
-  CommonSliverPersistentHeaderDelegate({
+class _SliverDelegate extends SliverPersistentHeaderDelegate {
+  _SliverDelegate({
     @required this.child,
     @required this.height,
   });
@@ -515,7 +505,7 @@ class CommonSliverPersistentHeaderDelegate
   }
 
   @override
-  bool shouldRebuild(CommonSliverPersistentHeaderDelegate oldDelegate) {
+  bool shouldRebuild(_SliverDelegate oldDelegate) {
     return oldDelegate != this;
   }
 }

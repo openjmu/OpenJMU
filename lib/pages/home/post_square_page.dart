@@ -45,10 +45,14 @@ class _PostSquarePageState extends State<PostSquarePage> {
     return FixedAppBarWrapper(
       appBar: FixedAppBar(
         automaticallyImplyLeading: false,
-        title: Container(
-          alignment: AlignmentDirectional.centerStart,
+        title: Padding(
           padding: EdgeInsets.only(right: 20.w),
-          child: MainPage.selfPageOpener,
+          child: Row(
+            children: <Widget>[
+              MainPage.selfPageOpener,
+              MainPage.outerNetworkIndicator(),
+            ],
+          ),
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context),

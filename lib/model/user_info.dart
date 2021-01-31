@@ -34,7 +34,7 @@ class UserInfo {
     });
     return UserInfo(
       sid: json['sid'] as String,
-      uid: json['uid'] as int,
+      uid: json['uid'].toString(),
       name: (json['username'] ?? json['uid']).toString(),
       signature: json['signature'] as String,
       ticket: json['ticket'] as String,
@@ -53,7 +53,7 @@ class UserInfo {
     String ticket,
     String blowfish,
     bool isTeacher,
-    int uid,
+    String uid,
     int unitId,
     int classId,
     int gender,
@@ -85,7 +85,7 @@ class UserInfo {
   final bool isTeacher;
 
   /// Common Object
-  final int uid;
+  final String uid;
   final int unitId;
   final int classId;
   final int gender;

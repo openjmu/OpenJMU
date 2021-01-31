@@ -11,7 +11,7 @@ class LoggingInterceptor extends Interceptor {
   DateTime startTime;
   DateTime endTime;
 
-  static const String HTTP_TAG = 'HTTP LOG';
+  static const String HTTP_TAG = 'HTTP - LOG';
 
   @override
   FutureOr<dynamic> onRequest(RequestOptions options) {

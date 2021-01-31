@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
@@ -14,17 +15,25 @@ class NetUtils {
   const NetUtils._();
 
   static const bool _isProxyEnabled = false;
-  static const String _proxyDestination = 'PROXY 192.168.1.9:8764';
+  static const String _proxyDestination = 'PROXY 192.168.1.8:8764';
 
-  static const bool shouldLogRequest = true;
+  static const bool shouldLogRequest = false;
 
-  static final Dio dio = Dio(BaseOptions(connectTimeout: 15000));
-  static final Dio tokenDio = Dio(BaseOptions(connectTimeout: 15000));
+  static final Dio dio = Dio(
+    BaseOptions(connectTimeout: 15000, followRedirects: true),
+  );
+  static final Dio tokenDio = Dio(
+    BaseOptions(connectTimeout: 15000, followRedirects: true),
+  );
 
   static final DefaultCookieJar cookieJar = DefaultCookieJar();
   static final CookieManager cookieManager = CookieManager(cookieJar);
   static final DefaultCookieJar tokenCookieJar = DefaultCookieJar();
   static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
+
+  static final ValueNotifier<bool> isOuterNetwork = ValueNotifier<bool>(false);
+  static final ValueNotifier<Set<Uri>> outerFailedUris =
+      ValueNotifier<Set<Uri>>(<Uri>{});
 
   /// Method to update ticket.
   static Future<void> updateTicket() async {
@@ -57,11 +66,36 @@ class NetUtils {
       ..add(cookieManager)
       ..add(
         InterceptorsWrapper(
+          onResponse: (Response<dynamic> r) {
+            if (outerFailedUris.value.contains(r.request.uri)) {
+              outerFailedUris.value = Set<Uri>.from(
+                outerFailedUris.value..remove(r.request.uri),
+              );
+              if (outerFailedUris.value.isEmpty && isOuterNetwork.value) {
+                isOuterNetwork.value = false;
+              }
+            }
+            return r;
+          },
           onError: (DioError e) {
-            if (e?.response?.statusCode == 401) {
+            if (e.response?.statusCode == 401) {
               updateTicket();
             }
-            LogUtils.e('Error when requesting: ${e.response?.data}');
+            if (e.request.uri.toString().contains('jmu.edu.cn') == true &&
+                e.response?.statusCode == HttpStatus.forbidden &&
+                !isOuterNetwork.value) {
+              outerFailedUris.value = Set<Uri>.from(
+                outerFailedUris.value..add(e.request.uri),
+              );
+              if (!isOuterNetwork.value) {
+                isOuterNetwork.value = true;
+              }
+            }
+            LogUtils.e(
+              'Error when requesting ${e.request.uri} '
+              '${e.response?.statusCode}'
+              ': ${e.response?.data}',
+            );
             return e;
           },
         ),
