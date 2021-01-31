@@ -255,45 +255,47 @@ class PostDetailPageState extends State<PostDetailPage>
     return Container(
       height: tabHeight,
       color: context.theme.cardColor,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         children: <Widget>[
           Expanded(
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabs: <Tab>[
-                      Tab(text: '转发 ${moreThanZero(forwards)}'),
-                      Tab(text: '评论 ${moreThanZero(comments)}'),
-                      Tab(text: '赞 ${moreThanZero(praises)}'),
-                    ],
-                    indicatorWeight: 4.w,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: currentThemeColor,
-                    labelPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 4.w,
-                    ).copyWith(bottom: 0),
-                    labelStyle: TextStyle(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      tabs: <Tab>[
+                        Tab(text: '转发 ${moreThanZero(forwards)}'),
+                        Tab(text: '评论 ${moreThanZero(comments)}'),
+                        Tab(text: '赞 ${moreThanZero(praises)}'),
+                      ],
+                      indicatorWeight: 4.w,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: currentThemeColor,
+                      labelPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 4.w,
+                      ).copyWith(bottom: 0),
+                      labelStyle: TextStyle(
+                        height: 1.2,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      unselectedLabelStyle:
+                          const TextStyle(fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                  Text(
+                    '浏览${widget.post.glances}次',
+                    style: context.textTheme.caption.copyWith(
                       height: 1.2,
                       fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
                     ),
-                    unselectedLabelStyle:
-                        const TextStyle(fontWeight: FontWeight.normal),
                   ),
-                ),
-                Text(
-                  '浏览${widget.post.glances}次',
-                  style: context.textTheme.caption.copyWith(
-                    height: 1.2,
-                    fontSize: 18.sp,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Divider(thickness: 1.w, height: 1.w),
@@ -303,11 +305,18 @@ class PostDetailPageState extends State<PostDetailPage>
   }
 
   Widget get toolbar {
-    final TextStyle bodyTextStyle = context.textTheme.bodyText2;
+    final TextStyle bodyTextStyle = context.textTheme.bodyText2.copyWith(
+      height: 1.2,
+    );
     return Container(
       height: Screens.bottomSafeHeight + 72.w,
       padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-      color: Theme.of(context).cardColor,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: context.theme.dividerColor, width: 1.w),
+        ),
+        color: Theme.of(context).cardColor,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

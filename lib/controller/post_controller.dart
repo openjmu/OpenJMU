@@ -355,8 +355,6 @@ class ForwardListInPost extends StatefulWidget {
 
 class ForwardListInPostState extends State<ForwardListInPost>
     with AutomaticKeepAliveClientMixin {
-  LoadingBase loadingBase;
-
   List<Post> _posts = <Post>[];
 
   bool isLoading = true;
@@ -371,14 +369,6 @@ class ForwardListInPostState extends State<ForwardListInPost>
   @override
   void initState() {
     super.initState();
-    loadingBase = LoadingBase(
-      request: (int id) => PostAPI.getForwardListInPost(
-        widget.post.id,
-        isMore: id != 0,
-        lastValue: id,
-      ),
-      contentFieldName: 'topics',
-    );
     _refreshList();
   }
 

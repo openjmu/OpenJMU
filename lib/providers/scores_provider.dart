@@ -144,11 +144,17 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  void onReceive(List<int> data) {
-    final String value = utf8.decode(data);
-    _scoreData += value;
-    if (_scoreData.endsWith(']}}')) {
-      tryDecodeScores();
+  Future<void> onReceive(List<int> data) async {
+    try {
+      final String value = utf8.decode(data);
+      _scoreData += value;
+      if (_scoreData.endsWith(']}}')) {
+        tryDecodeScores();
+      }
+    } catch (e) {
+      LogUtils.e('Error when decoding score raw data: $e');
+      await destroySocket();
+      initScore();
     }
   }
 
@@ -217,8 +223,8 @@ class ScoresProvider extends ChangeNotifier {
     _scoreData = '';
   }
 
-  void destroySocket() {
-    _socket?.close();
+  Future<void> destroySocket() async {
+    await _socket?.close();
     _socket?.destroy();
   }
 

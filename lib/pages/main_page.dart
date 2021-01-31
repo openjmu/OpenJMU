@@ -119,12 +119,13 @@ class MainPage extends StatefulWidget {
           duration: kThemeChangeDuration,
           child: value
               ? GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     ConfirmationDialog.show(
                       c,
-                      title: '内网未连接',
-                      content: '由于外网网络限制，部分页面可能无法获取最新数据，'
-                          '请连接校园内网后重试。',
+                      title: '校园网未连接',
+                      content: '由于校外网络限制，部分页面可能无法获取最新数据，'
+                          '请连接校园网后重试。',
                       cancelLabel: '朕知道了',
                     );
                   },
@@ -146,8 +147,12 @@ class MainPage extends StatefulWidget {
                         ),
                         Gap(8.w),
                         Text(
-                          '内网不可用',
-                          style: TextStyle(height: 1.2, fontSize: 16.sp),
+                          '校园网未连接',
+                          style: TextStyle(
+                            height: 1.2,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),

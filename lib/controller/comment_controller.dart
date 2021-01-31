@@ -327,40 +327,38 @@ class CommentListInPostState extends State<CommentListInPost>
     }
   }
 
-  void replyTo(int index) {
-    if (_comments.length >= index && _comments[index] != null) {
-      navigatorState.pushNamed(
-        Routes.openjmuAddComment.name,
-        arguments: Routes.openjmuAddComment.d(
-          post: widget.post,
-          comment: _comments.elementAt(index),
-        ),
-      );
-    }
+  void replyTo(Comment comment) {
+    navigatorState.pushNamed(
+      Routes.openjmuAddComment.name,
+      arguments: Routes.openjmuAddComment.d(
+        post: widget.post,
+        comment: comment,
+      ),
+    );
   }
 
-  void showActions(BuildContext context, int index) {
+  void showActions(BuildContext context, Comment comment) {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
-        if (_comments[index].fromUserUid == currentUser.uid ||
+        if (comment.fromUserUid == currentUser.uid ||
             widget.post.uid == currentUser.uid)
           ConfirmationBottomSheetAction(
             icon: const Icon(Icons.delete),
             text: '删除评论',
-            onTap: () => confirmDelete(context, _comments[index]),
+            onTap: () => confirmDelete(context, comment),
           ),
         ConfirmationBottomSheetAction(
           icon: const Icon(Icons.reply),
           text: '回复评论',
-          onTap: () => replyTo(index),
+          onTap: () => replyTo(comment),
         ),
         ConfirmationBottomSheetAction(
           icon: const Icon(Icons.report),
           text: '复制评论',
           onTap: () {
             Clipboard.setData(ClipboardData(
-              text: replaceMentionTag(_comments[index].content),
+              text: replaceMentionTag(comment.content),
             ));
             showToast('已复制到剪贴板');
           },
@@ -470,7 +468,11 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget getCommentNickname(BuildContext context, Comment comment) {
     return Text(
       comment.fromUserName,
-      style: TextStyle(fontSize: 20.sp),
+      style: context.textTheme.bodyText2.copyWith(
+        height: 1.2,
+        fontSize: 18.sp,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 
@@ -478,7 +480,8 @@ class CommentListInPostState extends State<CommentListInPost>
     return Text(
       PostAPI.postTimeConverter(comment.commentTime),
       style: context.textTheme.caption.copyWith(
-        fontSize: 16.sp,
+        height: 1.2,
+        fontSize: 15.sp,
       ),
     );
   }
@@ -486,7 +489,7 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
       content != null ? '$content ' : null,
-      style: TextStyle(fontSize: 19.sp),
+      style: TextStyle(height: 1.2, fontSize: 17.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder:
           StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
@@ -500,6 +503,60 @@ class CommentListInPostState extends State<CommentListInPost>
         .replaceAllMapped(mTagStartReg, (_) => '')
         .replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
+  }
+
+  Widget _itemBuilder(BuildContext context, Comment comment) {
+    return ColoredBox(
+      color: context.theme.primaryColor,
+      child: GestureDetector(
+        onTap: () => showActions(context, comment),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.w),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: UserAPI.getAvatar(uid: comment.fromUserUid),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        getCommentNickname(context, comment),
+                        if (Constants.developerList
+                            .contains(comment.fromUserUid))
+                          Padding(
+                            padding: EdgeInsets.only(left: 6.w),
+                            child: const DeveloperTag(),
+                          ),
+                        Gap(4.w),
+                        getCommentTime(context, comment),
+                      ],
+                    ),
+                    VGap(12.w),
+                    getExtendedText(context, comment.content),
+                  ],
+                ),
+              ),
+              IconButton(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                icon: Icon(
+                  Icons.reply,
+                  color: Colors.grey,
+                  size: 28.w,
+                ),
+                onPressed: () => replyTo(comment),
+                constraints: BoxConstraints.loose(Size.square(60.w)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @mustCallSuper
@@ -530,63 +587,7 @@ class CommentListInPostState extends State<CommentListInPost>
                     if (_comments[index] == null) {
                       return const SizedBox.shrink();
                     }
-                    return InkWell(
-                      onTap: () => showActions(context, index),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 12.h,
-                            ),
-                            child: UserAPI.getAvatar(
-                              uid: _comments[index].fromUserUid,
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                VGap(10.h),
-                                Row(
-                                  children: <Widget>[
-                                    getCommentNickname(
-                                      context,
-                                      _comments[index],
-                                    ),
-                                    if (Constants.developerList
-                                        .contains(_comments[index].fromUserUid))
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 6.w),
-                                        child: const DeveloperTag(),
-                                      ),
-                                  ],
-                                ),
-                                VGap(4.h),
-                                getExtendedText(
-                                  context,
-                                  _comments[index].content,
-                                ),
-                                VGap(6.h),
-                                getCommentTime(context, _comments[index]),
-                                VGap(10.h),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Icons.reply,
-                              color: Colors.grey,
-                              size: 28.w,
-                            ),
-                            onPressed: () => replyTo(index),
-                          ),
-                        ],
-                      ),
-                    );
+                    return _itemBuilder(context, _comments[index]);
                   } else {
                     return const SizedBox.shrink();
                   }

@@ -9,7 +9,7 @@ import 'package:openjmu/constants/constants.dart';
 class DataUtils {
   const DataUtils._();
 
-  static final Box<dynamic> settingsBox = HiveBoxes.settingsBox;
+  static Box<dynamic> get _settingsBox => HiveBoxes.settingsBox;
 
   static const String spBlowfish = 'blowfish';
   static const String spIsLogin = 'isLogin';
@@ -92,7 +92,7 @@ class DataUtils {
     }
   }
 
-  static String recoverWorkId() => settingsBox.get(spUserWorkId) as String;
+  static String recoverWorkId() => _settingsBox.get(spUserWorkId) as String;
 
   static void recoverLoginInfo() {
     final Map<String, dynamic> info = getSpTicket();
@@ -148,8 +148,8 @@ class DataUtils {
       'uid': currentUser.uid,
       'username': response['username'],
       'signature': response['signature'],
-      'blowfish': settingsBox.get(spBlowfish),
-      'ticket': settingsBox.get(spTicket),
+      'blowfish': _settingsBox.get(spBlowfish),
+      'ticket': _settingsBox.get(spTicket),
       'isTeacher': response['type'].toString().toInt() == 1,
       'unitId': response['unitid'],
       'workId': response['workid'],
@@ -169,7 +169,7 @@ class DataUtils {
   static Future<void> saveLoginInfo(Map<String, dynamic> data) async {
     if (data != null) {
       setUserInfo(data);
-      await settingsBox.putAll(<dynamic, dynamic>{
+      await _settingsBox.putAll(<dynamic, dynamic>{
         spBlowfish: data['blowfish'],
         spIsLogin: true,
         spTicket: data['ticket'],
@@ -181,25 +181,25 @@ class DataUtils {
 
   /// 清除登录信息
   static Future<void> clearLoginInfo() async {
-    final String workId = settingsBox.get(spUserWorkId) as String;
+    final String workId = _settingsBox.get(spUserWorkId) as String;
     UserAPI.currentUser = const UserInfo();
-    await settingsBox.clear();
-    await settingsBox.put(spUserWorkId, workId);
+    await _settingsBox.clear();
+    await _settingsBox.put(spUserWorkId, workId);
   }
 
   static Map<String, dynamic> getSpTicket() {
     final Map<String, dynamic> tickets = <String, dynamic>{
-      'ticket': settingsBox.get(spTicket)
+      'ticket': _settingsBox.get(spTicket)
     };
     return tickets;
   }
 
   static Future<bool> getTicket() async {
     try {
-      LogUtils.d('Fetch new ticket with: ${settingsBox.get(spTicket)}');
+      LogUtils.d('Fetch new ticket with: ${_settingsBox.get(spTicket)}');
       final Map<String, dynamic> params = Constants.loginParams(
-        blowfish: settingsBox.get(spBlowfish) as String,
-        ticket: settingsBox.get(spTicket) as String,
+        blowfish: _settingsBox.get(spBlowfish) as String,
+        ticket: _settingsBox.get(spTicket) as String,
       );
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
@@ -225,7 +225,7 @@ class DataUtils {
     currentUser = currentUser.copyWith(
       sid: response['sid'] as String,
       ticket: response['sid'] as String,
-      uid: settingsBox.get(spUserUid).toString(),
+      uid: _settingsBox.get(spUserUid).toString(),
     );
   }
 
@@ -280,7 +280,7 @@ class DataUtils {
   }
 
   /// 是否登录
-  static bool isLogin() => settingsBox.get(spIsLogin) as bool ?? false;
+  static bool isLogin() => _settingsBox.get(spIsLogin) as bool ?? false;
 
   static Map<String, dynamic> buildPostHeaders(String sid) {
     final Map<String, String> headers = <String, String>{

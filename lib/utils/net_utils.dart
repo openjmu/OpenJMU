@@ -78,11 +78,19 @@ class NetUtils {
             return r;
           },
           onError: (DioError e) {
+            if (e.response?.isRedirect == true ||
+                e.response?.statusCode == HttpStatus.movedPermanently ||
+                e.response?.statusCode == HttpStatus.movedTemporarily ||
+                e.response?.statusCode == HttpStatus.seeOther ||
+                e.response?.statusCode == HttpStatus.temporaryRedirect) {
+              return e;
+            }
             if (e.response?.statusCode == 401) {
               updateTicket();
             }
             if (e.request.uri.toString().contains('jmu.edu.cn') == true &&
-                e.response?.statusCode == HttpStatus.forbidden &&
+                (e.response?.statusCode == null ||
+                    e.response?.statusCode == HttpStatus.forbidden) &&
                 !isOuterNetwork.value) {
               outerFailedUris.value = Set<Uri>.from(
                 outerFailedUris.value..add(e.request.uri),
