@@ -544,10 +544,10 @@ class CommentListInPostState extends State<CommentListInPost>
               ),
               IconButton(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                icon: Icon(
-                  Icons.reply,
-                  color: Colors.grey,
-                  size: 28.w,
+                icon: SvgPicture.asset(
+                  R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
+                  color: context.theme.iconTheme.color.withOpacity(0.5),
+                  width: 28.w,
                 ),
                 onPressed: () => replyTo(comment),
                 constraints: BoxConstraints.loose(Size.square(60.w)),

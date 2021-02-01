@@ -145,7 +145,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    LogUtils.d('\nAppLifecycleState change to: ${state.toString()}\n');
+    LogUtils.d('AppLifecycleState change to: ${state.toString()}');
     Instances.appLifeCycleState = state;
   }
 

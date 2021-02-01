@@ -45,10 +45,9 @@ class PostDetailPageState extends State<PostDetailPage>
       CommentListInPostController();
 
   final double iconSize = 26.0;
-  final double actionFontSize = 20.0;
   final double sectionButtonWidth = 92.0;
 
-  double get tabHeight => 60.w;
+  double get tabHeight => 68.w;
 
   TabController _tabController;
 
@@ -257,6 +256,7 @@ class PostDetailPageState extends State<PostDetailPage>
       color: context.theme.cardColor,
       child: Column(
         children: <Widget>[
+          Divider(thickness: 1.w, height: 1.w),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -305,97 +305,108 @@ class PostDetailPageState extends State<PostDetailPage>
   }
 
   Widget get toolbar {
-    final TextStyle bodyTextStyle = context.textTheme.bodyText2.copyWith(
-      height: 1.2,
-    );
-    return Container(
-      height: Screens.bottomSafeHeight + 72.w,
-      padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: context.theme.dividerColor, width: 1.w),
-        ),
-        color: Theme.of(context).cardColor,
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        height: 1.2,
+        fontSize: 19.sp,
+        fontWeight: FontWeight.normal,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: FlatButton.icon(
-              onPressed: () {
-                navigatorState.pushNamed(
-                  Routes.openjmuAddForward.name,
-                  arguments: Routes.openjmuAddForward.d(post: widget.post),
-                );
-              },
-              icon: SvgPicture.asset(
-                R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                color: bodyTextStyle.color,
-                width: iconSize.w,
-              ),
-              label: Text(
-                '转发',
-                style: bodyTextStyle.copyWith(fontSize: actionFontSize.sp),
-              ),
-              splashColor: Colors.grey,
-            ),
+      child: Container(
+        height: Screens.bottomSafeHeight + 72.w,
+        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: context.theme.dividerColor, width: 1.w),
           ),
-          Expanded(
-            child: FlatButton.icon(
-              onPressed: () {
-                navigatorState.pushNamed(
-                  Routes.openjmuAddComment.name,
-                  arguments: Routes.openjmuAddComment.d(post: widget.post),
-                );
-              },
-              icon: SvgPicture.asset(
-                R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                color: bodyTextStyle.color,
-                width: iconSize.w,
-              ),
-              label: Text(
-                '评论',
-                style: bodyTextStyle.copyWith(fontSize: actionFontSize.sp),
-              ),
-              splashColor: Colors.grey,
-            ),
-          ),
-          Expanded(
-            child: LikeButton(
-              size: iconSize.w,
-              circleColor: CircleColor(
-                start: currentThemeColor,
-                end: currentThemeColor,
-              ),
-              countBuilder: (int count, bool isLiked, String text) => Text(
-                count > 0 ? text : '赞',
-                style: bodyTextStyle.copyWith(
-                  color: isLiked ? currentThemeColor : bodyTextStyle.color,
-                  fontSize: actionFontSize.sp,
+          color: Theme.of(context).cardColor,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  navigatorState.pushNamed(
+                    Routes.openjmuAddForward.name,
+                    arguments: Routes.openjmuAddForward.d(post: widget.post),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SvgPicture.asset(
+                      R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
+                      color: context.theme.iconTheme.color,
+                      width: iconSize.w,
+                    ),
+                    Gap(8.w),
+                    const Text('转发'),
+                  ],
                 ),
               ),
-              bubblesColor: BubblesColor(
-                dotPrimaryColor: currentThemeColor,
-                dotSecondaryColor: currentThemeColor,
-              ),
-              likeBuilder: (bool isLiked) => SvgPicture.asset(
-                R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                color: isLiked ? currentThemeColor : bodyTextStyle.color,
-                width: iconSize.w,
-              ),
-              likeCount: widget.post.isLike
-                  ? moreThanOne(praises)
-                  : moreThanZero(praises),
-              likeCountAnimationType: LikeCountAnimationType.none,
-              likeCountPadding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 12.h,
-              ),
-              isLiked: widget.post.isLike,
-              onTap: onLikeButtonTap,
             ),
-          ),
-        ],
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  navigatorState.pushNamed(
+                    Routes.openjmuAddComment.name,
+                    arguments: Routes.openjmuAddComment.d(post: widget.post),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SvgPicture.asset(
+                      R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
+                      color: context.theme.iconTheme.color,
+                      width: iconSize.w,
+                    ),
+                    Gap(8.w),
+                    const Text('评论'),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: LikeButton(
+                size: iconSize.w,
+                circleColor: CircleColor(
+                  start: currentThemeColor,
+                  end: currentThemeColor,
+                ),
+                countBuilder: (int count, bool isLiked, String text) => Text(
+                  count > 0 ? text : '赞',
+                  style: TextStyle(
+                    color: isLiked ? currentThemeColor : null,
+                  ),
+                ),
+                bubblesColor: BubblesColor(
+                  dotPrimaryColor: currentThemeColor,
+                  dotSecondaryColor: currentThemeColor,
+                ),
+                likeBuilder: (bool isLiked) => SvgPicture.asset(
+                  R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
+                  color: isLiked
+                      ? currentThemeColor
+                      : context.theme.iconTheme.color,
+                  width: iconSize.w,
+                ),
+                likeCount: widget.post.isLike
+                    ? moreThanOne(praises)
+                    : moreThanZero(praises),
+                likeCountAnimationType: LikeCountAnimationType.none,
+                likeCountPadding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                  vertical: 12.w,
+                ),
+                isLiked: widget.post.isLike,
+                onTap: onLikeButtonTap,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -446,6 +457,7 @@ class PostDetailPageState extends State<PostDetailPage>
                 behavior: const NoGlowScrollBehavior(),
                 child: ex.NestedScrollView(
                   physics: const ClampingScrollPhysics(),
+                  pinnedHeaderSliverHeightBuilder: () => tabHeight,
                   innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,
                   headerSliverBuilder: (_, __) => <Widget>[
                     SliverToBoxAdapter(child: postCard),

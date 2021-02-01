@@ -177,7 +177,7 @@ class SelfPage extends StatelessWidget {
             Expanded(
               child: Text(
                 item['name'] as String,
-                style: TextStyle(fontSize: 20.sp),
+                style: TextStyle(height: 1.2, fontSize: 20.sp),
               ),
             ),
           ],
