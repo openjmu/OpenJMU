@@ -56,7 +56,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   bool get firstLoaded => coursesProvider.firstLoaded;
 
-  bool get hasCourse => coursesProvider.hasCourses;
+  bool get hasCourses => coursesProvider.hasCourses;
 
   bool get showError => coursesProvider.showError;
 
@@ -108,7 +108,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               setState(() {});
             }
             if ((weekScrollController?.hasClients ?? false) &&
-                hasCourse &&
+                hasCourses &&
                 currentWeek > 0) {
               scrollToWeek(currentWeek);
             }
@@ -538,16 +538,16 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Stack(
-      children: <Widget>[
-        RefreshIndicator(
-          key: refreshIndicatorKey,
-          onRefresh: coursesProvider.updateCourses,
-          child: Column(
-            children: <Widget>[
-              weekSelection(context),
-              Expanded(
-                child: AnimatedCrossFade(
+    return RefreshIndicator(
+      key: refreshIndicatorKey,
+      onRefresh: coursesProvider.updateCourses,
+      child: Column(
+        children: <Widget>[
+          weekSelection(context),
+          Expanded(
+            child: Consumer<CoursesProvider>(
+              builder: (BuildContext c, CoursesProvider p, __) {
+                return AnimatedCrossFade(
                   duration: animateDuration,
                   crossFadeState: !firstLoaded
                       ? CrossFadeState.showFirst
@@ -557,32 +557,29 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   ),
                   secondChild: Column(
                     children: <Widget>[
-                      if (context.select<CoursesProvider, String>(
-                              (CoursesProvider p) => p.remark) !=
-                          null)
-                        remarkWidget,
-                      if (firstLoaded &&
-                          hasCourse &&
-                          !(showError && !isOuterError))
+                      if (p.remark != null) remarkWidget,
+                      if (p.firstLoaded &&
+                          p.hasCourses &&
+                          !(p.showError && !p.isOuterError))
                         weekDayIndicator,
-                      if (firstLoaded &&
-                          hasCourse &&
-                          !(showError && !isOuterError))
+                      if (p.firstLoaded &&
+                          p.hasCourses &&
+                          !(p.showError && !p.isOuterError))
                         courseLineGrid(context),
-                      if (firstLoaded &&
-                          !hasCourse &&
-                          !(showError && !isOuterError))
+                      if (p.firstLoaded &&
+                          !p.hasCourses &&
+                          !(p.showError && !p.isOuterError))
                         errorTips,
-                      if (firstLoaded && (showError && !isOuterError))
+                      if (p.firstLoaded && (p.showError && !p.isOuterError))
                         errorTips,
                     ],
                   ),
-                ),
-              ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
