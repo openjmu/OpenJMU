@@ -1,4 +1,6 @@
 PODS:
+  - camera (0.0.1):
+    - Flutter
   - connectivity (0.0.1):
     - Flutter
     - Reachability
@@ -42,24 +44,25 @@ PODS:
   - ZXingObjCCopy/All (3.6.5)
 
 DEPENDENCIES:
-  - connectivity (from `.symlinks/plugins/connectivity/ios`)
-  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - "camera (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/camera-0.7.0+1//ios/camera.podspec`)"
+  - connectivity (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/connectivity-2.0.2//ios/connectivity.podspec`)
+  - device_info (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/device_info-1.0.0//ios/device_info.podspec`)
   - Flutter (from `Flutter`)
-  - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
-  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
-  - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
-  - image_editor (from `.symlinks/plugins/image_editor/ios`)
-  - image_save (from `.symlinks/plugins/image_save/ios`)
-  - open_file (from `.symlinks/plugins/open_file/ios`)
-  - package_info (from `.symlinks/plugins/package_info/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
-  - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
-  - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
-  - r_scan (from `.symlinks/plugins/r_scan/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - vibration (from `.symlinks/plugins/vibration/ios`)
-  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - "flutter_inappwebview (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-4.0.0+4//ios/flutter_inappwebview.podspec`)"
+  - flutter_local_notifications (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-3.0.3//ios/flutter_local_notifications.podspec`)
+  - "flutter_native_image (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec`)"
+  - image_editor (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_editor-0.7.3//ios/image_editor.podspec`)
+  - image_save (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_save-4.0.1//ios/image_save.podspec`)
+  - open_file (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.0.3//ios/open_file.podspec`)
+  - "package_info (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/package_info-0.4.3+2//ios/package_info.podspec`)"
+  - path_provider (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.6.27//ios/path_provider.podspec`)
+  - "permission_handler (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-5.0.1+1//ios/permission_handler.podspec`)"
+  - photo_manager (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-0.6.0//ios/photo_manager.podspec`)
+  - "quick_actions (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/quick_actions-0.4.0+10//ios/quick_actions.podspec`)"
+  - r_scan (from `/Users/alex/Documents/flutter-stable/.pub-cache/git/r_scan-d2f1849f365a1d716d0ade34cfc401f1d6b3d56d//ios/r_scan.podspec`)
+  - url_launcher (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-5.7.10//ios/url_launcher.podspec`)
+  - vibration (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/vibration-1.7.3//ios/vibration.podspec`)
+  - video_player (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/video_player-1.0.1//ios/video_player.podspec`)
 
 SPEC REPOS:
   https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
@@ -67,44 +70,47 @@ SPEC REPOS:
     - ZXingObjCCopy
 
 EXTERNAL SOURCES:
+  camera:
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/camera-0.7.0+1//ios/camera.podspec"
   connectivity:
-    :path: ".symlinks/plugins/connectivity/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/connectivity-2.0.2//ios/connectivity.podspec"
   device_info:
-    :path: ".symlinks/plugins/device_info/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/device_info-1.0.0//ios/device_info.podspec"
   Flutter:
     :path: Flutter
   flutter_inappwebview:
-    :path: ".symlinks/plugins/flutter_inappwebview/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-4.0.0+4//ios/flutter_inappwebview.podspec"
   flutter_local_notifications:
-    :path: ".symlinks/plugins/flutter_local_notifications/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-3.0.3//ios/flutter_local_notifications.podspec"
   flutter_native_image:
-    :path: ".symlinks/plugins/flutter_native_image/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec"
   image_editor:
-    :path: ".symlinks/plugins/image_editor/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_editor-0.7.3//ios/image_editor.podspec"
   image_save:
-    :path: ".symlinks/plugins/image_save/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_save-4.0.1//ios/image_save.podspec"
   open_file:
-    :path: ".symlinks/plugins/open_file/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.0.3//ios/open_file.podspec"
   package_info:
-    :path: ".symlinks/plugins/package_info/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/package_info-0.4.3+2//ios/package_info.podspec"
   path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.6.27//ios/path_provider.podspec"
   permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-5.0.1+1//ios/permission_handler.podspec"
   photo_manager:
-    :path: ".symlinks/plugins/photo_manager/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-0.6.0//ios/photo_manager.podspec"
   quick_actions:
-    :path: ".symlinks/plugins/quick_actions/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/quick_actions-0.4.0+10//ios/quick_actions.podspec"
   r_scan:
-    :path: ".symlinks/plugins/r_scan/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/git/r_scan-d2f1849f365a1d716d0ade34cfc401f1d6b3d56d//ios/r_scan.podspec"
   url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-5.7.10//ios/url_launcher.podspec"
   vibration:
-    :path: ".symlinks/plugins/vibration/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/vibration-1.7.3//ios/vibration.podspec"
   video_player:
-    :path: ".symlinks/plugins/video_player/ios"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/video_player-1.0.1//ios/video_player.podspec"
 
 SPEC CHECKSUMS:
+  camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
@@ -126,6 +132,6 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   ZXingObjCCopy: 08aed07cb60e2a3ab79ae7ca298a3e7fd9ca4164
 
-PODFILE CHECKSUM: 2aaa5d4f6b2200569931c0dd0f3ac0f4a34abe04
+PODFILE CHECKSUM: c5f9efd8bcad6ce8cb849909464584a66e168939
 
 COCOAPODS: 1.10.0
