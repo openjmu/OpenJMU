@@ -184,13 +184,17 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
     case 'openjmu://publish-post':
       return RouteResult(
         name: name,
-        widget: PublishPostPage(),
+        widget: PublishPostPage(
+          key: arguments['key'] as Key,
+        ),
         routeName: '发布动态',
       );
     case 'openjmu://publish-team-post':
       return RouteResult(
         name: name,
-        widget: PublishTeamPostPage(),
+        widget: PublishTeamPostPage(
+          key: arguments['key'] as Key,
+        ),
         routeName: '发布小组动态',
       );
     case 'openjmu://scan-qr-code':

@@ -10,47 +10,53 @@ import 'package:openjmu/widgets/messages/app_message_preview_widget.dart';
 class MessagePage extends StatelessWidget {
   const MessagePage({Key key}) : super(key: key);
 
-  Widget _tabBar(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(child: MainPage.selfPageOpener),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Center(
-              child: Consumer<MessagesProvider>(
-                builder: (_, MessagesProvider provider, __) {
-                  return Stack(
-                    overflow: Overflow.visible,
-                    children: <Widget>[
-                      Positioned(
-                        top: 0.0,
-                        right: -10.w,
-                        child: Visibility(
-                          visible: provider.unreadCount > 0,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Container(
-                              width: 12.w,
-                              height: 12.w,
-                              color: currentThemeColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '通知',
-                        style: MainPageState.tabUnselectedTextStyle,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+  Widget _readAllButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        final MessagesProvider p = context.read<MessagesProvider>();
+        for (final List<dynamic> ms in p.appsMessages.values) {
+          final Iterable<AppMessage> _ms = ms
+              .where((dynamic message) => !(message as AppMessage).read)
+              ?.cast<AppMessage>();
+          for (final AppMessage m in _ms) {
+            if (!m.read) {
+              m.read = true;
+              MessageUtils.sendConfirmMessage(ackId: m.ackId);
+            }
+          }
+        }
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+        p.notifyListeners();
+      },
+      child: Container(
+        width: 56.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            R.ASSETS_ICONS_NOTIFICATION_SVG,
+            color: context.textTheme.bodyText2.color,
+            width: 28.w,
           ),
         ),
-        const Spacer(),
-      ],
+      ),
+    );
+  }
+
+  Widget _appBar(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 20.w),
+      child: Row(
+        children: <Widget>[
+          MainPage.selfPageOpener,
+          MainPage.outerNetworkIndicator(),
+          const Spacer(),
+          _readAllButton(context),
+        ],
+      ),
     );
   }
 
@@ -59,10 +65,7 @@ class MessagePage extends StatelessWidget {
       selector: (_, SettingsProvider p) => p.announcements,
       builder: (_, List<Map<dynamic, dynamic>> announcements, __) {
         return DefaultTextStyle.merge(
-          style: TextStyle(
-            color: adaptiveButtonColor(),
-            fontSize: 18.sp,
-          ),
+          style: TextStyle(height: 1.2, fontSize: 18.sp),
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: 0,
@@ -102,35 +105,58 @@ class MessagePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SvgPicture.asset(
-                R.IMAGES_PLACEHOLDER_NO_MESSAGE_SVG,
-                width: Screens.width / 3.5,
-                height: Screens.width / 3.5,
+                R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
+                width: 50.w,
+                color: context.theme.iconTheme.color,
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 30.h),
-                child: Text(
-                  '无新消息',
-                  style: TextStyle(fontSize: 22.sp),
+              VGap(20.w),
+              Text(
+                '无新消息',
+                style: TextStyle(
+                  color: context.theme.iconTheme.color,
+                  fontSize: 22.sp,
                 ),
-              )
+              ),
             ],
           );
         }
-        return ListView.builder(
-          itemCount: messageProvider.appsMessages.keys.length,
-          itemBuilder: (_, int index) {
-            final Map<int, List<dynamic>> _list = messageProvider.appsMessages;
-            final int _index = _list.keys.length - 1 - index;
-            final int appId = _list.keys.elementAt(_index);
-            final AppMessage message = _list[appId][0] as AppMessage;
-            return SlideItem(
-              menu: <SlideMenuItem>[
-                deleteWidget(messageProvider, appId),
-              ],
-              child: AppMessagePreviewWidget(message: message),
-              height: 88.h,
-            );
-          },
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
+              child: Text(
+                '应用通知',
+                style: TextStyle(
+                  color: context.textTheme.bodyText2.color.withOpacity(0.625),
+                  height: 1.2,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Divider(thickness: 1.w, height: 1.w),
+            Expanded(
+              child: ListView.separated(
+                itemCount: messageProvider.appsMessages.keys.length,
+                itemBuilder: (_, int index) {
+                  final Map<int, List<dynamic>> _list =
+                      messageProvider.appsMessages;
+                  final int _index = _list.keys.length - 1 - index;
+                  final int appId = _list.keys.elementAt(_index);
+                  final AppMessage message = _list[appId][0] as AppMessage;
+                  return SlideItem(
+                    width: Screens.width,
+                    menu: <SlideMenuItem>[deleteWidget(messageProvider, appId)],
+                    height: 100.w,
+                    child: AppMessagePreviewWidget(message: message),
+                  );
+                },
+                separatorBuilder: (_, __) =>
+                    Divider(thickness: 1.w, height: 1.w),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -141,13 +167,11 @@ class MessagePage extends StatelessWidget {
       onTap: () {
         provider.deleteFromAppsMessages(appId);
       },
+      width: Screens.width * 0.3,
       child: Center(
         child: Text(
-          '删除',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.sp,
-          ),
+          '删除对话',
+          style: TextStyle(color: Colors.white, fontSize: 20.sp),
         ),
       ),
       color: currentThemeColor,
@@ -158,7 +182,7 @@ class MessagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FixedAppBarWrapper(
       appBar: FixedAppBar(
-        title: _tabBar(context),
+        title: _appBar(context),
         centerTitle: false,
         automaticallyImplyLeading: false,
         automaticallyImplyActions: false,
@@ -184,27 +208,26 @@ class _AnnouncementItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: 16.w,
-      ).copyWith(top: 16.w),
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.w),
-        color: context.theme.colorScheme.primary,
+        border: Border(
+          bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+        ),
+        color: context.theme.cardColor,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             item['title'] as String,
             style: TextStyle(
+              color: currentThemeColor,
               fontSize: 21.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          VGap(5.w),
-          Text(item['content'] as String),
+          VGap(10.w),
+          Text(item['content'] as String, style: const TextStyle(height: 1.4)),
         ],
       ),
     );

@@ -282,8 +282,6 @@ class R {
   static const String ASSETS_ICONS_ADD_BUTTON_JISHI_SVG =
       'assets/icons/add-button/jishi.svg';
 
-  static const String ASSETS_ICONS_ADD_TOPIC_SVG = 'assets/icons/add-topic.svg';
-
   static const String ASSETS_ICONS_APP_CENTER_ADD_SVG =
       'assets/icons/app-center/add.svg';
 
@@ -508,6 +506,18 @@ class R {
   static const String ASSETS_ICONS_POST_ACTIONS_REPORT_SVG =
       'assets/icons/post-actions/report.svg';
 
+  static const String ASSETS_ICONS_PUBLISH_ADD_IMAGE_SVG =
+      'assets/icons/publish/add-image.svg';
+
+  static const String ASSETS_ICONS_PUBLISH_ADD_TOPIC_SVG =
+      'assets/icons/publish/add-topic.svg';
+
+  static const String ASSETS_ICONS_PUBLISH_EMOJI_SVG =
+      'assets/icons/publish/emoji.svg';
+
+  static const String ASSETS_ICONS_PUBLISH_MENTION_SVG =
+      'assets/icons/publish/mention.svg';
+
   static const String ASSETS_ICONS_REFRESH_SVG = 'assets/icons/refresh.svg';
 
   static const String ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG =
@@ -578,6 +588,12 @@ class R {
   static const String ASSETS_LOGIN_BACKGROUND_VIDEO_MP4 =
       'assets/login-background-video.mp4';
 
+  static const String ASSETS_PLACEHOLDERS_COURSE_NOT_READY_SVG =
+      'assets/placeholders/course-not-ready.svg';
+
+  static const String ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG =
+      'assets/placeholders/no-message.svg';
+
   static const String IMAGES_JMU_LOGO_PNG = 'images/jmu_logo.png';
 
   static const String IMAGES_JMU_LOGO_FILLED_PNG = 'images/jmu_logo_filled.png';
@@ -595,9 +611,6 @@ class R {
 
   static const String IMAGES_OPENJMU_LOGO_TEXT_SVG =
       'images/openjmu_logo_text.svg';
-
-  static const String IMAGES_PLACEHOLDER_NO_MESSAGE_SVG =
-      'images/placeholder/no_message.svg';
 
   static const String IMAGES_SPLASH_PAGE_LOGO_SVG =
       'images/splash_page_logo.svg';

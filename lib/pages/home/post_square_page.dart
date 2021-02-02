@@ -59,7 +59,7 @@ class _PostSquarePageState extends State<PostSquarePage> {
           Gap(16.w),
           MainPage.publishButton(
             context: context,
-            route: Routes.openjmuPublishPost,
+            route: Routes.openjmuPublishPost.name,
           ),
         ],
         actionsPadding: EdgeInsets.only(right: 16.w),

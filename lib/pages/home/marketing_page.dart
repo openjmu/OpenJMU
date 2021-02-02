@@ -62,7 +62,7 @@ class _MarketingPageState extends State<MarketingPage> {
           Gap(16.w),
           MainPage.publishButton(
             context: context,
-            route: Routes.openjmuPublishTeamPost,
+            route: Routes.openjmuPublishTeamPost.name,
           ),
         ],
         actionsPadding: EdgeInsets.only(right: 16.w),

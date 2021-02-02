@@ -209,14 +209,23 @@ class Routes {
   /// [name] : 'openjmu://publish-post'
   ///
   /// [routeName] : '发布动态'
-  static const String openjmuPublishPost = 'openjmu://publish-post';
+  ///
+  /// [constructors] :
+  ///
+  /// PublishPostPage : [Key key]
+  static const _OpenjmuPublishPost openjmuPublishPost = _OpenjmuPublishPost();
 
   /// '发布小组动态'
   ///
   /// [name] : 'openjmu://publish-team-post'
   ///
   /// [routeName] : '发布小组动态'
-  static const String openjmuPublishTeamPost = 'openjmu://publish-team-post';
+  ///
+  /// [constructors] :
+  ///
+  /// PublishTeamPostPage : [Key key]
+  static const _OpenjmuPublishTeamPost openjmuPublishTeamPost =
+      _OpenjmuPublishTeamPost();
 
   /// '扫描二维码'
   ///
@@ -480,6 +489,32 @@ class _OpenjmuPostDetail {
         'index': index,
         'fromPage': fromPage,
         'parentContext': parentContext,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _OpenjmuPublishPost {
+  const _OpenjmuPublishPost();
+
+  String get name => 'openjmu://publish-post';
+
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
+        'key': key,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _OpenjmuPublishTeamPost {
+  const _OpenjmuPublishTeamPost();
+
+  String get name => 'openjmu://publish-team-post';
+
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
+        'key': key,
       };
 
   @override

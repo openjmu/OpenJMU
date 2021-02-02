@@ -89,9 +89,11 @@ flutter:
     - assets/icons/bottom-navigation/
     - assets/icons/gender/
     - assets/icons/post-actions/
+    - assets/icons/publish/
     - assets/icons/self-page/
     - assets/icons/settings/
     - assets/icons/user/
+    - assets/placeholders/
     - images/
     - images/placeholder/
   fonts:

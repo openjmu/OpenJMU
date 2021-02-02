@@ -27,6 +27,7 @@ export 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart'
 export 'package:url_launcher/url_launcher.dart';
 export 'package:wechat_assets_picker/wechat_assets_picker.dart'
     hide ImageFileType;
+export 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 export 'package:openjmu/openjmu_routes.dart' show Routes;
 export 'package:openjmu/openjmu_route_helper.dart'

@@ -229,7 +229,6 @@ class CommentPositionedState extends State<CommentPositioned> {
     return EmotionPad(
       active: emoticonPadActive,
       height: _keyboardHeight,
-      route: 'comment',
       controller: _commentController,
     );
   }

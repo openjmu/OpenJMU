@@ -23,10 +23,10 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   final List<Color> itemColors = <Color>[Colors.orange, Colors.indigoAccent];
   final List<VoidCallback> itemOnTap = <VoidCallback>[
     () {
-      navigatorState.pushNamed(Routes.openjmuPublishPost);
+      navigatorState.pushNamed(Routes.openjmuPublishPost.name);
     },
     () {
-      navigatorState.pushNamed(Routes.openjmuPublishTeamPost);
+      navigatorState.pushNamed(Routes.openjmuPublishTeamPost.name);
     },
   ];
   final int _animateDuration = 300;

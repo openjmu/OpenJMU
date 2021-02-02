@@ -199,15 +199,12 @@ class PostDetailPageState extends State<PostDetailPage>
   void postExtraActions(BuildContext context) {
     ConfirmationBottomSheet.show(
       context,
-      children: <Widget>[
+      actions: <ConfirmationBottomSheetAction>[
         if (!UserAPI.blacklist.contains(BlacklistUser(
           uid: widget.post.uid,
           username: widget.post.nickname,
         )))
           ConfirmationBottomSheetAction(
-            icon: SvgPicture.asset(
-              R.ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG,
-            ),
             text: '${UserAPI.blacklist.contains(
               BlacklistUser(
                 uid: widget.post.uid,
@@ -221,7 +218,6 @@ class PostDetailPageState extends State<PostDetailPage>
             ),
           ),
         ConfirmationBottomSheetAction(
-          icon: SvgPicture.asset(R.ASSETS_ICONS_POST_ACTIONS_REPORT_SVG),
           text: '举报动态',
           onTap: () => confirmReport(context),
         ),

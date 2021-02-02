@@ -563,7 +563,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   Widget get emoticonPad => EmotionPad(
         active: showEmoticonPad,
         height: _keyboardHeight,
-        route: 'publish',
         controller: _textEditingController,
       );
 

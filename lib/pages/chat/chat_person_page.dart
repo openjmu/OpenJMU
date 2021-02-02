@@ -268,7 +268,6 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   Widget get emoticonPad => EmotionPad(
         active: emoticonPadActive,
         height: _keyboardHeight,
-        route: 'message',
         controller: _textEditingController,
       );
 

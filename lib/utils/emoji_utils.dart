@@ -123,13 +123,11 @@ class EmotionPad extends StatelessWidget {
     Key key,
     @required this.active,
     @required this.height,
-    this.route,
     this.controller,
   }) : super(key: key);
 
   final bool active;
   final double height;
-  final String route;
   final TextEditingController controller;
 
   static double get emoticonPadDefaultHeight =>

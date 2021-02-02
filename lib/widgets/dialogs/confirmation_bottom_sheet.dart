@@ -14,14 +14,14 @@ class ConfirmationBottomSheet extends StatefulWidget {
     this.title,
     this.centerTitle = true,
     this.content,
-    this.children,
+    this.actions,
     this.showConfirm = false,
     this.confirmLabel = '确认',
     this.cancelLabel = '取消',
     this.backgroundColor,
   })  : assert(
-          !(children == null && content == null) &&
-              !(children != null && content != null),
+          !(actions == null && content == null) &&
+              !(actions != null && content != null),
           '\'children\' and \'content\' cannot be set or not set at the same time.',
         ),
         super(key: key);
@@ -30,7 +30,7 @@ class ConfirmationBottomSheet extends StatefulWidget {
   final String title;
   final bool centerTitle;
   final String content;
-  final List<Widget> children;
+  final List<ConfirmationBottomSheetAction> actions;
   final EdgeInsetsGeometry contentPadding;
   final bool showConfirm;
   final String confirmLabel;
@@ -44,7 +44,7 @@ class ConfirmationBottomSheet extends StatefulWidget {
     String title,
     bool centerTitle = true,
     String content,
-    List<Widget> children,
+    List<ConfirmationBottomSheetAction> actions,
     bool showConfirm = false,
     String confirmLabel = '确认',
     String cancelLabel = '取消',
@@ -58,7 +58,7 @@ class ConfirmationBottomSheet extends StatefulWidget {
         title: title,
         centerTitle: centerTitle,
         content: content,
-        children: children,
+        actions: actions,
         contentPadding: contentPadding,
         showConfirm: showConfirm,
         confirmLabel: confirmLabel,
@@ -79,16 +79,6 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
   final GlobalKey<DismissWrapperState> _dismissWrapperKey =
       GlobalKey<DismissWrapperState>();
   bool animating = false;
-
-  Widget dragIndicator(BuildContext context) => Container(
-        margin: EdgeInsets.symmetric(vertical: 16.h),
-        width: 54.w,
-        height: 8.h,
-        decoration: BoxDecoration(
-          borderRadius: maxBorderRadius,
-          color: Theme.of(context).dividerColor,
-        ),
-      );
 
   Widget titleWidget(BuildContext context) => Container(
         margin: EdgeInsets.only(
@@ -137,44 +127,30 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
   }
 
   Widget cancelButton(BuildContext context) {
-    return MaterialButton(
-      height: 105.h,
-      elevation: 0.0,
-      highlightElevation: 2.0,
-      minWidth: Screens.width,
-      padding: EdgeInsets.zero,
-      color: widget.backgroundColor ?? Theme.of(context).primaryColor,
-      onPressed: () => Navigator.of(context).maybePop(false),
-      child: Stack(
-        overflow: Overflow.visible,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(20.w),
-            width: Screens.width,
-            height: 60.w,
-            decoration: BoxDecoration(
-              borderRadius: maxBorderRadius,
-              color: Theme.of(context).canvasColor,
-            ),
-            child: Center(
-              child: Text(
-                widget.cancelLabel ?? '取消',
-                style: TextStyle(fontSize: 23.sp),
-              ),
-            ),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).maybePop(false),
+      child: Container(
+        height: 80.w + Screens.bottomSafeHeight,
+        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        color: currentThemeColor,
+        child: Center(
+          child: Text(
+            widget.cancelLabel ?? '取消',
+            style: TextStyle(color: Colors.white, fontSize: 22.sp),
           ),
-          Positioned(
-            top: -8.w,
-            left: 0.0,
-            right: 0.0,
-            height: 5.w,
-            child: ColoredBox(
-              color: widget.backgroundColor ?? Theme.of(context).primaryColor,
-            ),
-          ),
-        ],
+        ),
       ),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+  }
+
+  Widget _actionsBuilder(BuildContext context) {
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (_, int index) => widget.actions[index],
+      separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
+      itemCount: widget.actions.length,
     );
   }
 
@@ -202,23 +178,17 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
                 DismissWrapper(
                   key: _dismissWrapperKey,
                   children: <Widget>[
-                    dragIndicator(context),
                     if (widget.title != null) titleWidget(context),
-                    Padding(
-                      padding: widget.contentPadding,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: widget.content != null
-                            ? <Widget>[
-                                Text(
-                                  widget.content,
-                                  style: TextStyle(fontSize: 20.sp),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ]
-                            : widget.children,
+                    if (widget.content != null)
+                      Padding(
+                        padding: widget.contentPadding,
+                        child: Text(
+                          widget.content,
+                          style: TextStyle(fontSize: 20.sp),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
+                    if (widget.actions != null) _actionsBuilder(context),
                     if (widget.showConfirm) confirmButton(context),
                   ],
                 ),
@@ -235,13 +205,11 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
 class ConfirmationBottomSheetAction extends StatelessWidget {
   const ConfirmationBottomSheetAction({
     Key key,
-    @required this.icon,
     @required this.text,
     @required this.onTap,
-  })  : assert(icon != null && text != null && onTap != null),
+  })  : assert(text != null && onTap != null),
         super(key: key);
 
-  final Widget icon;
   final String text;
   final GestureTapCallback onTap;
 
@@ -253,27 +221,17 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
         Navigator.of(context).pop();
         onTap();
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 24.h),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: IconTheme(
-                data: context.iconTheme.copyWith(size: 36.w),
-                child: icon,
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: Text(
-                  text,
-                  style: TextStyle(fontSize: 22.sp),
-                ),
-              ),
-            ),
-          ],
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        constraints: BoxConstraints(minHeight: 80.w),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(height: 1.2, fontSize: 20.sp),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );

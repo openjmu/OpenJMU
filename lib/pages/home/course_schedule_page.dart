@@ -511,28 +511,25 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
-  Widget get emptyTips {
-    return Expanded(
-      child: Center(
-        child: Text(
-          '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
-          style: TextStyle(fontSize: 30.sp),
-          strutStyle: const StrutStyle(height: 1.8),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
   Widget get errorTips {
     return Expanded(
-      child: Center(
-        child: Text(
-          '课表看起来还未准备好\n不如到广场放松一下？\n🤒',
-          style: TextStyle(fontSize: 30.sp),
-          strutStyle: const StrutStyle(height: 1.8),
-          textAlign: TextAlign.center,
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_COURSE_NOT_READY_SVG,
+            width: 50.w,
+            color: context.theme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
+            '课程表未就绪',
+            style: TextStyle(
+              color: context.theme.iconTheme.color,
+              fontSize: 22.sp,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -575,7 +572,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                       if (firstLoaded &&
                           !hasCourse &&
                           !(showError && !isOuterError))
-                        emptyTips,
+                        errorTips,
                       if (firstLoaded && (showError && !isOuterError))
                         errorTips,
                     ],

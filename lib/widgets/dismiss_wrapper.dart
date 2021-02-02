@@ -15,12 +15,14 @@ class DismissWrapper extends StatefulWidget {
     @required this.children,
     this.backgroundColor,
     this.padding,
+    this.radius,
   })  : assert(children != null, '`children` must not be null.'),
         super(key: key);
 
   final List<Widget> children;
   final Color backgroundColor;
   final EdgeInsetsGeometry padding;
+  final double radius;
 
   @override
   DismissWrapperState createState() => DismissWrapperState();
@@ -113,12 +115,11 @@ class DismissWrapperState extends State<DismissWrapper>
         ),
         child: Container(
           width: Screens.width,
-          padding: widget.padding ??
-              EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 2.h),
+          padding: widget.padding,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24.w),
-              topRight: Radius.circular(24.w),
+              topLeft: Radius.circular(widget.radius ?? 20.w),
+              topRight: Radius.circular(widget.radius ?? 20.w),
             ),
             color: widget.backgroundColor ?? Theme.of(context).primaryColor,
           ),

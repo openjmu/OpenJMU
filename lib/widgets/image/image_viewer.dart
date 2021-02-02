@@ -152,9 +152,8 @@ class ImageViewerState extends State<ImageViewer>
   void onLongPress(BuildContext context) {
     ConfirmationBottomSheet.show(
       context,
-      children: <Widget>[
+      actions: <ConfirmationBottomSheetAction>[
         ConfirmationBottomSheetAction(
-          icon: const Icon(Icons.save_alt),
           text: '保存图片',
           onTap: () async {
             final bool isAllGranted = await checkPermissions(<Permission>[

@@ -193,7 +193,6 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   Widget get emoticonPad => EmotionPad(
-        route: 'comment',
         active: emoticonPadActive,
         height: _keyboardHeight,
         controller: _forwardController,

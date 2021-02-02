@@ -77,7 +77,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
           width: 28.w,
           height: 28.w,
           decoration: BoxDecoration(
-            color: currentThemeColor.withOpacity(0.5),
+            color: currentThemeColor,
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -87,9 +87,9 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                 return Text(
                   '${unreadMessages.length}',
                   style: TextStyle(
-                    color: dark ? Colors.grey[300] : Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.normal,
+                    color: adaptiveButtonColor(),
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
                   ),
                 );
               },
@@ -126,7 +126,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return Text(
       '${app.name ?? app.appId}',
       style: context.textTheme.bodyText2.copyWith(
-        fontSize: 22.sp,
+        height: 1.2,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w500,
       ),
     );
@@ -136,7 +137,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return Text(
       ' $formattedTime',
       style: context.textTheme.caption.copyWith(
-        fontSize: 16.sp,
+        height: 1.2,
+        fontSize: 18.sp,
       ),
     );
   }
@@ -176,27 +178,33 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         height: widget.height.h,
+        color: context.theme.cardColor,
         child: Row(
           children: <Widget>[
             _appIconWidget(context, app),
             Expanded(
-              child: SizedBox(
-                height: 60.h,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        if (app != null) _name(context, app),
-                        _sendTimeWidget(context),
-                        const Spacer(),
-                        unreadCounter(context),
+                        Row(
+                          children: <Widget>[
+                            if (app != null) _name(context, app),
+                            if (app != null) Gap(5.w),
+                            _sendTimeWidget(context),
+                            const Spacer(),
+                          ],
+                        ),
+                        VGap(8.w),
+                        _shortContent(context),
                       ],
                     ),
-                    _shortContent(context),
-                  ],
-                ),
+                  ),
+                  unreadCounter(context),
+                ],
               ),
             ),
           ],

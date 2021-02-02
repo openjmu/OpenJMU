@@ -153,7 +153,7 @@ class FixedAppBar extends StatelessWidget {
         children: <Widget>[child, Divider(thickness: 1.w, height: 1.w)],
       );
     }
-    return Material(color: Colors.transparent, child: child);
+    return Material(type: MaterialType.transparency, child: child);
   }
 }
 

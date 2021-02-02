@@ -340,21 +340,18 @@ class CommentListInPostState extends State<CommentListInPost>
   void showActions(BuildContext context, Comment comment) {
     ConfirmationBottomSheet.show(
       context,
-      children: <Widget>[
+      actions: <ConfirmationBottomSheetAction>[
         if (comment.fromUserUid == currentUser.uid ||
             widget.post.uid == currentUser.uid)
           ConfirmationBottomSheetAction(
-            icon: const Icon(Icons.delete),
             text: '删除评论',
             onTap: () => confirmDelete(context, comment),
           ),
         ConfirmationBottomSheetAction(
-          icon: const Icon(Icons.reply),
           text: '回复评论',
           onTap: () => replyTo(comment),
         ),
         ConfirmationBottomSheetAction(
-          icon: const Icon(Icons.report),
           text: '复制评论',
           onTap: () {
             Clipboard.setData(ClipboardData(
@@ -509,7 +506,14 @@ class CommentListInPostState extends State<CommentListInPost>
     return ColoredBox(
       color: context.theme.primaryColor,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => showActions(context, comment),
+        onLongPress: () {
+          Clipboard.setData(ClipboardData(
+            text: replaceMentionTag(comment.content),
+          ));
+          showToast('已复制到剪贴板');
+        },
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16.w),
           child: Row(
@@ -542,16 +546,6 @@ class CommentListInPostState extends State<CommentListInPost>
                   ],
                 ),
               ),
-              IconButton(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                icon: SvgPicture.asset(
-                  R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                  color: context.theme.iconTheme.color.withOpacity(0.5),
-                  width: 28.w,
-                ),
-                onPressed: () => replyTo(comment),
-                constraints: BoxConstraints.loose(Size.square(60.w)),
-              ),
             ],
           ),
         ),
@@ -563,36 +557,34 @@ class CommentListInPostState extends State<CommentListInPost>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return isLoading
-        ? const SpinKitWidget()
-        : firstLoadComplete
-            ? ExtendedListView.separated(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                extendedListDelegate: const ExtendedListDelegate(),
-                separatorBuilder: (BuildContext _, int index) => Container(
-                  color: Theme.of(context).dividerColor,
-                  height: 1.0,
-                ),
-                itemCount: _comments.length + 1,
-                itemBuilder: (BuildContext _, int index) {
-                  if (index == _comments.length - 1 && canLoadMore) {
-                    _loadList();
-                  }
-                  if (index == _comments.length) {
-                    return LoadMoreIndicator(
-                      canLoadMore: canLoadMore && !isLoading,
-                    );
-                  } else if (index < _comments.length) {
-                    if (_comments[index] == null) {
-                      return const SizedBox.shrink();
-                    }
-                    return _itemBuilder(context, _comments[index]);
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              )
-            : const LoadMoreIndicator(canLoadMore: false);
+    if (isLoading) {
+      return const SpinKitWidget();
+    }
+    if (!firstLoadComplete) {
+      return const LoadMoreIndicator(canLoadMore: false);
+    }
+    return ExtendedListView.separated(
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      extendedListDelegate: const ExtendedListDelegate(),
+      separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
+      itemCount: _comments.length + 1,
+      itemBuilder: (BuildContext _, int index) {
+        if (index == _comments.length - 1 && canLoadMore) {
+          _loadList();
+        }
+        if (index == _comments.length) {
+          return LoadMoreIndicator(
+            canLoadMore: canLoadMore && !isLoading,
+          );
+        } else if (index < _comments.length) {
+          if (_comments[index] == null) {
+            return const SizedBox.shrink();
+          }
+          return _itemBuilder(context, _comments[index]);
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 }

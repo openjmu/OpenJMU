@@ -81,7 +81,7 @@ class HiveBoxes {
   static Future<void> clearCacheBoxes({BuildContext context}) async {
     bool confirm = true;
     if (context != null) {
-      confirm = await ConfirmationBottomSheet.show(
+      confirm = await ConfirmationDialog.show(
         context,
         title: '清除缓存数据',
         showConfirm: true,
@@ -104,7 +104,7 @@ class HiveBoxes {
   static Future<void> clearAllBoxes({BuildContext context}) async {
     bool confirm = true;
     if (context != null) {
-      confirm = await ConfirmationBottomSheet.show(
+      confirm = await ConfirmationDialog.show(
         context,
         title: '清除应用数据',
         showConfirm: true,

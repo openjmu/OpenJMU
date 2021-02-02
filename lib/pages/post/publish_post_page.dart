@@ -3,8 +3,8 @@
 /// [Date] 2020-03-11 09:53
 ///
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -17,6 +17,8 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(name: 'openjmu://publish-post', routeName: '发布动态')
 class PublishPostPage extends StatefulWidget {
+  const PublishPostPage({Key key}) : super(key: key);
+
   @override
   _PublishPostPageState createState() => _PublishPostPageState();
 }
@@ -101,13 +103,35 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// 使用图片选择器选择图片
   Future<void> pickAssets() async {
     unFocusTextField();
-    final List<AssetEntity> result = await AssetPicker.pickAssets(
+    final List<AssetEntity> ar = await AssetPicker.pickAssets(
       context,
       selectedAssets: selectedAssets,
       themeColor: currentThemeColor,
+      specialItemPosition: SpecialItemPosition.prepend,
+      specialItemBuilder: (_) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () async {
+          final AssetEntity cr = await CameraPicker.pickFromCamera(
+            context,
+            enableRecording: true,
+          );
+          if (cr != null) {
+            Navigator.of(context).pop(
+              <AssetEntity>[...selectedAssets, cr],
+            );
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.photo_camera_rounded, size: 42.w),
+            Text('拍摄照片', style: TextStyle(fontSize: 16.sp)),
+          ],
+        ),
+      ),
     );
-    if (result != selectedAssets && result != null) {
-      selectedAssets = List<AssetEntity>.from(result);
+    if (ar != selectedAssets && ar != null) {
+      selectedAssets = List<AssetEntity>.from(ar);
       if (mounted) {
         setState(() {});
       }
@@ -346,32 +370,22 @@ class _PublishPostPageState extends State<PublishPostPage>
     return GestureDetector(
       onTap: checkContentEmptyWhenPublish,
       child: Container(
-        width: 120.w,
-        height: 50.h,
+        width: 80.w,
+        height: 56.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
-          color: currentThemeColor,
+          color: context.themeColor,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 6.w),
-              child: SvgPicture.asset(
-                R.ASSETS_ICONS_SEND_SVG,
-                height: 22.h,
-                color: Colors.white,
-              ),
+        child: Center(
+          child: Text(
+            '发表',
+            style: TextStyle(
+              color: adaptiveButtonColor(),
+              fontSize: 20.sp,
+              height: 1.24,
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              '发动态',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.sp,
-                height: 1.24,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -390,21 +404,21 @@ class _PublishPostPageState extends State<PublishPostPage>
             scrollPadding: EdgeInsets.zero,
             specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
             cursorColor: Theme.of(context).cursorColor,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.only(top: 20.h),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              isDense: true,
               border: InputBorder.none,
-              counterStyle: const TextStyle(color: Colors.transparent),
-              hintText: '分享你的动态...',
-              hintStyle: const TextStyle(
-                color: Colors.grey,
-                textBaseline: TextBaseline.alphabetic,
-              ),
+              counterStyle: TextStyle(color: Colors.transparent),
+              hintText: ' 分享你的动态...',
+              hintStyle: TextStyle(color: Colors.grey),
             ),
             buildCounter: emptyCounterBuilder,
             style: currentTheme.textTheme.bodyText2.copyWith(
-              fontSize: 22.sp,
+              height: 1.5,
+              fontSize: 21.sp,
               textBaseline: TextBaseline.alphabetic,
             ),
+            selectionHeightStyle: ui.BoxHeightStyle.max,
             maxLines: null,
           ),
         ),
@@ -592,7 +606,6 @@ class _PublishPostPageState extends State<PublishPostPage>
   Widget get emoticonPad {
     return EmotionPad(
       active: isEmoticonPadActive,
-      route: 'publish',
       height: maximumKeyboardHeight,
       controller: textEditingController,
     );
@@ -601,21 +614,44 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Button wrapper for the toolbar.
   /// 工具栏按钮封装
   Widget _toolbarButton({
-    VoidCallback onPressed,
-    IconData icon,
-    Widget child,
-    Color color,
+    String icon,
+    Color iconColor,
+    String text,
+    VoidCallback onTap,
   }) {
-    return IconButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      icon: child ??
-          Icon(
-            icon,
-            color: color ?? currentTheme.iconTheme.color,
-            size: iconSize,
-          ),
+    Widget button = GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 15.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        width: text == null ? 60.w : null,
+        height: 60.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.w),
+          color: context.theme.canvasColor,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            SvgPicture.asset(
+              icon,
+              width: 20.w,
+              height: 20.w,
+              color: iconColor ?? context.textTheme.bodyText2.color,
+            ),
+            if (text != null)
+              Text(
+                text,
+                style: TextStyle(height: 1.2, fontSize: 18.sp),
+              ),
+          ],
+        ),
+      ),
     );
+    if (text != null) {
+      button = Expanded(child: button);
+    }
+    return button;
   }
 
   /// Toolbar for the page.
@@ -626,49 +662,46 @@ class _PublishPostPageState extends State<PublishPostPage>
         bottom:
             !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
       ),
-      height: 60.h,
+      padding: EdgeInsets.symmetric(horizontal: 7.w),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+        ),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           _toolbarButton(
-            onPressed: addTopic,
-            child: SvgPicture.asset(
-              R.ASSETS_ICONS_ADD_TOPIC_SVG,
-              color: currentTheme.iconTheme.color,
-              width: iconSize,
-              height: iconSize,
-            ),
+            onTap: mentionPeople,
+            icon: R.ASSETS_ICONS_PUBLISH_MENTION_SVG,
+            text: '提及某人',
           ),
           _toolbarButton(
-            onPressed: mentionPeople,
-            icon: Platform.isAndroid ? Ionicons.ios_at : Ionicons.md_at,
+            onTap: addTopic,
+            icon: R.ASSETS_ICONS_PUBLISH_ADD_TOPIC_SVG,
+            text: '插入话题',
           ),
           _toolbarButton(
-            onPressed: () {
+            onTap: () {
               if (imagesLength > 0) {
                 switchAssetsListCollapse();
               } else {
                 pickAssets();
               }
             },
-            icon: imagesLength > 0
-                ? Icons.photo_library
-                : Icons.add_photo_alternate,
-            color: !isAssetListViewCollapsed && imagesLength > 0
-                ? currentThemeColor
-                : currentTheme.iconTheme.color,
+            icon: R.ASSETS_ICONS_PUBLISH_ADD_IMAGE_SVG,
+            text: '插入图片',
           ),
           _toolbarButton(
-            onPressed: () {
+            onTap: () {
               if (isEmoticonPadActive && focusNode.canRequestFocus) {
                 focusNode.requestFocus();
               }
               updateEmoticonPadStatus(context, !isEmoticonPadActive);
             },
-            icon: Icons.sentiment_very_satisfied,
-            color: isEmoticonPadActive
+            icon: R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+            iconColor: isEmoticonPadActive
                 ? currentThemeColor
-                : currentTheme.iconTheme.color,
+                : context.textTheme.bodyText2.color,
           ),
         ],
       ),
@@ -682,21 +715,23 @@ class _PublishPostPageState extends State<PublishPostPage>
     updateKeyboardHeight(context);
     return WillPopScope(
       onWillPop: isContentEmptyWhenPop,
-      child: FixedAppBarWrapper(
-        appBar: FixedAppBar(
-          actions: <Widget>[publishButton],
-          actionsPadding: EdgeInsets.only(right: 20.w),
-        ),
-        body: Scaffold(
-          backgroundColor: currentTheme.primaryColor,
-          body: Column(
-            children: <Widget>[
-              textField,
-              if (selectedAssets.isNotEmpty) assetsListView,
-              toolbar(context),
-              emoticonPad,
-            ],
-          ),
+      child: Scaffold(
+        backgroundColor: context.theme.primaryColor,
+        body: Column(
+          children: <Widget>[
+            FixedAppBar(
+              actions: <Widget>[publishButton],
+              actionsPadding: EdgeInsets.only(right: 18.w),
+              leading: FixedBackButton(
+                color: context.textTheme.bodyText2.color,
+              ),
+              withBorder: false,
+            ),
+            textField,
+            if (selectedAssets.isNotEmpty) assetsListView,
+            toolbar(context),
+            emoticonPad,
+          ],
         ),
       ),
     );

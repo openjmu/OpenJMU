@@ -32,7 +32,7 @@ class UserAPI {
   }
 
   static Future<void> logout(BuildContext context) async {
-    final bool confirm = await ConfirmationBottomSheet.show(
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '退出登录',
       showConfirm: true,
