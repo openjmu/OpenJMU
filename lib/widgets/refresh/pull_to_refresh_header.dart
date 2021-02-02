@@ -41,7 +41,8 @@ class PullToRefreshHeader extends StatelessWidget {
     return SliverToBoxAdapter(
       child: DefaultTextStyle(
         style: textStyle ??
-            context.textTheme.caption.copyWith(
+            TextStyle(
+              color: context.textTheme.caption.color.withOpacity(0.5),
               fontSize: 18.sp,
               height: 1.4,
             ),
@@ -92,7 +93,10 @@ class PullToRefreshHeader extends StatelessWidget {
         children: <Widget>[
           AnimatedSwitcher(
             duration: kTabScrollDuration,
-            child: LoadMoreSpinningIcon(isRefreshing: isRefreshingMode),
+            child: LoadMoreSpinningIcon(
+              isRefreshing: isRefreshingMode,
+              size: 32,
+            ),
           ),
           Gap(10.w),
           Text(text),

@@ -234,7 +234,7 @@ class _UserListState extends State<UserListPage> {
                       style: TextStyle(fontSize: 20.sp),
                     ),
                   )
-            : const SpinKitWidget(),
+            : const Center(child: LoadMoreSpinningIcon(isRefreshing: true)),
       ),
     );
   }

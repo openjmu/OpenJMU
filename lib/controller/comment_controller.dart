@@ -245,7 +245,9 @@ class _CommentListState extends State<CommentList>
       }
       return _body;
     } else {
-      return const SpinKitWidget();
+      return const Center(
+        child: LoadMoreSpinningIcon(isRefreshing: true),
+      );
     }
   }
 }
@@ -558,7 +560,9 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget build(BuildContext context) {
     super.build(context);
     if (isLoading) {
-      return const SpinKitWidget();
+      return const Center(
+        child: LoadMoreSpinningIcon(isRefreshing: true),
+      );
     }
     if (!firstLoadComplete) {
       return const LoadMoreIndicator(canLoadMore: false);

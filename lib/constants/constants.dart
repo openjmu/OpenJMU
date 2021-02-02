@@ -46,7 +46,7 @@ export 'resources.dart';
 export 'screens.dart';
 export 'widgets.dart';
 
-const double kAppBarHeight = 82.0;
+const double kAppBarHeight = 76.0;
 
 class Constants {
   const Constants._();
@@ -65,18 +65,18 @@ class Constants {
     'actions_mine': '我的',
   };
 
-  static const List<int> developerList = <int>[
-    136172,
-    182999,
-    164466,
-    184698,
-    153098,
-    168695,
-    162060,
-    189275,
-    183114,
-    183824,
-    162026,
+  static const List<String> developerList = <String>[
+    '136172',
+    '182999',
+    '164466',
+    '184698',
+    '153098',
+    '168695',
+    '162060',
+    '189275',
+    '183114',
+    '183824',
+    '162026',
   ];
 
   static const String endLineTag = '没有更多了';

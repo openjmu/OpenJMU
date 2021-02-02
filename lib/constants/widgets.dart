@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/constants.dart';
@@ -188,29 +187,6 @@ Widget badgeIcon({
       showBadge: showBadge,
     );
 
-/// SpinKit widget
-class SpinKitWidget extends StatelessWidget {
-  const SpinKitWidget({
-    Key key,
-    this.color,
-    this.duration = const Duration(milliseconds: 1500),
-    this.size = 50.0,
-  }) : super(key: key);
-
-  final Color color;
-  final Duration duration;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return SpinKitFadingCube(
-      color: color ?? currentThemeColor,
-      duration: duration,
-      size: size.w,
-    );
-  }
-}
-
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {
   const PlatformProgressIndicator({
@@ -301,7 +277,7 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
       turns: _animation,
       child: SvgPicture.asset(
         R.ASSETS_ICONS_LOAD_MORE_SVG,
-        width: (widget.size ?? 32).w,
+        width: (widget.size ?? 60).w,
         color: widget.color ?? context.textTheme.caption.color.withOpacity(0.5),
       ),
     );
@@ -331,24 +307,30 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
   @override
   Widget build(BuildContext context) {
     Widget child = SizedBox(
-      height: 50.h,
+      height: 54.w,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (widget.canLoadMore) ...<Widget>[
-            const LoadMoreSpinningIcon(isRefreshing: true),
+            const LoadMoreSpinningIcon(isRefreshing: true, size: 32),
             if (widget.showText) ...<Widget>[
               Gap(10.w),
               Text(
                 '正在加载',
-                style: TextStyle(fontSize: 18.sp),
+                style: TextStyle(
+                  color: context.textTheme.caption.color.withOpacity(0.5),
+                  fontSize: 18.sp,
+                ),
               ),
             ],
           ] else
             Center(
               child: Text(
                 Constants.endLineTag,
-                style: TextStyle(fontSize: 18.sp),
+                style: TextStyle(
+                  color: context.textTheme.caption.color.withOpacity(0.5),
+                  fontSize: 18.sp,
+                ),
               ),
             )
         ],

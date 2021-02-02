@@ -214,7 +214,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const SpinKitWidget();
+      return const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
     }
     if (praiseList.isEmpty) {
       return Center(

@@ -162,7 +162,7 @@ class ListMoreIndicator extends StatelessWidget {
           AnimatedSwitcher(
             duration: kTabScrollDuration,
             child: isRequesting
-                ? SpinKitWidget(size: 32.w)
+                ? const LoadMoreSpinningIcon(isRefreshing: true, size: 32)
                 : const SizedBox.shrink(),
           ),
           AnimatedContainer(

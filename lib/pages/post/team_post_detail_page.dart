@@ -52,14 +52,12 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       // },
       <String, dynamic>{
         'name': '提到某人',
-        'icon': Icons.alternate_email,
-        'color': Colors.teal,
+        'icon': R.ASSETS_ICONS_PUBLISH_MENTION_SVG,
         'action': mentionPeople,
       },
       <String, dynamic>{
         'name': '插入话题',
-        'icon': Icons.create,
-        'color': Colors.deepOrangeAccent,
+        'icon': R.ASSETS_ICONS_PUBLISH_ADD_TOPIC_SVG,
         'action': addTopic,
       },
     ];
@@ -69,7 +67,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   int commentPage = 1, total, currentOffset;
   bool loading, canLoadMore = true, canSend = false, sending = false;
-  bool showExtendedPad = false, showEmoticonPad = false;
+  final ValueNotifier<bool> showExtendedPad = ValueNotifier<bool>(false);
+  bool showEmoticonPad = false;
   String replyHint;
   double _keyboardHeight = EmotionPad.emoticonPadDefaultHeight;
   TeamPost replyToPost;
@@ -95,9 +94,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
     _focusNode.addListener(() {
       if (mounted && _focusNode.hasFocus) {
-        setState(() {
-          showExtendedPad = false;
-        });
+        showExtendedPad.value = false;
       }
     });
 
@@ -277,7 +274,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     final VoidCallback change = () {
       showEmoticonPad = !showEmoticonPad;
       if (showEmoticonPad) {
-        showExtendedPad = false;
+        showExtendedPad.value = false;
       }
       if (mounted) {
         setState(() {});
@@ -300,15 +297,15 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   void triggerExtendedPad() {
-    if (!showExtendedPad) {
+    if (!showExtendedPad.value) {
       _focusNode.unfocus();
     }
-    setState(() {
-      showExtendedPad = !showExtendedPad;
-      if (showExtendedPad) {
+    showExtendedPad.value = !showExtendedPad.value;
+    if (showExtendedPad.value) {
+      setState(() {
         showEmoticonPad = false;
-      }
-    });
+      });
+    }
   }
 
   /// Method to add `##`(topic) into text field.
@@ -411,150 +408,155 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         ),
       );
 
-  Widget get textField => Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50.w),
-            color: Theme.of(context).canvasColor.withOpacity(0.5),
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: ExtendedTextField(
-                  controller: _textEditingController,
-                  focusNode: _focusNode,
-                  specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-                  enabled: !sending,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 10.h,
-                    ),
-                    prefixText: replyHint,
-                    hintText: replyHint == null ? '给你一个神评的机会...' : null,
+  Widget get textField {
+    return Expanded(
+      child: Container(
+        constraints: BoxConstraints(minHeight: 52.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: context.theme.canvasColor.withOpacity(0.5),
+        ),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: ExtendedTextField(
+                controller: _textEditingController,
+                focusNode: _focusNode,
+                specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+                enabled: !sending,
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
                   ),
-                  cursorColor: currentThemeColor,
-                  style: context.textTheme.bodyText2.copyWith(
-                    fontSize: 20.sp,
-                    textBaseline: TextBaseline.alphabetic,
-                  ),
-                  maxLines: null,
+                  prefixText: replyHint,
+                  hintText: replyHint == null ? '给你一个神评的机会...' : null,
+                ),
+                cursorColor: currentThemeColor,
+                style: context.textTheme.bodyText2.copyWith(
+                  height: 1.2,
+                  fontSize: 18.sp,
+                  textBaseline: TextBaseline.alphabetic,
+                ),
+                maxLines: null,
+              ),
+            ),
+            emoticonButton,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget get extendedPadButton {
+    return GestureDetector(
+      onTap: triggerExtendedPad,
+      child: Container(
+        width: 52.w,
+        height: 52.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: context.theme.canvasColor.withOpacity(0.5),
+        ),
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.add,
+          color: context.theme.iconTheme.color,
+          size: 28.w,
+        ),
+      ),
+    );
+  }
+
+  Widget get sendButton {
+    return GestureDetector(
+      onTap: !sending && canSend ? send : null,
+      child: Container(
+        width: 75.w,
+        height: 52.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
+        ),
+        alignment: Alignment.center,
+        child: sending
+            ? const PlatformProgressIndicator()
+            : Text(
+                '发送',
+                style: TextStyle(
+                  color: adaptiveButtonColor(),
+                  height: 1.2,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              emoticonButton,
-            ],
-          ),
-        ),
-      );
+      ),
+    );
+  }
 
-  Widget get extendedPadButton => Container(
-        padding: EdgeInsets.only(left: 12.w),
-        height: 46.h,
-        child: MaterialButton(
-          elevation: 0.0,
-          highlightElevation: canSend ? 2.0 : 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.w),
-          ),
-          minWidth: 60.w,
-          color: currentThemeColor,
-          child: Center(
-            child: Icon(
-              Icons.add_circle_outline,
-              color: adaptiveButtonColor(),
-              size: 28.w,
-            ),
-          ),
-          onPressed: triggerExtendedPad,
-        ),
-      );
-
-  Widget get sendButton => Container(
-        padding: EdgeInsets.only(left: 12.w),
-        height: 46.h,
-        child: MaterialButton(
-          elevation: 0.0,
-          highlightElevation: canSend ? 2.0 : 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.w),
-          ),
-          minWidth: 60.w,
-          disabledColor: currentThemeColor.withOpacity(sending ? 1 : 0.3),
-          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
-          child: Center(
-            child: SizedBox.fromSize(
-              size: Size.square(28.w),
-              child: sending
-                  ? const PlatformProgressIndicator()
-                  : Icon(
-                      Icons.send,
-                      color: adaptiveButtonColor(),
-                      size: 28.w,
-                    ),
-            ),
-          ),
-          onPressed: !sending && canSend ? send : null,
-        ),
-      );
-
-  Widget get extendedPad => AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
+  Widget get extendedPad {
+    return ValueListenableBuilder<bool>(
+      valueListenable: showExtendedPad,
+      builder: (_, bool value, Widget child) => AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         curve: Curves.fastOutSlowIn,
         width: Screens.width,
-        height: showExtendedPad ? Screens.width / 4 : 0.0,
-        child: Center(
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: extendedFeature.length,
-            itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                splashFactory: InkSplash.splashFactory,
-                onTap: extendedFeature[index]['action'] as VoidCallback,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        height: value ? 74.w : 0.0,
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        color: context.theme.cardColor,
+        child: Wrap(
+          children: List<Widget>.generate(
+            extendedFeature.length,
+            (int index) => GestureDetector(
+              onTap: extendedFeature[index]['action'] as VoidCallback,
+              child: Container(
+                height: 60.w,
+                margin: EdgeInsets.symmetric(
+                  horizontal: 8.w,
+                ).copyWith(bottom: 14.w),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.w),
+                  color: context.theme.canvasColor.withOpacity(0.5),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(bottom: 12.h),
-                      padding: EdgeInsets.all(14.w),
-                      decoration: BoxDecoration(
-                        color: extendedFeature[index]['color'] as Color,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        extendedFeature[index]['icon'] as IconData,
-                        size: 26.w,
-                        color: adaptiveButtonColor(),
-                      ),
+                    SvgPicture.asset(
+                      extendedFeature[index]['icon'] as String,
+                      width: 20.w,
+                      height: 20.w,
+                      color: context.textTheme.bodyText2.color,
                     ),
+                    Gap(10.w),
                     Text(
                       extendedFeature[index]['name'] as String,
-                      style: TextStyle(fontSize: 19.sp),
+                      style: TextStyle(height: 1.2, fontSize: 19.sp),
                     ),
                   ],
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget get emoticonButton => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: triggerEmoticonPad,
         child: Container(
-          margin: EdgeInsets.only(right: 12.w),
+          margin: EdgeInsets.only(right: 16.w),
           child: Center(
-            child: Icon(
-              Icons.insert_emoticon,
-              color: showEmoticonPad ? currentThemeColor : null,
-              size: 30.w,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+              width: 24.w,
+              height: 24.w,
+              color: showEmoticonPad
+                  ? currentThemeColor
+                  : context.theme.iconTheme.color,
             ),
           ),
         ),
@@ -596,23 +598,39 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 slivers: <Widget>[
                   if (provider.post != null)
                     SliverToBoxAdapter(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          TeamPostCard(
-                            post: provider.post,
-                            detailPageState: this,
-                          ),
-                          Divider(
-                            color: Theme.of(context).canvasColor,
-                            height: 10.h,
-                            thickness: 10.h,
-                          ),
-                        ],
+                      child: TeamPostCard(
+                        post: provider.post,
+                        detailPageState: this,
                       ),
                     ),
                   if (!loading)
-                    if (list != null)
+                    if (list != null) ...<Widget>[
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 10.w,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1.w,
+                                color: context.theme.dividerColor,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            '评论',
+                            style: TextStyle(
+                              color: context.textTheme.bodyText2.color
+                                  .withOpacity(0.625),
+                              height: 1.2,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (_, int index) {
@@ -647,15 +665,12 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                 );
                                 break;
                             }
-                            return Padding(
-                              padding: EdgeInsets.all(4.w),
-                              child: item,
-                            );
+                            return item;
                           },
                           childCount: list.length + 1,
                         ),
-                      )
-                    else
+                      ),
+                    ] else
                       SliverToBoxAdapter(
                         child: SizedBox(
                           height: 300.h,
@@ -666,7 +681,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: 300.h,
-                        child: const Center(child: SpinKitWidget()),
+                        child: const Center(
+                          child: LoadMoreSpinningIcon(isRefreshing: true),
+                        ),
                       ),
                     ),
                 ],
@@ -692,7 +709,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     textField,
+                    Gap(12.w),
                     extendedPadButton,
+                    Gap(12.w),
                     sendButton,
                   ],
                 ),

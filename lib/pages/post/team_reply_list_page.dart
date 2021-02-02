@@ -220,7 +220,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const SpinKitWidget();
+      return const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
     }
     if (replyList.isEmpty) {
       return Center(

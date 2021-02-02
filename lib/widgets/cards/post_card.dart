@@ -91,7 +91,11 @@ class _PostCardState extends State<PostCard> {
       children: <Widget>[
         Text(
           post.nickname ?? post.uid,
-          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+          style: TextStyle(
+            height: 1.2,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
+          ),
           textAlign: TextAlign.left,
         ),
         if (Constants.developerList.contains(post.uid))
@@ -233,8 +237,11 @@ class _PostCardState extends State<PostCard> {
             Widget loader;
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
-                loader = const Center(
-                  child: LoadMoreSpinningIcon(isRefreshing: true),
+                loader = DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.w),
+                    color: context.theme.dividerColor,
+                  ),
                 );
                 break;
               case LoadState.completed:

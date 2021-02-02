@@ -355,8 +355,11 @@ class AppCenterPage extends StatelessWidget {
             ),
             body: FixedAppBarWrapper(
               appBar: const FixedAppBar(title: Text('应用中心')),
-              body:
-                  fetching ? const SpinKitWidget() : categoryListView(context),
+              body: fetching
+                  ? const Center(
+                      child: LoadMoreSpinningIcon(isRefreshing: true),
+                    )
+                  : categoryListView(context),
             ),
           ),
         );

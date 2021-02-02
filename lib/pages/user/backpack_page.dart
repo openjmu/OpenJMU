@@ -195,7 +195,7 @@ class _BackpackPageState extends State<BackpackPage> {
       body: FixedAppBarWrapper(
         appBar: const FixedAppBar(title: Text('背包')),
         body: isLoading
-            ? const Center(child: SpinKitWidget())
+            ? const Center(child: LoadMoreSpinningIcon(isRefreshing: true))
             : ListView.builder(
                 padding: EdgeInsets.symmetric(vertical: 10.w),
                 itemCount: myItems.length,

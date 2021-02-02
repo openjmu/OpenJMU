@@ -103,6 +103,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     Text(
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
+                        height: 1.2,
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -231,8 +232,11 @@ class TeamPostPreviewCard extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const Center(
-                child: LoadMoreSpinningIcon(isRefreshing: true),
+              loader = DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.w),
+                  color: context.theme.dividerColor,
+                ),
               );
               break;
             case LoadState.completed:

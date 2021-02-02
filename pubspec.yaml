@@ -95,7 +95,6 @@ flutter:
     - assets/icons/user/
     - assets/placeholders/
     - images/
-    - images/placeholder/
   fonts:
     - family: "chocolate"
       fonts:

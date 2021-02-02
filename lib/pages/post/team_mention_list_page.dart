@@ -193,7 +193,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const SpinKitWidget();
+      return const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
     }
     if (mentionedList.isEmpty) {
       return Center(

@@ -61,9 +61,11 @@ class MessagePage extends StatelessWidget {
   }
 
   Widget _announcementsList(BuildContext context) {
-    return Selector<SettingsProvider, List<Map<dynamic, dynamic>>>(
-      selector: (_, SettingsProvider p) => p.announcements,
-      builder: (_, List<Map<dynamic, dynamic>> announcements, __) {
+    return Consumer<SettingsProvider>(
+      builder: (_, SettingsProvider p, __) {
+        if (!p.announcementsEnabled) {
+          return const SizedBox.shrink();
+        }
         return DefaultTextStyle.merge(
           style: TextStyle(height: 1.2, fontSize: 18.sp),
           child: ConstrainedBox(
@@ -75,9 +77,9 @@ class MessagePage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: List<Widget>.generate(
-                  announcements.length,
+                  p.announcements.length,
                   (int index) => _AnnouncementItemWidget(
-                    item: announcements[index].cast<String, dynamic>(),
+                    item: p.announcements[index].cast<String, dynamic>(),
                   ),
                 ),
               ),

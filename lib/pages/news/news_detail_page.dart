@@ -87,7 +87,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   ),
                 ),
               )
-            : const SpinKitWidget(),
+            : const Center(
+                child: LoadMoreSpinningIcon(isRefreshing: true),
+              ),
       ),
     );
   }

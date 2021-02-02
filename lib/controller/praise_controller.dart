@@ -220,7 +220,9 @@ class _PraiseListState extends State<PraiseList>
       }
       return _body;
     } else {
-      return const SpinKitWidget();
+      return const Center(
+        child: LoadMoreSpinningIcon(isRefreshing: true),
+      );
     }
   }
 }
@@ -352,45 +354,49 @@ class PraiseListInPostState extends State<PraiseListInPost>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return isLoading
-        ? const SpinKitWidget()
-        : firstLoadComplete
-            ? ExtendedListView.separated(
-                padding: EdgeInsets.zero,
-                separatorBuilder: (BuildContext context, int index) => Divider(
-                  color: Theme.of(context).dividerColor,
-                  height: 1.h,
+    if (isLoading) {
+      return const Center(
+        child: LoadMoreSpinningIcon(isRefreshing: true),
+      );
+    }
+    if (!firstLoadComplete) {
+      return const LoadMoreIndicator(canLoadMore: false);
+    }
+    return ExtendedListView.separated(
+      padding: EdgeInsets.zero,
+      separatorBuilder: (BuildContext context, int index) => Divider(
+        color: Theme.of(context).dividerColor,
+        height: 1.h,
+      ),
+      extendedListDelegate: const ExtendedListDelegate(),
+      itemCount: _praises.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == _praises.length - 1 && canLoadMore) {
+          _loadList();
+        }
+        if (index == _praises.length) {
+          return LoadMoreIndicator(
+            canLoadMore: canLoadMore && !isLoading,
+          );
+        } else {
+          return Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 24.w,
+                  vertical: 10.h,
                 ),
-                extendedListDelegate: const ExtendedListDelegate(),
-                itemCount: _praises.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == _praises.length - 1 && canLoadMore) {
-                    _loadList();
-                  }
-                  if (index == _praises.length) {
-                    return LoadMoreIndicator(
-                      canLoadMore: canLoadMore && !isLoading,
-                    );
-                  } else {
-                    return Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 24.w,
-                            vertical: 10.h,
-                          ),
-                          child: UserAPI.getAvatar(
-                            uid: _praises[index].uid,
-                          ),
-                        ),
-                        Expanded(
-                          child: getPostNickname(context, _praises[index]),
-                        ),
-                      ],
-                    );
-                  }
-                },
-              )
-            : const LoadMoreIndicator(canLoadMore: false);
+                child: UserAPI.getAvatar(
+                  uid: _praises[index].uid,
+                ),
+              ),
+              Expanded(
+                child: getPostNickname(context, _praises[index]),
+              ),
+            ],
+          );
+        }
+      },
+    );
   }
 }

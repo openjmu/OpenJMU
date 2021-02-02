@@ -173,7 +173,11 @@ class _ScorePageState extends State<ScorePage>
       child: ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: const AbsorbPointer(child: SpinKitWidget()),
+          child: const AbsorbPointer(
+            child: Center(
+              child: LoadMoreSpinningIcon(isRefreshing: true),
+            ),
+          ),
         ),
       ),
     );

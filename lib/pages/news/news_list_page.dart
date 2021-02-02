@@ -252,10 +252,14 @@ class NewsListPageState extends State<NewsListPage>
                 ),
         );
       } else {
-        return const SpinKitWidget();
+        return const Center(
+          child: LoadMoreSpinningIcon(isRefreshing: true),
+        );
       }
     } else {
-      return const Center(child: SpinKitWidget());
+      return const Center(
+        child: LoadMoreSpinningIcon(isRefreshing: true),
+      );
     }
   }
 }

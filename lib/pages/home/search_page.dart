@@ -372,7 +372,9 @@ class SearchPageState extends State<SearchPage>
                       ),
                     )
               : const SizedBox.shrink()
-          : const SpinKitWidget(),
+          : const Center(
+              child: LoadMoreSpinningIcon(isRefreshing: true),
+            ),
     );
   }
 }

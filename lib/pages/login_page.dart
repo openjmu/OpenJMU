@@ -287,21 +287,19 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Announcement widget.
   /// 公告部件
   Widget get announcementWidget {
-    return Selector<SettingsProvider, bool>(
-      selector: (_, SettingsProvider provider) => provider.announcementsEnabled,
-      builder: (_, bool announcementEnabled, __) {
-        if (announcementEnabled) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 15.w),
-            child: AnnouncementWidget(
-              backgroundColor: defaultLightColor.withOpacity(0.75),
-              height: 60.w,
-              radius: 15.0,
-            ),
-          );
-        } else {
+    return Consumer<SettingsProvider>(
+      builder: (_, SettingsProvider p, __) {
+        if (!p.announcementsEnabled) {
           return const SizedBox.shrink();
         }
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.w),
+          child: AnnouncementWidget(
+            backgroundColor: defaultLightColor.withOpacity(0.75),
+            height: 60.w,
+            radius: 15.0,
+          ),
+        );
       },
     );
   }
@@ -469,6 +467,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                           ? const LoadMoreSpinningIcon(
                               isRefreshing: true,
                               color: Colors.white,
+                              size: 32,
                             )
                           : Text(
                               '登录',
@@ -523,7 +522,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                                 : Alignment.center,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 announcementWidget,
                                 usernameField,

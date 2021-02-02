@@ -3,7 +3,6 @@
 /// [Date] 2019-11-19 15:56
 ///
 import 'dart:async';
-import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -24,97 +23,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   final TeamPost topPost;
   final TeamPostDetailPageState detailPageState;
 
-  Widget _header(BuildContext context, TeamPostProvider provider) {
-    return Container(
-      height: 70.h,
-      padding: EdgeInsets.symmetric(vertical: 6.h),
-      child: Row(
-        children: <Widget>[
-          UserAPI.getAvatar(uid: provider.post.uid),
-          Gap(16.w),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(
-                      provider.post.nickname ?? provider.post.uid.toString(),
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (provider.post.uid == topPost.uid)
-                      Container(
-                        margin: EdgeInsets.only(left: 6.w),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 6.w,
-                          vertical: 3.h,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.w),
-                          color: currentThemeColor,
-                        ),
-                        child: Text(
-                          '楼主',
-                          style: TextStyle(
-                            height: 1.2,
-                            fontSize: 14.sp,
-                            color: adaptiveButtonColor(),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    if (Constants.developerList.contains(provider.post.uid))
-                      Padding(
-                        padding: EdgeInsets.only(left: 6.w),
-                        child: const DeveloperTag(),
-                      ),
-                  ],
-                ),
-                _postTime(context, provider.post),
-              ],
-            ),
-          ),
-          SizedBox.fromSize(
-            size: Size.square(50.w),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                Icons.reply,
-                color: Theme.of(context).dividerColor,
-              ),
-              iconSize: 36.w,
-              onPressed: () {
-                detailPageState.setReplyToPost(provider.post);
-              },
-            ),
-          ),
-          if (topPost.uid == currentUser.uid ||
-              provider.post.uid == currentUser.uid)
-            SizedBox.fromSize(
-              size: Size.square(50.w),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.delete_outline,
-                  color: Theme.of(context).dividerColor,
-                ),
-                iconSize: 40.w,
-                onPressed: () {
-                  confirmDelete(context, provider);
-                },
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> confirmDelete(
-      BuildContext context, TeamPostProvider provider) async {
+  Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除此楼',
@@ -122,174 +31,189 @@ class TeamCommentPreviewCard extends StatelessWidget {
       showConfirm: true,
     );
     if (confirm) {
-      delete(provider);
+      delete(context);
     }
   }
 
-  void delete(TeamPostProvider provider) {
-    TeamPostAPI.deletePost(postId: provider.post.tid, postType: 7).then(
+  void delete(BuildContext context) {
+    final TeamPostProvider p = context.read<TeamPostProvider>();
+    final TeamPost post = context.read<TeamPostProvider>().post;
+    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then(
       (dynamic _) {
         showToast('删除成功');
-        provider.commentDeleted();
+        p.commentDeleted();
         Instances.eventBus.fire(TeamCommentDeletedEvent(
-          postId: provider.post.tid,
+          postId: post.tid,
           topPostId: topPost.tid,
         ));
       },
     );
   }
 
+  Widget _header(BuildContext context, TeamPost post) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              Text(
+                post.nickname ?? post.uid.toString(),
+                style: TextStyle(
+                  height: 1.2,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Gap(6.w),
+              _postTime(context, post),
+              if (post.uid == topPost.uid)
+                Text(
+                  ' (楼主)',
+                  style: context.textTheme.caption.copyWith(
+                    height: 1.2,
+                    fontSize: 17.sp,
+                  ),
+                ),
+              if (Constants.developerList.contains(post.uid))
+                Padding(
+                  padding: EdgeInsets.only(left: 6.w),
+                  child: const DeveloperTag(),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
-      '第${post.floor}楼 · ${TeamPostAPI.timeConverter(post)}',
+      '${post.floor}L · ${TeamPostAPI.timeConverter(post)}',
       style: context.textTheme.caption.copyWith(
+        height: 1.2,
         fontSize: 16.sp,
         fontWeight: FontWeight.normal,
       ),
     );
   }
 
-  Widget _content(TeamPost post) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: 4.h,
-          ),
-          child: ExtendedText(
-            post.content ?? '',
-            style: TextStyle(fontSize: 19.sp),
-            onSpecialTextTap: specialTextTapRecognizer,
-            maxLines: 8,
-            overflowWidget: contentOverflowWidget,
-            specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-          ),
-        ),
-      );
+  Widget _content(TeamPost post) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: ExtendedText(
+        post.content ?? '',
+        style: TextStyle(height: 1.2, fontSize: 17.sp),
+        onSpecialTextTap: specialTextTapRecognizer,
+        maxLines: 8,
+        overflowWidget: contentOverflowWidget,
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+      ),
+    );
+  }
 
-  Widget _replyInfo(BuildContext context, TeamPost post) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: post.replyInfo != null && post.replyInfo.isNotEmpty
-            ? () {
-                final TeamPostProvider provider = TeamPostProvider(post);
-                navigatorState.pushNamed(
-                  Routes.openjmuTeamPostDetail.name,
-                  arguments: Routes.openjmuTeamPostDetail.d(
-                    provider: provider,
-                    type: TeamPostType.comment,
-                  ),
-                );
-              }
-            : null,
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 12.h),
-          padding: EdgeInsets.symmetric(
-            horizontal: 24.w,
-            vertical: 8.h,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.w),
-            color: Theme.of(context).canvasColor.withOpacity(0.5),
-          ),
-          child: ListView.builder(
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: post.replyInfo.length +
-                (post.replyInfo.length != post.repliesCount ? 1 : 0),
-            itemBuilder: (_, int index) {
-              if (index == post.replyInfo.length) {
-                return Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.expand_more,
-                        size: 20.w,
-                        color: context.textTheme.caption.color,
-                      ),
-                      Text(
-                        '查看更多回复',
-                        style: context.textTheme.caption.copyWith(
-                          fontSize: 15.sp,
-                        ),
-                      ),
-                      Icon(
-                        Icons.expand_more,
-                        size: 20.w,
-                        color: context.textTheme.caption.color,
-                      ),
-                    ],
-                  ),
-                );
-              }
-              final Map<String, dynamic> _post =
-                  post.replyInfo[index].cast<String, dynamic>();
+  Widget _replyInfo(BuildContext context, TeamPost post) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        if (post.replyInfo != null && post.replyInfo.isNotEmpty) {
+          final TeamPostProvider provider = TeamPostProvider(post);
+          navigatorState.pushNamed(
+            Routes.openjmuTeamPostDetail.name,
+            arguments: Routes.openjmuTeamPostDetail.d(
+              provider: provider,
+              type: TeamPostType.comment,
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: Theme.of(context).canvasColor.withOpacity(0.5),
+        ),
+        child: ListView.builder(
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: post.replyInfo.length +
+              (post.replyInfo.length != post.repliesCount ? 1 : 0),
+          itemBuilder: (_, int index) {
+            if (index == post.replyInfo.length) {
               return Padding(
-                padding: EdgeInsets.symmetric(vertical: 4.h),
+                padding: EdgeInsets.only(top: 14.w),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
-                      child: ExtendedText(
-                        _post['content'] as String,
-                        specialTextSpanBuilder: StackSpecialTextSpanBuilder(
-                          prefixSpans: <InlineSpan>[
-                            TextSpan(
-                              text: '@${_post['user']['nickname']}',
-                              style: const TextStyle(color: Colors.blue),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  navigatorState.pushNamed(
-                                    Routes.openjmuUserPage.name,
-                                    arguments: Routes.openjmuUserPage.d(
-                                      uid: _post['user']['uid'].toString(),
-                                    ),
-                                  );
-                                },
-                            ),
-                            if (_post['user']['uid'].toString() == topPost.uid)
-                              WidgetSpan(
-                                alignment: ui.PlaceholderAlignment.middle,
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 10.w),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 6.w,
-                                    vertical: 2.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5.w),
-                                    color: currentThemeColor,
-                                  ),
-                                  child: Text(
-                                    '楼主',
-                                    style: TextStyle(
-                                      height: 1.2,
-                                      fontSize: 14.sp,
-                                      color: adaptiveButtonColor(),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            const TextSpan(
-                              text: ': ',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          ],
-                        ),
-                        style: context.textTheme.bodyText2.copyWith(
-                          fontSize: 19.sp,
-                        ),
-                        onSpecialTextTap: specialTextTapRecognizer,
+                    Icon(
+                      Icons.expand_more,
+                      size: 20.w,
+                      color: context.textTheme.caption.color,
+                    ),
+                    Text(
+                      '查看更多回复',
+                      style: context.textTheme.caption.copyWith(
+                        fontSize: 15.sp,
                       ),
+                    ),
+                    Icon(
+                      Icons.expand_more,
+                      size: 20.w,
+                      color: context.textTheme.caption.color,
                     ),
                   ],
                 ),
               );
-            },
-          ),
+            }
+            final Map<String, dynamic> _post =
+                post.replyInfo[index].cast<String, dynamic>();
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 4.h),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ExtendedText(
+                      _post['content'] as String,
+                      specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+                        prefixSpans: <InlineSpan>[
+                          TextSpan(
+                            text: '@${_post['user']['nickname']}',
+                            style: const TextStyle(color: Colors.blue),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                navigatorState.pushNamed(
+                                  Routes.openjmuUserPage.name,
+                                  arguments: Routes.openjmuUserPage.d(
+                                    uid: _post['user']['uid'].toString(),
+                                  ),
+                                );
+                              },
+                          ),
+                          if (_post['user']['uid'].toString() == topPost.uid)
+                            const TextSpan(text: '(楼主)'),
+                          const TextSpan(
+                            text: ': ',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                      style: context.textTheme.bodyText2.copyWith(
+                        height: 1.2,
+                        fontSize: 17.sp,
+                      ),
+                      onSpecialTextTap: specialTextTapRecognizer,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
-      );
+      ),
+    );
+  }
 
   Widget _images(BuildContext context, TeamPost post) {
     final List<Widget> imagesWidget = <Widget>[];
@@ -306,8 +230,11 @@ class TeamCommentPreviewCard extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const Center(
-                child: LoadMoreSpinningIcon(isRefreshing: true),
+              loader = DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.w),
+                  color: context.theme.dividerColor,
+                ),
               );
               break;
             case LoadState.completed:
@@ -379,61 +306,69 @@ class TeamCommentPreviewCard extends StatelessWidget {
     return _image;
   }
 
-  Future<bool> onLikeButtonTap(bool isLiked, TeamPost post) {
-    final Completer<bool> completer = Completer<bool>();
-
-    post.isLike = !post.isLike;
-    !isLiked ? post.praisesCount++ : post.praisesCount--;
-    completer.complete(!isLiked);
-
-    TeamPraiseAPI.requestPraise(post.tid, !isLiked).catchError((dynamic e) {
-      isLiked ? post.praisesCount++ : post.praisesCount--;
-      completer.complete(isLiked);
-      return completer.future;
-    });
-
-    return completer.future;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<TeamPostProvider>(
-      builder: (_, TeamPostProvider provider, __) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
+    return Selector<TeamPostProvider, TeamPost>(
+      selector: (_, TeamPostProvider p) => p.post,
+      builder: (_, TeamPost post, __) => Container(
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+          ),
+          color: context.theme.cardColor,
+        ),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: 12.w,
-                vertical: 6.h,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.w,
-                vertical: 8.h,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
-                color: Theme.of(context).cardColor,
-              ),
+            UserAPI.getAvatar(uid: post.uid),
+            Gap(16.w),
+            Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _header(context, provider),
-                  _content(provider.post),
-                  if (provider.post.pics != null &&
-                      provider.post.pics.isNotEmpty)
-                    _images(context, provider.post),
-                  if (provider.post.replyInfo != null &&
-                      provider.post.replyInfo.isNotEmpty)
-                    _replyInfo(context, provider.post),
+                  _header(context, post),
+                  VGap(12.w),
+                  _content(post),
+                  if (post.pics != null && post.pics.isNotEmpty)
+                    _images(context, post),
+                  if (post.replyInfo != null && post.replyInfo.isNotEmpty)
+                    _replyInfo(context, post),
                 ],
               ),
             ),
+            GestureDetector(
+              child: Container(
+                width: 48.w,
+                height: 48.w,
+                alignment: AlignmentDirectional.topEnd,
+                child: Icon(
+                  Icons.reply,
+                  size: 30.w,
+                  color: Theme.of(context).dividerColor,
+                ),
+              ),
+              onTap: () {
+                detailPageState.setReplyToPost(post);
+              },
+            ),
+            if (topPost.uid == currentUser.uid || post.uid == currentUser.uid)
+              SizedBox.fromSize(
+                size: Size.square(50.w),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                  iconSize: 40.w,
+                  onPressed: () => confirmDelete(context),
+                ),
+              ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 }

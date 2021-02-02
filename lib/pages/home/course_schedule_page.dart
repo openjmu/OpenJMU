@@ -553,7 +553,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                       ? CrossFadeState.showFirst
                       : CrossFadeState.showSecond,
                   firstChild: const Center(
-                    child: LoadMoreSpinningIcon(isRefreshing: true, size: 60),
+                    child: LoadMoreSpinningIcon(isRefreshing: true),
                   ),
                   secondChild: Column(
                     children: <Widget>[
@@ -1370,7 +1370,12 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   borderRadius: BorderRadius.circular(Screens.width / 2),
                 ),
                 child: loading
-                    ? const SpinKitWidget(size: 30)
+                    ? const Center(
+                        child: LoadMoreSpinningIcon(
+                          isRefreshing: true,
+                          size: 30,
+                        ),
+                      )
                     : Icon(
                         Icons.check,
                         color: content == widget.course?.name

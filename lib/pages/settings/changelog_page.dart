@@ -299,7 +299,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const SpinKitWidget(),
+            const LoadMoreSpinningIcon(isRefreshing: true),
             VGap(40.h),
             Text.rich(
               TextSpan(

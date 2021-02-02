@@ -40,7 +40,7 @@ class LoadingDialogState extends State<LoadingDialog> {
   Duration _duration = 1500.milliseconds;
   String _type, _text;
   VoidCallback _customPop;
-  Widget _icon = const SpinKitWidget();
+  Widget _icon = const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
 
   @override
   void initState() {

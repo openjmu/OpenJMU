@@ -137,67 +137,37 @@ class SplashState extends State<SplashPage> {
     }
   }
 
-  Widget get logo => Container(
-        margin: EdgeInsets.all(30.w),
-        child: Hero(
-          tag: 'Logo',
-          child: SvgPicture.asset(
-            R.IMAGES_SPLASH_PAGE_LOGO_SVG,
-            width: 150.w,
-            height: 150.h,
-            color: currentIsDark ? currentThemeColor : adaptiveButtonColor(),
+  Widget get logo {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 30.w),
+      child: SvgPicture.asset(
+        R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
+        width: Screens.width / 3,
+        color: currentThemeColor,
+      ),
+    );
+  }
+
+  Widget get loginWidget {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        LoadMoreSpinningIcon(isRefreshing: isOnline, size: 36),
+        Gap(15.w),
+        DefaultTextStyle.merge(
+          style: TextStyle(
+            color: context.textTheme.caption.color.withOpacity(0.5),
+            height: 1.2,
+            fontSize: 18.sp,
+          ),
+          child: AnimatedSwitcher(
+            duration: kThemeChangeDuration,
+            child: isOnline ? const Text('正在加载…') : const Text('网络未连接'),
           ),
         ),
-      );
-
-  Widget get loginWidget => Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(
-                bottom: 10.h,
-              ),
-              child: SpinKitWidget(
-                color:
-                    currentIsDark ? currentThemeColor : adaptiveButtonColor(),
-                size: 36.0,
-              ),
-            ),
-          ),
-          VGap(30.h),
-        ],
-      );
-
-  Widget get warningWidget => Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(bottom: 10.h),
-              child: Center(
-                child: Icon(
-                  Icons.signal_wifi_off,
-                  color:
-                      currentIsDark ? currentThemeColor : adaptiveButtonColor(),
-                  size: 48.w,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 30.h,
-            child: Center(
-              child: Text(
-                '请检查联网状态',
-                style: TextStyle(
-                  color:
-                      currentIsDark ? currentThemeColor : adaptiveButtonColor(),
-                  fontSize: 24.sp,
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,27 +192,15 @@ class SplashState extends State<SplashPage> {
                 AnimatedContainer(
                   duration: 200.milliseconds,
                   margin: EdgeInsets.only(
-                    top: suSetHeight(
-                        showLoading && isOnline != null ? 20.0 : 0.0),
+                    top: showLoading && isOnline != null ? 10.w : 0,
                   ),
                   width: Screens.width,
-                  height: suSetHeight(
-                      showLoading && isOnline != null ? 100.0 : 0.0),
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: SizedBox(
-                      height: suSetHeight(
-                          showLoading && isOnline != null ? 100.0 : 0.0),
-                      child: AnimatedSwitcher(
-                        duration: 300.milliseconds,
-                        child: showLoading && isOnline != null
-                            ? AnimatedSwitcher(
-                                duration: 300.milliseconds,
-                                child: isOnline ? loginWidget : warningWidget,
-                              )
-                            : const SizedBox.shrink(),
-                      ),
-                    ),
+                  height: showLoading && isOnline != null ? 50.w : 0,
+                  child: AnimatedSwitcher(
+                    duration: 300.milliseconds,
+                    child: showLoading && isOnline != null
+                        ? loginWidget
+                        : const SizedBox.shrink(),
                   ),
                 ),
               ],

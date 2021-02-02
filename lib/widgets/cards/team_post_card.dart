@@ -2,7 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-18 11:47
 ///
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
@@ -77,17 +76,18 @@ class _TeamPostCardState extends State<TeamPostCard> {
               ],
             ),
           ),
-          SizedBox.fromSize(
-            size: Size.square(50.w),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
+          GestureDetector(
+            child: Container(
+              width: 48.w,
+              height: 48.w,
+              alignment: AlignmentDirectional.topEnd,
+              child: Icon(
                 Icons.reply,
+                size: 30.w,
                 color: Theme.of(context).dividerColor,
               ),
-              iconSize: 36.h,
-              onPressed: widget.detailPageState.setReplyToTop,
             ),
+            onTap: widget.detailPageState.setReplyToTop,
           ),
         ],
       ),
@@ -129,8 +129,11 @@ class _TeamPostCardState extends State<TeamPostCard> {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const Center(
-                child: LoadMoreSpinningIcon(isRefreshing: true),
+              loader = DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.w),
+                  color: context.theme.dividerColor,
+                ),
               );
               break;
             case LoadState.completed:
@@ -197,83 +200,80 @@ class _TeamPostCardState extends State<TeamPostCard> {
       );
     }
     _image = Padding(
-      padding: EdgeInsets.only(
-        top: 6.h,
-      ),
+      padding: EdgeInsets.symmetric(vertical: 10.w),
       child: _image,
     );
     return _image;
   }
 
-  Widget get _praisors => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget get _praisors {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
+      decoration: BoxDecoration(
+        border: Border.symmetric(
+          horizontal: BorderSide(width: 1.w, color: context.theme.dividerColor),
+        ),
+        color: context.theme.cardColor,
+      ),
+      child: Row(
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 10.h),
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            height: 90.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Theme.of(context).canvasColor,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 40.h,
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (_, __) => SizedBox(
-                      width: 10.w,
-                    ),
-                    itemCount: math.min(post.praisor.length, 9),
-                    itemBuilder: (_, int index) => UnconstrainedBox(
-                      child: UserAPI.getAvatar(
-                        uid: post.praisor[index]['uid'].toString(),
-                        size: 40.0,
+          SvgPicture.asset(
+            R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
+            width: 24.w,
+            color: currentThemeColor,
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    child: DefaultTextStyle.merge(
+                      style: context.textTheme.caption.copyWith(
+                        height: 1.2,
+                        fontSize: 16.sp,
+                      ),
+                      child: Text(
+                        <String>[
+                          ...post.praisor
+                              .sublist(0, math.min(post.praisor.length, 3))
+                              .map((Map<dynamic, dynamic> userInfo) =>
+                          userInfo['nickname'] as String)
+                              .toList()
+                        ].join('、'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10.h),
-                  child: Text(
-                    '${<String>[
-                      ...post.praisor
-                          .sublist(0, math.min(post.praisor.length, 3))
-                          .map((Map<dynamic, dynamic> userInfo) =>
-                              userInfo['nickname'] as String)
-                          .toList()
-                    ].join('、')}'
-                    '${post.praisesCount > 3 ? '等${post.praisesCount}人' : ''}'
+                  Text(
                     '觉得很赞',
                     style: context.textTheme.caption.copyWith(
-                      fontSize: 14.sp,
+                      height: 1.2,
+                      fontSize: 16.sp,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 40.w,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: math.min(post.praisor.length, 3),
+              itemBuilder: (_, int index) => UserAPI.getAvatar(
+                uid: post.praisor[index]['uid'].toString(),
+                size: 40,
+              ),
+              separatorBuilder: (_, __) => Gap(10.w),
             ),
           ),
         ],
-      );
-
-  Future<bool> onLikeButtonTap(bool isLiked) {
-    final Completer<bool> completer = Completer<bool>();
-
-    post.isLike = !post.isLike;
-    !isLiked ? post.praisesCount++ : post.praisesCount--;
-    completer.complete(!isLiked);
-
-    TeamPraiseAPI.requestPraise(post.tid, !isLiked).catchError((dynamic e) {
-      isLiked ? post.praisesCount++ : post.praisesCount--;
-      completer.complete(isLiked);
-      return completer.future;
-    });
-
-    return completer.future;
+      ),
+    );
   }
 
   @override
@@ -283,10 +283,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 10.w,
-          ),
+          margin: EdgeInsets.all(16.w),
           padding: EdgeInsets.symmetric(
             horizontal: 24.w,
             vertical: 8.w,
@@ -302,10 +299,10 @@ class _TeamPostCardState extends State<TeamPostCard> {
               _header(context),
               _content,
               if (post.pics?.isNotEmpty ?? false) _images(context),
-              if (post.praisor?.isNotEmpty ?? false) _praisors,
             ],
           ),
         ),
+        if (post.praisor?.isNotEmpty == true) _praisors,
       ],
     );
   }

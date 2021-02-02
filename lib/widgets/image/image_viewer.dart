@@ -249,7 +249,9 @@ class ImageViewerState extends State<ImageViewer>
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const SpinKitWidget();
+              loader = const Center(
+                child: LoadMoreSpinningIcon(isRefreshing: true),
+              );
               break;
             case LoadState.completed:
               loader = TweenAnimationBuilder<double>(
