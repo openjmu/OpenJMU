@@ -232,7 +232,9 @@ class SelfPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 45.w),
                     child: Text(
                       '应用捷径会出现在这里\n请前往全部应用进行设置',
-                      style: TextStyle(fontSize: 16.sp),
+                      style: context.textTheme.caption.copyWith(
+                        fontSize: 16.sp,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
