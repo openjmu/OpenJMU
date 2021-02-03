@@ -182,9 +182,6 @@ class SplashState extends State<SplashPage> {
           curve: Curves.easeInOut,
           opacity: firstFramed ? 1.0 : 0.0,
           child: Scaffold(
-            backgroundColor: currentIsDark
-                ? Theme.of(context).scaffoldBackgroundColor
-                : currentThemeColor,
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

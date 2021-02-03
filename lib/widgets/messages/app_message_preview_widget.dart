@@ -11,14 +11,12 @@ import 'package:openjmu/constants/constants.dart';
 
 class AppMessagePreviewWidget extends StatefulWidget {
   const AppMessagePreviewWidget({
-    @required this.message,
-    this.height = 70.0,
     Key key,
+    @required this.message,
   })  : assert(message != null),
         super(key: key);
 
   final AppMessage message;
-  final double height;
 
   @override
   _AppMessagePreviewWidgetState createState() =>
@@ -73,26 +71,25 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
         if (unreadMessages.isEmpty) {
           return const SizedBox.shrink();
         }
-        return Container(
-          width: 28.w,
-          height: 28.w,
-          decoration: BoxDecoration(
-            color: currentThemeColor,
-            shape: BoxShape.circle,
-          ),
+        return AspectRatio(
+          aspectRatio: 1,
           child: Center(
-            child: Selector<ThemesProvider, bool>(
-              selector: (_, ThemesProvider provider) => provider.dark,
-              builder: (_, bool dark, __) {
-                return Text(
-                  '${unreadMessages.length}',
-                  style: TextStyle(
-                    color: adaptiveButtonColor(),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
+            child: Container(
+              width: 28.w,
+              height: 28.w,
+              decoration: BoxDecoration(
+                color: currentThemeColor,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${unreadMessages.length}',
+                style: TextStyle(
+                  color: adaptiveButtonColor(),
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         );
@@ -176,9 +173,13 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        height: widget.height.h,
-        color: context.theme.cardColor,
+        padding: EdgeInsets.only(left: 16.w),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+          ),
+          color: context.theme.cardColor,
+        ),
         child: Row(
           children: <Widget>[
             _appIconWidget(context, app),

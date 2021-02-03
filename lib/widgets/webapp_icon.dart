@@ -24,18 +24,24 @@ class WebAppIcon extends StatelessWidget {
       'appid=${app.appId}'
       '&code=${app.code}';
 
-  Future<Widget> loadAsset() async {
+  Future<bool> get exist async {
     try {
       await rootBundle.load(iconPath);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<Widget> loadAsset() async {
+    if (await exist) {
       return SvgPicture.asset(
         iconPath,
         width: size.w,
         height: size.w,
       );
-    } catch (e) {
-      LogUtils.e(
-        'Error when load ${app.name}\'s icon: $e.\nLoading fallback icon...',
-      );
+    } else {
+      LogUtils.e('Error when load ${app.name}\'s icon.');
       return ExtendedImage.network(
         oldIconUrl,
         fit: BoxFit.fill,

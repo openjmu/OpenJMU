@@ -3,10 +3,11 @@
 /// [Date] 2019-11-01 14:12
 ///
 import 'dart:convert';
-import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:extended_list/extended_list.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -14,9 +15,7 @@ import 'package:openjmu/constants/constants.dart';
 @FFRoute(
   name: 'openjmu://chat-app-message-page',
   routeName: '应用消息页',
-  argumentImports: <String>[
-    'import \'model/models.dart\';',
-  ],
+  argumentImports: <String>['import \'model/models.dart\';'],
 )
 class ChatAppMessagePage extends StatefulWidget {
   const ChatAppMessagePage({
@@ -33,175 +32,12 @@ class ChatAppMessagePage extends StatefulWidget {
 class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   final ScrollController _scrollController = ScrollController();
 
-  bool shrinkWrap = true;
-
   MessagesProvider messagesProvider;
 
   @override
   void initState() {
     super.initState();
     messagesProvider = Provider.of<MessagesProvider>(context, listen: false);
-  }
-
-  Widget get topBar {
-    return FixedAppBar(
-      title: Padding(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  WebAppIcon(size: 60.0, app: widget.app),
-                  Text(
-                    widget.app.name,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget get bottomBar {
-    return Theme(
-      data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
-      child: Container(
-        margin: EdgeInsets.only(
-          bottom: math.max(MediaQuery.of(context).padding.bottom, 34.0),
-        ),
-        child: UnconstrainedBox(
-          child: MaterialButton(
-            shape: const RoundedRectangleBorder(borderRadius: maxBorderRadius),
-            padding: EdgeInsets.all(10.h),
-            highlightElevation: 4.0,
-            color: currentThemeColor,
-            child: Center(
-              child: Text(
-                '前往应用',
-                style: TextStyle(color: Colors.white, fontSize: 22.sp),
-              ),
-            ),
-            onPressed: () {
-              API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget get messageList {
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Flexible(
-            child: Consumer<MessagesProvider>(
-              builder: (_, MessagesProvider provider, __) {
-                final List<AppMessage> messages = List<AppMessage>.from(
-                  provider.appsMessages[widget.app.appId],
-                );
-                return ListView.builder(
-                  padding: EdgeInsets.zero,
-                  controller: _scrollController,
-                  shrinkWrap: shrinkWrap,
-                  reverse: true,
-                  itemCount: messages.length,
-                  itemBuilder: (_, int i) {
-                    tryDecodeContent(messages[i]);
-                    return messageWidget(messages[i]);
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget messageWidget(AppMessage message) {
-    return Container(
-      margin: EdgeInsets.all(12.w).copyWith(right: 48.w),
-      width: Screens.width,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Flexible(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 10.w,
-                ),
-                constraints: BoxConstraints(minHeight: 30.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.w),
-                  color: Theme.of(context).cardColor,
-                ),
-                child: ExtendedText(
-                  message.content,
-                  selectionEnabled: true,
-                  style: TextStyle(fontSize: 20.sp),
-                  specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
-                  onSpecialTextTap: (dynamic data) {
-                    API.launchWeb(
-                      url: data['content'] as String,
-                      title: '网页链接',
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 8.w),
-              child: Text(
-                timeHandler(message.sendTime),
-                style: context.textTheme.caption.copyWith(
-                  fontSize: 14.sp,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  String timeHandler(DateTime dateTime) {
-    final DateTime now = currentTime;
-    String time = '';
-    if (dateTime.day == now.day &&
-        dateTime.month == now.month &&
-        dateTime.year == now.year) {
-      time += DateFormat('HH:mm').format(dateTime);
-    } else if (dateTime.year == now.year) {
-      time += DateFormat('MM-dd HH:mm').format(dateTime);
-    } else {
-      time += DateFormat('yy-MM-dd HH:mm').format(dateTime);
-    }
-    return time;
-  }
-
-  void judgeShrink(BuildContext context) {
-    if (_scrollController.hasClients) {
-      final double maxExtent = _scrollController.position.maxScrollExtent;
-      const double limitExtent = 50.0;
-      if (maxExtent > limitExtent && shrinkWrap) {
-        shrinkWrap = false;
-      } else if (maxExtent <= limitExtent && !shrinkWrap) {
-        shrinkWrap = true;
-      }
-    }
   }
 
   void judgeMessageConfirm() {
@@ -247,18 +83,119 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
     }
   }
 
+  String timeHandler(DateTime dateTime) {
+    final DateTime now = currentTime;
+    String time = '';
+    if (dateTime.day == now.day &&
+        dateTime.month == now.month &&
+        dateTime.year == now.year) {
+      time += DateFormat('HH:mm').format(dateTime);
+    } else if (dateTime.year == now.year) {
+      time += DateFormat('MM-dd HH:mm').format(dateTime);
+    } else {
+      time += DateFormat('yy-MM-dd HH:mm').format(dateTime);
+    }
+    return time;
+  }
+
+  Widget _appJumpButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
+      },
+      child: Container(
+        width: 120.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.themeColor,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '前往应用',
+          style: TextStyle(
+            color: adaptiveButtonColor(),
+            fontSize: 20.sp,
+            height: 1.24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget messageWidget(AppMessage message) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
+      child: Column(
+        children: <Widget>[
+          Text(
+            timeHandler(message.sendTime),
+            style: context.textTheme.caption.copyWith(fontSize: 16.sp),
+          ),
+          VGap(16.w),
+          Container(
+            padding: EdgeInsets.all(20.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13.w),
+              color: context.theme.cardColor,
+            ),
+            child: GestureDetector(
+              onLongPress: () {
+                Clipboard.setData(ClipboardData(text: message.content));
+                showToast('复制成功');
+              },
+              child: ExtendedText(
+                message.content,
+                style: TextStyle(fontSize: 20.sp),
+                specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
+                onSpecialTextTap: (dynamic data) {
+                  API.launchWeb(
+                    url: data['content'] as String,
+                    title: '网页链接',
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    judgeShrink(context);
     judgeMessageConfirm();
 
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          topBar,
-          messageList,
-          if (widget.app.url != null && widget.app.url.isNotEmpty) bottomBar,
-        ],
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Text(widget.app.name),
+          actions: <Widget>[
+            if (widget.app.url?.isNotEmpty == true) _appJumpButton(context),
+          ],
+          actionsPadding: EdgeInsets.only(right: 18.w),
+        ),
+        body: Consumer<MessagesProvider>(
+          builder: (_, MessagesProvider provider, __) {
+            final List<AppMessage> messages = List<AppMessage>.from(
+              provider.appsMessages[widget.app.appId],
+            );
+            return ExtendedListView.builder(
+              controller: _scrollController,
+              padding: EdgeInsets.symmetric(vertical: 8.w),
+              reverse: true,
+              extendedListDelegate: const ExtendedListDelegate(
+                closeToTrailing: true,
+              ),
+              itemCount: messages.length,
+              itemBuilder: (_, int i) {
+                tryDecodeContent(messages[i]);
+                return messageWidget(messages[i]);
+              },
+            );
+          },
+        ),
       ),
     );
   }

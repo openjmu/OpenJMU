@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/constants/constants.dart' hide Message;
 
 class NotificationUtils {
   const NotificationUtils._();
@@ -49,6 +49,45 @@ class NotificationUtils {
       iOS: iOSDetails,
     );
     await NotificationUtils.plugin.show(0, title, body, _details);
+  }
+
+  static Future<void> showAppMessage(
+    WebApp app,
+    String body,
+  ) async {
+    final Color color = currentThemeColor;
+    final WebAppIcon icon = WebAppIcon(app: app);
+    final Person p = Person(
+      name: app.name,
+      key: app.appId.toString(),
+      icon: await icon.exist
+          ? FlutterBitmapAssetAndroidIcon(icon.iconPath)
+          : null,
+    );
+    final List<Message> messages = <Message>[Message(body, DateTime.now(), p)];
+    final MessagingStyleInformation messagingStyle = MessagingStyleInformation(
+      p,
+      conversationTitle: app.name,
+      groupConversation: false,
+      messages: messages,
+    );
+    final AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'openjmu_message_channel',
+      '推送消息',
+      '通知接收到的消息',
+      category: 'msg',
+      color: color,
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: app.name,
+      styleInformation: messagingStyle,
+    );
+    final NotificationDetails _details = NotificationDetails(
+      android: androidDetails,
+      iOS: const IOSNotificationDetails(),
+    );
+    await NotificationUtils.plugin.show(0, app.name, body, _details);
   }
 
   static Future<void> cancelAll() {

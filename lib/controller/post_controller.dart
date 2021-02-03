@@ -474,26 +474,73 @@ class ForwardListInPostState extends State<ForwardListInPost>
     }
   }
 
-  Text getPostNickname(BuildContext context, Post post) => Text(
-        post.nickname,
-        style: TextStyle(fontSize: 20.sp),
-      );
+  Text getPostNickname(BuildContext context, Post post) {
+    return Text(
+      post.nickname,
+      style: context.textTheme.bodyText2.copyWith(
+        height: 1.2,
+        fontSize: 18.sp,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
 
   Text getPostTime(BuildContext context, Post post) {
     return Text(
       PostAPI.postTimeConverter(post.postTime),
       style: context.textTheme.caption.copyWith(
-        fontSize: 16.sp,
+        height: 1.2,
+        fontSize: 15.sp,
       ),
     );
   }
 
-  Widget getExtendedText(BuildContext context, String content) => ExtendedText(
-        content,
-        style: TextStyle(fontSize: 19.sp),
-        onSpecialTextTap: specialTextTapRecognizer,
-        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-      );
+  Widget getExtendedText(BuildContext context, String content) {
+    return ExtendedText(
+      content,
+      style: TextStyle(height: 1.2, fontSize: 17.sp),
+      onSpecialTextTap: specialTextTapRecognizer,
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+    );
+  }
+
+  Widget _itemBuilder(BuildContext context, Post post) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16.w),
+      color: context.theme.cardColor,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: UserAPI.getAvatar(uid: post.uid),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    getPostNickname(context, post),
+                    if (Constants.developerList.contains(post.uid))
+                      Padding(
+                        padding: EdgeInsets.only(left: 6.w),
+                        child: const DeveloperTag(),
+                      ),
+                    Gap(4.w),
+                    getPostTime(context, post),
+                  ],
+                ),
+                VGap(12.w),
+                getExtendedText(context, post.content),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @mustCallSuper
   @override
@@ -509,12 +556,8 @@ class ForwardListInPostState extends State<ForwardListInPost>
     }
     return ExtendedListView.separated(
       padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
       extendedListDelegate: const ExtendedListDelegate(),
-      separatorBuilder: (BuildContext _, int index) => Container(
-        color: Theme.of(context).dividerColor,
-        height: 1.0,
-      ),
+      separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
       itemCount: _posts.length + 1,
       itemBuilder: (BuildContext _, int index) {
         if (index == _posts.length - 1 && canLoadMore) {
@@ -524,48 +567,11 @@ class ForwardListInPostState extends State<ForwardListInPost>
           return LoadMoreIndicator(
             canLoadMore: canLoadMore && !isLoading,
           );
-        } else if (index < _posts.length) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20.w,
-                  vertical: 12.h,
-                ),
-                child: UserAPI.getAvatar(
-                  uid: _posts[index].uid,
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    VGap(10.h),
-                    Row(
-                      children: <Widget>[
-                        getPostNickname(context, _posts[index]),
-                        if (Constants.developerList.contains(_posts[index].uid))
-                          Padding(
-                            padding: EdgeInsets.only(left: 6.w),
-                            child: const DeveloperTag(),
-                          ),
-                      ],
-                    ),
-                    VGap(4.h),
-                    getExtendedText(context, _posts[index].content),
-                    VGap(6.h),
-                    getPostTime(context, _posts[index]),
-                    VGap(10.h),
-                  ],
-                ),
-              ),
-            ],
-          );
-        } else {
-          return const SizedBox.shrink();
         }
+        if (index < _posts.length) {
+          return _itemBuilder(context, _posts[index]);
+        }
+        return const SizedBox.shrink();
       },
     );
   }

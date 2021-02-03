@@ -153,7 +153,13 @@ class FixedAppBar extends StatelessWidget {
         children: <Widget>[child, Divider(thickness: 1.w, height: 1.w)],
       );
     }
-    return Material(type: MaterialType.transparency, child: child);
+    return Material(
+      type: MaterialType.transparency,
+      child: IconTheme(
+        data: IconThemeData(color: context.textTheme.bodyText2.color),
+        child: child,
+      ),
+    );
   }
 }
 
@@ -226,7 +232,7 @@ class FixedBackButton extends StatelessWidget {
               R.ASSETS_ICONS_BACK_BUTTON_SVG,
               width: 24.w,
               height: 24.w,
-              color: color ?? context.theme.iconTheme.color,
+              color: color ?? context.iconTheme.color,
               semanticsLabel:
                   MaterialLocalizations.of(context).backButtonTooltip,
             ),

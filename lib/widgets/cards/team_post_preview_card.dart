@@ -18,11 +18,6 @@ import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 class TeamPostPreviewCard extends StatelessWidget {
   const TeamPostPreviewCard({@required Key key}) : super(key: key);
 
-  static const Color actionIconColorDark = Color(0xff757575);
-  static const Color actionIconColorLight = Color(0xffE0E0E0);
-  static const Color actionTextColorDark = Color(0xff9E9E9E);
-  static const Color actionTextColorLight = Color(0xffBDBDBD);
-
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
       context,
@@ -129,7 +124,6 @@ class TeamPostPreviewCard extends StatelessWidget {
                     ? Icons.delete_outline
                     : Icons.more_horiz,
                 size: 30.w,
-                color: Theme.of(context).dividerColor,
               ),
             ),
             onTap: post.uid == UserAPI.currentUser.uid
@@ -330,11 +324,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             countBuilder: (int count, bool isLiked, String text) => Text(
               count > 0 ? text : '赞',
               style: TextStyle(
-                color: isLiked
-                    ? currentThemeColor
-                    : currentIsDark
-                        ? actionTextColorDark
-                        : actionTextColorLight,
+                color: isLiked ? currentThemeColor : context.iconTheme.color,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.normal,
               ),
@@ -343,11 +333,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             likeBuilder: (bool isLiked) => Center(
               child: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                color: isLiked
-                    ? currentThemeColor
-                    : currentIsDark
-                        ? actionIconColorDark
-                        : actionIconColorLight,
+                color: isLiked ? currentThemeColor : context.iconTheme.color,
                 width: 26.w,
               ),
             ),
@@ -365,7 +351,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             minWidth: 120.w,
             icon: SvgPicture.asset(
               R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-              color: currentIsDark ? actionIconColorDark : actionIconColorLight,
+              color: context.iconTheme.color,
               width: 26.w,
             ),
             label: Padding(
@@ -373,9 +359,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               child: Text(
                 p.post.repliesCount == 0 ? '评论' : '${p.post.repliesCount}',
                 style: TextStyle(
-                  color: currentIsDark
-                      ? actionTextColorDark
-                      : actionTextColorLight,
+                  color: context.iconTheme.color,
                   fontSize: 18.sp,
                   fontWeight: FontWeight.normal,
                 ),

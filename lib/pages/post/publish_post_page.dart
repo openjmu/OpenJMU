@@ -722,9 +722,6 @@ class _PublishPostPageState extends State<PublishPostPage>
             FixedAppBar(
               actions: <Widget>[publishButton],
               actionsPadding: EdgeInsets.only(right: 18.w),
-              leading: FixedBackButton(
-                color: context.textTheme.bodyText2.color,
-              ),
               withBorder: false,
             ),
             textField,

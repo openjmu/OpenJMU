@@ -10,7 +10,6 @@ import 'package:extended_text_field/extended_text_field.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/rounded_check_box.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(
@@ -35,13 +34,14 @@ class CommentPositioned extends StatefulWidget {
 class CommentPositionedState extends State<CommentPositioned> {
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+
+  final ValueNotifier<bool> _commenting = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _shouldForward = ValueNotifier<bool>(false);
+
   AssetEntity _image;
   int _imageID;
 
   Comment toComment;
-
-  bool _commenting = false;
-  bool forwardAtTheMeanTime = false;
 
   String commentContent = '';
   bool emoticonPadActive = false;
@@ -98,72 +98,18 @@ class CommentPositionedState extends State<CommentPositioned> {
       NetUtils.postWithCookieAndHeaderSet<T>(API.postUploadImage,
           data: formData);
 
-  Widget textField(BuildContext context) {
-    String _hintText;
-    toComment != null
-        ? _hintText = '回复:@${toComment.fromUserName} '
-        : _hintText = null;
-    return ExtendedTextField(
-      specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-      focusNode: _focusNode,
-      controller: _commentController,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(16.w),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: currentThemeColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: currentThemeColor),
-        ),
-        hintText: _hintText,
-        hintStyle: TextStyle(
-          fontSize: 20.sp,
-          textBaseline: TextBaseline.alphabetic,
-        ),
-        suffixIcon: _image != null
-            ? Container(
-                margin: EdgeInsets.only(right: 14.w),
-                width: 70.w,
-                height: 70.w,
-                child: Image(
-                  image: AssetEntityImageProvider(
-                    _image,
-                    thumbSize: const <int>[80, 80],
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              )
-            : null,
-      ),
-      enabled: !_commenting,
-      style: context.textTheme.bodyText2.copyWith(
-        fontSize: 20.sp,
-        textBaseline: TextBaseline.alphabetic,
-      ),
-      cursorColor: currentThemeColor,
-      autofocus: true,
-      maxLines: 3,
-      maxLength: 233,
-    );
-  }
-
   Future<void> _request(BuildContext context) async {
     if (commentContent.isEmpty && _image == null) {
       showCenterErrorToast('内容不能为空！');
     } else {
-      setState(() {
-        _commenting = true;
-      });
-      String content = '';
+      _commenting.value = true;
 
       final Comment _c = widget.comment;
+      String content = _commentController.text;
       int _cid;
       if (toComment != null) {
-        content =
-            '回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> $content${_commentController.text}';
+        content = '回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> $content';
         _cid = _c.id;
-      } else {
-        content = '$content${_commentController.text}';
       }
 
       /// Sending image if it exist.
@@ -179,14 +125,14 @@ class CommentPositionedState extends State<CommentPositioned> {
       CommentAPI.postComment(
         content,
         widget.post.id,
-        forwardAtTheMeanTime,
+        _shouldForward.value,
         replyToId: _cid,
       ).then((dynamic response) {
         showToast('评论成功');
         Navigator.of(context).pop();
         Instances.eventBus.fire(PostCommentedEvent(widget.post.id));
       }).catchError((dynamic e) {
-        _commenting = false;
+        _commenting.value = false;
         LogUtils.e('Comment post failed: $e');
         if (e is DioError && e.response.statusCode == 404) {
           showToast('动态已被删除');
@@ -225,6 +171,114 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
   }
 
+  Widget textField(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.w),
+        color: context.theme.canvasColor,
+      ),
+      child: Row(
+        children: <Widget>[
+          ValueListenableBuilder<bool>(
+            valueListenable: _shouldForward,
+            builder: (_, bool value, __) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _shouldForward.value = !_shouldForward.value,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                height: double.maxFinite,
+                child: value
+                    ? SvgPicture.asset(
+                        R.ASSETS_ICONS_POST_ACTIONS_SELECTED_SVG,
+                        width: 24.w,
+                        color: context.textTheme.bodyText2.color,
+                      )
+                    : SvgPicture.asset(
+                        R.ASSETS_ICONS_POST_ACTIONS_UN_SELECTED_SVG,
+                        width: 24.w,
+                        color: context.textTheme.bodyText2.color,
+                      ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ExtendedTextField(
+              specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+              focusNode: _focusNode,
+              controller: _commentController,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 4.w,
+                ),
+                border: InputBorder.none,
+                hintText: toComment != null
+                    ? '同时转发　回复:@${toComment.fromUserName} '
+                    : '将我的评论同时转发...',
+                suffixIcon: _image != null
+                    ? Container(
+                        margin: EdgeInsets.only(right: 14.w),
+                        width: 70.w,
+                        height: 70.w,
+                        child: Image(
+                          image: AssetEntityImageProvider(
+                            _image,
+                            thumbSize: const <int>[80, 80],
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : null,
+              ),
+              buildCounter: emptyCounterBuilder,
+              // enabled: !_commenting,
+              enabled: false,
+              style: context.textTheme.bodyText2.copyWith(
+                height: 1.2,
+                fontSize: 20.sp,
+              ),
+              cursorColor: currentThemeColor,
+              autofocus: true,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _publishButton(BuildContext context) {
+    final bool canSend = _commentController.text.isNotEmpty || _image != null;
+    return GestureDetector(
+      onTap: canSend ? () => _request(context) : null,
+      child: Container(
+        width: 84.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
+        ),
+        alignment: Alignment.center,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: _commenting,
+          builder: (_, bool value, __) {
+            if (value) {
+              return const PlatformProgressIndicator();
+            }
+            return Text(
+              '评论',
+              style: TextStyle(
+                color: adaptiveButtonColor(),
+                height: 1.2,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   Widget emoticonPad(BuildContext context) {
     return EmotionPad(
       active: emoticonPadActive,
@@ -255,23 +309,6 @@ class CommentPositionedState extends State<CommentPositioned> {
         height: 40.h,
         child: Row(
           children: <Widget>[
-            RoundedCheckbox(
-              activeColor: currentThemeColor,
-              checkColor: adaptiveButtonColor(),
-              value: forwardAtTheMeanTime,
-              onChanged: (bool value) {
-                setState(() {
-                  forwardAtTheMeanTime = value;
-                });
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            Text(
-              '同时转发到微博',
-              style: TextStyle(
-                fontSize: 20.sp,
-              ),
-            ),
             const Spacer(),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -309,34 +346,6 @@ class CommentPositionedState extends State<CommentPositioned> {
                 ),
               ),
             ),
-            if (!_commenting)
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 6.w,
-                  ),
-                  child: Icon(
-                    Icons.send,
-                    size: 32.w,
-                    color: currentThemeColor,
-                  ),
-                ),
-                onTap: (_commentController.text.isNotEmpty || _image != null)
-                    ? () => _request(context)
-                    : null,
-              )
-            else
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 14.w,
-                ),
-                child: SizedBox(
-                  width: 12.w,
-                  height: 12.w,
-                  child: const PlatformProgressIndicator(strokeWidth: 2.0),
-                ),
-              ),
           ],
         ),
       );
@@ -374,7 +383,19 @@ class CommentPositionedState extends State<CommentPositioned> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[textField(context), toolbar],
+                children: <Widget>[
+                  SizedBox(
+                    height: 60.w,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(child: textField(context)),
+                        Gap(16.w),
+                        _publishButton(context),
+                      ],
+                    ),
+                  ),
+                  toolbar,
+                ],
               ),
             ),
           ),

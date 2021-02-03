@@ -95,6 +95,7 @@ class ThemesProvider with ChangeNotifier {
     final Color currentColor = currentThemeGroup.lightThemeColor;
     final Color primaryColor = currentThemeGroup.lightPrimaryColor;
     final Color backgroundColor = currentThemeGroup.lightBackgroundColor;
+    final Color iconColor = currentThemeGroup.lightIconUnselectedColor;
     final Color dividerColor = currentThemeGroup.lightDividerColor;
     final Color primaryTextColor = currentThemeGroup.lightPrimaryTextColor;
     final Color secondaryTextColor = currentThemeGroup.lightSecondaryTextColor;
@@ -122,7 +123,7 @@ class ThemesProvider with ChangeNotifier {
         brightness: Brightness.light,
         elevation: 0,
       ),
-      iconTheme: IconThemeData(color: secondaryTextColor),
+      iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: primaryColor,
@@ -170,6 +171,7 @@ class ThemesProvider with ChangeNotifier {
     final Color currentColor = currentThemeGroup.darkThemeColor;
     final Color primaryColor = currentThemeGroup.darkPrimaryColor;
     final Color backgroundColor = currentThemeGroup.darkBackgroundColor;
+    final Color iconColor = currentThemeGroup.darkIconUnselectedColor;
     final Color dividerColor = currentThemeGroup.darkDividerColor;
     final Color primaryTextColor = currentThemeGroup.darkPrimaryTextColor;
     final Color secondaryTextColor = currentThemeGroup.darkSecondaryTextColor;
@@ -197,7 +199,7 @@ class ThemesProvider with ChangeNotifier {
         brightness: Brightness.dark,
         elevation: 0,
       ),
-      iconTheme: IconThemeData(color: secondaryTextColor),
+      iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         foregroundColor: Colors.black,

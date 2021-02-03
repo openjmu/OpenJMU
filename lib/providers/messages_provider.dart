@@ -94,6 +94,10 @@ class MessagesProvider with ChangeNotifier {
           app.name,
           content.trim().replaceAll('\n', '').replaceAll('\r', ''),
         );
+        NotificationUtils.show(
+          app.name,
+          content.trim().replaceAll('\n', '').replaceAll('\r', ''),
+        );
       }
       if (message.messageId != null && message.messageId != 0) {
         MessageUtils.sendConfirmOfflineMessageOne(message.messageId);

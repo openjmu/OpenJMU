@@ -35,12 +35,11 @@ class MessagePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(13.w),
           color: context.theme.canvasColor,
         ),
-        child: Center(
-          child: SvgPicture.asset(
-            R.ASSETS_ICONS_NOTIFICATION_SVG,
-            color: context.textTheme.bodyText2.color,
-            width: 28.w,
-          ),
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_CLEAR_UNREAD_MESSAGE_SVG,
+          color: context.textTheme.bodyText2.color,
+          width: 28.w,
         ),
       ),
     );
@@ -54,7 +53,8 @@ class MessagePage extends StatelessWidget {
           MainPage.selfPageOpener,
           MainPage.outerNetworkIndicator(),
           const Spacer(),
-          _readAllButton(context),
+          if (context.watch<MessagesProvider>().unreadCount > 0)
+            _readAllButton(context),
         ],
       ),
     );
@@ -66,21 +66,18 @@ class MessagePage extends StatelessWidget {
         if (!p.announcementsEnabled) {
           return const SizedBox.shrink();
         }
-        return DefaultTextStyle.merge(
-          style: TextStyle(height: 1.2, fontSize: 18.sp),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 0,
-              maxHeight: Screens.height / 3,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: List<Widget>.generate(
-                  p.announcements.length,
-                  (int index) => _AnnouncementItemWidget(
-                    item: p.announcements[index].cast<String, dynamic>(),
-                  ),
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: 0,
+            maxHeight: Screens.height / 3,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List<Widget>.generate(
+                p.announcements.length,
+                (int index) => _AnnouncementItemWidget(
+                  item: p.announcements[index].cast<String, dynamic>(),
                 ),
               ),
             ),
@@ -115,7 +112,7 @@ class MessagePage extends StatelessWidget {
               Text(
                 '无新消息',
                 style: TextStyle(
-                  color: context.theme.iconTheme.color,
+                  color: context.textTheme.caption.color,
                   fontSize: 22.sp,
                 ),
               ),
@@ -209,28 +206,37 @@ class _AnnouncementItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(18.w),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
-        ),
-        color: context.theme.cardColor,
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        color: context.textTheme.caption.color,
+        height: 1.2,
+        fontSize: 18.sp,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(
-            item['title'] as String,
-            style: TextStyle(
-              color: currentThemeColor,
-              fontSize: 21.sp,
-              fontWeight: FontWeight.bold,
-            ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.w),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
           ),
-          VGap(10.w),
-          Text(item['content'] as String, style: const TextStyle(height: 1.4)),
-        ],
+          color: context.theme.cardColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              item['title'] as String,
+              style: TextStyle(
+                color: currentThemeColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            VGap(12.w),
+            Text(
+              item['content'] as String,
+              style: const TextStyle(height: 1.4),
+            ),
+          ],
+        ),
       ),
     );
   }

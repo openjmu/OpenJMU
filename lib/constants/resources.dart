@@ -471,6 +471,9 @@ class R {
   static const String ASSETS_ICONS_BOTTOM_NAVIGATION_SQUARE_SVG =
       'assets/icons/bottom-navigation/square.svg';
 
+  static const String ASSETS_ICONS_CLEAR_UNREAD_MESSAGE_SVG =
+      'assets/icons/clear-unread-message.svg';
+
   static const String ASSETS_ICONS_COMMON_APPS_EDIT_SVG =
       'assets/icons/common-apps-edit.svg';
 
@@ -488,11 +491,11 @@ class R {
   static const String ASSETS_ICONS_NOTIFICATION_SVG =
       'assets/icons/notification.svg';
 
-  static const String ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG =
-      'assets/icons/post-actions/add-to-block-list.svg';
-
   static const String ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG =
       'assets/icons/post-actions/comment-fill.svg';
+
+  static const String ASSETS_ICONS_POST_ACTIONS_EXTEND_SVG =
+      'assets/icons/post-actions/extend.svg';
 
   static const String ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG =
       'assets/icons/post-actions/forward-fill.svg';
@@ -503,8 +506,11 @@ class R {
   static const String ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG =
       'assets/icons/post-actions/praise-fill.svg';
 
-  static const String ASSETS_ICONS_POST_ACTIONS_REPORT_SVG =
-      'assets/icons/post-actions/report.svg';
+  static const String ASSETS_ICONS_POST_ACTIONS_SELECTED_SVG =
+      'assets/icons/post-actions/selected.svg';
+
+  static const String ASSETS_ICONS_POST_ACTIONS_UN_SELECTED_SVG =
+      'assets/icons/post-actions/un-selected.svg';
 
   static const String ASSETS_ICONS_PUBLISH_ADD_IMAGE_SVG =
       'assets/icons/publish/add-image.svg';

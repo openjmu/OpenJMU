@@ -525,7 +525,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           Text(
             '课程表未就绪',
             style: TextStyle(
-              color: context.theme.iconTheme.color,
+              color: context.textTheme.caption.color,
               fontSize: 22.sp,
             ),
           ),

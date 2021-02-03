@@ -346,7 +346,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
   Widget getPostNickname(BuildContext context, Praise praise) {
     return Text(
       praise.nickname,
-      style: TextStyle(fontSize: 20.sp),
+      style: TextStyle(fontSize: 19.sp, fontWeight: FontWeight.w600),
     );
   }
 
@@ -364,10 +364,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
     }
     return ExtendedListView.separated(
       padding: EdgeInsets.zero,
-      separatorBuilder: (BuildContext context, int index) => Divider(
-        color: Theme.of(context).dividerColor,
-        height: 1.h,
-      ),
+      separatorBuilder: (_, __) => Divider(height: 1.w, thickness: 1.w),
       extendedListDelegate: const ExtendedListDelegate(),
       itemCount: _praises.length + 1,
       itemBuilder: (BuildContext context, int index) {
@@ -379,21 +376,20 @@ class PraiseListInPostState extends State<PraiseListInPost>
             canLoadMore: canLoadMore && !isLoading,
           );
         } else {
-          return Row(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24.w,
-                  vertical: 10.h,
+          return ColoredBox(
+            color: context.theme.cardColor,
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 10.h,
+                  ),
+                  child: UserAPI.getAvatar(uid: _praises[index].uid),
                 ),
-                child: UserAPI.getAvatar(
-                  uid: _praises[index].uid,
-                ),
-              ),
-              Expanded(
-                child: getPostNickname(context, _praises[index]),
-              ),
-            ],
+                Expanded(child: getPostNickname(context, _praises[index])),
+              ],
+            ),
           );
         }
       },

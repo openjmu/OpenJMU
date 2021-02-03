@@ -38,10 +38,6 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  final Color actionIconColorDark = const Color(0xff757575);
-  final Color actionIconColorLight = const Color(0xffE0E0E0);
-  final Color actionTextColorDark = const Color(0xff9E9E9E);
-  final Color actionTextColorLight = const Color(0xffBDBDBD);
   final double contentPadding = 16.0;
 
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: 18.sp);
@@ -342,8 +338,7 @@ class _PostCardState extends State<PostCard> {
                 ? '999+'
                 : '$value',
         style: TextStyle(
-          color: color ??
-              (currentIsDark ? actionTextColorDark : actionTextColorLight),
+          color: context.iconTheme.color,
           fontSize: 18.sp,
           fontWeight: FontWeight.normal,
         ),
@@ -379,11 +374,7 @@ class _PostCardState extends State<PostCard> {
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                color: isLiked
-                    ? currentThemeColor
-                    : currentIsDark
-                        ? actionIconColorDark
-                        : actionIconColorLight,
+                color: isLiked ? currentThemeColor : context.iconTheme.color,
                 width: 26.w,
               ),
               likeCount: widget.post.isLike
@@ -405,8 +396,7 @@ class _PostCardState extends State<PostCard> {
               onPressed: null,
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                color:
-                    currentIsDark ? actionIconColorDark : actionIconColorLight,
+                color: context.iconTheme.color,
                 width: 26.w,
               ),
               label: _action(comments),
@@ -426,8 +416,7 @@ class _PostCardState extends State<PostCard> {
               },
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                color:
-                    currentIsDark ? actionIconColorDark : actionIconColorLight,
+                color: context.iconTheme.color,
                 width: 26.w,
               ),
               label: _action(forwards),
@@ -533,7 +522,7 @@ class _PostCardState extends State<PostCard> {
         alignment: AlignmentDirectional.topEnd,
         child: Icon(
           Icons.more_horiz,
-          color: Theme.of(context).dividerColor,
+          color: context.iconTheme.color,
           size: 30.w,
         ),
       ),
@@ -696,9 +685,10 @@ class _PostCardState extends State<PostCard> {
                         children: <Widget>[
                           Text(
                             '浏览${post.glances}次　',
-                            style: Theme.of(context).textTheme.caption.copyWith(
-                                  fontSize: 16.sp,
-                                ),
+                            style: TextStyle(
+                              color: context.iconTheme.color,
+                              fontSize: 16.sp,
+                            ),
                           ),
                           const Spacer(),
                           if (widget.isDetail)

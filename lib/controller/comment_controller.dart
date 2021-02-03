@@ -490,8 +490,9 @@ class CommentListInPostState extends State<CommentListInPost>
       content != null ? '$content ' : null,
       style: TextStyle(height: 1.2, fontSize: 17.sp),
       onSpecialTextTap: specialTextTapRecognizer,
-      specialTextSpanBuilder:
-          StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+        widgetType: WidgetType.comment,
+      ),
     );
   }
 
@@ -506,7 +507,7 @@ class CommentListInPostState extends State<CommentListInPost>
 
   Widget _itemBuilder(BuildContext context, Comment comment) {
     return ColoredBox(
-      color: context.theme.primaryColor,
+      color: context.theme.cardColor,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => showActions(context, comment),
@@ -569,7 +570,6 @@ class CommentListInPostState extends State<CommentListInPost>
     }
     return ExtendedListView.separated(
       padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
       extendedListDelegate: const ExtendedListDelegate(),
       separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
       itemCount: _comments.length + 1,

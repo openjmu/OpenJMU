@@ -131,7 +131,7 @@ class _ScorePageState extends State<ScorePage>
               physics: const BouncingScrollPhysics(),
               labelStyle: TextStyle(
                 fontSize: 20.sp,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
               unselectedLabelStyle: const TextStyle(
                 fontWeight: FontWeight.normal,

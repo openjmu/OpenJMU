@@ -53,7 +53,7 @@ class MainPage extends StatefulWidget {
     bool isTeam = false,
   }) {
     return Consumer<NotificationProvider>(
-      builder: (BuildContext _, NotificationProvider provider, Widget __) {
+      builder: (_, NotificationProvider provider, __) {
         return SizedBox(
           width: 56.w,
           child: Stack(
@@ -77,12 +77,11 @@ class MainPage extends StatefulWidget {
                     borderRadius: BorderRadius.circular(13.w),
                     color: context.theme.canvasColor,
                   ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      R.ASSETS_ICONS_NOTIFICATION_SVG,
-                      color: context.textTheme.bodyText2.color,
-                      width: 28.w,
-                    ),
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(
+                    R.ASSETS_ICONS_NOTIFICATION_SVG,
+                    color: context.textTheme.bodyText2.color,
+                    width: 28.w,
                   ),
                 ),
               ),
@@ -134,7 +133,7 @@ class MainPage extends StatefulWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Gap(10.w),
+                        Gap(8.w),
                         Container(
                           width: 14.w,
                           height: 14.w,
@@ -145,14 +144,10 @@ class MainPage extends StatefulWidget {
                             shape: BoxShape.circle,
                           ),
                         ),
-                        Gap(8.w),
+                        Gap(6.w),
                         Text(
                           '校园网未连接',
-                          style: TextStyle(
-                            height: 1.2,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: TextStyle(height: 1.45, fontSize: 16.sp),
                         ),
                       ],
                     ),
@@ -179,15 +174,14 @@ class MainPage extends StatefulWidget {
           borderRadius: BorderRadius.circular(13.w),
           color: context.themeColor,
         ),
-        child: Center(
-          child: Text(
-            '发动态',
-            style: TextStyle(
-              color: adaptiveButtonColor(),
-              fontSize: 20.sp,
-              height: 1.24,
-              fontWeight: FontWeight.bold,
-            ),
+        alignment: Alignment.center,
+        child: Text(
+          '发动态',
+          style: TextStyle(
+            color: adaptiveButtonColor(),
+            fontSize: 20.sp,
+            height: 1.24,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -366,7 +360,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// 底部导航栏
   Widget bottomNavigationBar(BuildContext context) {
     return FABBottomAppBar(
-      color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
+      color: context.iconTheme.color,
       height: bottomBarHeight,
       iconSize: bottomBarIconSize,
       selectedColor: context.themeColor,

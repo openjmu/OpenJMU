@@ -328,7 +328,7 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
               child: Text(
                 Constants.endLineTag,
                 style: TextStyle(
-                  color: context.textTheme.caption.color.withOpacity(0.5),
+                  color: context.textTheme.caption.color,
                   fontSize: 18.sp,
                 ),
               ),

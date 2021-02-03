@@ -414,7 +414,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         constraints: BoxConstraints(minHeight: 52.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: context.theme.canvasColor.withOpacity(0.5),
+          color: context.theme.canvasColor,
         ),
         child: Row(
           children: <Widget>[
@@ -431,7 +431,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     horizontal: 12.w,
                   ),
                   prefixText: replyHint,
-                  hintText: replyHint == null ? '给你一个神评的机会...' : null,
+                  hintText: replyHint == null ? '和对方聊聊...' : null,
                 ),
                 cursorColor: currentThemeColor,
                 style: context.textTheme.bodyText2.copyWith(
@@ -457,13 +457,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         height: 52.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: context.theme.canvasColor.withOpacity(0.5),
+          color: context.theme.canvasColor,
         ),
         alignment: Alignment.center,
-        child: Icon(
-          Icons.add,
-          color: context.theme.iconTheme.color,
-          size: 28.w,
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_POST_ACTIONS_EXTEND_SVG,
+          width: 24.w,
+          height: 24.w,
+          color: context.textTheme.bodyText2.color,
         ),
       ),
     );
@@ -518,7 +519,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12.w),
-                  color: context.theme.canvasColor.withOpacity(0.5),
+                  color: context.theme.canvasColor,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -556,7 +557,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
               height: 24.w,
               color: showEmoticonPad
                   ? currentThemeColor
-                  : context.theme.iconTheme.color,
+                  : context.textTheme.bodyText2.color,
             ),
           ),
         ),
@@ -581,7 +582,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       body: Column(
         children: <Widget>[
           FixedAppBar(
-            title: const Text('集市动态'),
+            title: const Text('集市详情'),
             centerTitle: true,
             actions: <Widget>[
               if (provider.post?.uid == currentUser.uid ?? false) deleteButton,

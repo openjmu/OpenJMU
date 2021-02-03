@@ -13,7 +13,7 @@ extension BuildContextExtension on BuildContext {
 
   TextTheme get textTheme => theme.textTheme;
 
-  IconThemeData get iconTheme => theme.iconTheme;
+  IconThemeData get iconTheme => IconTheme.of(this);
 
   Color get themeColor => theme.accentColor;
 }
