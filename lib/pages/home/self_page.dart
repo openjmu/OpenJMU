@@ -2,8 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-03-09 20:39
 ///
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -56,12 +54,6 @@ class SelfPage extends StatelessWidget {
         },
       ];
 
-  /// 顶部内容基础高度
-  double get headerHeight => 266.0;
-
-  /// 常用应用栏的高度
-  double get commonAppsHeight => 140.0;
-
   /// Handler for setting item.
   /// 设置项的回调处理
   void _handleItemClick(BuildContext context, Map<String, dynamic> item) {
@@ -71,15 +63,6 @@ class SelfPage extends StatelessWidget {
     if (item['action'] != null) {
       (item['action'] as Function(BuildContext))(context);
     }
-  }
-
-  /// Wrapper for header.
-  /// 顶部部件封装
-  Widget headerWrapper({@required Widget child}) {
-    return Container(
-      height: headerHeight.h,
-      child: child,
-    );
   }
 
   /// Wrapper for content.
@@ -163,17 +146,18 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: 50.h,
+        height: 50.w,
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(left: 12.w, right: 24.w),
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: SvgPicture.asset(
                 item['icon'] as String,
-                color: context.iconTheme.color.withOpacity(0.5),
+                color: context.iconTheme.color,
                 width: 45.w,
               ),
             ),
+            Gap(12.w),
             Expanded(
               child: Text(
                 item['name'] as String,
@@ -190,42 +174,30 @@ class SelfPage extends StatelessWidget {
   }
 
   Widget get userInfoWidget {
-    return SizedBox(
-      height: (headerHeight - commonAppsHeight).h,
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 24.w,
-          ),
-          child: Row(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  navigatorState.pushNamed(Routes.openjmuUserPage.name);
-                },
-                child: ClipOval(
-                  child: Image(
-                    image: UserAPI.getAvatarProvider(),
-                    height: math.min(64.w, (headerHeight - commonAppsHeight).h),
-                  ),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w).copyWith(
+          top: 24.w,
+          bottom: 12.w,
+        ),
+        child: Row(
+          children: <Widget>[
+            const UserAvatar(size: 64),
+            Gap(20.w),
+            Expanded(
+              child: Text(
+                currentUser.name,
+                style: TextStyle(
+                  color: adaptiveButtonColor(),
+                  fontSize: 23.sp,
+                  fontWeight: FontWeight.bold,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              Gap(20.w),
-              Expanded(
-                child: Text(
-                  currentUser.name,
-                  style: TextStyle(
-                    color: adaptiveButtonColor(),
-                    fontSize: 23.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              signButton,
-            ],
-          ),
+            ),
+            signButton,
+          ],
         ),
       ),
     );
@@ -233,55 +205,45 @@ class SelfPage extends StatelessWidget {
 
   /// Common apps section widget.
   /// 常用应用部件栏
-  Widget commonApps(BuildContext context) => Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: 15.w,
-        ),
-        height: commonAppsHeight.h,
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        child: Consumer<WebAppsProvider>(
-          builder: (BuildContext _, WebAppsProvider provider, Widget __) {
-            final Set<WebApp> commonWebApps = provider.commonWebApps;
-            return Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.w),
-                color: context.theme.colorScheme.surface,
-              ),
-              child: Row(
-                children: <Widget>[
-                  if (commonWebApps.isNotEmpty) ...<Widget>[
-                    ...List<Widget>.generate(commonWebApps.length, (int index) {
-                      return appWidget(commonWebApps, index);
-                    }),
-                  ] else
-                    Expanded(
-                      flex: 3,
-                      child: GestureDetector(
-                        onTap: () {
-                          navigatorState.pushNamed(Routes.openjmuAppCenterPage);
-                        },
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20.h),
-                            child: Text(
-                              '常用应用会出现在这里\n点击右上按钮打开应用中心',
-                              style: TextStyle(fontSize: 16.sp),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
+  Widget commonApps(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.w),
+      child: Consumer<WebAppsProvider>(
+        builder: (BuildContext _, WebAppsProvider provider, Widget __) {
+          final Set<WebApp> commonWebApps = provider.commonWebApps;
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.w),
+              color: context.theme.cardColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (commonWebApps.isNotEmpty)
+                  Row(
+                    children: List<Widget>.generate(
+                      commonWebApps.length,
+                      (int index) => appWidget(commonWebApps, index),
                     ),
-                  allWebAppsButton(context),
-                ],
-              ),
-            );
-          },
-        ),
-      );
+                  )
+                else
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 45.w),
+                    child: Text(
+                      '应用捷径会出现在这里\n请前往全部应用进行设置',
+                      style: TextStyle(fontSize: 16.sp),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                allWebAppsButton(context),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   Widget appWidget(Iterable<WebApp> apps, int index) {
     final WebApp app = apps.elementAt(index);
@@ -299,10 +261,10 @@ class SelfPage extends StatelessWidget {
           children: <Widget>[
             WebAppIcon(app: app, size: 72.0),
             Padding(
-              padding: EdgeInsets.only(top: 4.sp, bottom: 8.sp),
+              padding: EdgeInsets.only(top: 4.w, bottom: 8.w),
               child: Text(
                 app.name,
-                style: TextStyle(height: 1.15, fontSize: 16.sp),
+                style: TextStyle(height: 1.2, fontSize: 16.sp),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -315,41 +277,27 @@ class SelfPage extends StatelessWidget {
 
   /// 前往应用中心的按钮
   Widget allWebAppsButton(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        splashFactory: InkSplash.splashFactory,
-        onTap: () {
-          navigatorState.pushNamed(Routes.openjmuAppCenterPage);
-        },
-        borderRadius: BorderRadius.circular(15.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        navigatorState.pushNamed(Routes.openjmuAppCenterPage);
+      },
+      child: Container(
+        height: 72.w,
+        child: Row(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(8.w),
-              width: 56.w,
-              height: 56.w,
-              decoration: BoxDecoration(
-                color: context.theme.canvasColor,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  R.ASSETS_ICONS_ARROW_RIGHT_SVG,
-                  width: 32.w,
-                  height: 32.w,
-                  color: currentThemeColor,
-                ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_APP_CENTER_ALL_APPS_SVG,
+                width: 32.w,
+                height: 32.w,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 4.sp, bottom: 8.sp),
-              child: Text(
-                '全部应用',
-                style: TextStyle(fontSize: 16.sp),
-                maxLines: 1,
-                overflow: TextOverflow.fade,
-              ),
+            Gap(16.w),
+            Text(
+              '全部应用',
+              style: TextStyle(height: 1.2, fontSize: 20.sp),
             ),
           ],
         ),
@@ -403,7 +351,7 @@ class SelfPage extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: <TextSpan>[
-                    TextSpan(text: '$hello～'),
+                    TextSpan(text: '$hello，'),
                     const TextSpan(text: '今天是'),
                     TextSpan(
                       text: '${DateFormat('MMMdd', 'zh_CN').format(now)}日，',
@@ -468,39 +416,38 @@ class SelfPage extends StatelessWidget {
     return Container(
       width: Screens.width * 0.8,
       color: context.theme.canvasColor,
-      child: Column(
+      child: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
-          headerWrapper(
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  height: (headerHeight - commonAppsHeight / 2).h,
-                  color: currentThemeColor,
-                ),
-                userInfoWidget,
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: commonApps(context),
-                ),
-              ],
-            ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 200.w,
+            child: ColoredBox(color: currentThemeColor),
           ),
-          contentWrapper(
+          Positioned.fill(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  child: ListView.separated(
-                    padding: EdgeInsets.symmetric(vertical: 12.w),
-                    separatorBuilder: (_, __) => VGap(24.h),
-                    itemCount: settingsSection.length,
-                    itemBuilder: (BuildContext _, int index) =>
-                        settingItem(context, index),
+                userInfoWidget,
+                commonApps(context),
+                contentWrapper(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: ListView.separated(
+                          padding: EdgeInsets.symmetric(vertical: 12.w),
+                          separatorBuilder: (_, __) => VGap(24.h),
+                          itemCount: settingsSection.length,
+                          itemBuilder: (BuildContext _, int index) =>
+                              settingItem(context, index),
+                        ),
+                      ),
+                      currentDay(context),
+                    ],
                   ),
                 ),
-                currentDay(context),
               ],
             ),
           ),

@@ -483,30 +483,27 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     }
 
     return Expanded(
-      child: ColoredBox(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          children: <Widget>[
-            courseTimeColumn(_maxCoursesPerDay),
-            for (int day = 1; day < maxWeekDay + 1; day++)
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    for (int count = 1; count < _maxCoursesPerDay; count++)
-                      if (count.isOdd)
-                        CourseWidget(
-                          courseList: courses[day]
-                              .cast<int, List<dynamic>>()[count]
-                              .cast<Course>(),
-                          hasEleven: hasEleven && count == 9,
-                          currentWeek: currentWeek,
-                          coordinate: <int>[day, count],
-                        ),
-                  ],
-                ),
+      child: Row(
+        children: <Widget>[
+          courseTimeColumn(_maxCoursesPerDay),
+          for (int day = 1; day < maxWeekDay + 1; day++)
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  for (int count = 1; count < _maxCoursesPerDay; count++)
+                    if (count.isOdd)
+                      CourseWidget(
+                        courseList: courses[day]
+                            .cast<int, List<dynamic>>()[count]
+                            .cast<Course>(),
+                        hasEleven: hasEleven && count == 9,
+                        currentWeek: currentWeek,
+                        coordinate: <int>[day, count],
+                      ),
+                ],
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -724,11 +721,7 @@ class CourseWidget extends StatelessWidget {
     } else {
       child = Icon(
         Icons.add,
-        color: context.iconTheme.color
-            .withOpacity(0.15)
-            .withRed(180)
-            .withBlue(180)
-            .withGreen(180),
+        color: context.iconTheme.color,
       );
     }
     return SizedBox.expand(child: child);
@@ -773,15 +766,17 @@ class CourseWidget extends StatelessWidget {
                           showCoursesDetail(context);
                         }
                       },
-                      onLongPress: () {
-                        showModal<void>(
-                          context: context,
-                          builder: (BuildContext context) => CourseEditDialog(
-                            course: null,
-                            coordinate: coordinate,
-                          ),
-                        );
-                      },
+                      onLongPress: courseList.isEmpty
+                          ? () {
+                              showModal<void>(
+                                context: context,
+                                builder: (_) => CourseEditDialog(
+                                  course: null,
+                                  coordinate: coordinate,
+                                ),
+                              );
+                            }
+                          : null,
                       child: Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
