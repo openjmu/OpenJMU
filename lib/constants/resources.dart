@@ -459,6 +459,9 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_APPS_98_10086_SVG =
       'assets/icons/app-center/apps/98-10086.svg';
 
+  static const String ASSETS_ICONS_APP_CENTER_EDIT_DONE_SVG =
+      'assets/icons/app-center/edit-done.svg';
+
   static const String ASSETS_ICONS_APP_CENTER_EDIT_SVG =
       'assets/icons/app-center/edit.svg';
 

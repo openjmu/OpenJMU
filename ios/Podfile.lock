@@ -15,8 +15,6 @@ PODS:
     - Flutter
   - image_editor (0.0.1):
     - Flutter
-  - image_save (0.0.1):
-    - Flutter
   - open_file (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -44,17 +42,16 @@ PODS:
   - ZXingObjCCopy/All (3.6.5)
 
 DEPENDENCIES:
-  - "camera (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/camera-0.7.0+1//ios/camera.podspec`)"
+  - "camera (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/camera-0.7.0+2//ios/camera.podspec`)"
   - connectivity (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/connectivity-2.0.2//ios/connectivity.podspec`)
   - device_info (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/device_info-1.0.0//ios/device_info.podspec`)
   - Flutter (from `Flutter`)
   - "flutter_inappwebview (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-4.0.0+4//ios/flutter_inappwebview.podspec`)"
-  - flutter_local_notifications (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-3.0.3//ios/flutter_local_notifications.podspec`)
+  - flutter_local_notifications (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-4.0.0//ios/flutter_local_notifications.podspec`)
   - "flutter_native_image (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec`)"
   - image_editor (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_editor-0.7.3//ios/image_editor.podspec`)
-  - image_save (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_save-4.0.1//ios/image_save.podspec`)
   - open_file (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.0.3//ios/open_file.podspec`)
-  - "package_info (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/package_info-0.4.3+2//ios/package_info.podspec`)"
+  - "package_info (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/package_info-0.4.3+4//ios/package_info.podspec`)"
   - path_provider (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.6.27//ios/path_provider.podspec`)
   - "permission_handler (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-5.0.1+1//ios/permission_handler.podspec`)"
   - photo_manager (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-0.6.0//ios/photo_manager.podspec`)
@@ -71,7 +68,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   camera:
-    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/camera-0.7.0+1//ios/camera.podspec"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/camera-0.7.0+2//ios/camera.podspec"
   connectivity:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/connectivity-2.0.2//ios/connectivity.podspec"
   device_info:
@@ -81,17 +78,15 @@ EXTERNAL SOURCES:
   flutter_inappwebview:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-4.0.0+4//ios/flutter_inappwebview.podspec"
   flutter_local_notifications:
-    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-3.0.3//ios/flutter_local_notifications.podspec"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-4.0.0//ios/flutter_local_notifications.podspec"
   flutter_native_image:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec"
   image_editor:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_editor-0.7.3//ios/image_editor.podspec"
-  image_save:
-    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_save-4.0.1//ios/image_save.podspec"
   open_file:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.0.3//ios/open_file.podspec"
   package_info:
-    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/package_info-0.4.3+2//ios/package_info.podspec"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/package_info-0.4.3+4//ios/package_info.podspec"
   path_provider:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.6.27//ios/path_provider.podspec"
   permission_handler:
@@ -118,7 +113,6 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   image_editor: c1d038630eedea60d2dee9c14f36aa66c7f9cfab
-  image_save: 66ab41fa2c60bc9569e55563ea287cced7b79fd1
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

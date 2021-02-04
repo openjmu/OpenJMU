@@ -51,7 +51,9 @@ class AppCenterPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               SvgPicture.asset(
-                R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
+                isEditing
+                    ? R.ASSETS_ICONS_APP_CENTER_EDIT_DONE_SVG
+                    : R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
                 width: 20.w,
                 height: 20.w,
                 color: context.textTheme.bodyText2.color,
