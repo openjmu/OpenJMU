@@ -65,8 +65,10 @@ class CommentPositionedState extends State<CommentPositioned> {
 
   @override
   void dispose() {
+    _commentController.dispose();
+    _commenting.dispose();
+    _shouldForward.dispose();
     super.dispose();
-    _commentController?.dispose();
   }
 
   Future<void> _addImage() async {
@@ -203,43 +205,45 @@ class CommentPositionedState extends State<CommentPositioned> {
             ),
           ),
           Expanded(
-            child: ExtendedTextField(
-              specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-              focusNode: _focusNode,
-              controller: _commentController,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 4.w,
-                ),
-                border: InputBorder.none,
-                hintText: toComment != null
-                    ? '同时转发　回复:@${toComment.fromUserName} '
-                    : '将我的评论同时转发...',
-                suffixIcon: _image != null
-                    ? Container(
-                        margin: EdgeInsets.only(right: 14.w),
-                        width: 70.w,
-                        height: 70.w,
-                        child: Image(
-                          image: AssetEntityImageProvider(
-                            _image,
-                            thumbSize: const <int>[80, 80],
+            child: ValueListenableBuilder<bool>(
+              valueListenable: _commenting,
+              builder: (_, bool value, __) => ExtendedTextField(
+                specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+                focusNode: _focusNode,
+                controller: _commentController,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 4.w,
+                  ),
+                  border: InputBorder.none,
+                  hintText: toComment != null
+                      ? '同时转发　回复:@${toComment.fromUserName} '
+                      : '将我的评论同时转发...',
+                  suffixIcon: _image != null
+                      ? Container(
+                          margin: EdgeInsets.only(right: 14.w),
+                          width: 70.w,
+                          height: 70.w,
+                          child: Image(
+                            image: AssetEntityImageProvider(
+                              _image,
+                              thumbSize: const <int>[80, 80],
+                            ),
+                            fit: BoxFit.cover,
                           ),
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : null,
+                        )
+                      : null,
+                ),
+                buildCounter: emptyCounterBuilder,
+                enabled: !value,
+                style: context.textTheme.bodyText2.copyWith(
+                  height: 1.2,
+                  fontSize: 20.sp,
+                ),
+                cursorColor: currentThemeColor,
+                autofocus: true,
+                maxLines: 1,
               ),
-              buildCounter: emptyCounterBuilder,
-              // enabled: !_commenting,
-              enabled: false,
-              style: context.textTheme.bodyText2.copyWith(
-                height: 1.2,
-                fontSize: 20.sp,
-              ),
-              cursorColor: currentThemeColor,
-              autofocus: true,
-              maxLines: 1,
             ),
           ),
         ],
