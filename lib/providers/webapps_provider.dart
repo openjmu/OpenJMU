@@ -20,7 +20,7 @@ class WebAppsProvider extends ChangeNotifier {
 
   Map<String, Set<WebApp>> get appCategoriesList => _appCategoriesList;
 
-  final int maxCommonWebApps = 3;
+  final int maxCommonWebApps = 4;
 
   Set<WebApp> _commonWebApps = <WebApp>{};
 

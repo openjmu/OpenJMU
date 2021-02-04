@@ -30,18 +30,20 @@ class _PublishPostPageState extends State<PublishPostPage>
       LoadingDialogController();
   final FocusNode focusNode = FocusNode();
   final double iconSize = 28.h;
-  final int maxAssetsLength = 9;
+
+  List<AssetEntity> selectedAssets = <AssetEntity>[];
   final Set<AssetEntity> failedAssets = <AssetEntity>{};
   final List<CancelToken> assetsUploadCancelTokens = <CancelToken>[];
   final Map<AssetEntity, int> uploadedAssetId = <AssetEntity, int>{};
 
-  List<AssetEntity> selectedAssets = <AssetEntity>[];
-
-  bool isLoading = false;
-  bool isTextFieldEnabled = true;
-  bool isEmoticonPadActive = false;
-  bool isAssetListViewCollapsed = false;
+  final int maxAssetsLength = 9;
   int uploadedAssets = 0;
+
+  final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false),
+      isTextFieldEnabled = ValueNotifier<bool>(true),
+      isEmoticonPadActive = ValueNotifier<bool>(false),
+      isAssetListViewCollapsed = ValueNotifier<bool>(false);
+
   double maximumKeyboardHeight = EmotionPad.emoticonPadDefaultHeight;
 
   int get imagesLength => selectedAssets.length;
@@ -58,6 +60,19 @@ class _PublishPostPageState extends State<PublishPostPage>
     SchedulerBinding.instance.addPostFrameCallback((Duration _) {
       focusNode.requestFocus();
     });
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    focusNode
+      ..unfocus()
+      ..dispose();
+    isLoading.dispose();
+    isTextFieldEnabled.dispose();
+    isEmoticonPadActive.dispose();
+    isAssetListViewCollapsed.dispose();
+    super.dispose();
   }
 
   /// Method to add `##`(topic) into text field.
@@ -141,9 +156,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Reverse [isAssetListViewCollapsed] state.
   /// 切换资源列表展开收起
   void switchAssetsListCollapse() {
-    setState(() {
-      isAssetListViewCollapsed = !isAssetListViewCollapsed;
-    });
+    isAssetListViewCollapsed.value = !isAssetListViewCollapsed.value;
   }
 
   /// Removes focus from the [FocusNode] of the [ExtendedTextField].
@@ -155,7 +168,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   void updateKeyboardHeight(BuildContext context) {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (keyboardHeight > 0) {
-      isEmoticonPadActive = false;
+      isEmoticonPadActive.value = false;
     }
 
     if (maximumKeyboardHeight !=
@@ -168,12 +181,9 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// 更新表情选择区显隐的方法
   void updateEmoticonPadStatus(BuildContext context, bool active) {
     final VoidCallback change = () {
-      isEmoticonPadActive = active;
-      if (mounted) {
-        setState(() {});
-      }
+      isEmoticonPadActive.value = active;
     };
-    if (isEmoticonPadActive) {
+    if (isEmoticonPadActive.value) {
       change();
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
@@ -232,9 +242,7 @@ class _PublishPostPageState extends State<PublishPostPage>
             ? '正在上传图片 (${uploadedAssets + 1}/$imagesLength)'
             : '正在发布动态...',
       );
-      setState(() {
-        isLoading = true;
-      });
+      isLoading.value = true;
       if (hasImages) {
         runImagesRequests();
       } else {
@@ -299,7 +307,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         throw Error.safeToString('Asset ${asset.id} upload failed');
       }
     } catch (e) {
-      isLoading = false; // 停止Loading
+      isLoading.value = false; // 停止Loading
       uploadedAssets = 0; // 上传清零
       failedAssets.add(asset); // 添加失败entity
       loadingDialogController.changeState('failed', '图片上传失败');
@@ -351,18 +359,18 @@ class _PublishPostPageState extends State<PublishPostPage>
     } catch (e) {
       loadingDialogController.changeState('failed', '动态发布失败');
     } finally {
-      isLoading = false;
+      isLoading.value = false;
       if (mounted) {
         setState(() {});
       }
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////// Just a line breaker ////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+  /////////////////////////// Just a line breaker ////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
 
   /// Publish button.
   /// 发布按钮
@@ -393,13 +401,16 @@ class _PublishPostPageState extends State<PublishPostPage>
 
   /// [TextField] for content.
   /// 内容输入区
-  Widget get textField => Expanded(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: ExtendedTextField(
+  Widget get textField {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: ValueListenableBuilder<bool>(
+          valueListenable: isLoading,
+          builder: (_, bool value, __) => ExtendedTextField(
             autofocus: false,
             controller: textEditingController,
-            enabled: !isLoading,
+            enabled: !value,
             focusNode: focusNode,
             scrollPadding: EdgeInsets.zero,
             specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
@@ -422,36 +433,41 @@ class _PublishPostPageState extends State<PublishPostPage>
             maxLines: null,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   /// Selected asset image widget.
   /// 已选资源的单个图片组件
   Widget _assetWidget(int index) {
     final AssetEntity asset = selectedAssets.elementAt(index);
-    return GestureDetector(
-      onTap: !isAssetListViewCollapsed
-          ? () async {
-              final List<AssetEntity> result =
-                  await AssetPickerViewer.pushToViewer(
-                context,
-                currentIndex: index,
-                previewAssets: selectedAssets,
-                themeData: AssetPicker.themeData(currentThemeColor),
-              );
-              if (result != selectedAssets && result != null) {
-                selectedAssets = result;
-                if (mounted) {
-                  setState(() {});
-                }
+    return ValueListenableBuilder<bool>(
+      valueListenable: isAssetListViewCollapsed,
+      builder: (_, bool value, __) => GestureDetector(
+        onTap: () async {
+          if (!value) {
+            final List<AssetEntity> result =
+                await AssetPickerViewer.pushToViewer(
+              context,
+              currentIndex: index,
+              previewAssets: selectedAssets,
+              themeData: AssetPicker.themeData(currentThemeColor),
+            );
+            if (result != selectedAssets && result != null) {
+              selectedAssets = result;
+              if (mounted) {
+                setState(() {});
               }
             }
-          : null,
-      child: RepaintBoundary(
-        child: ExtendedImage(
-          image: AssetEntityImageProvider(asset, isOriginal: false),
-          fit: BoxFit.cover,
-          borderRadius: BorderRadius.circular(10.w),
-          shape: BoxShape.rectangle,
+          }
+        },
+        child: RepaintBoundary(
+          child: ExtendedImage(
+            image: AssetEntityImageProvider(asset, isOriginal: false),
+            fit: BoxFit.cover,
+            borderRadius: BorderRadius.circular(10.w),
+            shape: BoxShape.rectangle,
+          ),
         ),
       ),
     );
@@ -477,29 +493,25 @@ class _PublishPostPageState extends State<PublishPostPage>
   Widget _assetDeleteButton(int index) {
     return GestureDetector(
       onTap: () {
+        if (imagesLength == 0) {
+          isAssetListViewCollapsed.value = false;
+        }
         setState(() {
           failedAssets.remove(selectedAssets.elementAt(index));
           selectedAssets.remove(selectedAssets.elementAt(index));
-          if (imagesLength == 0) {
-            isAssetListViewCollapsed = false;
-          }
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 6.w,
-          vertical: 2.h,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.w),
-          color: currentTheme.primaryColor.withOpacity(0.75),
+          color: context.theme.cardColor.withOpacity(0.75),
         ),
         child: Text(
           '删除',
-          style: TextStyle(
-            color: currentTheme.iconTheme.color,
+          style: context.textTheme.caption.copyWith(
+            height: 1.23,
             fontSize: 14.sp,
-            fontWeight: FontWeight.normal,
           ),
         ),
       ),
@@ -508,65 +520,70 @@ class _PublishPostPageState extends State<PublishPostPage>
 
   /// Item shown when selected assets not reached maximum images length yet.
   /// 已选中图片数量未达到最大限制时，显示添加item。
-  Widget get _assetAddItem => AnimatedContainer(
-        duration: kThemeAnimationDuration,
-        curve: Curves.easeInOut,
-        padding: EdgeInsets.symmetric(
-          horizontal: 8.w,
-          vertical: 16.w,
-        ),
-        child: AspectRatio(
-          aspectRatio: 1.0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: pickAssets,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10.w),
-                color: currentIsDark ? Colors.grey[700] : Colors.white,
-              ),
-              child: Icon(
+  Widget get _assetAddItem {
+    return AnimatedContainer(
+      duration: kThemeAnimationDuration,
+      curve: Curves.easeInOut,
+      padding: EdgeInsets.symmetric(
+        horizontal: 8.w,
+        vertical: 16.w,
+      ),
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: pickAssets,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10.w),
+              color: currentIsDark ? Colors.grey[700] : Colors.white,
+            ),
+            child: ValueListenableBuilder<bool>(
+              valueListenable: isAssetListViewCollapsed,
+              builder: (_, bool value, __) => Icon(
                 Icons.add,
-                size: (isAssetListViewCollapsed ? 20 : 50).w,
+                size: (value ? 20 : 50).w,
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   /// List view for assets.
   /// 已选资源的显示列表
-  Widget get assetsListView => Align(
+  Widget get assetsListView {
+    return ValueListenableBuilder<bool>(
+      valueListenable: isAssetListViewCollapsed,
+      builder: (_, bool isCollapsed, __) => Align(
         alignment: AlignmentDirectional.centerStart,
         child: GestureDetector(
-          onTap: isAssetListViewCollapsed ? switchAssetsListCollapse : null,
+          onTap: isCollapsed ? switchAssetsListCollapse : null,
           child: AnimatedContainer(
             curve: Curves.easeInOut,
             duration: kThemeAnimationDuration,
             height: selectedAssets.isNotEmpty
-                ? isAssetListViewCollapsed
+                ? isCollapsed
                     ? 72.w
                     : 140.w
                 : 0.0,
-            margin: EdgeInsets.all(
-              isAssetListViewCollapsed ? 12.w : 0,
-            ),
+            margin: EdgeInsets.all(isCollapsed ? 12.w : 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(
-                isAssetListViewCollapsed ? 15.w : 0,
+                isCollapsed ? 15.w : 0,
               ),
               color: currentTheme.canvasColor,
             ),
             child: ListView.builder(
-              shrinkWrap: isAssetListViewCollapsed,
+              shrinkWrap: isCollapsed,
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: 8.w,
               ),
               scrollDirection: Axis.horizontal,
-              itemCount: math.min(
-                  isAssetListViewCollapsed ? imagesLength : imagesLength + 1,
+              itemCount: math.min(isCollapsed ? imagesLength : imagesLength + 1,
                   maxAssetsLength),
               itemBuilder: (BuildContext _, int index) {
                 if (index == imagesLength) {
@@ -585,7 +602,7 @@ class _PublishPostPageState extends State<PublishPostPage>
                         if (failedAssets
                             .contains(selectedAssets.elementAt(index)))
                           uploadErrorCover,
-                        if (!isAssetListViewCollapsed)
+                        if (!isCollapsed)
                           Positioned(
                             top: 6.w,
                             right: 6.w,
@@ -599,15 +616,20 @@ class _PublishPostPageState extends State<PublishPostPage>
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   /// Emoticon pad widget.
   /// 表情选择部件
   Widget get emoticonPad {
-    return EmotionPad(
-      active: isEmoticonPadActive,
-      height: maximumKeyboardHeight,
-      controller: textEditingController,
+    return ValueListenableBuilder<bool>(
+      valueListenable: isEmoticonPadActive,
+      builder: (_, bool value, __) => EmotionPad(
+        active: value,
+        height: maximumKeyboardHeight,
+        controller: textEditingController,
+      ),
     );
   }
 
@@ -657,54 +679,64 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Toolbar for the page.
   /// 工具栏
   Widget toolbar(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        bottom:
-            !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 7.w),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 7.w),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            ),
+          ),
+          child: Row(
+            children: <Widget>[
+              _toolbarButton(
+                onTap: mentionPeople,
+                icon: R.ASSETS_ICONS_PUBLISH_MENTION_SVG,
+                text: '提及某人',
+              ),
+              _toolbarButton(
+                onTap: addTopic,
+                icon: R.ASSETS_ICONS_PUBLISH_ADD_TOPIC_SVG,
+                text: '插入话题',
+              ),
+              _toolbarButton(
+                onTap: () {
+                  if (imagesLength > 0) {
+                    switchAssetsListCollapse();
+                  } else {
+                    pickAssets();
+                  }
+                },
+                icon: R.ASSETS_ICONS_PUBLISH_ADD_IMAGE_SVG,
+                text: '插入图片',
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: isEmoticonPadActive,
+                builder: (_, bool value, __) => _toolbarButton(
+                  onTap: () {
+                    if (value && focusNode.canRequestFocus) {
+                      focusNode.requestFocus();
+                    }
+                    updateEmoticonPadStatus(context, !value);
+                  },
+                  icon: R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+                  iconColor: value
+                      ? currentThemeColor
+                      : context.textTheme.bodyText2.color,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      child: Row(
-        children: <Widget>[
-          _toolbarButton(
-            onTap: mentionPeople,
-            icon: R.ASSETS_ICONS_PUBLISH_MENTION_SVG,
-            text: '提及某人',
+        ValueListenableBuilder<bool>(
+          valueListenable: isEmoticonPadActive,
+          builder: (_, bool value, __) => SizedBox(
+            height: value ? 0 : context.mediaQuery.padding.bottom,
           ),
-          _toolbarButton(
-            onTap: addTopic,
-            icon: R.ASSETS_ICONS_PUBLISH_ADD_TOPIC_SVG,
-            text: '插入话题',
-          ),
-          _toolbarButton(
-            onTap: () {
-              if (imagesLength > 0) {
-                switchAssetsListCollapse();
-              } else {
-                pickAssets();
-              }
-            },
-            icon: R.ASSETS_ICONS_PUBLISH_ADD_IMAGE_SVG,
-            text: '插入图片',
-          ),
-          _toolbarButton(
-            onTap: () {
-              if (isEmoticonPadActive && focusNode.canRequestFocus) {
-                focusNode.requestFocus();
-              }
-              updateEmoticonPadStatus(context, !isEmoticonPadActive);
-            },
-            icon: R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
-            iconColor: isEmoticonPadActive
-                ? currentThemeColor
-                : context.textTheme.bodyText2.color,
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 
@@ -716,7 +748,9 @@ class _PublishPostPageState extends State<PublishPostPage>
     return WillPopScope(
       onWillPop: isContentEmptyWhenPop,
       child: Scaffold(
-        backgroundColor: context.theme.primaryColor,
+        backgroundColor: context.theme.brightness == Brightness.dark
+            ? Colors.black
+            : context.theme.cardColor,
         body: Column(
           children: <Widget>[
             FixedAppBar(

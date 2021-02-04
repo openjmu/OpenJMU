@@ -351,6 +351,9 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_APPS_2077_2077_SVG =
       'assets/icons/app-center/apps/2077-2077.svg';
 
+  static const String ASSETS_ICONS_APP_CENTER_APPS_2210_2210_SVG =
+      'assets/icons/app-center/apps/2210-2210.svg';
+
   static const String ASSETS_ICONS_APP_CENTER_APPS_23_1_SVG =
       'assets/icons/app-center/apps/23-1.svg';
 
@@ -368,6 +371,9 @@ class R {
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_380_380_SVG =
       'assets/icons/app-center/apps/380-380.svg';
+
+  static const String ASSETS_ICONS_APP_CENTER_APPS_40_4001_SVG =
+      'assets/icons/app-center/apps/40-4001.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_41_4101_SVG =
       'assets/icons/app-center/apps/41-4101.svg';
@@ -453,6 +459,9 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_APPS_98_10086_SVG =
       'assets/icons/app-center/apps/98-10086.svg';
 
+  static const String ASSETS_ICONS_APP_CENTER_EDIT_SVG =
+      'assets/icons/app-center/edit.svg';
+
   static const String ASSETS_ICONS_APP_CENTER_REMOVE_SVG =
       'assets/icons/app-center/remove.svg';
 
@@ -477,8 +486,7 @@ class R {
   static const String ASSETS_ICONS_CLEAR_UNREAD_MESSAGE_SVG =
       'assets/icons/clear-unread-message.svg';
 
-  static const String ASSETS_ICONS_COMMON_APPS_EDIT_SVG =
-      'assets/icons/common-apps-edit.svg';
+  static const String ASSETS_ICONS_CLEAR_SVG = 'assets/icons/clear.svg';
 
   static const String ASSETS_ICONS_GENDER_FEMALE_SVG =
       'assets/icons/gender/female.svg';
@@ -602,6 +610,9 @@ class R {
 
   static const String ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG =
       'assets/placeholders/no-message.svg';
+
+  static const String ASSETS_PLACEHOLDERS_SEARCH_NO_RESULT_SVG =
+      'assets/placeholders/search-no-result.svg';
 
   static const String IMAGES_JMU_LOGO_PNG = 'images/jmu_logo.png';
 

@@ -36,6 +36,7 @@ export '../widgets/slide_menu_item.dart';
 export '../widgets/user_avatar.dart';
 export '../widgets/webapp_icon.dart';
 export '../widgets/webview/in_app_webview.dart';
+export '../widgets/value_listenable_builder_2.dart';
 
 /// Empty counter builder for [TextField].
 final InputCounterWidgetBuilder emptyCounterBuilder = (

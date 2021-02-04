@@ -70,6 +70,10 @@ class FixedAppBar extends StatelessWidget {
   /// 是否在底部展示细线
   final bool withBorder;
 
+  static IconThemeData iconTheme(BuildContext context) {
+    return IconThemeData(color: context.textTheme.bodyText2.color);
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
@@ -156,7 +160,7 @@ class FixedAppBar extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: IconTheme(
-        data: IconThemeData(color: context.textTheme.bodyText2.color),
+        data: iconTheme(context),
         child: child,
       ),
     );

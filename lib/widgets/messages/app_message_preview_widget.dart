@@ -115,7 +115,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   Widget _appIconWidget(BuildContext context, WebApp app) {
     return Padding(
       padding: EdgeInsets.only(right: 16.w),
-      child: WebAppIcon(app: app),
+      child: WebAppIcon(app: app, size: 60),
     );
   }
 

@@ -9,16 +9,16 @@ class WebAppIcon extends StatelessWidget {
   const WebAppIcon({
     Key key,
     @required this.app,
-    this.size = 60.0,
+    this.size,
   }) : super(key: key);
 
   final WebApp app;
   final double size;
 
-  double get oldIconSize => size / 1.5;
+  double get oldIconSize => size != null ? size / 1.375 : null;
 
-  String get iconPath =>
-      'assets/icons/app-center/apps/${app.appId}-${app.code}.svg';
+  String get iconPath => 'assets/icons/app-center/apps/'
+      '${app.appId}-${app.code}.svg';
 
   String get oldIconUrl => '${API.webAppIcons}'
       'appid=${app.appId}'
@@ -37,16 +37,20 @@ class WebAppIcon extends StatelessWidget {
     if (await exist) {
       return SvgPicture.asset(
         iconPath,
-        width: size.w,
-        height: size.w,
+        width: size?.w,
+        height: size?.w,
       );
     } else {
-      LogUtils.e('Error when load ${app.name}\'s icon.');
+      LogUtils.e(
+        'Error when load '
+        '${app.name} (${app.appId}-${app.code})'
+        '\'s icon.',
+      );
       return ExtendedImage.network(
         oldIconUrl,
         fit: BoxFit.fill,
-        width: oldIconSize.w,
-        height: oldIconSize.w,
+        width: oldIconSize?.w,
+        height: oldIconSize?.w,
       );
     }
   }
@@ -58,27 +62,25 @@ class WebAppIcon extends StatelessWidget {
       builder: (_, bool newAppCenterIcon, __) {
         final bool shouldUseNew =
             !(currentUser?.isTeacher ?? false) || newAppCenterIcon;
-        return shouldUseNew
+        Widget child = shouldUseNew
             ? FutureBuilder<Widget>(
                 initialData: const SizedBox.shrink(),
                 future: loadAsset(),
-                builder: (_, AsyncSnapshot<Widget> snapshot) =>
-                    SizedBox.fromSize(
-                  size: Size.square(size.w),
-                  child: Center(child: snapshot.data),
-                ),
+                builder: (_, AsyncSnapshot<Widget> snapshot) => snapshot.data,
               )
-            : SizedBox.fromSize(
-                size: Size.square(size.w),
-                child: Center(
-                  child: ExtendedImage.network(
-                    oldIconUrl,
-                    fit: BoxFit.fill,
-                    width: oldIconSize.w,
-                    height: oldIconSize.w,
-                  ),
-                ),
+            : ExtendedImage.network(
+                oldIconUrl,
+                fit: BoxFit.fill,
+                width: oldIconSize?.w,
+                height: oldIconSize?.w,
               );
+        if (size != null) {
+          child = SizedBox.fromSize(
+            size: Size.square(size.w),
+            child: Center(child: child),
+          );
+        }
+        return child;
       },
     );
   }

@@ -12,78 +12,56 @@ class AppCenterPage extends StatelessWidget {
   Widget categoryListView(BuildContext context) {
     final List<Widget> _list = List<Widget>.generate(
       WebApp.category.keys.length,
-      (int index) {
-        return getSectionColumn(context, WebApp.category.keys.elementAt(index));
-      },
+      (int index) => getSectionColumn(
+        context,
+        WebApp.category.keys.elementAt(index),
+      ),
     );
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: 16.h,
-      ),
-      child: Column(
-        children: <Widget>[
-          commonAppsSection(context),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-              itemCount: _list.length,
-              itemBuilder: (BuildContext _, int index) => _list[index],
+    return Column(
+      children: <Widget>[
+        commonAppsSection(context),
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 8.w,
+            ).copyWith(
+              bottom: Screens.bottomSafeHeight + 8.w,
             ),
+            itemCount: _list.length,
+            itemBuilder: (BuildContext _, int index) => _list[index],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget editingButton(BuildContext context) {
-    return Expanded(
-      child: Consumer<WebAppsProvider>(
-        builder: (BuildContext _, WebAppsProvider provider, Widget __) {
-          final bool isEditing = provider.isEditingCommonApps;
-          return InkWell(
-            splashFactory: InkSplash.splashFactory,
-            onTap: () {
-              if (isEditing) {
-                context.read<WebAppsProvider>().saveCommonApps();
-              }
-              context.read<WebAppsProvider>().isEditingCommonApps = !isEditing;
-            },
-            borderRadius: BorderRadius.circular(15.w),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.all(6.w),
-                    decoration: BoxDecoration(
-                      color: context.theme.canvasColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        R.ASSETS_ICONS_COMMON_APPS_EDIT_SVG,
-                        width: 24.w,
-                        height: 24.w,
-                        color: context.textTheme.bodyText2.color,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.sp),
-                  child: Text(
-                    isEditing ? '完成' : '编辑',
-                    style: TextStyle(fontSize: 18.sp),
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+    return Consumer<WebAppsProvider>(
+      builder: (_, WebAppsProvider provider, __) {
+        final bool isEditing = provider.isEditingCommonApps;
+        return GestureDetector(
+          onTap: () {
+            if (isEditing) {
+              provider.saveCommonApps();
+            }
+            provider.isEditingCommonApps = !isEditing;
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              SvgPicture.asset(
+                R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
+                width: 20.w,
+                height: 20.w,
+                color: context.textTheme.bodyText2.color,
+              ),
+              Gap(10.w),
+              Text(isEditing ? '完成' : '编辑'),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -93,68 +71,67 @@ class AppCenterPage extends StatelessWidget {
     return Consumer<WebAppsProvider>(
       builder: (BuildContext _, WebAppsProvider provider, Widget __) {
         final bool isEditing = provider.isEditingCommonApps;
-        return AnimatedContainer(
-          duration: kThemeChangeDuration,
-          margin: EdgeInsets.only(bottom: 10.h),
-          padding: EdgeInsets.symmetric(vertical: 10.h),
-          height: (isEditing ? 120.0 : 176.0).h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.w),
-            color: context.theme.colorScheme.surface,
-          ),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      if (provider.commonWebApps.isEmpty)
-                        Expanded(
-                          flex: 3,
-                          child: Center(
+        return DefaultTextStyle.merge(
+          style: TextStyle(height: 1.2, fontSize: 20.sp),
+          child: Container(
+            height: 86.w,
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 1.w,
+                  color: context.theme.dividerColor,
+                ),
+              ),
+              color: context.theme.colorScheme.surface,
+            ),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 96.w,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: const Text('应用捷径'),
+                ),
+                Expanded(
+                  child: SizedBox.expand(
+                    child: Builder(
+                      builder: (BuildContext context) {
+                        if (provider.commonWebApps.isEmpty) {
+                          return Center(
                             child: Text(
-                              '置顶应用会显示在这里',
-                              style: TextStyle(fontSize: 18.sp),
+                              isEditing ? '点击下方按钮以增删捷径' : '点击编辑以进行调整',
+                              style: context.textTheme.caption.copyWith(
+                                height: 1.2,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                          );
+                        }
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: List<Widget>.generate(
+                            provider.commonWebApps.length,
+                            (int index) => Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12.w),
+                                child: WebAppIcon(
+                                  app: provider.commonWebApps.elementAt(index),
+                                ),
+                              ),
                             ),
                           ),
-                        )
-                      else ...<Widget>[
-                        ...List<Widget>.generate(
-                          provider.commonWebApps.length,
-                          (int index) {
-                            return Expanded(
-                              child: appWidget(
-                                context,
-                                provider.commonWebApps.elementAt(index),
-                                needIndicator: false,
-                              ),
-                            );
-                          },
-                        ),
-                        ...List<Widget>.generate(
-                          provider.maxCommonWebApps -
-                              provider.commonWebApps.length,
-                          (int _) => const Spacer(),
-                        ),
-                      ],
-                      editingButton(context)
-                    ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              AnimatedContainer(
-                duration: kThemeChangeDuration,
-                height: isEditing ? 0 : 36.h,
-                child: Center(
-                  child: Text(
-                    isEditing ? '' : '点击编辑对常用应用进行调整',
-                    style: context.textTheme.caption.copyWith(fontSize: 16.sp),
-                  ),
+                Container(
+                  width: 96.w,
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: editingButton(context),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -168,33 +145,11 @@ class AppCenterPage extends StatelessWidget {
     bool needIndicator = true,
   }) {
     return Consumer<WebAppsProvider>(
-      builder: (BuildContext _, WebAppsProvider provider, Widget __) {
-        return InkWell(
-          splashFactory: InkSplash.splashFactory,
-          borderRadius: BorderRadius.circular(15.w),
+      builder: (_, WebAppsProvider provider, Widget child) {
+        return GestureDetector(
           child: Stack(
             children: <Widget>[
-              Positioned.fill(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(child: WebAppIcon(app: webApp, size: 72.0)),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.sp),
-                      child: Text(
-                        webApp.name,
-                        style: context.textTheme.bodyText2.copyWith(
-                          height: 1.2,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.fade,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child,
               appEditIndicator(context, provider, webApp, needIndicator),
             ],
           ),
@@ -225,6 +180,27 @@ class AppCenterPage extends StatelessWidget {
               : null,
         );
       },
+      child: Positioned.fill(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Expanded(child: Center(child: WebAppIcon(app: webApp, size: 72.0))),
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.w),
+              child: Text(
+                webApp.name,
+                style: context.textTheme.bodyText2.copyWith(
+                  height: 1.2,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -236,10 +212,6 @@ class AppCenterPage extends StatelessWidget {
   ) {
     final bool isCommon = provider.commonWebApps.contains(webApp);
     final bool isEditing = provider.isEditingCommonApps;
-    final IconThemeData iconTheme = IconThemeData(
-      color: context.iconTheme.color.withOpacity(0.5),
-      size: 12.w,
-    );
     return PositionedDirectional(
       bottom: 45.w,
       end: 20.w,
@@ -256,9 +228,9 @@ class AppCenterPage extends StatelessWidget {
                   isCommon
                       ? R.ASSETS_ICONS_APP_CENTER_REMOVE_SVG
                       : R.ASSETS_ICONS_APP_CENTER_ADD_SVG,
-                  color: iconTheme.color,
-                  width: iconTheme.size,
-                  height: iconTheme.size,
+                  color: context.iconTheme.color,
+                  width: 12.w,
+                  height: 12.w,
                 ),
               ),
             )
@@ -269,20 +241,15 @@ class AppCenterPage extends StatelessWidget {
   /// 分类列表组件
   Widget getSectionColumn(BuildContext context, String name) {
     return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
-      selector: (BuildContext _, WebAppsProvider provider) =>
-          provider.appCategoriesList,
-      builder: (
-        BuildContext _,
-        Map<String, Set<WebApp>> appCategoriesList,
-        Widget __,
-      ) {
+      selector: (_, WebAppsProvider p) => p.appCategoriesList,
+      builder: (_, Map<String, Set<WebApp>> appCategoriesList, __) {
         final Set<WebApp> list = appCategoriesList[name];
         if (list?.isNotEmpty ?? false) {
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 10.h),
-            padding: EdgeInsets.symmetric(vertical: 10.h),
+            margin: EdgeInsets.symmetric(vertical: 10.w),
+            padding: EdgeInsets.symmetric(vertical: 10.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.w),
+              borderRadius: BorderRadius.circular(15.w),
               color: context.theme.colorScheme.surface,
             ),
             child: Column(

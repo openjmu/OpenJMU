@@ -57,6 +57,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    super.initState();
+
     LogUtils.d('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
@@ -126,8 +128,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             );
       })
       ..on<HasUpdateEvent>().listen(PackageUtils.showUpdateDialog);
-
-    super.initState();
   }
 
   @override
@@ -276,10 +276,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       providers: providers,
       child: Consumer2<ThemesProvider, SettingsProvider>(
         builder: (
-          BuildContext _,
+          _,
           ThemesProvider themesProvider,
           SettingsProvider settingsProvider,
-          Widget __,
+          __,
         ) {
           final bool isDark = themesProvider.platformBrightness
               ? _platformBrightness == Brightness.dark
@@ -300,6 +300,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
               data: theme,
               child: OKToast(
                 position: ToastPosition.bottom,
+                textPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                textStyle: const TextStyle(fontSize: 14),
                 child: MaterialApp(
                   navigatorKey: Instances.navigatorKey,
                   builder: (BuildContext c, Widget w) {

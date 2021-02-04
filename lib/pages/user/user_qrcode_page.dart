@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:image_save/image_save.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -48,15 +47,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       final ByteData byteData = await image.toByteData(
         format: ui.ImageByteFormat.png,
       );
-      final bool result = await ImageSave.saveImage(
-        byteData.buffer.asUint8List(),
-        'png',
-      );
-      if (result != null) {
-        showToast('保存成功');
-      } else {
-        showToast('保存失败');
-      }
+      await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
+      showToast('保存成功');
     } catch (e) {
       isSaving = false;
       showToast('保存失败');

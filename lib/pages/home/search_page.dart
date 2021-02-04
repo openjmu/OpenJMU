@@ -17,18 +17,19 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, RouteAware {
   final FocusNode _focusNode = FocusNode();
+  final List<User> userList = <User>[];
+
   TextEditingController _controller = TextEditingController();
 
-  final List<User> userList = <User>[];
   List<Post> postList;
 
-  bool _loaded = false,
-      _loading = false,
-      _canLoadMore = true,
-      _canClear = false,
-      _autoFocus = true;
+  final ValueNotifier<bool> _canClear = ValueNotifier<bool>(false),
+      _autoFocus = ValueNotifier<bool>(true),
+      _loaded = ValueNotifier<bool>(false),
+      _loading = ValueNotifier<bool>(false),
+      _canLoadMore = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class SearchPageState extends State<SearchPage>
 
   @override
   void dispose() {
+    Instances.routeObserver.unsubscribe(this);
     _controller?.removeListener(canClearListener);
     _controller?.dispose();
     _focusNode
@@ -48,23 +50,26 @@ class SearchPageState extends State<SearchPage>
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (widget.content?.trim()?.isNotEmpty ?? false) {
-      _autoFocus = false;
+      _autoFocus.value = false;
       _controller?.removeListener(canClearListener);
       _controller = TextEditingController(text: widget.content);
       search(context, widget.content);
     }
-    super.didChangeDependencies();
+    Instances.routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
   @override
   bool get wantKeepAlive => true;
 
+  @override
+  void didPushNext() {
+    _focusNode.unfocus();
+  }
+
   void canClearListener() {
-    _canClear = _controller.text.isNotEmpty;
-    if (mounted) {
-      setState(() {});
-    }
+    _canClear.value = _controller.text.isNotEmpty;
   }
 
   Future<void> getUsers(String searchQuery) async {
@@ -99,7 +104,7 @@ class SearchPageState extends State<SearchPage>
     ).then((Response<Map<String, dynamic>> response) {
       final List<dynamic> _ps = response.data['topics'] as List<dynamic>;
       if (_ps.isEmpty) {
-        _canLoadMore = false;
+        _canLoadMore.value = false;
       }
       for (final dynamic post in _ps) {
         final Post p = Post.fromJson(post['topic'] as Map<String, dynamic>);
@@ -115,27 +120,19 @@ class SearchPageState extends State<SearchPage>
     final String query = filteredSearchQuery(content);
     if (query?.isNotEmpty ?? false) {
       _focusNode.unfocus();
-      _loading = true;
+      _loading.value = true;
       if (!isMore) {
-        _loaded = false;
-        _canLoadMore = true;
+        _loaded.value = false;
+        _canLoadMore.value = true;
         userList?.clear();
         postList = null;
-        if (mounted) {
-          setState(() {});
-        }
       }
       Future.wait<void>(<Future<void>>[
         getUsers(content),
         getPosts(content),
       ]).then((dynamic _) {
-        if (!_loaded) {
-          _loaded = true;
-        }
-        _loading = false;
-        if (mounted) {
-          setState(() {});
-        }
+        _loaded.value = !_loaded.value;
+        _loading.value = false;
       });
     } else {
       showToast('一定要搜点什么才行...');
@@ -157,224 +154,287 @@ class SearchPageState extends State<SearchPage>
     return result;
   }
 
-  Widget get searchButton => IconButton(
-        icon: Icon(Icons.search, size: 30.w),
-        onPressed: () {
-          search(context, _controller.text);
-        },
-      );
-
-  Widget get clearButton => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          _controller.clear();
-          _focusNode.requestFocus();
-          SystemChannels.textInput.invokeMethod<void>('TextInput.show');
-        },
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Icon(
-            Icons.clear,
-            size: 24.w,
-            color: context.iconTheme.color,
-          ),
+  Widget get searchButton {
+    return GestureDetector(
+      onTap: () {
+        search(context, _controller.text);
+      },
+      child: Container(
+        width: 56.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.themeColor,
         ),
-      );
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_SELF_PAGE_SEARCH_SVG,
+          width: 40.w,
+          color: adaptiveButtonColor(),
+        ),
+      ),
+    );
+  }
+
+  Widget clearButton(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        _controller.clear();
+        _focusNode.requestFocus();
+        SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_CLEAR_SVG,
+          width: 20.w,
+          color: context.iconTheme.color,
+        ),
+      ),
+    );
+  }
 
   Widget searchTextField(BuildContext context, {String content}) {
     if (content != null) {
       _controller = TextEditingController(text: content);
     }
-    return Container(
-      height: kAppBarHeight.h / 1.3,
-      padding: EdgeInsets.only(
-        left: 16.w,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kAppBarHeight),
-        color: Theme.of(context).canvasColor,
-      ),
+    return Padding(
+      padding: EdgeInsets.only(left: 16.w),
       child: Row(
         children: <Widget>[
-          Expanded(
-            child: TextField(
-              autofocus: _autoFocus && !_loaded,
-              controller: _controller,
-              cursorColor: currentThemeColor,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-                hintText: '输入要搜索的内容...',
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                  textBaseline: TextBaseline.alphabetic,
+          ValueListenableBuilder2<bool, bool>(
+            firstNotifier: _autoFocus,
+            secondNotifier: _loaded,
+            builder: (_, bool autoFocus, bool isLoaded, __) => Expanded(
+              child: TextField(
+                autofocus: autoFocus && !isLoaded,
+                controller: _controller,
+                cursorColor: currentThemeColor,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: ' 输入要搜索的内容...',
                 ),
-                isDense: true,
+                focusNode: _focusNode,
+                keyboardType: TextInputType.text,
+                style: TextStyle(height: 1.25, fontSize: 20.sp),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (String text) {
+                  search(context, text);
+                },
               ),
-              focusNode: _focusNode,
-              keyboardType: TextInputType.text,
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.normal,
-                textBaseline: TextBaseline.alphabetic,
-              ),
-              textInputAction: TextInputAction.search,
-              onSubmitted: (String text) {
-                search(context, text);
-              },
             ),
           ),
-          if (_canClear) clearButton,
+          ValueListenableBuilder<bool>(
+            valueListenable: _canClear,
+            builder: (BuildContext c, bool value, __) {
+              if (value) {
+                return clearButton(c);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget get userListView => (userList != null && userList.isNotEmpty)
-      ? SizedBox(
-          height: 150.h,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 16.h, left: 12.w),
-                child: Text(
-                  '相关用户 (${userList.length})',
-                  style: Theme.of(context)
-                      .textTheme
-                      .caption
-                      .copyWith(fontSize: 19.sp),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: userList.length,
-                  itemBuilder: (BuildContext _, int index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          UserAvatar(uid: userList[index].id, size: 56.0),
-                          VGap(8.h),
-                          Text(
-                            userList[index].nickname,
-                            style: TextStyle(fontSize: 18.sp),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Divider(height: 2.h),
-            ],
+  Widget get userListView {
+    if (userList == null || userList.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
+          child: Text(
+            '相关用户 (${userList.length})',
+            style: TextStyle(
+              color: context.textTheme.bodyText2.color.withOpacity(0.625),
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        )
-      : const SizedBox.shrink();
+        ),
+        Container(
+          height: 132.w,
+          decoration: BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(
+                width: 1.w,
+                color: context.theme.dividerColor,
+              ),
+            ),
+            color: context.theme.colorScheme.surface,
+          ),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: userList.length,
+            itemBuilder: (_, int index) => Container(
+              width: Screens.width / 6,
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  VGap(2.w),
+                  UserAvatar(uid: userList[index].id, size: 56),
+                  VGap(12.w),
+                  Text(
+                    userList[index].nickname.notBreak,
+                    style: TextStyle(height: 1.2, fontSize: 18.sp),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  PreferredSize _appBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kAppBarHeight),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+          ),
+          color: context.theme.colorScheme.surface,
+        ),
+        child: SafeArea(
+          top: true,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
+            child: IconTheme(
+              data: FixedAppBar.iconTheme(context),
+              child: Row(
+                children: <Widget>[
+                  const FixedBackButton(),
+                  Expanded(child: searchTextField(context)),
+                  searchButton,
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _resultListView(BuildContext context) {
+    return ListView.builder(
+      itemCount: 1 +
+          (postList?.length ?? 0) +
+          ((userList != null && userList.isNotEmpty) ? 1 : 0),
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          if (userList != null && userList.isNotEmpty) {
+            return userListView;
+          } else {
+            return Padding(
+              padding: EdgeInsets.only(
+                top: 16.h,
+                bottom: 8.h,
+                left: 12.w,
+              ),
+              child: Text(
+                '相关动态',
+                style: Theme.of(context).textTheme.caption.copyWith(
+                      fontSize: 19.sp,
+                    ),
+              ),
+            );
+          }
+        }
+        if (userList != null && userList.isNotEmpty && index == 1) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 10.w,
+            ).copyWith(bottom: 4.w),
+            child: Text(
+              '相关动态',
+              style: TextStyle(
+                color: context.textTheme.bodyText2.color.withOpacity(0.625),
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          );
+        } else if (index == postList.length + 1) {
+          if (_canLoadMore.value) {
+            search(context, _controller.text, isMore: true);
+          }
+          return PostCard(
+            postList[index - 2],
+            isDetail: false,
+            parentContext: context,
+          );
+        } else if (index == postList.length + 2) {
+          return LoadMoreIndicator(canLoadMore: _canLoadMore.value);
+        } else {
+          return PostCard(
+            postList[index - 1],
+            isDetail: false,
+            parentContext: context,
+          );
+        }
+      },
+    );
+  }
+
+  Widget _emptyWidget(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SvgPicture.asset(
+          R.ASSETS_PLACEHOLDERS_SEARCH_NO_RESULT_SVG,
+          width: 50.w,
+          color: context.theme.iconTheme.color,
+        ),
+        VGap(20.w),
+        Text(
+          '无搜索结果',
+          style: TextStyle(
+            color: context.textTheme.caption.color,
+            fontSize: 22.sp,
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kAppBarHeight),
-        child: SafeArea(
-          top: true,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              children: <Widget>[
-                const BackButton(),
-                Expanded(child: searchTextField(context)),
-                searchButton,
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: !_loading
-          ? _loaded
-              ? (postList != null && postList.isNotEmpty) ||
-                      (userList != null && userList.isNotEmpty)
-                  ? ListView.builder(
-                      itemCount: 1 +
-                          (postList?.length ?? 0) +
-                          ((userList != null && userList.isNotEmpty) ? 1 : 0),
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == 0) {
-                          if (userList != null && userList.isNotEmpty) {
-                            return userListView;
-                          } else {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                top: 16.h,
-                                bottom: 8.h,
-                                left: 12.w,
-                              ),
-                              child: Text(
-                                '相关动态',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    .copyWith(
-                                      fontSize: 19.sp,
-                                    ),
-                              ),
-                            );
-                          }
-                        }
-                        if (userList != null &&
-                            userList.isNotEmpty &&
-                            index == 1) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              top: 16.h,
-                              bottom: 8.h,
-                              left: 12.w,
-                            ),
-                            child: Text(
-                              '相关动态',
-                              style: context.textTheme.caption.copyWith(
-                                fontSize: 19.sp,
-                              ),
-                            ),
-                          );
-                        } else if (index == postList.length + 1) {
-                          if (_canLoadMore) {
-                            search(context, _controller.text, isMore: true);
-                          }
-                          return PostCard(
-                            postList[index - 2],
-                            isDetail: false,
-                            parentContext: context,
-                          );
-                        } else if (index == postList.length + 2) {
-                          return LoadMoreIndicator(canLoadMore: _canLoadMore);
-                        } else {
-                          return PostCard(
-                            postList[index - 1],
-                            isDetail: false,
-                            parentContext: context,
-                          );
-                        }
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        '没有搜索到动态内容~\n🧐',
-                        style: TextStyle(fontSize: 30.sp),
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-              : const SizedBox.shrink()
-          : const Center(
+      appBar: _appBar(context),
+      body: ValueListenableBuilder2<bool, bool>(
+        firstNotifier: _loading,
+        secondNotifier: _loaded,
+        builder: (_, bool isLoading, bool isLoaded, __) {
+          if (isLoading) {
+            return const Center(
               child: LoadMoreSpinningIcon(isRefreshing: true),
-            ),
+            );
+          }
+          if (isLoaded) {
+            if ((postList != null && postList.isNotEmpty) ||
+                (userList != null && userList.isNotEmpty)) {
+              return _resultListView(context);
+            }
+            return _emptyWidget(context);
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

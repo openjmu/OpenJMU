@@ -9,7 +9,6 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:image_save/image_save.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
@@ -98,26 +97,15 @@ class ImageViewerState extends State<ImageViewer>
 
   Future<void> _downloadImage(String url) async {
     try {
-      final Response<dynamic> head = await NetUtils.head<dynamic>(url);
-      final String filename = head.headers
-          .value('Content-Disposition')
-          ?.split('; ')
-          ?.elementAt(1)
-          ?.split('=')
-          ?.elementAt(1);
       final Response<List<int>> response =
           await NetUtils.getBytes<List<int>>(url);
-      final bool success = await ImageSave.saveImageToSandbox(
+      await PhotoManager.editor.saveImage(
         Uint8List.fromList(response.data),
-        filename ?? '$currentTimeStamp.jpg',
+        title: '$currentTimeStamp',
       );
-      if (success) {
-        showCenterToast('图片已保存至相册');
-      } else {
-        showErrorToast('图片保存失败');
-      }
-    } on PlatformException catch (error) {
-      showErrorToast(error.message);
+      showCenterToast('图片已保存至相册');
+    } catch (e) {
+      showErrorToast('图片保存失败 $e');
       return;
     }
     if (!mounted) {

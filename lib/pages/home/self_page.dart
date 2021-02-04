@@ -212,30 +212,33 @@ class SelfPage extends StatelessWidget {
         builder: (BuildContext _, WebAppsProvider provider, Widget __) {
           final Set<WebApp> commonWebApps = provider.commonWebApps;
           return Container(
+            height: 212.w,
             padding: EdgeInsets.symmetric(horizontal: 10.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.w),
               color: context.theme.cardColor,
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 if (commonWebApps.isNotEmpty)
-                  Row(
-                    children: List<Widget>.generate(
-                      commonWebApps.length,
-                      (int index) => appWidget(commonWebApps, index),
+                  Expanded(
+                    child: Row(
+                      children: List<Widget>.generate(
+                        commonWebApps.length,
+                        (int index) => appWidget(commonWebApps, index),
+                      ),
                     ),
                   )
                 else
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 45.w),
-                    child: Text(
-                      '应用捷径会出现在这里\n请前往全部应用进行设置',
-                      style: context.textTheme.caption.copyWith(
-                        fontSize: 16.sp,
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        '应用捷径会出现在这里\n请前往全部应用进行设置',
+                        style: context.textTheme.caption.copyWith(
+                          fontSize: 16.sp,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                 allWebAppsButton(context),
@@ -263,7 +266,7 @@ class SelfPage extends StatelessWidget {
           children: <Widget>[
             WebAppIcon(app: app, size: 72.0),
             Padding(
-              padding: EdgeInsets.only(top: 4.w, bottom: 8.w),
+              padding: EdgeInsets.only(top: 8.w, bottom: 4.w),
               child: Text(
                 app.name,
                 style: TextStyle(height: 1.2, fontSize: 16.sp),
@@ -289,14 +292,14 @@ class SelfPage extends StatelessWidget {
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: SvgPicture.asset(
                 R.ASSETS_ICONS_APP_CENTER_ALL_APPS_SVG,
-                width: 32.w,
-                height: 32.w,
+                width: 45.w,
+                color: context.iconTheme.color,
               ),
             ),
-            Gap(16.w),
+            Gap(18.w),
             Text(
               '全部应用',
               style: TextStyle(height: 1.2, fontSize: 20.sp),
