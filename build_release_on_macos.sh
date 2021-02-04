@@ -9,6 +9,9 @@ flutter clean
 # Then run flutter pub get to generate new configuration.
 flutter pub get
 
+# Build Android APK
+flutter build apk --release
+
 ## Pod install
 cd ios
 pod install
@@ -35,8 +38,5 @@ xcodebuild -exportArchive -archivePath build/ios/Runner.xcarchive \
   -exportOptionsPlist ExportOptions.plist \
   -exportPath release/"Runner $curtime" \
   -quiet
-
-# Build Android APK
-flutter build apk --release
 
 exit 0
