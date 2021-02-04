@@ -224,7 +224,7 @@ class NotificationsPageState extends State<NotificationsPage>
 
   Future<void> canAnimate() async {
     if (scrollController.offset < shouldPopOffset) {
-      unawaited(onWillPop());
+      onWillPop();
     } else if (scrollController.offset != maximumSheetHeight) {
       animating = true;
       await scrollController.animateTo(

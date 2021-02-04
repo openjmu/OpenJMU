@@ -135,7 +135,7 @@ class ScoresProvider extends ChangeNotifier {
     } catch (e) {
       if (e.toString().contains('StreamSink is closed')) {
         if (await initSocket()) {
-          unawaited(requestScore());
+          requestScore();
         }
       } else {
         loading = false;

@@ -134,33 +134,31 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 
     /// Stop scan immediately.
     /// 立刻停止扫描
-    unawaited(_controller.stopScan());
+    _controller.stopScan();
 
     /// Call vibrate once.
     /// 振动
-    unawaited(
-      Vibration.hasVibrator().then((bool hasVibrator) {
-        if (hasVibrator) {
-          Vibration.vibrate(duration: 100, intensities: <int>[100]);
-        }
-      }),
-    );
+    Vibration.hasVibrator().then((bool hasVibrator) {
+      if (hasVibrator) {
+        Vibration.vibrate(duration: 100, intensities: <int>[100]);
+      }
+    });
 
     if (API.urlReg.stringMatch(scanResult.message) != null) {
       /// Launch web page if a common url was detected.
       /// 如果检测到常见的url格式内容则打开网页
       Navigator.of(context).pop();
-      unawaited(API.launchWeb(url: scanResult.message));
+      API.launchWeb(url: scanResult.message);
     } else if (API.schemeUserPage.stringMatch(scanResult.message) != null) {
       /// Push to user page if a user scheme is being detect.
       /// 如果检测到用户scheme则跳转到用户页
-      unawaited(Navigator.of(context).pushReplacementNamed(
+      Navigator.of(context).pushReplacementNamed(
         Routes.openjmuUserPage.name,
         arguments: Routes.openjmuUserPage.d(
           uid: scanResult.message
               .substring(API.schemeUserPage.pattern.length - 2),
         ),
-      ));
+      );
     } else {
       /// Other types of result will show a dialog to copy.
       /// 其他类型的结果会以弹窗形式提供复制
@@ -173,11 +171,9 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
         cancelLabel: '返回',
       );
       if (needCopy) {
-        unawaited(
-          Clipboard.setData(ClipboardData(text: scanResult.message)),
-        );
+        Clipboard.setData(ClipboardData(text: scanResult.message));
       }
-      unawaited(_controller.startScan());
+      _controller.startScan();
     }
     _controller.result = null;
   }
@@ -212,7 +208,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// Scan QR code from the file.
   /// 从文件中扫描二维码
   Future<void> scanFromFile() async {
-    unawaited(_controller.stopScan());
+    _controller.stopScan();
     final List<AssetEntity> entity = await AssetPicker.pickAssets(
       context,
       maxAssets: 1,
@@ -226,10 +222,10 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       final RScanResult result = await RScan.scanImagePath(
         (await entity.first.originFile).path,
       );
-      unawaited(onScan(result: result, fromAlbum: true));
+      onScan(result: result, fromAlbum: true);
     } catch (e) {
       showToast('扫码出错');
-      unawaited(_controller.startScan());
+      _controller.startScan();
     }
   }
 

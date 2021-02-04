@@ -75,7 +75,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       showConfirm: true,
     );
     if (confirm) {
-      unawaited(TeamPostAPI.reportPost(post));
+      TeamPostAPI.reportPost(post);
       showToast('举报成功');
     }
   }

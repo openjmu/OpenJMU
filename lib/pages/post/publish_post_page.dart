@@ -238,7 +238,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       if (hasImages) {
         runImagesRequests();
       } else {
-        unawaited(runPublishRequest());
+        runPublishRequest();
       }
     }
   }
@@ -293,7 +293,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         /// Execute publish when all assets were upload.
         /// 所有图片上传完成时进行发布
         if (uploadedAssets == imagesLength) {
-          unawaited(runPublishRequest());
+          runPublishRequest();
         }
       } else {
         throw Error.safeToString('Asset ${asset.id} upload failed');

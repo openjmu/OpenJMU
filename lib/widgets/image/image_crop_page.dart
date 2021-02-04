@@ -85,7 +85,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
         targetWidth: 640,
         targetHeight: 640,
       );
-      unawaited(uploadImage(context, compressedFile));
+      uploadImage(context, compressedFile);
     } catch (e) {
       LogUtils.e('Crop image faild: $e');
       _controller.changeState('failed', '头像更新失败');

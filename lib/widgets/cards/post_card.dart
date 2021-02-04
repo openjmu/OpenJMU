@@ -593,7 +593,7 @@ class _PostCardState extends State<PostCard> {
       );
       final bool canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
-        unawaited(PostAPI.reportPost(widget.post));
+        PostAPI.reportPost(widget.post);
         showToast('举报成功');
       }
     }

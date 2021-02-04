@@ -219,7 +219,7 @@ class AppCenterPage extends StatelessWidget {
                     showConfirm: true,
                   );
                   if (confirm) {
-                    unawaited(launch(webApp.replacedUrl, forceSafariVC: false));
+                    launch(webApp.replacedUrl, forceSafariVC: false);
                   }
                 }
               : null,

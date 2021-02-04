@@ -96,7 +96,7 @@ class HiveBoxes {
       await startWeekBox?.clear();
       LogUtils.d('Boxes cleared');
       if (kReleaseMode) {
-        unawaited(SystemNavigator.pop());
+        SystemNavigator.pop();
       }
     }
   }
@@ -126,7 +126,7 @@ class HiveBoxes {
       await startWeekBox?.clear();
       LogUtils.d('Boxes cleared');
       if (kReleaseMode) {
-        unawaited(SystemNavigator.pop());
+        SystemNavigator.pop();
       }
     }
   }

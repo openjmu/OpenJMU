@@ -95,7 +95,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
       LogUtils.d('Found scheme when load: $url');
       if (Platform.isAndroid) {
         Future<void>.delayed(1.microseconds, () async {
-          unawaited(controller.stopLoading());
+          controller.stopLoading();
           LogUtils.d('Try to launch intent...');
           final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
@@ -413,9 +413,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
               },
               onLoadStop:
                   (InAppWebViewController controller, String url) async {
-                unawaited(controller.evaluateJavascript(
+                controller.evaluateJavascript(
                   source: 'window.onbeforeunload=null',
-                ));
+                );
 
                 this.url = url;
                 final String _title = (await controller.getTitle())?.trim();

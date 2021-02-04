@@ -239,7 +239,7 @@ class PostDetailPageState extends State<PostDetailPage>
       );
       final bool canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
-        unawaited(PostAPI.reportPost(widget.post));
+        PostAPI.reportPost(widget.post);
         showToast('举报成功');
         navigatorState.pop();
       }

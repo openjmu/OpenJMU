@@ -80,10 +80,10 @@ class DateProvider extends ChangeNotifier {
         _day = onlineDate;
       }
       if (_startDate == null) {
-        unawaited(updateStartDate(_day));
+        updateStartDate(_day);
       } else {
         if (_startDate != _day) {
-          unawaited(updateStartDate(_day));
+          updateStartDate(_day);
         }
       }
 

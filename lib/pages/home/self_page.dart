@@ -31,7 +31,7 @@ class SelfPage extends StatelessWidget {
           'name': '扫一扫',
           'action': (BuildContext context) async {
             if (await checkPermissions(<Permission>[Permission.camera])) {
-              unawaited(navigatorState.pushNamed(Routes.openjmuScanQrCode));
+              navigatorState.pushNamed(Routes.openjmuScanQrCode);
             } else {
               showToast('未获得相应权限');
             }

@@ -243,7 +243,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       if (hasImages) {
         runImagesRequests();
       } else {
-        unawaited(runPublishRequest());
+        runPublishRequest();
       }
     }
   }
@@ -297,7 +297,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       /// Execute publish when all assets were upload.
       /// 所有图片上传完成时进行发布
       if (uploadedAssets == imagesLength) {
-        unawaited(runPublishRequest());
+        runPublishRequest();
       }
     } catch (e) {
       isLoading = false; // 停止Loading

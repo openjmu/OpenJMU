@@ -161,7 +161,7 @@ class ImageViewerState extends State<ImageViewer>
               if (Platform.isAndroid) Permission.storage,
             ]);
             if (isAllGranted) {
-              unawaited(_downloadImage(widget.pics[currentIndex].imageUrl));
+              _downloadImage(widget.pics[currentIndex].imageUrl);
             }
           },
         ),

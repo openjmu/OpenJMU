@@ -84,7 +84,7 @@ class _AboutCard extends StatelessWidget {
       ),
     );
     if (shouldCopy) {
-      unawaited(Clipboard.setData(ClipboardData(text: info)));
+      Clipboard.setData(ClipboardData(text: info));
       showToast('已复制到剪贴板');
     }
   }
