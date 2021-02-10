@@ -166,7 +166,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Update [maximumKeyboardHeight] during [build] to set maximum keyboard height.
   /// 执行 [build] 时更新 [maximumKeyboardHeight] 以获得最高键盘高度
   void updateKeyboardHeight(BuildContext context) {
-    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final double keyboardHeight = context.bottomInsets;
     if (keyboardHeight > 0) {
       isEmoticonPadActive.value = false;
     }
@@ -180,25 +180,10 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Method to update display status for the emoticon pad.
   /// 更新表情选择区显隐的方法
   void updateEmoticonPadStatus(BuildContext context, bool active) {
-    final VoidCallback change = () {
-      isEmoticonPadActive.value = active;
-      if (mounted) {
-        setState(() {});
-      }
-    };
-    if (isEmoticonPadActive.value) {
-      change();
-    } else {
-      if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-        InputUtils.hideKeyboard().whenComplete(
-          () {
-            Future<void>.delayed(300.milliseconds, null).whenComplete(change);
-          },
-        );
-      } else {
-        change();
-      }
+    if (context.bottomInsets > 0) {
+      InputUtils.hideKeyboard();
     }
+    isEmoticonPadActive.value = active;
   }
 
   /// Check whether there's content left when trying to pop.
@@ -739,6 +724,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         backgroundColor: context.theme.brightness == Brightness.dark
             ? Colors.black
             : context.theme.cardColor,
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: <Widget>[
             FixedAppBar(
@@ -750,6 +736,12 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             if (selectedAssets.isNotEmpty) assetsListView,
             toolbar(context),
             emoticonPad,
+            ValueListenableBuilder<bool>(
+              valueListenable: isEmoticonPadActive,
+              builder: (_, bool value, __) => SizedBox(
+                height: value ? 0 : context.bottomInsets,
+              ),
+            ),
           ],
         ),
       ),

@@ -285,7 +285,7 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        navigatorState.pushNamed(Routes.openjmuAppCenterPage);
+        navigatorState.pushNamed(Routes.openjmuAppCenterPage.name);
       },
       child: Container(
         height: 72.w,

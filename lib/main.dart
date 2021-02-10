@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
@@ -14,9 +11,10 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quick_actions/quick_actions.dart';
 
-import 'package:openjmu/constants/constants.dart' hide PageRouteType;
-import 'package:openjmu/pages/splash_page.dart';
-import 'package:openjmu/pages/no_route_page.dart';
+import 'constants/constants.dart' hide PageRouteType;
+import 'pages/no_network_page.dart';
+import 'pages/no_route_page.dart';
+import 'pages/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -192,7 +190,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   void checkIfNoConnectivity(ConnectivityResult result) {
     if (result == ConnectivityResult.none) {
-      connectivityToastFuture ??= showNoConnectivityDialog(context);
+      connectivityToastFuture ??= showNoNetworkPage(context);
     } else {
       connectivityToastFuture?.dismiss(showAnim: true);
       if (connectivityToastFuture != null) {
@@ -224,49 +222,12 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     }
   }
 
-  ToastFuture showNoConnectivityDialog(BuildContext context) {
+  ToastFuture showNoNetworkPage(BuildContext context) {
     return showToastWidget(
-      noConnectivityWidget(context),
+      const NoNetworkPage(),
       duration: 999.weeks,
       handleTouch: true,
-    );
-  }
-
-  Widget noConnectivityWidget(BuildContext context) {
-    return Material(
-      color: Colors.black26,
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-        child: Center(
-          child: Container(
-            width: Screens.width / 2,
-            height: Screens.width / 2,
-            padding: const EdgeInsets.all(20.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).canvasColor,
-              shape: BoxShape.circle,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.router,
-                  size: Screens.width / 6,
-                  color: context.iconTheme.color,
-                ),
-                VGap(Screens.width / 20),
-                Text(
-                  '检查网络连接',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(fontSize: 20.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      position: ToastPosition.center,
     );
   }
 

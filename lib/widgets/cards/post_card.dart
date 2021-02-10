@@ -40,13 +40,6 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final double contentPadding = 16.0;
 
-  TextStyle get rootTopicTextStyle => TextStyle(fontSize: 18.sp);
-
-  TextStyle get rootTopicMentionStyle => TextStyle(
-        color: Colors.blue,
-        fontSize: 18.sp,
-      );
-
   @override
   void initState() {
     super.initState();
@@ -409,9 +402,10 @@ class _PostCardState extends State<PostCard> {
               padding: EdgeInsets.zero,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onPressed: () {
-                navigatorState.pushNamed(
-                  Routes.openjmuAddForward.name,
-                  arguments: Routes.openjmuAddForward.d(post: widget.post),
+                PostActionDialog.show(
+                  context: context,
+                  post: widget.post,
+                  type: PostActionType.forward,
                 );
               },
               icon: SvgPicture.asset(
@@ -494,18 +488,21 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton {
-    return Align(
-      alignment: AlignmentDirectional.topEnd,
-      child: GestureDetector(
-        onTap: () => confirmDelete(context),
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          width: 48.w,
-          height: 48.w,
-          child: Icon(
-            Icons.delete_outline,
-            color: Theme.of(context).dividerColor,
-            size: 30.w,
+    return GestureDetector(
+      onTap: () => confirmDelete(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: AlignmentDirectional.topEnd,
+        child: SizedBox.fromSize(
+          size: Size.square(24.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_DELETE_SVG,
+              color: context.iconTheme.color,
+            ),
           ),
         ),
       ),
@@ -520,10 +517,15 @@ class _PostCardState extends State<PostCard> {
         width: 48.w,
         height: 48.w,
         alignment: AlignmentDirectional.topEnd,
-        child: Icon(
-          Icons.more_horiz,
-          color: context.iconTheme.color,
-          size: 30.w,
+        child: SizedBox.fromSize(
+          size: Size.square(24.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
+              color: context.iconTheme.color,
+            ),
+          ),
         ),
       ),
     );

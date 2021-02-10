@@ -396,9 +396,8 @@ class NotificationsPageState extends State<NotificationsPage>
                     child: AnimatedDefaultTextStyle(
                       duration: duration,
                       style: TextStyle(
-                        color: _mentionIndex == i && !currentIsDark
-                            ? currentThemeColor
-                            : iconColor,
+                        color:
+                            _mentionIndex == i ? currentThemeColor : iconColor,
                         height: 1.25,
                         fontSize: 18.sp,
                       ),

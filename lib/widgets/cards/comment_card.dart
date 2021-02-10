@@ -61,10 +61,11 @@ class CommentCard extends StatelessWidget {
             ),
           ConfirmationBottomSheetAction(
             text: '回复评论',
-            onTap: () => navigatorState.pushNamed(
-              Routes.openjmuAddComment.name,
-              arguments: Routes.openjmuAddComment
-                  .d(post: comment.post, comment: comment),
+            onTap: () => PostActionDialog.show(
+              context: context,
+              post: comment.post,
+              type: PostActionType.reply,
+              comment: comment,
             ),
           ),
           ConfirmationBottomSheetAction(

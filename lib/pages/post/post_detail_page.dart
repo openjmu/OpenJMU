@@ -58,10 +58,6 @@ class PostDetailPageState extends State<PostDetailPage>
   int get praises => widget.post.praises;
 
   bool get isLike => widget.post.isLike;
-  bool forwardAtTheMeanTime = false;
-  bool commentAtTheMeanTime = false;
-
-  TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
   @override
   void initState() {
@@ -157,15 +153,48 @@ class PostDetailPageState extends State<PostDetailPage>
         ),
       );
 
-  Widget get deleteButton => IconButton(
-        icon: Icon(Icons.delete_outline, size: 30.w),
-        onPressed: () => confirmDelete(context),
-      );
+  Widget deleteButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => confirmDelete(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: Alignment.center,
+        child: SizedBox.fromSize(
+          size: Size.square(30.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_DELETE_SVG,
+              color: context.textTheme.bodyText2.color,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-  Widget get postActionButton => IconButton(
-        icon: Icon(Icons.more_horiz, size: 30.w),
-        onPressed: () => postExtraActions(context),
-      );
+  Widget postActionButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => postExtraActions(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        child: SizedBox.fromSize(
+          size: Size.square(30.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
+              color: context.textTheme.bodyText2.color,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
@@ -323,9 +352,10 @@ class PostDetailPageState extends State<PostDetailPage>
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  navigatorState.pushNamed(
-                    Routes.openjmuAddForward.name,
-                    arguments: Routes.openjmuAddForward.d(post: widget.post),
+                  PostActionDialog.show(
+                    context: context,
+                    post: widget.post,
+                    type: PostActionType.forward,
                   );
                 },
                 child: Row(
@@ -346,9 +376,10 @@ class PostDetailPageState extends State<PostDetailPage>
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  navigatorState.pushNamed(
-                    Routes.openjmuAddComment.name,
-                    arguments: Routes.openjmuAddComment.d(post: widget.post),
+                  PostActionDialog.show(
+                    context: context,
+                    post: widget.post,
+                    type: PostActionType.reply,
                   );
                 },
                 child: Row(
@@ -441,10 +472,11 @@ class PostDetailPageState extends State<PostDetailPage>
           title: const Text('动态正文'),
           actions: <Widget>[
             if (widget.post.uid == currentUser.uid)
-              deleteButton
+              deleteButton(context)
             else
-              postActionButton,
+              postActionButton(context),
           ],
+          actionsPadding: EdgeInsets.only(right: 16.w),
         ),
         body: Column(
           children: <Widget>[

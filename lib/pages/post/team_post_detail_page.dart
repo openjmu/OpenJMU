@@ -396,17 +396,27 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     });
   }
 
-  Widget get deleteButton => SizedBox.fromSize(
-        size: Size.square(48.w),
-        child: IconButton(
-          padding: EdgeInsets.zero,
-          icon: const Icon(Icons.delete_outline),
-          iconSize: 32.w,
-          onPressed: () {
-            confirmDelete(context, provider);
-          },
+  Widget get deleteButton {
+    return GestureDetector(
+      onTap: () => confirmDelete(context, provider),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: Alignment.center,
+        child: SizedBox.fromSize(
+          size: Size.square(30.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_DELETE_SVG,
+              color: context.textTheme.bodyText2.color,
+            ),
+          ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget get textField {
     return Expanded(
@@ -585,8 +595,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             title: const Text('集市详情'),
             centerTitle: true,
             actions: <Widget>[
-              if (provider.post?.uid == currentUser.uid ?? false) deleteButton,
+              if (provider.post?.uid == currentUser.uid) deleteButton,
             ],
+            actionsPadding: EdgeInsets.only(right: 16.w),
           ),
           Expanded(
             child: Listener(

@@ -508,6 +508,12 @@ class R {
   static const String ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG =
       'assets/icons/post-actions/comment-fill.svg';
 
+  static const String ASSETS_ICONS_POST_ACTIONS_DELETE_INSERTED_IMAGE_SVG =
+      'assets/icons/post-actions/delete-inserted-image.svg';
+
+  static const String ASSETS_ICONS_POST_ACTIONS_DELETE_SVG =
+      'assets/icons/post-actions/delete.svg';
+
   static const String ASSETS_ICONS_POST_ACTIONS_EXTEND_SVG =
       'assets/icons/post-actions/extend.svg';
 
@@ -613,6 +619,9 @@ class R {
 
   static const String ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG =
       'assets/placeholders/no-message.svg';
+
+  static const String ASSETS_PLACEHOLDERS_NO_NETWORK_SVG =
+      'assets/placeholders/no-network.svg';
 
   static const String ASSETS_PLACEHOLDERS_SEARCH_NO_RESULT_SVG =
       'assets/placeholders/search-no-result.svg';

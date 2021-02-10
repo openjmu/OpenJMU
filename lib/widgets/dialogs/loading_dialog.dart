@@ -143,10 +143,10 @@ class LoadingDialogState extends State<LoadingDialog> {
                 child: Center(child: _icon),
               ),
               Container(
-                margin: EdgeInsets.only(top: 40.h),
+                margin: EdgeInsets.only(top: 40.w),
                 child: Text(
                   _text,
-                  style: TextStyle(fontSize: 16.sp),
+                  style: TextStyle(height: 1.2, fontSize: 17.sp),
                 ),
               ),
             ],

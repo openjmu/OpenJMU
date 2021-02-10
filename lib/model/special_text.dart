@@ -213,46 +213,19 @@ class PoundText extends SpecialText {
   @override
   InlineSpan finishText() {
     final String poundText = getContent();
-    if (type == BuilderType.extendedTextField) {
-      return ExtendedWidgetSpan(
-        actualText: '#$poundText#',
-        alignment: ui.PlaceholderAlignment.middle,
-        deleteAll: false,
-        start: start,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 6.w),
-          padding: EdgeInsets.symmetric(
-            horizontal: 6.w,
-            vertical: 2.h,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.w),
-            color: Colors.grey[200],
-          ),
-          child: Text(
-            poundText,
-            style: textStyle?.copyWith(
-              fontSize: 17.sp,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return TextSpan(
-        text: '#$poundText#',
-        style: textStyle?.copyWith(color: Colors.orangeAccent),
-        recognizer: TapGestureRecognizer()
-          ..onTap = () {
-            final Map<String, dynamic> data = <String, dynamic>{
-              'content': toString(),
-            };
-            if (onTap != null) {
-              onTap(data);
-            }
-          },
-      );
-    }
+    return TextSpan(
+      text: '#$poundText#',
+      style: textStyle?.copyWith(color: Colors.orangeAccent),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': toString(),
+          };
+          if (onTap != null) {
+            onTap(data);
+          }
+        },
+    );
   }
 }
 
@@ -322,6 +295,8 @@ class ImageText extends SpecialText {
   }) : super(flag, flag, textStyle, onTap: onTap);
 
   static const String flag = '|';
+
+  static RegExp get reg => RegExp('$flag\d$flag');
 
   final int start;
   final BuilderType builderType;
@@ -481,8 +456,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return ForumLinkText(textStyle, onTap);
     } else if (isStart(flag, API.forum99HostWithoutHttps)) {
       return ForumLinkOlderText(textStyle, onTap);
-    } else if (isStart(flag, ImageText.flag) &&
-        widgetType == WidgetType.comment) {
+    } else if (isStart(flag, ImageText.flag) && ImageText.reg.hasMatch(flag)) {
       return ImageText(textStyle, onTap, widgetType: widgetType);
     }
     return null;

@@ -16,4 +16,8 @@ extension BuildContextExtension on BuildContext {
   IconThemeData get iconTheme => IconTheme.of(this);
 
   Color get themeColor => theme.accentColor;
+
+  double get bottomInsets => mediaQuery.viewInsets.bottom;
+
+  double get bottomPadding => mediaQuery.padding.bottom;
 }

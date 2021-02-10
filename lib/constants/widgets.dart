@@ -22,6 +22,7 @@ export '../widgets/custom_switch.dart';
 export '../widgets/dialogs/confirmation_bottom_sheet.dart';
 export '../widgets/dialogs/confirmation_dialog.dart';
 export '../widgets/dialogs/loading_dialog.dart';
+export '../widgets/dialogs/post_action_dialog.dart';
 export '../widgets/dismiss_wrapper.dart';
 export '../widgets/fab_bottom_appbar.dart';
 export '../widgets/fixed_appbar.dart';
@@ -34,9 +35,9 @@ export '../widgets/rounded_check_box.dart';
 export '../widgets/rounded_tab_indicator.dart';
 export '../widgets/slide_menu_item.dart';
 export '../widgets/user_avatar.dart';
+export '../widgets/value_listenable_builder_2.dart';
 export '../widgets/webapp_icon.dart';
 export '../widgets/webview/in_app_webview.dart';
-export '../widgets/value_listenable_builder_2.dart';
 
 /// Empty counter builder for [TextField].
 final InputCounterWidgetBuilder emptyCounterBuilder = (
@@ -132,7 +133,7 @@ class DeveloperTag extends StatelessWidget {
   const DeveloperTag({
     Key key,
     this.padding,
-    this.height = 20,
+    this.height = 24,
   }) : super(key: key);
 
   final EdgeInsetsGeometry padding;
@@ -142,7 +143,7 @@ class DeveloperTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       R.ASSETS_ICONS_TEAM_BADGE_SVG,
-      height: height.h,
+      height: height.w,
     );
   }
 }

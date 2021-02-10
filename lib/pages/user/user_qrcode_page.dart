@@ -74,8 +74,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     return Padding(
       padding: EdgeInsets.all(minWidth / 20),
       child: QrImage(
-        version: 3,
-        data: '${Routes.openjmuUserPage}/${currentUser.uid}',
+        version: 4,
+        data: '${Routes.openjmuUserPage.name}/${currentUser.uid}',
         padding: EdgeInsets.zero,
         backgroundColor: context.theme.colorScheme.surface,
         foregroundColor: context.textTheme.bodyText2.color,

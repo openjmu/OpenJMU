@@ -9,8 +9,6 @@ import 'model/models.dart';
 import 'providers/providers.dart';
 
 const List<String> routeNames = <String>[
-  'openjmu://add-comment',
-  'openjmu://add-forward',
   'openjmu://app-center-page',
   'openjmu://backpack',
   'openjmu://changelog-page',
@@ -41,38 +39,17 @@ const List<String> routeNames = <String>[
 class Routes {
   const Routes._();
 
-  /// '新增评论'
-  ///
-  /// [name] : 'openjmu://add-comment'
-  ///
-  /// [routeName] : '新增评论'
-  ///
-  /// [constructors] :
-  ///
-  /// CommentPositioned : [Key key, Post(required) post, Comment comment]
-  ///
-  /// [pageRouteType] : PageRouteType.transparent
-  static const _OpenjmuAddComment openjmuAddComment = _OpenjmuAddComment();
-
-  /// '新增转发'
-  ///
-  /// [name] : 'openjmu://add-forward'
-  ///
-  /// [routeName] : '新增转发'
-  ///
-  /// [constructors] :
-  ///
-  /// ForwardPositioned : [Key key, Post(required) post]
-  ///
-  /// [pageRouteType] : PageRouteType.transparent
-  static const _OpenjmuAddForward openjmuAddForward = _OpenjmuAddForward();
-
   /// '应用中心'
   ///
   /// [name] : 'openjmu://app-center-page'
   ///
   /// [routeName] : '应用中心'
-  static const String openjmuAppCenterPage = 'openjmu://app-center-page';
+  ///
+  /// [constructors] :
+  ///
+  /// AppCenterPage : [Key key]
+  static const _OpenjmuAppCenterPage openjmuAppCenterPage =
+      _OpenjmuAppCenterPage();
 
   /// '背包页'
   ///
@@ -319,30 +296,13 @@ class Routes {
   static const String openjmuUserQrCode = 'openjmu://user-qr-code';
 }
 
-class _OpenjmuAddComment {
-  const _OpenjmuAddComment();
+class _OpenjmuAppCenterPage {
+  const _OpenjmuAppCenterPage();
 
-  String get name => 'openjmu://add-comment';
+  String get name => 'openjmu://app-center-page';
 
-  Map<String, dynamic> d({Key key, @required Post post, Comment comment}) =>
-      <String, dynamic>{
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
         'key': key,
-        'post': post,
-        'comment': comment,
-      };
-
-  @override
-  String toString() => name;
-}
-
-class _OpenjmuAddForward {
-  const _OpenjmuAddForward();
-
-  String get name => 'openjmu://add-forward';
-
-  Map<String, dynamic> d({Key key, @required Post post}) => <String, dynamic>{
-        'key': key,
-        'post': post,
       };
 
   @override

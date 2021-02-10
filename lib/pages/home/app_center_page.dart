@@ -2,12 +2,16 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-12-07 19:39
 ///
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://app-center-page', routeName: '应用中心')
 class AppCenterPage extends StatelessWidget {
+  const AppCenterPage({Key key}) : super(key: key);
+
   /// 整体列表组件
   Widget categoryListView(BuildContext context) {
     final List<Widget> _list = List<Widget>.generate(
@@ -47,6 +51,7 @@ class AppCenterPage extends StatelessWidget {
             }
             provider.isEditingCommonApps = !isEditing;
           },
+          behavior: HitTestBehavior.opaque,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -67,6 +72,51 @@ class AppCenterPage extends StatelessWidget {
     );
   }
 
+  Widget _commonAppWidget(BuildContext context, WebApp app) {
+    return Center(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Selector<WebAppsProvider, bool>(
+          selector: (_, WebAppsProvider p) => p.isEditingCommonApps,
+          builder: (_, bool isEditingCommonApps, __) => Stack(
+            children: <Widget>[
+              Positioned.fill(child: WebAppIcon(app: app)),
+              if (isEditingCommonApps)
+                PositionedDirectional(
+                  top: 0,
+                  end: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<WebAppsProvider>().removeCommonApp(app);
+                    },
+                    child: Container(
+                      width: 20.w,
+                      height: 20.w,
+                      decoration: const BoxDecoration(
+                        color: defaultLightColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Transform.rotate(
+                          angle: 45 * (math.pi / 180),
+                          child: SvgPicture.asset(
+                            R.ASSETS_ICONS_APP_CENTER_ADD_SVG,
+                            color: Colors.white,
+                            width: 10.w,
+                            height: 10.w,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Section widget for common apps.
   /// 常用应用的区域部件
   Widget commonAppsSection(BuildContext context) {
@@ -76,7 +126,7 @@ class AppCenterPage extends StatelessWidget {
         return DefaultTextStyle.merge(
           style: TextStyle(height: 1.2, fontSize: 20.sp),
           child: Container(
-            height: 86.w,
+            height: 80.w,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             decoration: BoxDecoration(
               border: Border(
@@ -102,23 +152,21 @@ class AppCenterPage extends StatelessWidget {
                           return Center(
                             child: Text(
                               isEditing ? '点击下方按钮以增删捷径' : '点击编辑以进行调整',
-                              style: context.textTheme.caption.copyWith(
-                                height: 1.2,
-                                fontSize: 16.sp,
+                              style: TextStyle(
+                                color: context.textTheme.caption.color,
                               ),
                             ),
                           );
                         }
                         return Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: List<Widget>.generate(
                             provider.commonWebApps.length,
-                            (int index) => Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 12.w),
-                                child: WebAppIcon(
-                                  app: provider.commonWebApps.elementAt(index),
-                                ),
+                            (int index) => Padding(
+                              padding: EdgeInsets.symmetric(vertical: 12.w),
+                              child: _commonAppWidget(
+                                _,
+                                provider.commonWebApps.elementAt(index),
                               ),
                             ),
                           ),
@@ -150,9 +198,11 @@ class AppCenterPage extends StatelessWidget {
       builder: (_, WebAppsProvider provider, Widget child) {
         return GestureDetector(
           child: Stack(
+            fit: StackFit.expand,
             children: <Widget>[
               child,
-              appEditIndicator(context, provider, webApp, needIndicator),
+              if (provider.isEditingCommonApps)
+                appEditIndicator(context, provider, webApp, needIndicator),
             ],
           ),
           onTap: () {
@@ -213,30 +263,28 @@ class AppCenterPage extends StatelessWidget {
     bool needIndicator,
   ) {
     final bool isCommon = provider.commonWebApps.contains(webApp);
-    final bool isEditing = provider.isEditingCommonApps;
     return PositionedDirectional(
-      bottom: 45.w,
+      top: 15.w,
       end: 20.w,
-      child: isEditing
-          ? Container(
-              width: 28.w,
-              height: 28.w,
-              decoration: BoxDecoration(
-                color: context.theme.canvasColor,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  isCommon
-                      ? R.ASSETS_ICONS_APP_CENTER_REMOVE_SVG
-                      : R.ASSETS_ICONS_APP_CENTER_ADD_SVG,
-                  color: context.iconTheme.color,
-                  width: 12.w,
-                  height: 12.w,
-                ),
-              ),
-            )
-          : const SizedBox.shrink(),
+      child: Container(
+        width: 28.w,
+        height: 28.w,
+        decoration: BoxDecoration(
+          color: isCommon ? defaultLightColor : const Color(0xff1c7ece),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Transform.rotate(
+            angle: isCommon ? 45 * (math.pi / 180) : 0,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_APP_CENTER_ADD_SVG,
+              color: Colors.white,
+              width: 12.w,
+              height: 12.w,
+            ),
+          ),
+        ),
+      ),
     );
   }
 

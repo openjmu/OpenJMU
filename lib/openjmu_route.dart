@@ -29,8 +29,6 @@ import 'pages/user/user_list_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
 import 'providers/providers.dart';
-import 'widgets/dialogs/comment_positioned.dart';
-import 'widgets/dialogs/forward_positioned.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
 import 'widgets/webview/in_app_webview.dart';
@@ -38,31 +36,12 @@ import 'widgets/webview/in_app_webview.dart';
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
   switch (name) {
-    case 'openjmu://add-comment':
-      return RouteResult(
-        name: name,
-        widget: CommentPositioned(
-          key: arguments['key'] as Key,
-          post: arguments['post'] as Post,
-          comment: arguments['comment'] as Comment,
-        ),
-        routeName: '新增评论',
-        pageRouteType: PageRouteType.transparent,
-      );
-    case 'openjmu://add-forward':
-      return RouteResult(
-        name: name,
-        widget: ForwardPositioned(
-          key: arguments['key'] as Key,
-          post: arguments['post'] as Post,
-        ),
-        routeName: '新增转发',
-        pageRouteType: PageRouteType.transparent,
-      );
     case 'openjmu://app-center-page':
       return RouteResult(
         name: name,
-        widget: AppCenterPage(),
+        widget: AppCenterPage(
+          key: arguments['key'] as Key,
+        ),
         routeName: '应用中心',
       );
     case 'openjmu://backpack':

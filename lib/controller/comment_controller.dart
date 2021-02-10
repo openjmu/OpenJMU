@@ -50,6 +50,9 @@ class CommentList extends StatefulWidget {
 
 class _CommentListState extends State<CommentList>
     with AutomaticKeepAliveClientMixin {
+  final List<Comment> _commentList = <Comment>[];
+  final List<int> _idList = <int>[];
+
   int _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
@@ -61,9 +64,6 @@ class _CommentListState extends State<CommentList>
   Widget _emptyChild;
   Widget _errorChild;
   bool error = false;
-
-  final List<Comment> _commentList = <Comment>[];
-  final List<int> _idList = <int>[];
 
   @override
   bool get wantKeepAlive => true;
@@ -330,12 +330,11 @@ class CommentListInPostState extends State<CommentListInPost>
   }
 
   void replyTo(Comment comment) {
-    navigatorState.pushNamed(
-      Routes.openjmuAddComment.name,
-      arguments: Routes.openjmuAddComment.d(
-        post: widget.post,
-        comment: comment,
-      ),
+    PostActionDialog.show(
+      context: context,
+      post: widget.post,
+      type: PostActionType.reply,
+      comment: comment,
     );
   }
 
@@ -540,7 +539,7 @@ class CommentListInPostState extends State<CommentListInPost>
                             padding: EdgeInsets.only(left: 6.w),
                             child: const DeveloperTag(),
                           ),
-                        Gap(4.w),
+                        Gap(6.w),
                         getCommentTime(context, comment),
                       ],
                     ),
