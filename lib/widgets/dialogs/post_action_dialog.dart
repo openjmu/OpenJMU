@@ -3,7 +3,6 @@
 /// [Date] 2/7/21 8:12 PM
 ///
 import 'dart:io';
-import 'dart:math' as math;
 
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
@@ -58,8 +57,6 @@ class _PostActionDialogState extends State<PostActionDialog> {
   final ValueNotifier<bool> _hasExtraAction = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isEmoticonPadActive = ValueNotifier<bool>(false);
   final ValueNotifier<AssetEntity> _image = ValueNotifier<AssetEntity>(null);
-
-  double _keyboardHeight;
 
   Comment get originComment => widget.comment;
 
@@ -262,9 +259,11 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   ),
                   isDense: true,
                   border: InputBorder.none,
-                  hintText: originComment != null
-                      ? ' 同时转发　回复:@${originComment.fromUserName} '
-                      : ' 同时转发到动态',
+                  hintText: actionType == PostActionType.forward
+                      ? ' 同时评论到动态'
+                      : originComment != null
+                          ? ' 同时转发　回复:@${originComment.fromUserName} '
+                          : ' 同时转发到动态',
                 ),
                 enabled: !value,
                 style: context.textTheme.bodyText2.copyWith(
@@ -317,17 +316,6 @@ class _PostActionDialogState extends State<PostActionDialog> {
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget emoticonPad(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isEmoticonPadActive,
-      builder: (_, bool value, __) => EmotionPad(
-        active: value,
-        height: _keyboardHeight,
-        controller: _tec,
       ),
     );
   }
@@ -481,56 +469,41 @@ class _PostActionDialogState extends State<PostActionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final double keyboardHeight = context.bottomInsets;
-    if (keyboardHeight > 0) {
-      _isEmoticonPadActive.value = false;
-    }
-    _keyboardHeight = math.max(keyboardHeight, _keyboardHeight ?? 0);
-
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            _insertedImage(context),
-            ColoredBox(
-              color: context.theme.colorScheme.surface,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(14.w).copyWith(bottom: 0),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(child: textField(context)),
-                        Gap(16.w),
-                        _publishButton(context),
-                      ],
-                    ),
+    return EmojiKeyboardWrapper(
+      controller: _tec,
+      emoticonPadNotifier: _isEmoticonPadActive,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          _insertedImage(context),
+          ColoredBox(
+            color: context.theme.colorScheme.surface,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(14.w).copyWith(bottom: 0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(child: textField(context)),
+                      Gap(16.w),
+                      _publishButton(context),
+                    ],
                   ),
-                  toolbar(context),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _isEmoticonPadActive,
-                    builder: (_, bool value, __) => SizedBox(
-                      height: value ? 0 : context.bottomPadding,
-                    ),
+                ),
+                toolbar(context),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isEmoticonPadActive,
+                  builder: (_, bool value, __) => SizedBox(
+                    height: value ? 0 : context.bottomPadding,
                   ),
-                  emoticonPad(context),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _isEmoticonPadActive,
-                    builder: (_, bool value, __) => SizedBox(
-                      height: value ? 0 : context.bottomInsets,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

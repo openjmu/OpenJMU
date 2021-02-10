@@ -145,7 +145,6 @@ class EmotionPad extends StatelessWidget {
   Widget build(BuildContext context) {
     final double _height = math.max(emoticonPadDefaultHeight, height);
     return Container(
-      width: double.infinity,
       height: active ? _height : 0.0,
       color: Theme.of(context).canvasColor,
       child: GridView.builder(

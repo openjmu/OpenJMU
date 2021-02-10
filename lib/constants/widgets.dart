@@ -28,6 +28,7 @@ export '../widgets/fab_bottom_appbar.dart';
 export '../widgets/fixed_appbar.dart';
 export '../widgets/gaps.dart';
 export '../widgets/image/image_viewer.dart';
+export '../widgets/keyboard_wrapper.dart';
 export '../widgets/no_scale_text_widget.dart';
 export '../widgets/refresh/pull_to_refresh_header.dart';
 export '../widgets/refresh/refresh_list_wrapper.dart';

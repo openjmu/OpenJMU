@@ -44,7 +44,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       isEmoticonPadActive = ValueNotifier<bool>(false),
       isAssetListViewCollapsed = ValueNotifier<bool>(false);
 
-  double maximumKeyboardHeight = EmotionPad.emoticonPadDefaultHeight;
+  double _keyboardHeight = 0;
 
   int get imagesLength => selectedAssets.length;
 
@@ -166,15 +166,11 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Update [maximumKeyboardHeight] during [build] to set maximum keyboard height.
   /// 执行 [build] 时更新 [maximumKeyboardHeight] 以获得最高键盘高度
   void updateKeyboardHeight(BuildContext context) {
-    final double keyboardHeight = context.bottomInsets;
-    if (keyboardHeight > 0) {
+    final double kh = MediaQuery.of(context).viewInsets.bottom;
+    if (kh > 0 && kh >= _keyboardHeight) {
       isEmoticonPadActive.value = false;
     }
-
-    if (maximumKeyboardHeight !=
-        math.max(maximumKeyboardHeight, keyboardHeight)) {
-      maximumKeyboardHeight = math.max(maximumKeyboardHeight, keyboardHeight);
-    }
+    _keyboardHeight = math.max(kh, _keyboardHeight ?? 0);
   }
 
   /// Method to update display status for the emoticon pad.
@@ -615,7 +611,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       valueListenable: isEmoticonPadActive,
       builder: (_, bool value, __) => EmotionPad(
         active: value,
-        height: maximumKeyboardHeight,
+        height: _keyboardHeight,
         controller: textEditingController,
       ),
     );

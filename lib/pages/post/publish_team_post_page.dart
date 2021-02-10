@@ -44,7 +44,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       isEmoticonPadActive = ValueNotifier<bool>(false),
       isAssetListViewCollapsed = ValueNotifier<bool>(false);
 
-  double maximumKeyboardHeight = EmotionPad.emoticonPadDefaultHeight;
+  double _keyboardHeight = 0;
 
   int get imagesLength => selectedAssets.length;
 
@@ -114,10 +114,6 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     }
   }
 
-  /// Removes focus from the [FocusNode] of the [ExtendedTextField].
-  /// 取消输入区域的焦点
-  void unFocusTextField() => focusNode.unfocus();
-
   /// Method to pick assets using photo selector.
   /// 使用图片选择器选择图片
   Future<void> pickAssets() async {
@@ -163,18 +159,18 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     isAssetListViewCollapsed.value = !isAssetListViewCollapsed.value;
   }
 
+  /// Removes focus from the [FocusNode] of the [ExtendedTextField].
+  /// 取消输入区域的焦点
+  void unFocusTextField() => focusNode.unfocus();
+
   /// Update [maximumKeyboardHeight] during [build] to set maximum keyboard height.
   /// 执行 [build] 时更新 [maximumKeyboardHeight] 以获得最高键盘高度
   void updateKeyboardHeight(BuildContext context) {
-    final double keyboardHeight = context.bottomInsets;
-    if (keyboardHeight > 0) {
+    final double kh = MediaQuery.of(context).viewInsets.bottom;
+    if (kh > 0 && kh >= _keyboardHeight) {
       isEmoticonPadActive.value = false;
     }
-
-    if (maximumKeyboardHeight !=
-        math.max(maximumKeyboardHeight, keyboardHeight)) {
-      maximumKeyboardHeight = math.max(maximumKeyboardHeight, keyboardHeight);
-    }
+    _keyboardHeight = math.max(kh, _keyboardHeight ?? 0);
   }
 
   /// Method to update display status for the emoticon pad.
@@ -208,6 +204,16 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     }
   }
 
+  /// Check if the content is empty.
+  /// 检查内容是否为空
+  void checkContentEmptyWhenPublish() {
+    if (filteredContent?.isEmpty ?? true) {
+      showCenterToast('内容不能为空');
+    } else {
+      checkConvention();
+    }
+  }
+
   /// Check if user confirmed with convention.
   /// 检查用户是否同意了公约
   Future<void> checkConvention() async {
@@ -232,10 +238,12 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Execute images upload requests.
   /// 执行图片上传请求
   ///
-  /// This method doesn't required to be [Future], just run them with [Iterable.forEach] and
-  /// using [CancelToken] (Completer) to control requests' cancel when one of them failed.
-  /// 该方法不需要声明为 [Future]，只需要使用 forEach 调用异步方法，并且使用 [CancelToken] 来控制
-  /// 请求。为了避免过多状态导致的意外结果，当任意资源上传失败时，就立刻取消所有请求，要求用户处理。
+  /// This method doesn't required to be [Future],
+  /// just run them with [Iterable.forEach] and using [CancelToken] (Completer)
+  /// to control requests' cancel when one of them failed.
+  /// 该方法不需要声明为 [Future]，只需要使用 forEach 调用异步方法，
+  /// 并且使用 [CancelToken] 来控制 请求。
+  /// 为了避免过多状态导致的意外结果，当任意资源上传失败时，就取消所有请求，要求用户处理。
   void runImagesRequests() {
     setState(() {
       failedAssets.clear();
@@ -268,11 +276,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       uploadedAssetId[asset] = result['fid'].toString().toInt();
       ++uploadedAssets;
       loadingDialogController.updateText(
-        '正在上传图片('
-        '${math.min(uploadedAssets + 1, imagesLength)}'
-        '/'
-        '$imagesLength'
-        ')',
+        '正在上传图片'
+        '(${math.min(uploadedAssets + 1, imagesLength)}/$imagesLength)',
       );
 
       /// Execute publish when all assets were upload.
@@ -308,12 +313,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// 执行内容发布请求
   Future<void> runPublishRequest() async {
     String content;
-    if ((imagesLength != 0 && textEditingController.text == null) ||
-        filteredContent.isEmpty) {
-      content = '分享图片~';
-    } else {
-      content = textEditingController.text;
-    }
+    content = textEditingController.text;
     try {
       final Map<String, dynamic> response = (await TeamPostAPI.publishPost(
         content: content,
@@ -351,7 +351,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// 发布按钮
   Widget get publishButton {
     return GestureDetector(
-      onTap: checkConvention,
+      onTap: checkContentEmptyWhenPublish,
       child: Container(
         width: 80.w,
         height: 56.w,
@@ -420,7 +420,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         onTap: () async {
           if (!value) {
             final List<AssetEntity> result =
-            await AssetPickerViewer.pushToViewer(
+                await AssetPickerViewer.pushToViewer(
               context,
               currentIndex: index,
               previewAssets: selectedAssets,
@@ -539,8 +539,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             duration: kThemeAnimationDuration,
             height: selectedAssets.isNotEmpty
                 ? isCollapsed
-                ? 72.w
-                : 140.w
+                    ? 72.w
+                    : 140.w
                 : 0.0,
             margin: EdgeInsets.all(isCollapsed ? 12.w : 0),
             decoration: BoxDecoration(
@@ -600,7 +600,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       valueListenable: isEmoticonPadActive,
       builder: (_, bool value, __) => EmotionPad(
         active: value,
-        height: maximumKeyboardHeight,
+        height: _keyboardHeight,
         controller: textEditingController,
       ),
     );
