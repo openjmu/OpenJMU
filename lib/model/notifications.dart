@@ -10,7 +10,8 @@ part of 'models.dart';
 @immutable
 class Notifications {
   const Notifications({
-    this.at = 0,
+    this.tAt = 0,
+    this.cmtAt = 0,
     this.comment = 0,
     this.praise = 0,
     this.fans = 0,
@@ -18,7 +19,8 @@ class Notifications {
 
   factory Notifications.fromJson(Map<String, dynamic> json) {
     return Notifications(
-      at: json['t_at'].toString().toInt() + json['cmt_at'].toString().toInt(),
+      tAt: json['t_at'].toString().toInt(),
+      cmtAt: json['cmt_at'].toString().toInt(),
       comment: json['cmt'].toString().toInt(),
       praise: json['t_praised'].toString().toInt(),
       fans: json['fans'].toString().toInt(),
@@ -26,26 +28,29 @@ class Notifications {
   }
 
   Notifications copyWith({
-    int at,
+    int tAt,
+    int cmtAt,
     int comment,
     int praise,
     int fans,
   }) {
     return Notifications(
-      at: at ?? this.at,
+      tAt: tAt ?? this.tAt,
+      cmtAt: cmtAt ?? this.cmtAt,
       comment: comment ?? this.comment,
       praise: praise ?? this.praise,
       fans: fans ?? this.fans,
     );
   }
 
-  final int at, comment, praise, fans;
+  final int tAt, cmtAt, comment, praise, fans;
 
-  int get total => at + comment + praise;
+  int get total => tAt + cmtAt + comment + praise;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'at': at,
+      'tAt': tAt,
+      'cmtAt': cmtAt,
       'comment': comment,
       'praise': praise,
       'fans': fans,

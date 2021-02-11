@@ -21,6 +21,7 @@ export '../widgets/cards/post_card.dart';
 export '../widgets/custom_switch.dart';
 export '../widgets/dialogs/confirmation_bottom_sheet.dart';
 export '../widgets/dialogs/confirmation_dialog.dart';
+export '../widgets/dialogs/convention_dialog.dart';
 export '../widgets/dialogs/loading_dialog.dart';
 export '../widgets/dialogs/post_action_dialog.dart';
 export '../widgets/dismiss_wrapper.dart';

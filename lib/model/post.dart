@@ -72,7 +72,7 @@ class Post {
   int praises;
   bool isLike;
 
-  bool get isShield => content == '此微博已经被屏蔽';
+  bool get isShield => content?.trim() == '此微博已经被屏蔽';
 
   String get avatar => '${API.userAvatar}'
       '?uid=${user.uid}'
@@ -106,10 +106,16 @@ class Post {
       other is Post &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          uid == other.uid;
+          uid == other.uid &&
+          glances == other.glances &&
+          forwards == other.forwards &&
+          comments == other.comments &&
+          praises == other.praises &&
+          isLike == other.isLike;
 
   @override
-  int get hashCode => hashValues(id, uid);
+  int get hashCode =>
+      hashValues(id, uid, glances, forwards, comments, praises, isLike);
 
   @override
   String toString() {

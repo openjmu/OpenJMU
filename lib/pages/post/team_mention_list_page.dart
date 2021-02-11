@@ -198,11 +198,8 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     if (mentionedList.isEmpty) {
       return Center(
         child: Text(
-          '暂无内容',
-          style: TextStyle(
-            color: currentThemeColor,
-            fontSize: 24.sp,
-          ),
+          '无提到我的信息',
+          style: context.textTheme.caption.copyWith(fontSize: 20.sp),
         ),
       );
     }

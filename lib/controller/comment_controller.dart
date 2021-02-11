@@ -73,17 +73,7 @@ class _CommentListState extends State<CommentList>
     super.initState();
     widget.commentController._commentListState = this;
 
-    _emptyChild = GestureDetector(
-      onTap: () {},
-      child: Container(
-        child: Center(
-          child: Text(
-            '这里空空如也~',
-            style: TextStyle(color: currentThemeColor),
-          ),
-        ),
-      ),
-    );
+    _emptyChild = const Center(child: Text('无评论信息'));
 
     _errorChild = GestureDetector(
       onTap: () {
@@ -93,14 +83,8 @@ class _CommentListState extends State<CommentList>
           _refreshData();
         });
       },
-      child: Container(
-        child: Center(
-          child: Text(
-            '加载失败，轻触重试',
-            style: TextStyle(color: currentThemeColor),
-          ),
-        ),
-      ),
+      behavior: HitTestBehavior.opaque,
+      child: const Center(child: Text('加载失败，轻触重试')),
     );
 
     _refreshData();
@@ -229,18 +213,20 @@ class _CommentListState extends State<CommentList>
           },
         );
 
+        _body = DefaultTextStyle.merge(
+          style: context.textTheme.caption.copyWith(
+            fontSize: 20.sp,
+          ),
+          child: _commentList.isEmpty
+              ? (error ? _errorChild : _emptyChild)
+              : _itemList,
+        );
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
             color: currentThemeColor,
             onRefresh: _refreshData,
-            child: _commentList.isEmpty
-                ? (error ? _errorChild : _emptyChild)
-                : _itemList,
+            child: _body,
           );
-        } else {
-          _body = _commentList.isEmpty
-              ? (error ? _errorChild : _emptyChild)
-              : _itemList;
         }
       }
       return _body;

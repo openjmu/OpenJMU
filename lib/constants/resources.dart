@@ -514,6 +514,9 @@ class R {
   static const String ASSETS_ICONS_POST_ACTIONS_DELETE_SVG =
       'assets/icons/post-actions/delete.svg';
 
+  static const String ASSETS_ICONS_POST_ACTIONS_DOWNLOAD_IMAGE_SVG =
+      'assets/icons/post-actions/download-image.svg';
+
   static const String ASSETS_ICONS_POST_ACTIONS_EXTEND_SVG =
       'assets/icons/post-actions/extend.svg';
 

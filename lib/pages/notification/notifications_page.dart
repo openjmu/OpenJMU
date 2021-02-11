@@ -16,6 +16,37 @@ import 'package:openjmu/pages/post/team_mention_list_page.dart';
 import 'package:openjmu/pages/post/team_praise_list_page.dart';
 import 'package:openjmu/pages/post/team_reply_list_page.dart';
 
+class _Section {
+  const _Section({
+    @required this.notification,
+    @required this.fields,
+  })  : assert(notification != null),
+        assert(fields != null);
+
+  final dynamic notification;
+  final List<_Field> fields;
+}
+
+class _Field {
+  const _Field({
+    @required this.name,
+    @required this.field,
+    @required this.action,
+    @required this.select,
+    @required this.index,
+  })  : assert(name != null),
+        assert(field != null),
+        assert(action != null),
+        assert(select != null),
+        assert(index != null);
+
+  final String name;
+  final int Function() field;
+  final VoidCallback action;
+  final Function(int index) select;
+  final int index;
+}
+
 @FFRoute(
   name: 'openjmu://notifications',
   routeName: '通知页',
@@ -25,7 +56,8 @@ class NotificationsPage extends StatefulWidget {
   const NotificationsPage({
     Key key,
     @required this.initialPage,
-  }) : super(key: key);
+  })  : assert(initialPage != null),
+        super(key: key);
 
   final String initialPage;
 
@@ -45,88 +77,87 @@ class NotificationsPageState extends State<NotificationsPage>
 
   double get shouldPopOffset => maximumSheetHeight / 2;
 
-  List<Map<String, Map<String, dynamic>>> get actions {
-    return <Map<String, Map<String, dynamic>>>[
-      <String, Map<String, dynamic>>{
-        '广场': <String, dynamic>{
-          'icon': R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
-          'notification': notificationProvider.notifications,
-          'content': <Map<String, dynamic>>[
-            <String, dynamic>{
-              'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-              'field': notificationProvider.notifications.praise,
-              'action': notificationProvider.readPraise,
-              'select': selectSquareIndex,
-              'index': _squareIndex,
-            },
-            <String, dynamic>{
-              'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-              'field': notificationProvider.notifications.comment,
-              'action': notificationProvider.readReply,
-              'select': selectSquareIndex,
-              'index': _squareIndex,
-            },
-            <String, dynamic>{
-              'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-              'field': notificationProvider.notifications.at,
-              'action': notificationProvider.readMention,
-              'select': selectSquareIndex,
-              'index': _squareIndex,
-            },
-          ],
-        },
-      },
-      <String, Map<String, dynamic>>{
-        '集市': <String, dynamic>{
-          'icon': R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
-          'notification': notificationProvider.teamNotifications,
-          'content': <Map<String, dynamic>>[
-            <String, dynamic>{
-              'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-              'field': notificationProvider.teamNotifications.praise,
-              'action': notificationProvider.readTeamPraise,
-              'select': selectTeamIndex,
-              'index': _teamIndex,
-            },
-            <String, dynamic>{
-              'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-              'field': notificationProvider.teamNotifications.reply,
-              'action': notificationProvider.readTeamReply,
-              'select': selectTeamIndex,
-              'index': _teamIndex,
-            },
-            <String, dynamic>{
-              'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-              'field': notificationProvider.teamNotifications.mention,
-              'action': notificationProvider.readTeamMention,
-              'select': selectTeamIndex,
-              'index': _teamIndex,
-            },
-          ],
-        },
-      },
-    ];
+  Map<String, _Section> get sections {
+    return <String, _Section>{
+      '广场': _Section(
+        notification: provider.notifications,
+        fields: <_Field>[
+          _Field(
+            name: '赞',
+            field: () => provider.notifications.praise,
+            action: provider.readPraise,
+            select: selectSquareIndex,
+            index: _squareIndex,
+          ),
+          _Field(
+            name: '评论',
+            field: () => provider.notifications.comment,
+            action: provider.readReply,
+            select: selectSquareIndex,
+            index: _squareIndex,
+          ),
+          _Field(
+            name: '@我的动态',
+            field: () => provider.notifications.tAt,
+            action: provider.readPostMention,
+            select: selectSquareIndex,
+            index: _squareIndex,
+          ),
+          _Field(
+            name: '@我的评论',
+            field: () => provider.notifications.cmtAt,
+            action: provider.readCommentMention,
+            select: selectSquareIndex,
+            index: _squareIndex,
+          ),
+        ],
+      ),
+      '集市': _Section(
+        notification: provider.teamNotifications,
+        fields: <_Field>[
+          _Field(
+            name: '赞',
+            field: () => provider.teamNotifications.praise,
+            action: provider.readTeamPraise,
+            select: selectTeamIndex,
+            index: _teamIndex,
+          ),
+          _Field(
+            name: '评论',
+            field: () => provider.teamNotifications.reply,
+            action: provider.readTeamReply,
+            select: selectTeamIndex,
+            index: _teamIndex,
+          ),
+          _Field(
+            name: '提到我',
+            field: () => provider.teamNotifications.mention,
+            action: provider.readTeamMention,
+            select: selectTeamIndex,
+            index: _teamIndex,
+          ),
+        ],
+      ),
+    };
   }
 
-  final List<String> squareMentionActions = <String>['动态', '评论'];
   final ScrollController scrollController = ScrollController();
-  final Color iconColor = Colors.grey[600].withOpacity(
-    currentIsDark ? 0.8 : 0.4,
-  );
+  final NotificationProvider provider =
+      currentContext.read<NotificationProvider>();
+
+  int _index = 0, _squareIndex = 0, _teamIndex = 0;
+  bool animating = true, tapping = false;
 
   AnimationController backgroundOpacityController;
-  NotificationProvider notificationProvider;
-  int _index = 0, _squareIndex = 0, _teamIndex = 0, _mentionIndex = 0;
-  bool animating = true, tapping = false;
 
   @override
   void initState() {
     super.initState();
-    notificationProvider =
-        Provider.of<NotificationProvider>(currentContext, listen: false);
-
     backgroundOpacityController = AnimationController.unbounded(
-        value: 0.0, duration: duration, vsync: this);
+      value: 0.0,
+      duration: duration,
+      vsync: this,
+    );
 
     scrollController.addListener(() {
       backgroundOpacityController.value =
@@ -148,8 +179,8 @@ class NotificationsPageState extends State<NotificationsPage>
         break;
     }
 
-    _squareIndex = notificationProvider.initialIndex;
-    _teamIndex = notificationProvider.teamInitialIndex;
+    _squareIndex = provider.initialIndex;
+    _teamIndex = provider.teamInitialIndex;
 
     SchedulerBinding.instance.addPostFrameCallback((Duration _) async {
       await scrollController.animateTo(
@@ -159,8 +190,9 @@ class NotificationsPageState extends State<NotificationsPage>
       );
       animating = false;
       if (mounted) {
-        actions[_index].values.elementAt(0)['content']
-            [_index == 0 ? _squareIndex : _teamIndex]['action']();
+        sections[widget.initialPage]
+            .fields[_index == 0 ? _squareIndex : _teamIndex]
+            .action();
         setState(() {});
       }
     });
@@ -189,14 +221,6 @@ class NotificationsPageState extends State<NotificationsPage>
     }
   }
 
-  void selectMentionIndex(int index) {
-    if (index != _mentionIndex) {
-      setState(() {
-        _mentionIndex = index;
-      });
-    }
-  }
-
   void selectTeamIndex(int index) {
     if (index != _teamIndex) {
       setState(() {
@@ -211,9 +235,6 @@ class NotificationsPageState extends State<NotificationsPage>
     switch (_index) {
       case 0:
         keyString += '$_squareIndex';
-        if (_squareIndex == 2) {
-          keyString += '-$_mentionIndex';
-        }
         break;
       case 1:
         keyString += '$_teamIndex';
@@ -229,14 +250,15 @@ class NotificationsPageState extends State<NotificationsPage>
       animating = true;
       await scrollController.animateTo(
         maximumSheetHeight,
+        curve: Curves.easeOut,
         duration: math
             .max(
-                50,
-                (maximumSheetHeight - scrollController.offset) /
-                    maximumSheetHeight *
-                    300)
+              50,
+              (maximumSheetHeight - scrollController.offset) /
+                  maximumSheetHeight *
+                  300,
+            )
             .milliseconds,
-        curve: Curves.easeOut,
       );
       animating = false;
       if (mounted) {
@@ -250,10 +272,10 @@ class NotificationsPageState extends State<NotificationsPage>
       animating = true;
       await scrollController.animateTo(
         0,
+        curve: Curves.easeOut,
         duration: math
             .max(50, scrollController.offset / maximumSheetHeight * 250)
             .milliseconds,
-        curve: Curves.easeOut,
       );
       navigatorState.pop();
       animating = false;
@@ -307,40 +329,41 @@ class NotificationsPageState extends State<NotificationsPage>
   }
 
   Widget get backButton {
-    return Center(
+    return Container(
+      width: 48.w,
+      height: 48.w,
+      alignment: Alignment.center,
       child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
         onTap: navigatorState.maybePop,
-        child: Icon(
-          Icons.close,
-          color: iconColor,
-          size: 42.w,
+        behavior: HitTestBehavior.opaque,
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_CLEAR_SVG,
+          color: context.iconTheme.color,
+          width: 20.w,
         ),
       ),
     );
   }
 
   Widget get actionBar {
-    final String key = actions[_index].keys.elementAt(0);
     return Row(
       children: List<Widget>.generate(
-        (actions[_index][key]['content'] as List<dynamic>).length,
+        sections[widget.initialPage].fields.length,
         (int j) {
-          final Map<String, dynamic> item = actions[_index]
-              .values
-              .elementAt(0)['content'][j] as Map<String, dynamic>;
-          final int count = item['field'] as int;
+          final _Field field = sections[widget.initialPage].fields[j];
+          final int count = field.field();
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              (item['select'] as void Function(int index))(j);
-              (item['action'] as VoidCallback)();
+              field
+                ..select(j)
+                ..action();
             },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 21.w),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: badgeIcon(
                 content: count == 0 ? '' : count,
-                icon: getActionIcon(_index, j),
+                icon: getActionName(j),
                 showBadge: count != 0,
               ),
             ),
@@ -350,79 +373,60 @@ class NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  Widget getActionIcon(int sectionIndex, int actionIndex) {
-    final Map<String, dynamic> item = actions[sectionIndex]
-        .values
-        .elementAt(0)['content'][actionIndex] as Map<String, dynamic>;
-    final String icon = item['icon'] as String;
-    final int index = item['index'] as int;
-    return AnimatedCrossFade(
-      duration: duration,
-      crossFadeState: index == actionIndex
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
-      firstChild: SvgPicture.asset(
-        icon,
-        color: currentThemeColor,
-        width: 32.w,
+  Widget getActionName(int actionIndex) {
+    final _Field item = sections[widget.initialPage].fields[actionIndex];
+    final bool isSelected = item.index == actionIndex;
+    return AnimatedDefaultTextStyle(
+      duration: kThemeAnimationDuration,
+      child: Text(item.name),
+      style: TextStyle(
+        color: isSelected ? currentThemeColor : context.textTheme.caption.color,
+        height: 1.2,
+        fontSize: 18.sp,
+        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
-      secondChild: SvgPicture.asset(icon, color: iconColor, width: 32.w),
     );
   }
 
-  Widget get mentionList {
-    return Column(
+  Widget _squareStack(BuildContext context) {
+    return IndexedStack(
+      index: _squareIndex,
       children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(top: 12.w),
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.w),
-            color: context.theme.cardColor,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: List<Widget>.generate(
-              squareMentionActions.length,
-              (int i) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8.w,
-                    vertical: 16.h,
-                  ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => selectMentionIndex(i),
-                    child: AnimatedDefaultTextStyle(
-                      duration: duration,
-                      style: TextStyle(
-                        color:
-                            _mentionIndex == i ? currentThemeColor : iconColor,
-                        height: 1.25,
-                        fontSize: 18.sp,
-                      ),
-                      child: Text('@我的${squareMentionActions[i]}'),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          const Key('List-0-0'),
+          praiseList,
         ),
-        Expanded(
-          child: IndexedStack(
-            index: _mentionIndex,
-            children: <Widget>[
-              ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                const Key('List-0-2-0'),
-                postByMention,
-              ),
-              ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                const Key('List-0-2-1'),
-                commentByMention,
-              ),
-            ],
-          ),
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          const Key('List-0-1'),
+          commentByReply,
+        ),
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          const Key('List-0-2'),
+          postByMention,
+        ),
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          const Key('List-0-3'),
+          commentByMention,
+        ),
+      ],
+    );
+  }
+
+  Widget _teamStack(BuildContext context) {
+    return IndexedStack(
+      index: _teamIndex,
+      children: const <Widget>[
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          Key('List-1-0'),
+          TeamPraiseListPage(),
+        ),
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          Key('List-1-1'),
+          TeamReplyListPage(),
+        ),
+        ex.NestedScrollViewInnerScrollPositionKeyWidget(
+          Key('List-1-2'),
+          TeamMentionListPage(),
         ),
       ],
     );
@@ -472,14 +476,17 @@ class NotificationsPageState extends State<NotificationsPage>
                   topRight: Radius.circular(20.w),
                 ),
                 child: Container(
-                  constraints: BoxConstraints(maxHeight: maximumSheetHeight),
+                  constraints: BoxConstraints(
+                    minHeight: kAppBarHeight.w,
+                    maxHeight: maximumSheetHeight,
+                  ),
                   color: Theme.of(context).primaryColor,
                   child: Column(
                     children: <Widget>[
                       Container(
+                        height: kAppBarHeight.w,
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        height: kAppBarHeight.h,
-                        color: Theme.of(context).primaryColor,
+                        color: context.theme.colorScheme.surface,
                         child: Row(
                           children: <Widget>[
                             actionBar,
@@ -488,43 +495,15 @@ class NotificationsPageState extends State<NotificationsPage>
                           ],
                         ),
                       ),
+                      Divider(thickness: 1.w, height: 1.w),
                       Expanded(
                         child: ColoredBox(
                           color: Theme.of(context).canvasColor,
                           child: IndexedStack(
                             index: _index,
                             children: <Widget>[
-                              IndexedStack(
-                                index: _squareIndex,
-                                children: <Widget>[
-                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                                    const Key('List-0-0'),
-                                    praiseList,
-                                  ),
-                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                                    const Key('List-0-1'),
-                                    commentByReply,
-                                  ),
-                                  mentionList,
-                                ],
-                              ),
-                              IndexedStack(
-                                index: _teamIndex,
-                                children: const <Widget>[
-                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-1-0'),
-                                    TeamPraiseListPage(),
-                                  ),
-                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-1-1'),
-                                    TeamReplyListPage(),
-                                  ),
-                                  ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-1-2'),
-                                    TeamMentionListPage(),
-                                  ),
-                                ],
-                              ),
+                              _squareStack(context),
+                              _teamStack(context),
                             ],
                           ),
                         ),

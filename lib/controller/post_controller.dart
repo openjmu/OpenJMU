@@ -312,8 +312,17 @@ class _PostListState extends State<PostList>
           }
         },
       );
-      _body =
-          _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+      if (_postList.isEmpty) {
+        _body = error ? _errorChild : _emptyChild;
+      } else {
+        _body = _itemList;
+      }
+      _body = DefaultTextStyle.merge(
+        style: context.textTheme.caption.copyWith(
+          fontSize: 20.sp,
+        ),
+        child: _body,
+      );
 
       if (widget.needRefreshIndicator) {
         _body = RefreshIndicator(

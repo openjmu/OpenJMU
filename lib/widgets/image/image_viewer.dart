@@ -67,23 +67,21 @@ class ImageViewerState extends State<ImageViewer>
 
     _controller = PageController(initialPage: currentIndex);
 
-    _doubleTapAnimationController =
-        AnimationController(duration: 200.milliseconds, vsync: this);
+    _doubleTapAnimationController = AnimationController(
+      duration: 200.milliseconds,
+      vsync: this,
+    );
     _doubleTapCurveAnimation = CurvedAnimation(
       parent: _doubleTapAnimationController,
-      curve: Curves.linear,
+      curve: Curves.easeOutQuart,
     );
   }
 
   @override
   void dispose() {
-    final ThemesProvider provider =
-        Provider.of<ThemesProvider>(currentContext, listen: false);
-    provider.setSystemUIDark(provider.dark);
     pageStreamController?.close();
     backgroundOpacityStreamController?.close();
     _doubleTapAnimationController?.dispose();
-
     super.dispose();
   }
 
@@ -95,21 +93,28 @@ class ImageViewerState extends State<ImageViewer>
     backgroundOpacityStreamController.add(0.0);
   }
 
-  Future<void> _downloadImage(String url) async {
-    try {
-      final Response<List<int>> response =
-          await NetUtils.getBytes<List<int>>(url);
-      await PhotoManager.editor.saveImage(
-        Uint8List.fromList(response.data),
-        title: '$currentTimeStamp',
-      );
-      showCenterToast('图片已保存至相册');
-    } catch (e) {
-      showErrorToast('图片保存失败 $e');
-      return;
-    }
-    if (!mounted) {
-      return;
+  Future<void> _downloadImage() async {
+    final bool isAllGranted = await checkPermissions(<Permission>[
+      if (Platform.isIOS) Permission.photos,
+      if (Platform.isAndroid) Permission.storage,
+    ]);
+    if (isAllGranted) {
+      final String url = widget.pics[currentIndex].imageUrl;
+      try {
+        final Response<List<int>> response =
+            await NetUtils.getBytes<List<int>>(url);
+        await PhotoManager.editor.saveImage(
+          Uint8List.fromList(response.data),
+          title: '$currentTimeStamp',
+        );
+        showCenterToast('图片已保存至相册');
+      } catch (e) {
+        showErrorToast('图片保存失败 $e');
+        return;
+      }
+      if (!mounted) {
+        return;
+      }
     }
   }
 
@@ -137,33 +142,14 @@ class ImageViewerState extends State<ImageViewer>
     _doubleTapAnimationController.forward();
   }
 
-  void onLongPress(BuildContext context) {
-    ConfirmationBottomSheet.show(
-      context,
-      actions: <ConfirmationBottomSheetAction>[
-        ConfirmationBottomSheetAction(
-          text: '保存图片',
-          onTap: () async {
-            final bool isAllGranted = await checkPermissions(<Permission>[
-              if (Platform.isIOS) Permission.photos,
-              if (Platform.isAndroid) Permission.storage,
-            ]);
-            if (isAllGranted) {
-              _downloadImage(widget.pics[currentIndex].imageUrl);
-            }
-          },
-        ),
-      ],
-    );
-  }
-
   Color slidePageBackgroundHandler(Offset offset, Size pageSize) {
     double opacity = 0.0;
     opacity = offset.distance /
         (Offset(pageSize.width, pageSize.height).distance / 2.0);
     backgroundOpacityStreamController.add(1.0 - opacity);
-    return Colors.black
-        .withOpacity(math.min(1.0, math.max(1.0 - opacity, 0.0)));
+    return Colors.black.withOpacity(
+      math.min(1.0, math.max(1.0 - opacity, 0.0)),
+    );
   }
 
   bool slideEndHandler(
@@ -185,7 +171,7 @@ class ImageViewerState extends State<ImageViewer>
       imageViewerState: this,
       slidePageKey: slidePageKey,
       enableTapPop: true,
-      onLongPress: () => onLongPress(context),
+      onLongPress: _downloadImage,
       heroPrefix: widget.heroPrefix,
       child: ExtendedImage.network(
         widget.pics[index].imageUrl,
@@ -227,7 +213,7 @@ class ImageViewerState extends State<ImageViewer>
             initialScale: 1.0,
             minScale: 1.0,
             maxScale: 3.0,
-            animationMinScale: 0.6,
+            animationMinScale: 1.0,
             animationMaxScale: 4.0,
             cacheGesture: false,
             inPageView: true,
@@ -242,15 +228,6 @@ class ImageViewerState extends State<ImageViewer>
               );
               break;
             case LoadState.completed:
-              loader = TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 300),
-                builder: (BuildContext _, double value, Widget child) {
-                  return Opacity(opacity: value, child: child);
-                },
-                child: state.completedWidget,
-              );
-              break;
             case LoadState.failed:
               break;
           }
@@ -302,7 +279,7 @@ class ImageViewerState extends State<ImageViewer>
                         opacity: popping ? 0.0 : data.data,
                         child: _ViewAppBar(
                           post: widget.post,
-                          onMoreClicked: () => onLongPress(context),
+                          onMoreClicked: _downloadImage,
                         ),
                       );
                     },
@@ -316,9 +293,7 @@ class ImageViewerState extends State<ImageViewer>
                     child: StreamBuilder<double>(
                       initialData: 1.0,
                       stream: backgroundOpacityStreamController.stream,
-                      builder:
-                          (BuildContext context, AsyncSnapshot<double> data) =>
-                              Opacity(
+                      builder: (_, AsyncSnapshot<double> data) => Opacity(
                         opacity: popping ? 0.0 : data.data,
                         child: _ImageList(
                           controller: _controller,
@@ -427,13 +402,53 @@ class _ViewAppBar extends StatelessWidget {
   final Post post;
   final VoidCallback onMoreClicked;
 
+  Widget _backButton(BuildContext context) {
+    return GestureDetector(
+      onTap: Navigator.of(context).maybePop,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox.fromSize(
+        size: Size.square(48.w),
+        child: Center(
+          child: SvgPicture.asset(
+            R.ASSETS_ICONS_CLEAR_SVG,
+            width: 24.w,
+            height: 24.w,
+            color: Colors.white,
+            semanticsLabel: MaterialLocalizations.of(context).backButtonTooltip,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _saveButton(BuildContext context) {
+    return GestureDetector(
+      onTap: onMoreClicked,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox.fromSize(
+        size: Size.square(48.w),
+        child: Center(
+          child: SvgPicture.asset(
+            R.ASSETS_ICONS_POST_ACTIONS_DOWNLOAD_IMAGE_SVG,
+            width: 24.w,
+            height: 24.w,
+            color: Colors.white,
+            semanticsLabel: MaterialLocalizations.of(context).backButtonTooltip,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
       child: Container(
-        height: Screens.topSafeHeight + kAppBarHeight.h,
-        padding: EdgeInsets.only(top: Screens.topSafeHeight),
+        height: Screens.topSafeHeight + kAppBarHeight.w,
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+        ).copyWith(top: Screens.topSafeHeight),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -442,37 +457,10 @@ class _ViewAppBar extends StatelessWidget {
           ),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.arrow_back),
-              onPressed: Navigator.of(context).pop,
-            ),
-            Expanded(
-              child: post != null
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        UserAvatar(uid: post.uid),
-                        Gap(10.w),
-                        Text(
-                          post.nickname,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
-            ),
-            if (onMoreClicked != null)
-              IconButton(
-                color: Colors.white,
-                icon: const Icon(Icons.more_vert),
-                onPressed: onMoreClicked,
-              ),
+            _backButton(context),
+            if (onMoreClicked != null) _saveButton(context),
           ],
         ),
       ),

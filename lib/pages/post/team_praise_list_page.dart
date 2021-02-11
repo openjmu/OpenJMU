@@ -219,11 +219,8 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     if (praiseList.isEmpty) {
       return Center(
         child: Text(
-          '暂无内容',
-          style: TextStyle(
-            color: currentThemeColor,
-            fontSize: 24.sp,
-          ),
+          '无点赞信息',
+          style: context.textTheme.caption.copyWith(fontSize: 20.sp),
         ),
       );
     }

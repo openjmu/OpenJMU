@@ -182,6 +182,7 @@ class PostDetailPageState extends State<PostDetailPage>
       child: Container(
         width: 48.w,
         height: 48.w,
+        alignment: Alignment.center,
         child: SizedBox.fromSize(
           size: Size.square(30.w),
           child: AspectRatio(

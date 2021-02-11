@@ -75,6 +75,92 @@ class _PostCardState extends State<PostCard> {
       });
   }
 
+  Future<void> confirmDelete(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除动态',
+      content: '是否确认删除这条动态?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final LoadingDialogController _loadingDialogController =
+          LoadingDialogController();
+      LoadingDialog.show(
+        context,
+        controller: _loadingDialogController,
+        text: '正在删除动态',
+        isGlobal: false,
+      );
+      try {
+        await PostAPI.deletePost(widget.post.id);
+        _loadingDialogController.changeState('success', '动态删除成功');
+        Instances.eventBus.fire(
+            PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
+      } catch (e) {
+        LogUtils.e(e.toString());
+        LogUtils.e(e.response?.toString());
+        _loadingDialogController.changeState('failed', '动态删除失败');
+      }
+    }
+  }
+
+  void postExtraActions(BuildContext context) {
+    ConfirmationBottomSheet.show(
+      context,
+      actions: <ConfirmationBottomSheetAction>[
+        ConfirmationBottomSheetAction(
+          text: '${UserAPI.blacklist.contains(
+            BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+          ) ? '移出' : '加入'}黑名单',
+          onTap: () => UserAPI.confirmBlock(
+            context,
+            BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+          ),
+        ),
+        ConfirmationBottomSheetAction(
+          text: '举报动态',
+          onTap: () => confirmReport(context),
+        ),
+      ],
+    );
+  }
+
+  Future<void> confirmReport(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
+      context,
+      title: '举报动态',
+      content: '确定举报该条动态吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final ReportRecordsProvider provider = Provider.of<ReportRecordsProvider>(
+        context,
+        listen: false,
+      );
+      final bool canReport = await provider.addRecord(widget.post.id);
+      if (canReport) {
+        PostAPI.reportPost(widget.post);
+        showToast('举报成功');
+      }
+    }
+  }
+
+  void pushToDetail() {
+    navigatorState.pushNamed(
+      Routes.openjmuPostDetail.name,
+      arguments: Routes.openjmuPostDetail.d(
+        post: widget.post,
+        index: widget.index,
+        fromPage: widget.fromPage,
+        parentContext: context,
+      ),
+    );
+  }
+
+  void pushToConvention() {
+    ConventionDialog.show(context: context, shouldConfirm: false);
+  }
+
   Widget getPostNickname(BuildContext context, Post post) {
     return Row(
       children: <Widget>[
@@ -185,8 +271,8 @@ class _PostCardState extends State<PostCard> {
         );
       }
     } else {
-      return Container(
-        margin: EdgeInsets.only(top: 10.w),
+      return Padding(
+        padding: EdgeInsets.only(top: 10.w),
         child: getPostBanned('delete', isRoot: true),
       );
     }
@@ -331,9 +417,8 @@ class _PostCardState extends State<PostCard> {
                 ? '999+'
                 : '$value',
         style: TextStyle(
-          color: context.iconTheme.color,
+          color: color ?? context.iconTheme.color,
           fontSize: 18.sp,
-          fontWeight: FontWeight.normal,
         ),
         maxLines: 1,
       ),
@@ -434,18 +519,36 @@ class _PostCardState extends State<PostCard> {
         break;
     }
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20.h),
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: 20.w),
       decoration: BoxDecoration(
         borderRadius: !isRoot ? BorderRadius.circular(10.w) : null,
-        color: currentIsDark ? Colors.grey[700] : Colors.grey[400],
+        color: type == 'delete' ? context.theme.canvasColor : null,
       ),
-      child: Center(
-        child: Text(
-          content,
-          style: TextStyle(
-            color: Colors.grey[currentIsDark ? 350 : 50],
-            fontSize: 22.sp,
-          ),
+      child: DefaultTextStyle.merge(
+        style: context.textTheme.caption.copyWith(
+          height: 1.2,
+          fontSize: 20.sp,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              content,
+              style: TextStyle(color: context.textTheme.bodyText2.color),
+            ),
+            if (type == 'shield')
+              Expanded(
+                child: GestureDetector(
+                  onTap: pushToConvention,
+                  behavior: HitTestBehavior.opaque,
+                  child: const Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Text('为什么该动态会被屏蔽？'),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -453,12 +556,12 @@ class _PostCardState extends State<PostCard> {
 
   Widget getExtendedText(String content, {bool isRoot = false}) {
     return GestureDetector(
-      onLongPress: widget.isDetail
-          ? () {
-              Clipboard.setData(ClipboardData(text: content));
-              showToast('已复制到剪贴板');
-            }
-          : null,
+      onLongPress: () {
+        if (widget.isDetail) {
+          Clipboard.setData(ClipboardData(text: content));
+          showToast('已复制到剪贴板');
+        }
+      },
       child: ExtendedText(
         content != null ? '$content ' : null,
         style: TextStyle(fontSize: 19.sp),
@@ -531,88 +634,6 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Future<void> confirmDelete(BuildContext context) async {
-    final bool confirm = await ConfirmationDialog.show(
-      context,
-      title: '删除动态',
-      content: '是否确认删除这条动态?',
-      showConfirm: true,
-    );
-    if (confirm) {
-      final LoadingDialogController _loadingDialogController =
-          LoadingDialogController();
-      LoadingDialog.show(
-        context,
-        controller: _loadingDialogController,
-        text: '正在删除动态',
-        isGlobal: false,
-      );
-      try {
-        await PostAPI.deletePost(widget.post.id);
-        _loadingDialogController.changeState('success', '动态删除成功');
-        Instances.eventBus.fire(
-            PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
-      } catch (e) {
-        LogUtils.e(e.toString());
-        LogUtils.e(e.response?.toString());
-        _loadingDialogController.changeState('failed', '动态删除失败');
-      }
-    }
-  }
-
-  void postExtraActions(BuildContext context) {
-    ConfirmationBottomSheet.show(
-      context,
-      actions: <ConfirmationBottomSheetAction>[
-        ConfirmationBottomSheetAction(
-          text: '${UserAPI.blacklist.contains(
-            BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
-          ) ? '移出' : '加入'}黑名单',
-          onTap: () => UserAPI.confirmBlock(
-            context,
-            BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
-          ),
-        ),
-        ConfirmationBottomSheetAction(
-          text: '举报动态',
-          onTap: () => confirmReport(context),
-        ),
-      ],
-    );
-  }
-
-  Future<void> confirmReport(BuildContext context) async {
-    final bool confirm = await ConfirmationDialog.show(
-      context,
-      title: '举报动态',
-      content: '确定举报该条动态吗?',
-      showConfirm: true,
-    );
-    if (confirm) {
-      final ReportRecordsProvider provider = Provider.of<ReportRecordsProvider>(
-        context,
-        listen: false,
-      );
-      final bool canReport = await provider.addRecord(widget.post.id);
-      if (canReport) {
-        PostAPI.reportPost(widget.post);
-        showToast('举报成功');
-      }
-    }
-  }
-
-  void pushToDetail() {
-    navigatorState.pushNamed(
-      Routes.openjmuPostDetail.name,
-      arguments: Routes.openjmuPostDetail.d(
-        post: widget.post,
-        index: widget.index,
-        fromPage: widget.fromPage,
-        parentContext: context,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final Post post = widget.post;
@@ -623,9 +644,28 @@ class _PostCardState extends State<PostCard> {
       return const SizedBox.shrink();
     }
 
+    if (post.isShield) {
+      return Container(
+        margin: widget.isDetail
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(
+                horizontal: widget.fromPage == 'user' ? 0 : 16.w,
+                vertical: 8.w,
+              ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 24.w,
+          vertical: 8.w,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: Theme.of(context).cardColor,
+        ),
+        child: getPostBanned('shield'),
+      );
+    }
+
     return GestureDetector(
-      onTap: widget.isDetail || post.isShield ? null : pushToDetail,
-      onLongPress: post.isShield ? pushToDetail : null,
+      onTap: !widget.isDetail ? pushToDetail : null,
       child: Container(
         margin: widget.isDetail
             ? EdgeInsets.zero
@@ -644,64 +684,59 @@ class _PostCardState extends State<PostCard> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: !post.isShield
-              ? <Widget>[
-                  Container(
-                    height: 70.w,
-                    padding: EdgeInsets.symmetric(vertical: 6.w),
-                    child: Row(
+          children: <Widget>[
+            Container(
+              height: 70.w,
+              padding: EdgeInsets.symmetric(vertical: 6.w),
+              child: Row(
+                children: <Widget>[
+                  UserAPI.getAvatar(uid: widget.post.uid),
+                  Gap(16.w),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        UserAPI.getAvatar(uid: widget.post.uid),
-                        Gap(16.w),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              getPostNickname(context, post),
-                              getPostInfo(post),
-                            ],
-                          ),
-                        ),
-                        if (!widget.isDetail)
-                          post.uid == currentUser.uid
-                              ? deleteButton
-                              : postActionButton,
+                        getPostNickname(context, post),
+                        getPostInfo(post),
                       ],
                     ),
                   ),
-                  getPostContent(context, post),
-                  getPostImages(context, post),
-                  if (widget.isDetail)
-                    VGap(2.w)
-                  else
-                    Padding(
-                      padding: EdgeInsets.only(top: 12.w),
-                      child: Divider(thickness: 1.w, height: 1.w),
-                    ),
                   if (!widget.isDetail)
-                    Container(
-                      margin: EdgeInsets.only(top: 6.w),
-                      height: 50.h,
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            '浏览${post.glances}次　',
-                            style: TextStyle(
-                              color: context.iconTheme.color,
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (widget.isDetail)
-                            VGap(16.w)
-                          else
-                            postActions(context),
-                        ],
+                    post.uid == currentUser.uid
+                        ? deleteButton
+                        : postActionButton,
+                ],
+              ),
+            ),
+            getPostContent(context, post),
+            getPostImages(context, post),
+            if (widget.isDetail)
+              VGap(2.w)
+            else
+              Padding(
+                padding: EdgeInsets.only(top: 12.w),
+                child: Divider(thickness: 1.w, height: 1.w),
+              ),
+            if (!widget.isDetail)
+              Container(
+                margin: EdgeInsets.only(top: 6.w),
+                height: 56.w,
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      '浏览${post.glances}次　',
+                      style: context.textTheme.caption.copyWith(
+                        height: 1.2,
+                        fontSize: 16.sp,
                       ),
                     ),
-                ]
-              : <Widget>[getPostBanned('shield')],
+                    const Spacer(),
+                    if (widget.isDetail) VGap(16.w) else postActions(context),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );

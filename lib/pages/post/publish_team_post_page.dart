@@ -217,7 +217,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Check if user confirmed with convention.
   /// 检查用户是否同意了公约
   Future<void> checkConvention() async {
-    final bool confirm = await ConventionDialog.show(context);
+    final bool confirm = await ConventionDialog.show(context: context);
     if (confirm) {
       LoadingDialog.show(
         context,

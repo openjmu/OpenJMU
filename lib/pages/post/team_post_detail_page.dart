@@ -22,10 +22,10 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 )
 class TeamPostDetailPage extends StatefulWidget {
   const TeamPostDetailPage({
-    this.provider,
-    @required this.type,
-    this.postId,
     Key key,
+    @required this.type,
+    this.provider,
+    this.postId,
   }) : super(key: key);
 
   final TeamPostProvider provider;
@@ -67,8 +67,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   int commentPage = 1, total, currentOffset;
   bool loading, canLoadMore = true, canSend = false, sending = false;
-  final ValueNotifier<bool> showExtendedPad = ValueNotifier<bool>(false);
-  bool showEmoticonPad = false;
+  final ValueNotifier<bool> showExtendedPad = ValueNotifier<bool>(false),
+      showEmoticonPad = ValueNotifier<bool>(false);
   String replyHint;
   double _keyboardHeight = EmotionPad.emoticonPadDefaultHeight;
   TeamPost replyToPost;
@@ -267,32 +267,16 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   void triggerEmoticonPad() {
-    if (showEmoticonPad && _focusNode.canRequestFocus) {
+    if (showEmoticonPad.value && _focusNode.canRequestFocus) {
       _focusNode.requestFocus();
     }
 
-    final VoidCallback change = () {
-      showEmoticonPad = !showEmoticonPad;
-      if (showEmoticonPad) {
-        showExtendedPad.value = false;
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    };
-
-    if (showEmoticonPad) {
-      change();
-    } else {
-      if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-        InputUtils.hideKeyboard().whenComplete(
-          () {
-            Future<void>.delayed(300.milliseconds, null).whenComplete(change);
-          },
-        );
-      } else {
-        change();
-      }
+    if (context.bottomInsets > 0) {
+      InputUtils.hideKeyboard();
+    }
+    showEmoticonPad.value = !showEmoticonPad.value;
+    if (showEmoticonPad.value) {
+      showExtendedPad.value = false;
     }
   }
 
@@ -302,9 +286,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     }
     showExtendedPad.value = !showExtendedPad.value;
     if (showExtendedPad.value) {
-      setState(() {
-        showEmoticonPad = false;
-      });
+      showEmoticonPad.value = false;
     }
   }
 
@@ -513,40 +495,43 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.fastOutSlowIn,
         width: Screens.width,
-        height: value ? 74.w : 0.0,
-        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        height: value ? 74.w + Screens.bottomSafeHeight : 0.0,
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.w,
+        ).copyWith(bottom: Screens.bottomSafeHeight),
         color: context.theme.cardColor,
-        child: Wrap(
-          children: List<Widget>.generate(
-            extendedFeature.length,
-            (int index) => GestureDetector(
-              onTap: extendedFeature[index]['action'] as VoidCallback,
-              child: Container(
-                height: 60.w,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 8.w,
-                ).copyWith(bottom: 14.w),
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.w),
-                  color: context.theme.canvasColor,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SvgPicture.asset(
-                      extendedFeature[index]['icon'] as String,
-                      width: 20.w,
-                      height: 20.w,
-                      color: context.textTheme.bodyText2.color,
-                    ),
-                    Gap(10.w),
-                    Text(
-                      extendedFeature[index]['name'] as String,
-                      style: TextStyle(height: 1.2, fontSize: 19.sp),
-                    ),
-                  ],
-                ),
+        child: child,
+      ),
+      child: Wrap(
+        children: List<Widget>.generate(
+          extendedFeature.length,
+          (int index) => GestureDetector(
+            onTap: extendedFeature[index]['action'] as VoidCallback,
+            child: Container(
+              height: 60.w,
+              margin: EdgeInsets.symmetric(
+                horizontal: 8.w,
+              ).copyWith(bottom: 14.w),
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.w),
+                color: context.theme.canvasColor,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SvgPicture.asset(
+                    extendedFeature[index]['icon'] as String,
+                    width: 20.w,
+                    height: 20.w,
+                    color: context.textTheme.bodyText2.color,
+                  ),
+                  Gap(10.w),
+                  Text(
+                    extendedFeature[index]['name'] as String,
+                    style: TextStyle(height: 1.2, fontSize: 19.sp),
+                  ),
+                ],
               ),
             ),
           ),
@@ -555,185 +540,190 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     );
   }
 
-  Widget get emoticonButton => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: triggerEmoticonPad,
-        child: Container(
-          margin: EdgeInsets.only(right: 16.w),
-          child: Center(
-            child: SvgPicture.asset(
-              R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
-              width: 24.w,
-              height: 24.w,
-              color: showEmoticonPad
-                  ? currentThemeColor
-                  : context.textTheme.bodyText2.color,
-            ),
+  Widget get emoticonButton {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: triggerEmoticonPad,
+      child: Container(
+        margin: EdgeInsets.only(right: 16.w),
+        alignment: Alignment.center,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: showEmoticonPad,
+          builder: (_, bool value, __) => SvgPicture.asset(
+            R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+            width: 24.w,
+            height: 24.w,
+            color:
+                value ? currentThemeColor : context.textTheme.bodyText2.color,
           ),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget get emoticonPad => EmotionPad(
-        active: showEmoticonPad,
+  Widget get emoticonPad {
+    return ValueListenableBuilder<bool>(
+      valueListenable: showEmoticonPad,
+      builder: (_, bool value, __) => EmotionPad(
+        active: value,
         height: _keyboardHeight,
         controller: _textEditingController,
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final Set<dynamic> list =
         widget.type == TeamPostType.post ? comments : postComments;
-    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    if (keyboardHeight > 0) {
-      showEmoticonPad = false;
+
+    final double kh = MediaQuery.of(context).viewInsets.bottom;
+    if (kh > 0 && kh >= _keyboardHeight) {
+      showEmoticonPad.value = false;
     }
-    _keyboardHeight = math.max(_keyboardHeight, keyboardHeight);
+    _keyboardHeight = math.max(kh, _keyboardHeight ?? 0);
+
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(
-            title: const Text('集市详情'),
-            centerTitle: true,
-            actions: <Widget>[
-              if (provider.post?.uid == currentUser.uid) deleteButton,
-            ],
-            actionsPadding: EdgeInsets.only(right: 16.w),
-          ),
-          Expanded(
-            child: Listener(
-              onPointerDown: (_) {
-                if (MediaQuery.of(context).viewInsets.bottom > 0.0) {
-                  InputUtils.hideKeyboard();
-                }
-              },
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  if (provider.post != null)
-                    SliverToBoxAdapter(
-                      child: TeamPostCard(
-                        post: provider.post,
-                        detailPageState: this,
-                      ),
-                    ),
-                  if (!loading)
-                    if (list != null) ...<Widget>[
+      resizeToAvoidBottomInset: false,
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: const Text('集市详情'),
+          centerTitle: true,
+          actions: <Widget>[
+            if (provider.post?.uid == currentUser.uid) deleteButton,
+          ],
+          actionsPadding: EdgeInsets.only(right: 16.w),
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: Listener(
+                onPointerDown: (_) {
+                  if (MediaQuery.of(context).viewInsets.bottom > 0.0) {
+                    InputUtils.hideKeyboard();
+                  }
+                },
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    if (provider.post != null)
                       SliverToBoxAdapter(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 10.w,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                width: 1.w,
-                                color: context.theme.dividerColor,
+                        child: TeamPostCard(
+                          post: provider.post,
+                          detailPageState: this,
+                        ),
+                      ),
+                    if (!loading)
+                      if (list != null) ...<Widget>[
+                        SliverToBoxAdapter(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 10.w,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  width: 1.w,
+                                  color: context.theme.dividerColor,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '评论',
+                              style: TextStyle(
+                                color: context.textTheme.bodyText2.color
+                                    .withOpacity(0.625),
+                                height: 1.2,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
-                          child: Text(
-                            '评论',
-                            style: TextStyle(
-                              color: context.textTheme.bodyText2.color
-                                  .withOpacity(0.625),
-                              height: 1.2,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                         ),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (_, int index) {
-                            if (index == list.length - 1 && canLoadMore) {
-                              initialLoad(loadMore: true);
-                            }
-                            if (index == list.length) {
-                              return LoadMoreIndicator(
-                                canLoadMore: canLoadMore,
-                              );
-                            }
-                            Widget item;
-                            switch (widget.type) {
-                              case TeamPostType.post:
-                                item = ChangeNotifierProvider<
-                                    TeamPostProvider>.value(
-                                  value: TeamPostProvider(
-                                    list.elementAt(index) as TeamPost,
-                                  ),
-                                  child: TeamCommentPreviewCard(
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (_, int index) {
+                              if (index == list.length - 1 && canLoadMore) {
+                                initialLoad(loadMore: true);
+                              }
+                              if (index == list.length) {
+                                return LoadMoreIndicator(
+                                  canLoadMore: canLoadMore,
+                                );
+                              }
+                              Widget item;
+                              switch (widget.type) {
+                                case TeamPostType.post:
+                                  item = ChangeNotifierProvider<
+                                      TeamPostProvider>.value(
+                                    value: TeamPostProvider(
+                                      list.elementAt(index) as TeamPost,
+                                    ),
+                                    child: TeamCommentPreviewCard(
+                                      topPost: provider.post,
+                                      detailPageState: this,
+                                    ),
+                                  );
+                                  break;
+                                case TeamPostType.comment:
+                                  item = TeamPostCommentPreviewCard(
+                                    comment: list.elementAt(index)
+                                        as TeamPostComment,
                                     topPost: provider.post,
                                     detailPageState: this,
-                                  ),
-                                );
-                                break;
-                              case TeamPostType.comment:
-                                item = TeamPostCommentPreviewCard(
-                                  comment:
-                                      list.elementAt(index) as TeamPostComment,
-                                  topPost: provider.post,
-                                  detailPageState: this,
-                                );
-                                break;
-                            }
-                            return item;
-                          },
-                          childCount: list.length + 1,
+                                  );
+                                  break;
+                              }
+                              return item;
+                            },
+                            childCount: list.length + 1,
+                          ),
                         ),
-                      ),
-                    ] else
+                      ] else
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 300.w,
+                            child: const Center(child: Text('暂无内容')),
+                          ),
+                        )
+                    else
                       SliverToBoxAdapter(
                         child: SizedBox(
                           height: 300.h,
-                          child: const Center(child: Text('Nothing here.')),
-                        ),
-                      )
-                  else
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 300.h,
-                        child: const Center(
-                          child: LoadMoreSpinningIcon(isRefreshing: true),
+                          child: const Center(
+                            child: LoadMoreSpinningIcon(isRefreshing: true),
+                          ),
                         ),
                       ),
-                    ),
+                  ],
+                ),
+              ),
+            ),
+            Divider(thickness: 1.w, height: 1.w),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              color: context.theme.colorScheme.surface,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  textField,
+                  Gap(12.w),
+                  extendedPadButton,
+                  Gap(12.w),
+                  sendButton,
                 ],
               ),
             ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: Theme.of(context).dividerColor.withOpacity(0.03),
-                      offset: Offset(0, -2.h),
-                      blurRadius: 2.h,
-                    ),
-                  ],
-                  color: Theme.of(context).primaryColor,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    textField,
-                    Gap(12.w),
-                    extendedPadButton,
-                    Gap(12.w),
-                    sendButton,
-                  ],
-                ),
+            extendedPad,
+            emoticonPad,
+            ValueListenableBuilder<bool>(
+              valueListenable: showEmoticonPad,
+              builder: (_, bool value, __) => SizedBox(
+                height: value ? 0 : context.bottomInsets,
               ),
-              extendedPad,
-              emoticonPad,
-              VGap(MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

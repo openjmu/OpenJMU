@@ -80,6 +80,50 @@ class TeamPostPreviewCard extends StatelessWidget {
     }
   }
 
+  Widget deleteButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => confirmDelete(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: AlignmentDirectional.topEnd,
+        child: SizedBox.fromSize(
+          size: Size.square(24.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_DELETE_SVG,
+              color: context.iconTheme.color,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget postActionButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => confirmAction(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 48.w,
+        height: 48.w,
+        alignment: AlignmentDirectional.topEnd,
+        child: SizedBox.fromSize(
+          size: Size.square(24.w),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
+              color: context.iconTheme.color,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _header(BuildContext context, TeamPost post) {
     return Container(
       height: 70.w,
@@ -114,22 +158,10 @@ class TeamPostPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          GestureDetector(
-            child: Container(
-              width: 48.w,
-              height: 48.w,
-              alignment: AlignmentDirectional.topEnd,
-              child: Icon(
-                post.uid == UserAPI.currentUser.uid
-                    ? Icons.delete_outline
-                    : Icons.more_horiz,
-                size: 30.w,
-              ),
-            ),
-            onTap: post.uid == UserAPI.currentUser.uid
-                ? () => confirmDelete(context)
-                : () => confirmAction(context),
-          ),
+          if (post.uid == currentUser.uid)
+            deleteButton(context)
+          else
+            postActionButton(context),
         ],
       ),
     );

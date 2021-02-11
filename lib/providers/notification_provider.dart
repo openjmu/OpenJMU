@@ -15,7 +15,8 @@ class NotificationProvider extends ChangeNotifier {
     }
     final bool shouldNotifyListeners = notifications != value;
     _notifications = Notifications(
-      at: value.at,
+      tAt: value.tAt,
+      cmtAt: value.cmtAt,
       comment: value.comment,
       praise: value.praise,
       fans: value.fans,
@@ -50,8 +51,18 @@ class NotificationProvider extends ChangeNotifier {
 
   bool get showTeamNotification => teamNotifications.total > 0;
 
-  int get initialIndex =>
-      _notifications.comment > 0 ? 1 : (_notifications.at > 0 ? 2 : 0);
+  int get initialIndex {
+    if (_notifications.comment > 0) {
+      return 1;
+    }
+    if (_notifications.tAt > 0) {
+      return 2;
+    }
+    if (_notifications.cmtAt > 0) {
+      return 3;
+    }
+    return 0;
+  }
 
   int get teamInitialIndex {
     int index = 0;
@@ -114,8 +125,12 @@ class NotificationProvider extends ChangeNotifier {
     });
   }
 
-  void readMention() {
-    notifications = notifications.copyWith(at: 0);
+  void readPostMention() {
+    notifications = notifications.copyWith(tAt: 0);
+  }
+
+  void readCommentMention() {
+    notifications = notifications.copyWith(cmtAt: 0);
   }
 
   void readReply() {
