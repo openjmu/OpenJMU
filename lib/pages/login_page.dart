@@ -184,7 +184,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     );
     if (confirm) {
       API.launchWeb(
-        url: 'https://net.jmu.edu.cn/info/1309/2476.htm',
+        url: 'https://net.jmu.edu.cn/jdtx/jdtxzdlsm.htm',
         title: '网页链接',
         withCookie: false,
       );
@@ -587,8 +587,10 @@ class _InputFieldWrapper extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(title,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     if (actionName != null)
                       Tapper(
                         onTap: actionOnTap,

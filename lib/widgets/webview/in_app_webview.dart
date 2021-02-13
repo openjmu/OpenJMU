@@ -322,15 +322,18 @@ class _AppWebViewState extends State<AppWebView>
               child: WebAppIcon(app: widget.app, size: 42.0),
             ),
           Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                height: 1.2,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.normal,
+            child: Padding(
+              padding: EdgeInsets.only(left: widget.app == null ? 16.w : 0),
+              child: Text(
+                title,
+                style: TextStyle(
+                  height: 1.2,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

@@ -554,7 +554,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getExtendedText(String content, {bool isRoot = false}) {
-    return Tapper(
+    return GestureDetector(
       onLongPress: () {
         if (widget.isDetail) {
           Clipboard.setData(ClipboardData(text: content));

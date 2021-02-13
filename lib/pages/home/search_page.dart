@@ -295,36 +295,6 @@ class SearchPageState extends State<SearchPage>
     );
   }
 
-  PreferredSize _appBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(kAppBarHeight),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
-          ),
-          color: context.theme.colorScheme.surface,
-        ),
-        child: SafeArea(
-          top: true,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
-            child: IconTheme(
-              data: FixedAppBar.iconTheme(context),
-              child: Row(
-                children: <Widget>[
-                  const FixedBackButton(),
-                  Expanded(child: searchTextField(context)),
-                  searchButton,
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _resultListView(BuildContext context) {
     return ListView.builder(
       itemCount: 1 +
@@ -343,9 +313,9 @@ class SearchPageState extends State<SearchPage>
               ),
               child: Text(
                 '相关动态',
-                style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: 19.sp,
-                    ),
+                style: context.textTheme.caption.copyWith(
+                  fontSize: 19.sp,
+                ),
               ),
             );
           }
@@ -413,25 +383,32 @@ class SearchPageState extends State<SearchPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: _appBar(context),
-      body: ValueListenableBuilder2<bool, bool>(
-        firstNotifier: _loading,
-        secondNotifier: _loaded,
-        builder: (_, bool isLoading, bool isLoaded, __) {
-          if (isLoading) {
-            return const Center(
-              child: LoadMoreSpinningIcon(isRefreshing: true),
-            );
-          }
-          if (isLoaded) {
-            if ((postList != null && postList.isNotEmpty) ||
-                (userList != null && userList.isNotEmpty)) {
-              return _resultListView(context);
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          centerTitle: false,
+          title: searchTextField(context),
+          actions: <Widget>[searchButton],
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16.w),
+        ),
+        body: ValueListenableBuilder2<bool, bool>(
+          firstNotifier: _loading,
+          secondNotifier: _loaded,
+          builder: (_, bool isLoading, bool isLoaded, __) {
+            if (isLoading) {
+              return const Center(
+                child: LoadMoreSpinningIcon(isRefreshing: true),
+              );
             }
-            return _emptyWidget(context);
-          }
-          return const SizedBox.shrink();
-        },
+            if (isLoaded) {
+              if ((postList != null && postList.isNotEmpty) ||
+                  (userList != null && userList.isNotEmpty)) {
+                return _resultListView(context);
+              }
+              return _emptyWidget(context);
+            }
+            return const SizedBox.shrink();
+          },
+        ),
       ),
       resizeToAvoidBottomInset: false,
     );

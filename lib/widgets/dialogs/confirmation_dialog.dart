@@ -28,6 +28,7 @@ class ConfirmationDialog extends StatelessWidget {
               !(child != null && content != null),
           '\'child\' and \'content\' cannot be set or not set at the same time.',
         ),
+        assert(confirmLabel != null && cancelLabel != null),
         super(key: key);
 
   final String title;
@@ -96,9 +97,10 @@ class ConfirmationDialog extends StatelessWidget {
 
   ConfirmationDialogAction _confirmAction(BuildContext context) {
     return ConfirmationDialogAction(
-      child: const Text('确定'),
+      child: Text(confirmLabel),
       isDestructiveAction: true,
       onPressed: () {
+        onConfirm?.call();
         context.navigator.maybePop(true);
       },
     );
@@ -106,8 +108,9 @@ class ConfirmationDialog extends StatelessWidget {
 
   ConfirmationDialogAction _cancelAction(BuildContext context) {
     return ConfirmationDialogAction(
-      child: const Text('取消'),
+      child: Text(cancelLabel),
       onPressed: () {
+        onCancel?.call();
         context.navigator.maybePop(false);
       },
     );
@@ -136,14 +139,14 @@ class ConfirmationDialog extends StatelessWidget {
                   child
                 else
                   Padding(
-                    padding:
-                        contentPadding ?? EdgeInsets.symmetric(vertical: 24.w),
+                    padding: contentPadding ??
+                        EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 24.w,
+                        ),
                     child: ExtendedText(
                       content,
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.normal,
-                      ),
+                      style: TextStyle(height: 1.2, fontSize: 20.sp),
                       textAlign: contentAlignment,
                       specialTextSpanBuilder: _RegExpSpecialTextSpanBuilder(),
                       onSpecialTextTap: (dynamic data) {

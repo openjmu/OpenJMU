@@ -140,7 +140,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               borderRadius: BorderRadius.circular(13.w),
               color: context.theme.cardColor,
             ),
-            child: Tapper(
+            child: GestureDetector(
               onLongPress: () {
                 Clipboard.setData(ClipboardData(text: message.content));
                 showToast('复制成功');

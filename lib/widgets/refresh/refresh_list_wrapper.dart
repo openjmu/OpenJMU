@@ -49,7 +49,6 @@ class RefreshListWrapper extends StatelessWidget {
         break;
       case IndicatorStatus.loadingMoreBusying:
         indicator = LoadMoreIndicator(
-          isSliver: true,
           canLoadMore: true,
           textStyle: indicatorTextStyle,
         );

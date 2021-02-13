@@ -294,18 +294,6 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   //   );
   // }
 
-  /// 顶栏
-  Widget get appBar {
-    return PositionedDirectional(
-      top: Screens.topSafeHeight + 8.w,
-      start: 8.w,
-      child: backButton,
-    );
-  }
-
-  /// 返回键
-  Widget get backButton => const BackButton(color: Colors.white);
-
   /// 选择图库文件进行扫描
   Widget get importFromGalleryButton {
     return Tapper(
@@ -388,47 +376,46 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: Stack(
-          children: <Widget>[
-            if (_controller != null && isCameraInitialized)
-              Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Positioned.fill(child: _previewBuilder(context)),
-                  Positioned.fill(
-                    child: _scanPainter(
-                      size: Screens.width / 2,
-                      radius: 12.w,
-                      top: Screens.width / 2.75,
-                      child: Column(
-                        children: <Widget>[
-                          VGap(40.w),
-                          Text(
-                            '请将摄像头对准二维码',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 20.sp,
+        body: FixedAppBarWrapper(
+          appBar: const FixedAppBar(
+            backgroundColor: Colors.transparent,
+            withBorder: false,
+          ),
+          body: _controller != null && isCameraInitialized
+              ? Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Positioned.fill(child: _previewBuilder(context)),
+                    Positioned.fill(
+                      child: _scanPainter(
+                        size: Screens.width / 2,
+                        radius: 12.w,
+                        top: Screens.width / 2.75,
+                        child: Column(
+                          children: <Widget>[
+                            VGap(40.w),
+                            Text(
+                              '请将摄像头对准二维码',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 20.sp,
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                          importFromGalleryButton,
-                          VGap(60.w),
-                        ],
+                            const Spacer(),
+                            importFromGalleryButton,
+                            VGap(60.w),
+                          ],
+                        ),
                       ),
                     ),
+                  ],
+                )
+              : Center(
+                  child: Text(
+                    isCamerasEmpty ? '暂无可用的相机' : '准备中......',
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  appBar,
-                ],
-              )
-            else
-              Center(
-                child: Text(
-                  isCamerasEmpty ? '暂无可用的相机' : '准备中......',
-                  style: const TextStyle(color: Colors.white),
                 ),
-              ),
-            appBar,
-          ],
         ),
       ),
     );
