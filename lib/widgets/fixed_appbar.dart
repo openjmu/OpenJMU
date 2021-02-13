@@ -238,7 +238,7 @@ class FixedBackButton extends StatelessWidget {
               height: 24.w,
               color: color ?? context.iconTheme.color,
               semanticsLabel:
-              MaterialLocalizations.of(context).backButtonTooltip,
+                  MaterialLocalizations.of(context).backButtonTooltip,
             ),
           ),
         ),

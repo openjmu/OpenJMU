@@ -364,8 +364,7 @@ class _ImageList extends StatelessWidget {
                       width: (i == data.data ? 3 : 1.5).w,
                     ),
                   ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                  child: Tapper(
                     onTap: () {
                       controller?.animateToPage(
                         i,
@@ -403,9 +402,8 @@ class _ViewAppBar extends StatelessWidget {
   final VoidCallback onMoreClicked;
 
   Widget _backButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: Navigator.of(context).maybePop,
-      behavior: HitTestBehavior.opaque,
       child: SizedBox.fromSize(
         size: Size.square(48.w),
         child: Center(
@@ -422,9 +420,8 @@ class _ViewAppBar extends StatelessWidget {
   }
 
   Widget _saveButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: onMoreClicked,
-      behavior: HitTestBehavior.opaque,
       child: SizedBox.fromSize(
         size: Size.square(48.w),
         child: Center(

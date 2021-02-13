@@ -81,7 +81,7 @@ class SelfPage extends StatelessWidget {
   /// 签到按钮
   Widget get signButton => Consumer<SignProvider>(
         builder: (BuildContext _, SignProvider provider, Widget __) {
-          return GestureDetector(
+          return Tapper(
             onTap: () {
               if (!provider.hasSigned) {
                 provider.requestSign();
@@ -143,8 +143,7 @@ class SelfPage extends StatelessWidget {
   /// 设置项部件
   Widget settingItem(BuildContext context, int itemIndex) {
     final Map<String, dynamic> item = settingsSection[itemIndex];
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       child: Container(
         height: 50.w,
         child: Row(
@@ -253,8 +252,7 @@ class SelfPage extends StatelessWidget {
   Widget appWidget(Iterable<WebApp> apps, int index) {
     final WebApp app = apps.elementAt(index);
     return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: Tapper(
         onTap: () {
           API.launchWeb(
             url: app.replacedUrl,
@@ -282,8 +280,7 @@ class SelfPage extends StatelessWidget {
 
   /// 前往应用中心的按钮
   Widget allWebAppsButton(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: () {
         navigatorState.pushNamed(Routes.openjmuAppCenterPage.name);
       },
@@ -333,7 +330,7 @@ class SelfPage extends StatelessWidget {
       hello = '晚上好';
     }
 
-    return GestureDetector(
+    return Tapper(
       onLongPress: () {
         if (Constants.isDebug) {
           showDialog<void>(

@@ -127,7 +127,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
   }
 
   Widget cancelButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () => Navigator.of(context).maybePop(false),
       child: Container(
         height: 80.w + Screens.bottomSafeHeight,
@@ -167,8 +167,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       },
       child: Material(
         color: Colors.black38,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        child: Tapper(
           onTap: () => Navigator.of(context).maybePop(false),
           child: Align(
             alignment: widget.alignment,
@@ -215,8 +214,7 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: () {
         Navigator.of(context).pop();
         onTap();

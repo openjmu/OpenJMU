@@ -154,9 +154,8 @@ class PostDetailPageState extends State<PostDetailPage>
       );
 
   Widget deleteButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () => confirmDelete(context),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -176,9 +175,8 @@ class PostDetailPageState extends State<PostDetailPage>
   }
 
   Widget postActionButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () => postExtraActions(context),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -350,8 +348,7 @@ class PostDetailPageState extends State<PostDetailPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: Tapper(
                 onTap: () {
                   PostActionDialog.show(
                     context: context,
@@ -374,8 +371,7 @@ class PostDetailPageState extends State<PostDetailPage>
               ),
             ),
             Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: Tapper(
                 onTap: () {
                   PostActionDialog.show(
                     context: context,

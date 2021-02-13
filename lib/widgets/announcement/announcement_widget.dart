@@ -49,7 +49,7 @@ class AnnouncementWidget extends StatelessWidget {
     return IconTheme(
       data: iconTheme,
       child: canClose
-          ? GestureDetector(
+          ? Tapper(
               onTap: () {
                 provider.announcementsUserEnabled = false;
               },
@@ -70,7 +70,7 @@ class AnnouncementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (BuildContext _, SettingsProvider provider, Widget __) {
-        return GestureDetector(
+        return Tapper(
           onTap: () {
             final Map<String, dynamic> data =
                 provider.announcements[0].cast<String, dynamic>();
@@ -81,7 +81,6 @@ class AnnouncementWidget extends StatelessWidget {
               cancelLabel: '朕已阅',
             );
           },
-          behavior: HitTestBehavior.translucent,
           child: Container(
             height: height,
             padding: EdgeInsets.symmetric(

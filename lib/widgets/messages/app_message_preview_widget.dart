@@ -164,8 +164,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     timeFormat(fromBuild: true);
     tryDecodeContent();
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: () {
         navigatorState.pushNamed(
           Routes.openjmuChatAppMessagePage.name,

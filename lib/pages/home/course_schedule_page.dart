@@ -243,8 +243,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   /// Remark widget.
   /// 课程备注部件
-  Widget get remarkWidget => GestureDetector(
-        behavior: HitTestBehavior.opaque,
+  Widget get remarkWidget => Tapper(
         onTap: () => showRemarkDetail(context),
         child: Container(
           alignment: Alignment.center,
@@ -312,7 +311,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// The toggle button to expand/collapse week switcher.
   /// 触发周数切换器显示隐藏的按钮
   Widget _weekSwitcherToggleButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         weekSwitcherAnimationController.animateTo(
           weekSwitcherAnimationController.value > weekSwitcherHeight / 2
@@ -837,8 +836,7 @@ class _CourseListDialogState extends State<_CourseListDialog> {
       physics: const BouncingScrollPhysics(),
       itemCount: widget.courseList.length,
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        return Tapper(
           onTap: Navigator.of(context).maybePop,
           child: Center(
             child: IgnorePointer(

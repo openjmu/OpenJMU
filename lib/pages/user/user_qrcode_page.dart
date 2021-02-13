@@ -88,7 +88,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
   }
 
   Widget get saveButton {
-    return GestureDetector(
+    return Tapper(
       onTap: saveToGallery,
       child: Container(
         margin: EdgeInsets.only(top: minWidth / 10),
@@ -116,8 +116,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       color: Colors.black54,
       child: Stack(
         children: <Widget>[
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
+          Tapper(
             onTap: Navigator.of(context).pop,
             child: const SizedBox.expand(),
           ),

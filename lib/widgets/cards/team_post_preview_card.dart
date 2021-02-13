@@ -81,9 +81,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Widget deleteButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () => confirmDelete(context),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -103,9 +102,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Widget postActionButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () => confirmAction(context),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -283,7 +281,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           return loader;
         },
       );
-      _exImage = GestureDetector(
+      _exImage = Tapper(
         onTap: () {
           navigatorState.pushNamed(
             Routes.openjmuImageViewer.name,
@@ -425,8 +423,7 @@ class TeamPostPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TeamPostProvider>(
       builder: (_, TeamPostProvider p, __) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        return Tapper(
           onTap: () {
             navigatorState.pushNamed(
               Routes.openjmuTeamPostDetail.name,

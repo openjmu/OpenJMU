@@ -242,11 +242,8 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Wrapper for content part.
   /// 内容块包装
   Widget contentWrapper({@required List<Widget> children}) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        dismissFocusNodes();
-      },
+    return Tapper(
+      onTap: dismissFocusNodes,
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -449,7 +446,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           bottom: MediaQuery.of(context).viewInsets.bottom,
           start: 0.0,
           end: 0.0,
-          child: GestureDetector(
+          child: Tapper(
             behavior: HitTestBehavior.opaque,
             onTap: isEnabled ? () => loginButtonPressed(context) : null,
             child: AnimatedContainer(
@@ -594,7 +591,7 @@ class _InputFieldWrapper extends StatelessWidget {
                     Text(title,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     if (actionName != null)
-                      GestureDetector(
+                      Tapper(
                         onTap: actionOnTap,
                         child: Text(
                           actionName,

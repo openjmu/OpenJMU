@@ -29,7 +29,7 @@ class MainPage extends StatefulWidget {
   /// Widget that placed in main page to open the self page.
   /// 首页顶栏左上角打开个人页的封装部件
   static Widget get selfPageOpener {
-    return GestureDetector(
+    return Tapper(
       onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -59,7 +59,7 @@ class MainPage extends StatefulWidget {
           child: Stack(
             overflow: Overflow.visible,
             children: <Widget>[
-              GestureDetector(
+              Tapper(
                 onTap: () async {
                   provider.stopNotification();
                   await navigatorState.pushNamed(
@@ -117,8 +117,7 @@ class MainPage extends StatefulWidget {
         return AnimatedSwitcher(
           duration: kThemeChangeDuration,
           child: value
-              ? GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+              ? Tapper(
                   onTap: () {
                     ConfirmationDialog.show(
                       c,
@@ -163,7 +162,7 @@ class MainPage extends StatefulWidget {
     @required BuildContext context,
     @required String route,
   }) {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         navigatorState.pushNamed(route);
       },
@@ -304,7 +303,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           left: 0.0,
           right: 0.0,
           height: 72.w,
-          child: GestureDetector(
+          child: Tapper(
             onTap: () {
               ConfirmationDialog.show(
                 context,
@@ -335,7 +334,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  GestureDetector(
+                  Tapper(
                     onTap: () {
                       if (showAnnouncement.value) {
                         showAnnouncement.value = false;

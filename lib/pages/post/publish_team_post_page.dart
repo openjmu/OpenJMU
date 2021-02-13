@@ -123,8 +123,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       selectedAssets: selectedAssets,
       themeColor: currentThemeColor,
       specialItemPosition: SpecialItemPosition.prepend,
-      specialItemBuilder: (_) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      specialItemBuilder: (_) => Tapper(
         onTap: () async {
           final AssetEntity cr = await CameraPicker.pickFromCamera(
             context,
@@ -350,7 +349,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Publish button.
   /// 发布按钮
   Widget get publishButton {
-    return GestureDetector(
+    return Tapper(
       onTap: checkContentEmptyWhenPublish,
       child: Container(
         width: 80.w,
@@ -416,7 +415,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     final AssetEntity asset = selectedAssets.elementAt(index);
     return ValueListenableBuilder<bool>(
       valueListenable: isAssetListViewCollapsed,
-      builder: (_, bool value, __) => GestureDetector(
+      builder: (_, bool value, __) => Tapper(
         onTap: () async {
           if (!value) {
             final List<AssetEntity> result =
@@ -464,7 +463,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// The delete button for assets.
   /// 资源的删除按钮
   Widget _assetDeleteButton(int index) {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         if (imagesLength == 0) {
           isAssetListViewCollapsed.value = false;
@@ -503,8 +502,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       ),
       child: AspectRatio(
         aspectRatio: 1.0,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        child: Tapper(
           onTap: pickAssets,
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -532,7 +530,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       valueListenable: isAssetListViewCollapsed,
       builder: (_, bool isCollapsed, __) => Align(
         alignment: AlignmentDirectional.centerStart,
-        child: GestureDetector(
+        child: Tapper(
           onTap: isCollapsed ? switchAssetsListCollapse : null,
           child: AnimatedContainer(
             curve: Curves.easeInOut,
@@ -614,7 +612,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     String text,
     VoidCallback onTap,
   }) {
-    Widget button = GestureDetector(
+    Widget button = Tapper(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 15.w),

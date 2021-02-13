@@ -75,7 +75,7 @@ class _CommentListState extends State<CommentList>
 
     _emptyChild = const Center(child: Text('无评论信息'));
 
-    _errorChild = GestureDetector(
+    _errorChild = Tapper(
       onTap: () {
         setState(() {
           _isLoading = false;
@@ -83,7 +83,6 @@ class _CommentListState extends State<CommentList>
           _refreshData();
         });
       },
-      behavior: HitTestBehavior.opaque,
       child: const Center(child: Text('加载失败，轻触重试')),
     );
 
@@ -493,8 +492,7 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget _itemBuilder(BuildContext context, Comment comment) {
     return ColoredBox(
       color: context.theme.cardColor,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: Tapper(
         onTap: () => showActions(context, comment),
         onLongPress: () {
           Clipboard.setData(ClipboardData(

@@ -172,8 +172,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        Tapper(
           onTap: () {
             navigatorState.pushNamed(
               Routes.openjmuTeamPostDetail.name,

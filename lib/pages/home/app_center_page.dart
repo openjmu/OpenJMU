@@ -44,14 +44,13 @@ class AppCenterPage extends StatelessWidget {
     return Consumer<WebAppsProvider>(
       builder: (_, WebAppsProvider provider, __) {
         final bool isEditing = provider.isEditingCommonApps;
-        return GestureDetector(
+        return Tapper(
           onTap: () {
             if (isEditing) {
               provider.saveCommonApps();
             }
             provider.isEditingCommonApps = !isEditing;
           },
-          behavior: HitTestBehavior.opaque,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -85,7 +84,7 @@ class AppCenterPage extends StatelessWidget {
                 PositionedDirectional(
                   top: 0,
                   end: 0,
-                  child: GestureDetector(
+                  child: Tapper(
                     onTap: () {
                       context.read<WebAppsProvider>().removeCommonApp(app);
                     },
@@ -196,7 +195,7 @@ class AppCenterPage extends StatelessWidget {
   }) {
     return Consumer<WebAppsProvider>(
       builder: (_, WebAppsProvider provider, Widget child) {
-        return GestureDetector(
+        return Tapper(
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[

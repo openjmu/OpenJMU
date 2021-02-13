@@ -376,9 +376,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget get deleteButton {
-    return GestureDetector(
+    return Tapper(
       onTap: () => confirmDelete(context, provider),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -439,7 +438,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget get extendedPadButton {
-    return GestureDetector(
+    return Tapper(
       onTap: triggerExtendedPad,
       child: Container(
         width: 52.w,
@@ -460,7 +459,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget get sendButton {
-    return GestureDetector(
+    return Tapper(
       onTap: !sending && canSend ? send : null,
       child: Container(
         width: 75.w,
@@ -502,7 +501,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       child: Wrap(
         children: List<Widget>.generate(
           extendedFeature.length,
-          (int index) => GestureDetector(
+          (int index) => Tapper(
             onTap: extendedFeature[index]['action'] as VoidCallback,
             child: Container(
               height: 60.w,
@@ -538,8 +537,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget get emoticonButton {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: triggerEmoticonPad,
       child: Container(
         margin: EdgeInsets.only(right: 16.w),

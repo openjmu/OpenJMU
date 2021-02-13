@@ -126,7 +126,7 @@ class _UserListState extends State<UserListPage> {
       name = '${name.substring(0, 3)}...';
     }
     final TextStyle _textStyle = TextStyle(fontSize: 16.sp);
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         navigatorState.pushNamed(
           Routes.openjmuUserPage.name,

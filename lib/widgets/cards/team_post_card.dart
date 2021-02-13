@@ -76,7 +76,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
               ],
             ),
           ),
-          GestureDetector(
+          Tapper(
+            onTap: widget.detailPageState.setReplyToTop,
             child: Container(
               width: 48.w,
               height: 48.w,
@@ -87,7 +88,6 @@ class _TeamPostCardState extends State<TeamPostCard> {
                 color: Theme.of(context).dividerColor,
               ),
             ),
-            onTap: widget.detailPageState.setReplyToTop,
           ),
         ],
       ),
@@ -153,7 +153,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
           return loader;
         },
       );
-      _exImage = GestureDetector(
+      _exImage = Tapper(
         onTap: () {
           navigatorState.pushNamed(
             Routes.openjmuImageViewer.name,
@@ -238,7 +238,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                           ...post.praisor
                               .sublist(0, math.min(post.praisor.length, 3))
                               .map((Map<dynamic, dynamic> userInfo) =>
-                          userInfo['nickname'] as String)
+                                  userInfo['nickname'] as String)
                               .toList()
                         ].join('、'),
                         maxLines: 1,

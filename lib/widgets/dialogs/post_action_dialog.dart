@@ -220,8 +220,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
         children: <Widget>[
           ValueListenableBuilder<bool>(
             valueListenable: _hasExtraAction,
-            builder: (_, bool value, __) => GestureDetector(
-              behavior: HitTestBehavior.opaque,
+            builder: (_, bool value, __) => Tapper(
               onTap: () => _hasExtraAction.value = !_hasExtraAction.value,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -277,7 +276,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
 
   Widget _publishButton(BuildContext context) {
     final bool canSend = _tec.text.isNotEmpty || _image.value != null;
-    return GestureDetector(
+    return Tapper(
       onTap: canSend ? () => _request(context) : null,
       child: Container(
         width: 84.w,
@@ -325,7 +324,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
     String text,
     VoidCallback onTap,
   }) {
-    Widget button = GestureDetector(
+    Widget button = Tapper(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 15.w),
@@ -438,7 +437,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
                 end: 0,
                 width: 36.w,
                 height: 36.w,
-                child: GestureDetector(
+                child: Tapper(
                   child: Padding(
                     padding: EdgeInsets.all(6.w),
                     child: Container(

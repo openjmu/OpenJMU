@@ -29,7 +29,7 @@ class UserAvatar extends StatelessWidget {
     final String _uid = uid ?? currentUser.uid;
     return SizedBox.fromSize(
       size: Size.square(size.w),
-      child: GestureDetector(
+      child: Tapper(
         child: ClipRRect(
           borderRadius: radius != null
               ? BorderRadius.circular(radius.w)

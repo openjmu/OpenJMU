@@ -308,8 +308,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 
   /// 选择图库文件进行扫描
   Widget get importFromGalleryButton {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: scanFromFile,
       child: Padding(
         padding: EdgeInsets.all(30.w),

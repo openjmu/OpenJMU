@@ -78,7 +78,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
   }
 
   Widget get _refreshIcon {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         Instances.eventBus.fire(AppCenterRefreshEvent(currentIndex));
       },
@@ -101,7 +101,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
   }
 
   Widget get switchButton {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         setState(() {
           if (currentIndex == 0) {

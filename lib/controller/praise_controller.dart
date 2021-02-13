@@ -59,7 +59,7 @@ class _PraiseListState extends State<PraiseList>
 
     _emptyChild = const Center(child: Text('无点赞信息'));
 
-    _errorChild = GestureDetector(
+    _errorChild = Tapper(
       onTap: () {
         setState(() {
           _isLoading = false;
@@ -67,7 +67,6 @@ class _PraiseListState extends State<PraiseList>
           _refreshData();
         });
       },
-      behavior: HitTestBehavior.opaque,
       child: const Center(child: Text('加载失败，轻触重试')),
     );
 

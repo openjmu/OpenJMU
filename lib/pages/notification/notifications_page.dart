@@ -333,9 +333,8 @@ class NotificationsPageState extends State<NotificationsPage>
       width: 48.w,
       height: 48.w,
       alignment: Alignment.center,
-      child: GestureDetector(
+      child: Tapper(
         onTap: navigatorState.maybePop,
-        behavior: HitTestBehavior.opaque,
         child: SvgPicture.asset(
           R.ASSETS_ICONS_CLEAR_SVG,
           color: context.iconTheme.color,
@@ -352,8 +351,7 @@ class NotificationsPageState extends State<NotificationsPage>
         (int j) {
           final _Field field = sections[widget.initialPage].fields[j];
           final int count = field.field();
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
+          return Tapper(
             onTap: () {
               field
                 ..select(j)
@@ -460,8 +458,7 @@ class NotificationsPageState extends State<NotificationsPage>
               headerSliverBuilder: (_, __) {
                 return <Widget>[
                   SliverToBoxAdapter(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: Tapper(
                       onTap: navigatorState.maybePop,
                       child: VGap(Screens.height),
                     ),

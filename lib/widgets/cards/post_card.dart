@@ -228,7 +228,7 @@ class _PostCardState extends State<PostCard> {
         topic += (content['article'] ?? content['content']).toString();
         return Container(
           margin: EdgeInsets.only(top: 10.w, bottom: 4.w),
-          child: GestureDetector(
+          child: Tapper(
             onTap: () {
               navigatorState.pushNamed(
                 Routes.openjmuPostDetail.name,
@@ -337,7 +337,7 @@ class _PostCardState extends State<PostCard> {
             return loader;
           },
         );
-        _exImage = GestureDetector(
+        _exImage = Tapper(
           onTap: () {
             navigatorState.pushNamed(
               Routes.openjmuImageViewer.name,
@@ -539,9 +539,8 @@ class _PostCardState extends State<PostCard> {
             ),
             if (type == 'shield')
               Expanded(
-                child: GestureDetector(
+                child: Tapper(
                   onTap: pushToConvention,
-                  behavior: HitTestBehavior.opaque,
                   child: const Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: Text('为什么该动态会被屏蔽？'),
@@ -555,7 +554,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getExtendedText(String content, {bool isRoot = false}) {
-    return GestureDetector(
+    return Tapper(
       onLongPress: () {
         if (widget.isDetail) {
           Clipboard.setData(ClipboardData(text: content));
@@ -591,9 +590,8 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton {
-    return GestureDetector(
+    return Tapper(
       onTap: () => confirmDelete(context),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -613,9 +611,8 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get postActionButton {
-    return GestureDetector(
+    return Tapper(
       onTap: () => postExtraActions(context),
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 48.w,
         height: 48.w,
@@ -664,7 +661,7 @@ class _PostCardState extends State<PostCard> {
       );
     }
 
-    return GestureDetector(
+    return Tapper(
       onTap: !widget.isDetail ? pushToDetail : null,
       child: Container(
         margin: widget.isDetail

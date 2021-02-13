@@ -180,13 +180,14 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        Tapper(
           onTap: () {
             navigatorState.pushNamed(
               Routes.openjmuTeamPostDetail.name,
-              arguments: Routes.openjmuTeamPostDetail
-                  .d(provider: provider, type: TeamPostType.comment),
+              arguments: Routes.openjmuTeamPostDetail.d(
+                provider: provider,
+                type: TeamPostType.comment,
+              ),
             );
           },
           child: Container(

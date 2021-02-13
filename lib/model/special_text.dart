@@ -21,7 +21,7 @@ class LinkText extends SpecialText {
   InlineSpan finishText() {
     return ExtendedWidgetSpan(
       alignment: ui.PlaceholderAlignment.middle,
-      child: GestureDetector(
+      child: Tapper(
         onTap: () {
           final Map<String, dynamic> data = <String, dynamic>{
             'content': toString(),

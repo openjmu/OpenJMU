@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 
-import 'package:openjmu/widgets/image/image_viewer.dart';
+import 'image_viewer.dart';
 
 class ImageGestureDetector extends StatelessWidget {
   const ImageGestureDetector({

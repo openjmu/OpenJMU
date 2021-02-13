@@ -111,7 +111,7 @@ class _AboutCard extends StatelessWidget {
       height: 64.w,
       child: Row(
         children: <Widget>[
-          GestureDetector(
+          Tapper(
             onDoubleTap: () => showDebugInfoDialog(context),
             child: const AspectRatio(
               aspectRatio: 1,
@@ -379,7 +379,7 @@ class _ThemeCard extends StatelessWidget {
               itemBuilder: (BuildContext _, int index) {
                 final ThemeGroup theme = supportThemeGroups[index];
                 final bool isSelected = provider.currentThemeGroup == theme;
-                return GestureDetector(
+                return Tapper(
                   onTap: () {
                     if (!isSelected) {
                       provider.updateThemeColor(index);
@@ -517,8 +517,7 @@ class _SettingItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+    return Tapper(
       child: SizedBox(
         height: 68.w,
         child: Row(

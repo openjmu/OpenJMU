@@ -345,7 +345,7 @@ class _AppWebViewState extends State<AppWebView>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              GestureDetector(
+              Tapper(
                 onTap: () => showMore(context),
                 child: SizedBox.fromSize(
                   size: Size.square(56.w),
@@ -358,7 +358,7 @@ class _AppWebViewState extends State<AppWebView>
                   ),
                 ),
               ),
-              GestureDetector(
+              Tapper(
                 onTap: context.navigator.pop,
                 child: SizedBox.fromSize(
                   size: Size.square(56.w),

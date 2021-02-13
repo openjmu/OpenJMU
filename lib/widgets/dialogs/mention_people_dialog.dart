@@ -91,8 +91,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         ),
       );
 
-  Widget get searchButton => GestureDetector(
-        behavior: HitTestBehavior.opaque,
+  Widget get searchButton => Tapper(
         onTap: requestSearch,
         child: Icon(
           Icons.search,
@@ -105,8 +104,10 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         constraints: BoxConstraints(maxHeight: Screens.height / 3),
         child: SingleChildScrollView(
           child: Wrap(
-            children:
-                List<Widget>.generate(users.length, (int index) => user(index)),
+            children: List<Widget>.generate(
+              users.length,
+              (int index) => user(index),
+            ),
           ),
         ),
       );
@@ -114,8 +115,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
   Widget user(int index) {
     return FractionallySizedBox(
       widthFactor: 0.5,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: Tapper(
         onTap: () {
           Navigator.of(context).maybePop<User>(users[index]);
         },
@@ -190,8 +190,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
               Positioned(
                 top: 20.w,
                 right: 20.w,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                child: Tapper(
                   child: const Icon(Icons.close),
                   onTap: Navigator.of(context).pop,
                 ),

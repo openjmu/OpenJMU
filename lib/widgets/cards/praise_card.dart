@@ -69,7 +69,7 @@ class PraiseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         navigatorState.pushNamed(
           Routes.openjmuPostDetail.name,
@@ -79,7 +79,6 @@ class PraiseCard extends StatelessWidget {
           ),
         );
       },
-      behavior: HitTestBehavior.opaque,
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: 16.w,

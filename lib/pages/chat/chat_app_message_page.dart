@@ -99,7 +99,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   }
 
   Widget _appJumpButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
       },
@@ -140,7 +140,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               borderRadius: BorderRadius.circular(13.w),
               color: context.theme.cardColor,
             ),
-            child: GestureDetector(
+            child: Tapper(
               onLongPress: () {
                 Clipboard.setData(ClipboardData(text: message.content));
                 showToast('复制成功');

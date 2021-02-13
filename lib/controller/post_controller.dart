@@ -119,7 +119,7 @@ class _PostListState extends State<PostList>
         }
       });
 
-    _emptyChild = GestureDetector(
+    _emptyChild = Tapper(
       onTap: _refreshData,
       child: Container(
         child: Center(
@@ -134,7 +134,7 @@ class _PostListState extends State<PostList>
       ),
     );
 
-    _errorChild = GestureDetector(
+    _errorChild = Tapper(
       onTap: _refreshData,
       child: Container(
         child: Center(

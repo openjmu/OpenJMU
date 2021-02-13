@@ -57,12 +57,12 @@ class SlideItem extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap != null
             ? () {
-          if (_controller.offset != 0) {
-            _dismiss();
-          } else {
-            onTap();
-          }
-        }
+                if (_controller.offset != 0) {
+                  _dismiss();
+                } else {
+                  onTap();
+                }
+              }
             : null,
         child: SizedBox(width: width, child: child),
       ),
@@ -72,14 +72,14 @@ class SlideItem extends StatelessWidget {
         menu
             ?.map(
               (SlideMenuItem item) => GestureDetector(
-            onTap: () {
-              item.onTap?.call();
-              _dismiss();
-            },
-            behavior: HitTestBehavior.opaque,
-            child: item,
-          ),
-        )
+                onTap: () {
+                  item.onTap?.call();
+                  _dismiss();
+                },
+                behavior: HitTestBehavior.opaque,
+                child: item,
+              ),
+            )
             ?.toList(),
       );
     }
@@ -112,8 +112,8 @@ class SlideItem extends StatelessWidget {
     if (menu?.isNotEmpty == true) {
       return menu.fold<double>(
         0,
-            (double v, SlideMenuItem e) =>
-        v + e._validWidth + (e.margin?.horizontal ?? 0),
+        (double v, SlideMenuItem e) =>
+            v + e._validWidth + (e.margin?.horizontal ?? 0),
       );
     }
     return 0;
@@ -133,12 +133,12 @@ class SlideItem extends StatelessWidget {
     return Listener(
       onPointerUp: (menu?.isNotEmpty ?? false)
           ? (_) {
-        if (_controller.offset < _menuWidths / 4) {
-          _dismiss();
-        } else {
-          _expands();
-        }
-      }
+              if (_controller.offset < _menuWidths / 4) {
+                _dismiss();
+              } else {
+                _expands();
+              }
+            }
           : null,
       child: ScrollConfiguration(
         behavior: const _NoGlowScrollBehavior(),
@@ -161,9 +161,9 @@ class _NoGlowScrollBehavior extends ScrollBehavior {
 
   @override
   Widget buildViewportChrome(
-      BuildContext context,
-      Widget child,
-      AxisDirection axisDirection,
-      ) =>
+    BuildContext context,
+    Widget child,
+    AxisDirection axisDirection,
+  ) =>
       child;
 }

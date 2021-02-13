@@ -149,8 +149,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
+        Tapper(
           onTap: () {
             navigatorState.pushNamed(
               Routes.openjmuTeamPostDetail.name,

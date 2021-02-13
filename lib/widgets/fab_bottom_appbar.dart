@@ -108,8 +108,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     ValueChanged<int> onPressed,
   }) {
     return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: Tapper(
         onTap: () => onPressed(index),
         child: Stack(
           children: <Widget>[

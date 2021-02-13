@@ -99,8 +99,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   }
 
   Widget _content(TeamPost post) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       child: ExtendedText(
         post.content ?? '',
         style: TextStyle(height: 1.2, fontSize: 17.sp),
@@ -113,8 +112,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   }
 
   Widget _replyInfo(BuildContext context, TeamPost post) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: () {
         if (post.replyInfo != null && post.replyInfo.isNotEmpty) {
           final TeamPostProvider provider = TeamPostProvider(post);
@@ -254,7 +252,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
           return loader;
         },
       );
-      _exImage = GestureDetector(
+      _exImage = Tapper(
         onTap: () {
           navigatorState.pushNamed(
             Routes.openjmuImageViewer.name,
@@ -338,7 +336,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 ],
               ),
             ),
-            GestureDetector(
+            Tapper(
               child: Container(
                 width: 48.w,
                 height: 48.w,

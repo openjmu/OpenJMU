@@ -155,7 +155,7 @@ class SearchPageState extends State<SearchPage>
   }
 
   Widget get searchButton {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         search(context, _controller.text);
       },
@@ -177,8 +177,7 @@ class SearchPageState extends State<SearchPage>
   }
 
   Widget clearButton(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       onTap: () {
         _controller.clear();
         _focusNode.requestFocus();

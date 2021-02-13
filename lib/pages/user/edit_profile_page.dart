@@ -65,7 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: ClipOval(
           child: SizedBox.fromSize(
             size: Size.square(116.w),
-            child: GestureDetector(
+            child: Tapper(
               onTap: () {
                 navigatorState.pushNamed(Routes.openjmuImageCrop);
               },

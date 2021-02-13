@@ -39,8 +39,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
 
   Widget settingItem(BuildContext context, int index, int sectionIndex) {
     final Map<String, dynamic> page = pageSection[sectionIndex][index];
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return Tapper(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 16.h),
         child: Row(
@@ -94,7 +93,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     int index,
     int selectedIndex,
   }) {
-    return GestureDetector(
+    return Tapper(
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border.all(color: Theme.of(context).dividerColor),

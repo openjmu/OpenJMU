@@ -290,7 +290,7 @@ class UserPageState extends State<UserPage>
   }
 
   Widget get userAvatar {
-    return GestureDetector(
+    return Tapper(
       onTap: avatarTap,
       child: Container(
         width: avatarSize,
@@ -360,11 +360,10 @@ class UserPageState extends State<UserPage>
   }
 
   Widget get qrCodeWidget {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         navigatorState.pushNamed(Routes.openjmuUserQrCode);
       },
-      behavior: HitTestBehavior.opaque,
       child: Container(
         width: 56.w,
         height: 56.w,
@@ -530,8 +529,7 @@ class UserPageState extends State<UserPage>
             style: TextStyle(fontSize: 18.sp),
             overflow: TextOverflow.ellipsis,
           ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
+          Tapper(
             onTap: () => removeFromBlacklist(context, user),
             child: Container(
               padding: EdgeInsets.symmetric(

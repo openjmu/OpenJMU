@@ -11,7 +11,7 @@ class MessagePage extends StatelessWidget {
   const MessagePage({Key key}) : super(key: key);
 
   Widget _readAllButton(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () {
         final MessagesProvider p = context.read<MessagesProvider>();
         for (final List<dynamic> ms in p.appsMessages.values) {

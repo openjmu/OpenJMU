@@ -36,6 +36,7 @@ export '../widgets/refresh/refresh_list_wrapper.dart';
 export '../widgets/rounded_check_box.dart';
 export '../widgets/rounded_tab_indicator.dart';
 export '../widgets/slide_menu_item.dart';
+export '../widgets/tapper.dart';
 export '../widgets/user_avatar.dart';
 export '../widgets/value_listenable_builder_2.dart';
 export '../widgets/webapp_icon.dart';

@@ -185,7 +185,7 @@ class CommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Tapper(
       onTap: () => showAction(context),
       child: Container(
         margin: EdgeInsets.symmetric(
