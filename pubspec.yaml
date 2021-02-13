@@ -34,7 +34,7 @@ dependencies:
   flutter_displaymode: ^0.1.1
   flutter_icons: ^1.1.0
   flutter_inappwebview: ^4.0.0+4
-  flutter_local_notifications: ^4.0.0
+  flutter_local_notifications: ^4.0.1
   flutter_native_image: ^0.0.5+3
   flutter_screenutil: 2.3.1
   flutter_spinkit: 4.1.2+1

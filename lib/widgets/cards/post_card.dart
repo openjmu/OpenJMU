@@ -166,8 +166,7 @@ class _PostCardState extends State<PostCard> {
       children: <Widget>[
         Text(
           post.nickname ?? post.uid,
-          style: TextStyle(
-            height: 1.2,
+          style: context.textTheme.bodyText2.copyWith(
             fontSize: 20.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -184,7 +183,8 @@ class _PostCardState extends State<PostCard> {
 
   Widget getPostInfo(Post post) {
     return Text(
-      '${PostAPI.postTimeConverter(post.postTime)}  来自${post.from}客户端',
+      '${PostAPI.postTimeConverter(post.postTime)}  '
+          '来自${post.from}客户端',
       style: TextStyle(
         color: context.textTheme.caption.color,
         fontSize: 16.sp,
@@ -195,7 +195,7 @@ class _PostCardState extends State<PostCard> {
   Widget getPostContent(BuildContext context, Post post) {
     return Container(
       width: Screens.width,
-      margin: EdgeInsets.symmetric(vertical: 4.h),
+      margin: EdgeInsets.symmetric(vertical: 6.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -217,8 +217,8 @@ class _PostCardState extends State<PostCard> {
     if (rootTopic['exists'] == 1) {
       if (content['article'] == '此微博已经被屏蔽' ||
           content['content'] == '此微博已经被屏蔽') {
-        return Container(
-          margin: EdgeInsets.only(top: 10.h),
+        return Padding(
+          padding: EdgeInsets.only(top: 12.w),
           child: getPostBanned('shield', isRoot: true),
         );
       } else {
@@ -226,8 +226,8 @@ class _PostCardState extends State<PostCard> {
         String topic =
             '<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ';
         topic += (content['article'] ?? content['content']).toString();
-        return Container(
-          margin: EdgeInsets.only(top: 10.w, bottom: 4.w),
+        return Padding(
+          padding: EdgeInsets.only(top: 10.w, bottom: 4.w),
           child: Tapper(
             onTap: () {
               navigatorState.pushNamed(
@@ -563,7 +563,7 @@ class _PostCardState extends State<PostCard> {
       },
       child: ExtendedText(
         content != null ? '$content ' : null,
-        style: TextStyle(fontSize: 19.sp),
+        style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: widget.isDetail ?? false ? null : 8,
         overflowWidget: widget.isDetail ?? false ? null : contentOverflowWidget,
@@ -647,7 +647,7 @@ class _PostCardState extends State<PostCard> {
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
                 horizontal: widget.fromPage == 'user' ? 0 : 16.w,
-                vertical: 8.w,
+                vertical: 10.w,
               ),
         padding: EdgeInsets.symmetric(
           horizontal: 24.w,
@@ -668,7 +668,7 @@ class _PostCardState extends State<PostCard> {
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
                 horizontal: widget.fromPage == 'user' ? 0 : 16.w,
-                vertical: 8.w,
+                vertical: 10.w,
               ),
         padding: EdgeInsets.symmetric(
           horizontal: 24.w,
@@ -680,7 +680,6 @@ class _PostCardState extends State<PostCard> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
               height: 70.w,

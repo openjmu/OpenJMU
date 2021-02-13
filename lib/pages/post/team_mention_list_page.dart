@@ -169,7 +169,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
             ),
             padding: EdgeInsets.symmetric(
               horizontal: 24.w,
-              vertical: 8.h,
+              vertical: 8.w,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.w),

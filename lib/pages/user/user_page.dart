@@ -370,22 +370,27 @@ class UserPageState extends State<UserPage>
   }
 
   Widget get followButton {
-    return Tapper(
-      onTap: requestFollow,
-      child: Container(
-        width: 56.w,
-        height: 56.w,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13.w),
-          color: context.theme.canvasColor,
-        ),
-        alignment: Alignment.center,
-        child: SvgPicture.asset(
-          R.ASSETS_ICONS_USER_FOLLOW_SVG,
-          color: user.value?.isFollowing == true
-              ? currentThemeColor
-              : context.textTheme.bodyText2.color,
-          width: 28.w,
+    return ValueListenableBuilder<UserInfo>(
+      valueListenable: user,
+      builder: (_, UserInfo value, __) => Tapper(
+        onTap: requestFollow,
+        child: Container(
+          width: 56.w,
+          height: 56.w,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13.w),
+            color: context.theme.canvasColor,
+          ),
+          alignment: Alignment.center,
+          child: SvgPicture.asset(
+            user.value?.isFollowing == true
+                ? R.ASSETS_ICONS_USER_FOLLOWED_SVG
+                : R.ASSETS_ICONS_USER_FOLLOW_SVG,
+            color: user.value?.isFollowing == true
+                ? currentThemeColor
+                : context.textTheme.bodyText2.color,
+            width: 28.w,
+          ),
         ),
       ),
     );
@@ -499,31 +504,28 @@ class UserPageState extends State<UserPage>
           return const SizedBox.shrink();
         }
         return Container(
-          padding:
-              EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 16.w),
+          height: 48.w,
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+          ).copyWith(bottom: 16.w),
           color: context.appBarTheme.color,
-          child: SingleChildScrollView(
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List<Widget>.generate(
-                tags.length,
-                (int index) => Container(
-                  margin: EdgeInsets.only(right: 12.w),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 6.w,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: maxBorderRadius,
-                    color: context.theme.canvasColor,
-                  ),
-                  child: Text(
-                    tags[index].name,
-                    style: context.textTheme.caption.copyWith(
-                      height: 1.24,
-                      fontSize: 14.sp,
-                    ),
-                  ),
+            physics: const ClampingScrollPhysics(),
+            itemCount: tags.length,
+            itemBuilder: (_, int index) => Container(
+              margin: EdgeInsets.only(right: 12.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: maxBorderRadius,
+                color: context.theme.canvasColor,
+              ),
+              child: Text(
+                tags[index].name,
+                style: context.textTheme.caption.copyWith(
+                  height: 1.24,
+                  fontSize: 14.sp,
                 ),
               ),
             ),

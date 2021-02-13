@@ -292,7 +292,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   void addTopic() {
     InputUtils.insertText(
       text: '##',
-      state: this,
       controller: _textEditingController,
       selectionOffset: 1,
     );
@@ -315,7 +314,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           }
           InputUtils.insertText(
             text: '<M ${result.id}>@${result.nickname}<\/M>',
-            state: this,
             controller: _textEditingController,
           );
         });
@@ -419,7 +417,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     horizontal: 12.w,
                   ),
                   prefixText: replyHint,
-                  hintText: replyHint == null ? '和对方聊聊...' : null,
+                  hintText: replyHint == null ? ' 与对方聊聊...' : null,
                 ),
                 cursorColor: currentThemeColor,
                 style: context.textTheme.bodyText2.copyWith(
@@ -501,7 +499,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       child: Wrap(
         children: List<Widget>.generate(
           extendedFeature.length,
-          (int index) => Tapper(
+          (int index) => GestureDetector(
             onTap: extendedFeature[index]['action'] as VoidCallback,
             child: Container(
               height: 60.w,
@@ -616,8 +614,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                               vertical: 10.w,
                             ),
                             decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
+                              border: Border.symmetric(
+                                horizontal: BorderSide(
                                   width: 1.w,
                                   color: context.theme.dividerColor,
                                 ),

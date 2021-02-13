@@ -76,19 +76,6 @@ class _TeamPostCardState extends State<TeamPostCard> {
               ],
             ),
           ),
-          Tapper(
-            onTap: widget.detailPageState.setReplyToTop,
-            child: Container(
-              width: 48.w,
-              height: 48.w,
-              alignment: AlignmentDirectional.topEnd,
-              child: Icon(
-                Icons.reply,
-                size: 30.w,
-                color: Theme.of(context).dividerColor,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -278,32 +265,35 @@ class _TeamPostCardState extends State<TeamPostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.all(16.w),
-          padding: EdgeInsets.symmetric(
-            horizontal: 24.w,
-            vertical: 8.w,
+    return Tapper(
+      onTap: widget.detailPageState.setReplyToTop,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(16.w),
+            padding: EdgeInsets.symmetric(
+              horizontal: 24.w,
+              vertical: 8.w,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.w),
+              color: Theme.of(context).cardColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _header(context),
+                _content,
+                if (post.pics?.isNotEmpty ?? false) _images(context),
+              ],
+            ),
           ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.w),
-            color: Theme.of(context).cardColor,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              _header(context),
-              _content,
-              if (post.pics?.isNotEmpty ?? false) _images(context),
-            ],
-          ),
-        ),
-        if (post.praisor?.isNotEmpty == true) _praisors,
-      ],
+          if (post.praisor?.isNotEmpty == true) _praisors,
+        ],
+      ),
     );
   }
 }

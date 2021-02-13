@@ -16,7 +16,11 @@ class PraiseCard extends StatelessWidget {
         children: <Widget>[
           Text(
             praise.nickname ?? praise.uid,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: context.textTheme.bodyText2.copyWith(
+              height: 1.2,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           if (Constants.developerList.contains(praise.uid))
             Padding(
@@ -30,8 +34,8 @@ class PraiseCard extends StatelessWidget {
     return Text(
       PostAPI.postTimeConverter(praise.praiseTime),
       style: TextStyle(
-        height: 1.3,
         color: currentTheme.textTheme.caption.color,
+        height: 1.3,
       ),
     );
   }
@@ -46,7 +50,7 @@ class PraiseCard extends StatelessWidget {
     topic += _post.content;
     return Container(
       width: Screens.width,
-      margin: EdgeInsets.only(top: 6.h, bottom: 12.h),
+      margin: EdgeInsets.symmetric(vertical: 8.w),
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
@@ -59,7 +63,7 @@ class PraiseCard extends StatelessWidget {
   Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
       content,
-      style: TextStyle(fontSize: 19.sp),
+      style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
@@ -86,7 +90,7 @@ class PraiseCard extends StatelessWidget {
         ),
         padding: EdgeInsets.symmetric(
           horizontal: 24.w,
-          vertical: 8.w,
+          vertical: 12.w,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),

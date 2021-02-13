@@ -80,7 +80,6 @@ class _PublishPostPageState extends State<PublishPostPage>
   void addTopic() {
     InputUtils.insertText(
       text: '##',
-      state: this,
       controller: textEditingController,
       selectionOffset: 1,
     );

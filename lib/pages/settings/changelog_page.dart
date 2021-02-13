@@ -218,10 +218,12 @@ class _ChangeLogPageState extends State<ChangeLogPage>
                   borderRadius: BorderRadius.circular(15.w),
                   color: Theme.of(context).cardColor,
                 ),
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(20.w),
-                  physics: const BouncingScrollPhysics(),
-                  child: sectionWidget(log.sections),
+                child: SizedBox.expand(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(20.w),
+                    physics: const BouncingScrollPhysics(),
+                    child: sectionWidget(log.sections),
+                  ),
                 ),
               ),
             ),

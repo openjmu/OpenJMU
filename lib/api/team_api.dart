@@ -180,7 +180,7 @@ class TeamPostAPI {
     } else if (difference <= 3.days) {
       time += '${difference.inDays}天前';
     } else if (now.year != origin.year) {
-      time += '${difference.inDays}天前';
+      time += DateFormat('yy-MM-dd').format(origin);
     } else {
       time += _formatToYear(origin);
     }

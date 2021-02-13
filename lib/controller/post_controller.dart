@@ -332,13 +332,12 @@ class _PostListState extends State<PostList>
           child: _body,
         );
       }
+      return _body;
     } else {
-      _body = const Center(
+      return const Center(
         child: LoadMoreSpinningIcon(isRefreshing: true),
       );
     }
-
-    return AnimatedSwitcher(duration: 500.milliseconds, child: _body);
   }
 }
 

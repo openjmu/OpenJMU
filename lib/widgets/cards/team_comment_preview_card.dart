@@ -23,6 +23,23 @@ class TeamCommentPreviewCard extends StatelessWidget {
   final TeamPost topPost;
   final TeamPostDetailPageState detailPageState;
 
+  void postExtraActions(BuildContext context, TeamPost post) {
+    ConfirmationBottomSheet.show(
+      context,
+      actions: <ConfirmationBottomSheetAction>[
+        ConfirmationBottomSheetAction(
+          text: '回复评论',
+          onTap: () => detailPageState.setReplyToPost(post),
+        ),
+        if (topPost.uid == currentUser.uid || post.uid == currentUser.uid)
+          ConfirmationBottomSheetAction(
+            text: '删除此楼',
+            onTap: () => confirmDelete(context),
+          ),
+      ],
+    );
+  }
+
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
       context,
@@ -111,6 +128,49 @@ class TeamCommentPreviewCard extends StatelessWidget {
     );
   }
 
+  Widget _replyItem(BuildContext context, Map<String, dynamic> _post) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: ExtendedText(
+              _post['content'] as String,
+              specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+                prefixSpans: <InlineSpan>[
+                  TextSpan(
+                    text: '@${_post['user']['nickname']}',
+                    style: const TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        navigatorState.pushNamed(
+                          Routes.openjmuUserPage.name,
+                          arguments: Routes.openjmuUserPage.d(
+                            uid: _post['user']['uid'].toString(),
+                          ),
+                        );
+                      },
+                  ),
+                  if (_post['user']['uid'].toString() == topPost.uid)
+                    const TextSpan(text: '(楼主)'),
+                  const TextSpan(
+                    text: ': ',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ],
+              ),
+              style: context.textTheme.bodyText2.copyWith(
+                height: 1.2,
+                fontSize: 17.sp,
+              ),
+              onSpecialTextTap: specialTextTapRecognizer,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _replyInfo(BuildContext context, TeamPost post) {
     return Tapper(
       onTap: () {
@@ -129,85 +189,18 @@ class TeamCommentPreviewCard extends StatelessWidget {
         margin: EdgeInsets.only(top: 12.w),
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).canvasColor.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
         ),
-        child: ListView.builder(
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: post.replyInfo.length +
-              (post.replyInfo.length != post.repliesCount ? 1 : 0),
-          itemBuilder: (_, int index) {
-            if (index == post.replyInfo.length) {
-              return Padding(
-                padding: EdgeInsets.only(top: 14.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.expand_more,
-                      size: 20.w,
-                      color: context.textTheme.caption.color,
-                    ),
-                    Text(
-                      '查看更多回复',
-                      style: context.textTheme.caption.copyWith(
-                        fontSize: 15.sp,
-                      ),
-                    ),
-                    Icon(
-                      Icons.expand_more,
-                      size: 20.w,
-                      color: context.textTheme.caption.color,
-                    ),
-                  ],
-                ),
-              );
-            }
-            final Map<String, dynamic> _post =
-                post.replyInfo[index].cast<String, dynamic>();
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 4.h),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: ExtendedText(
-                      _post['content'] as String,
-                      specialTextSpanBuilder: StackSpecialTextSpanBuilder(
-                        prefixSpans: <InlineSpan>[
-                          TextSpan(
-                            text: '@${_post['user']['nickname']}',
-                            style: const TextStyle(color: Colors.blue),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                navigatorState.pushNamed(
-                                  Routes.openjmuUserPage.name,
-                                  arguments: Routes.openjmuUserPage.d(
-                                    uid: _post['user']['uid'].toString(),
-                                  ),
-                                );
-                              },
-                          ),
-                          if (_post['user']['uid'].toString() == topPost.uid)
-                            const TextSpan(text: '(楼主)'),
-                          const TextSpan(
-                            text: ': ',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ],
-                      ),
-                      style: context.textTheme.bodyText2.copyWith(
-                        height: 1.2,
-                        fontSize: 17.sp,
-                      ),
-                      onSpecialTextTap: specialTextTapRecognizer,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List<Widget>.generate(
+            post.replyInfo.length,
+            (int index) => _replyItem(
+              context,
+              post.replyInfo[index].cast<String, dynamic>(),
+            ),
+          ),
         ),
       ),
     );
@@ -308,60 +301,38 @@ class TeamCommentPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<TeamPostProvider, TeamPost>(
       selector: (_, TeamPostProvider p) => p.post,
-      builder: (_, TeamPost post, __) => Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+      builder: (BuildContext c, TeamPost post, __) => Tapper(
+        onTap: () => postExtraActions(c, post),
+        child: Container(
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            ),
+            color: context.theme.cardColor,
           ),
-          color: context.theme.cardColor,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            UserAPI.getAvatar(uid: post.uid),
-            Gap(16.w),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _header(context, post),
-                  VGap(12.w),
-                  _content(post),
-                  if (post.pics != null && post.pics.isNotEmpty)
-                    _images(context, post),
-                  if (post.replyInfo != null && post.replyInfo.isNotEmpty)
-                    _replyInfo(context, post),
-                ],
-              ),
-            ),
-            Tapper(
-              child: Container(
-                width: 48.w,
-                height: 48.w,
-                alignment: Alignment.center,
-                child: Icon(Icons.reply, size: 30.w),
-              ),
-              onTap: () {
-                detailPageState.setReplyToPost(post);
-              },
-            ),
-            if (topPost.uid == currentUser.uid || post.uid == currentUser.uid)
-              Tapper(
-                onTap: () => confirmDelete(context),
-                child: Container(
-                  width: 48.w,
-                  height: 48.w,
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(
-                    R.ASSETS_ICONS_POST_ACTIONS_DELETE_SVG,
-                    color: context.iconTheme.color,
-                    width: 24.w,
-                  ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              UserAPI.getAvatar(uid: post.uid),
+              Gap(16.w),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _header(context, post),
+                    VGap(12.w),
+                    _content(post),
+                    if (post.pics != null && post.pics.isNotEmpty)
+                      _images(context, post),
+                    if (post.replyInfo != null && post.replyInfo.isNotEmpty)
+                      _replyInfo(context, post),
+                  ],
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );

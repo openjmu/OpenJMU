@@ -195,7 +195,6 @@ class _PostActionDialogState extends State<PostActionDialog> {
   void addTopic() {
     InputUtils.insertText(
       text: '##',
-      state: this,
       controller: _tec,
       selectionOffset: 1,
     );

@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -113,43 +110,33 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: widget.height.h,
+              height: widget.height.w,
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     item.child ??
-                        AnimatedCrossFade(
-                          duration: 200.milliseconds,
-                          crossFadeState: _selectedIndex == index
-                              ? CrossFadeState.showFirst
-                              : CrossFadeState.showSecond,
-                          firstChild: SvgPicture.asset(
-                            item.iconPath,
-                            color: widget.selectedColor,
-                            width: widget.iconSize.w,
-                            height: widget.iconSize.w,
-                          ),
-                          secondChild: SvgPicture.asset(
-                            item.iconPath,
-                            color: widget.color,
-                            width: widget.iconSize.w,
-                            height: widget.iconSize.w,
-                          ),
+                        SvgPicture.asset(
+                          item.iconPath,
+                          color: _selectedIndex == index
+                              ? widget.selectedColor
+                              : widget.color,
+                          width: widget.iconSize.w,
+                          height: widget.iconSize.w,
                         ),
                     if (widget.showText) VGap((widget.iconSize / 8).w),
                     if (widget.showText)
-                      AnimatedDefaultTextStyle(
-                        duration: 200.milliseconds,
+                      Text(
+                        item.text,
                         style: TextStyle(
                           color: _selectedIndex == index
                               ? widget.selectedColor
                               : widget.color,
                           fontSize: widget.itemFontSize,
                           fontWeight: FontWeight.normal,
+                          height: 1.2,
                         ),
-                        child: Text(item.text),
                       ),
                   ],
                 ),
@@ -218,37 +205,22 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       },
     );
 
-    Widget appBar = Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: items,
-    );
-
-    if (Platform.isIOS) {
-      appBar = ClipRect(
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 20.w, sigmaY: 20.w),
-          child: appBar,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Divider(thickness: 1.w, height: 1.w),
+        BottomAppBar(
+          color: widget.backgroundColor ?? context.appBarTheme.color,
+          shape: widget.notchedShape,
+          elevation: 0,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: items,
+          ),
         ),
-      );
-    }
-
-    appBar = BottomAppBar(
-      color: widget.backgroundColor ?? context.appBarTheme.color,
-      shape: widget.notchedShape,
-      elevation: 0,
-      child: appBar,
+      ],
     );
-    if (Platform.isAndroid) {
-      appBar = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Divider(thickness: 1.w, height: 1.w),
-          appBar,
-        ],
-      );
-    }
-    return appBar;
   }
 }

@@ -12,15 +12,6 @@ class CommentCard extends StatelessWidget {
 
   final Comment comment;
 
-  TextStyle get rootTopicTextStyle => TextStyle(fontSize: 18.sp);
-
-  TextStyle get rootTopicMentionStyle => TextStyle(
-        color: Colors.blue,
-        fontSize: 18.sp,
-      );
-
-  Color get subIconColor => Colors.grey;
-
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
       context,
@@ -90,7 +81,10 @@ class CommentCard extends StatelessWidget {
       children: <Widget>[
         Text(
           comment.fromUserName ?? comment.fromUserUid,
-          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+          style: context.textTheme.bodyText2.copyWith(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         if (Constants.developerList.contains(comment.fromUserUid))
           Padding(
@@ -119,7 +113,7 @@ class CommentCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 6.h),
+          padding: EdgeInsets.symmetric(vertical: 6.w),
           child: getExtendedText(context, content),
         ),
         getRootContent(context, comment),
@@ -149,19 +143,29 @@ class CommentCard extends StatelessWidget {
         child: getExtendedText(context, topic, isRoot: true),
       );
     } else {
-      return getPostBanned();
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.w),
+        child: getPostBanned(context),
+      );
     }
   }
 
-  Widget getPostBanned() {
+  Widget getPostBanned(BuildContext context) {
     return Container(
-      color: currentThemeColor.withOpacity(0.4),
-      margin: EdgeInsets.only(top: 10.h),
-      padding: EdgeInsets.all(30.w),
-      child: Center(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: 20.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.w),
+        color: context.theme.canvasColor,
+      ),
+      child: DefaultTextStyle.merge(
+        style: context.textTheme.caption.copyWith(
+          height: 1.2,
+          fontSize: 20.sp,
+        ),
         child: Text(
           '该条微博已被屏蔽或删除',
-          style: TextStyle(color: Colors.white70, fontSize: 20.sp),
+          style: TextStyle(color: context.textTheme.bodyText2.color),
         ),
       ),
     );
@@ -174,7 +178,7 @@ class CommentCard extends StatelessWidget {
   }) {
     return ExtendedText(
       content != null ? '$content ' : null,
-      style: TextStyle(fontSize: 19.sp),
+      style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       maxLines: 8,
       overflowWidget: contentOverflowWidget,

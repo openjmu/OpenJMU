@@ -345,28 +345,31 @@ class NotificationsPageState extends State<NotificationsPage>
   }
 
   Widget get actionBar {
-    return Row(
-      children: List<Widget>.generate(
-        sections[widget.initialPage].fields.length,
-        (int j) {
-          final _Field field = sections[widget.initialPage].fields[j];
-          final int count = field.field();
-          return Tapper(
-            onTap: () {
-              field
-                ..select(j)
-                ..action();
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: badgeIcon(
-                content: count,
-                icon: getActionName(j),
-                showBadge: count != 0,
+    return Expanded(
+      child: Row(
+        children: List<Widget>.generate(
+          sections[widget.initialPage].fields.length,
+              (int j) {
+            final _Field field = sections[widget.initialPage].fields[j];
+            final int count = field.field();
+            return Tapper(
+              onTap: () {
+                field
+                  ..select(j)
+                  ..action();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                height: double.maxFinite,
+                child: badgeIcon(
+                  content: count,
+                  icon: getActionName(j),
+                  showBadge: count != 0,
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -484,12 +487,10 @@ class NotificationsPageState extends State<NotificationsPage>
                         height: kAppBarHeight.w,
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         color: context.theme.colorScheme.surface,
-                        child: Row(
-                          children: <Widget>[
-                            actionBar,
-                            const Spacer(),
-                            backButton,
-                          ],
+                        child: SizedBox.expand(
+                          child: Row(
+                            children: <Widget>[actionBar, backButton],
+                          ),
                         ),
                       ),
                       Divider(thickness: 1.w, height: 1.w),

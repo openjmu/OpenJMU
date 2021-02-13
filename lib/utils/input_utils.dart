@@ -49,7 +49,7 @@ class InputUtils {
           extentOffset: end + (selectionOffset ?? text.length),
         ),
       );
-      if (state?.mounted ?? false) {
+      if (state?.mounted == true) {
         // ignore: invalid_use_of_protected_member
         state.setState(() {});
       }

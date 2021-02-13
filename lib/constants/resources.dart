@@ -608,6 +608,9 @@ class R {
   static const String ASSETS_ICONS_USER_FOLLOW_SVG =
       'assets/icons/user/follow.svg';
 
+  static const String ASSETS_ICONS_USER_FOLLOWED_SVG =
+      'assets/icons/user/followed.svg';
+
   static const String ASSETS_ICONS_USER_QR_CODE_SVG =
       'assets/icons/user/qr-code.svg';
 

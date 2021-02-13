@@ -80,7 +80,6 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   void addTopic() {
     InputUtils.insertText(
       text: '##',
-      state: this,
       controller: textEditingController,
       selectionOffset: 1,
     );
@@ -612,7 +611,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     String text,
     VoidCallback onTap,
   }) {
-    Widget button = Tapper(
+    Widget button = GestureDetector(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 15.w),
