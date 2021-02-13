@@ -281,9 +281,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   void triggerExtendedPad() {
-    if (!showExtendedPad.value) {
-      _focusNode.unfocus();
-    }
     showExtendedPad.value = !showExtendedPad.value;
     if (showExtendedPad.value) {
       showEmoticonPad.value = false;

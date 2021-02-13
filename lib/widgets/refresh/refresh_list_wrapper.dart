@@ -17,6 +17,7 @@ class RefreshListWrapper extends StatelessWidget {
     Key key,
     @required this.loadingBase,
     @required this.itemBuilder,
+    this.dividerBuilder,
     this.controller,
     this.refreshHeaderTextStyle,
     this.indicatorPlaceholder,
@@ -25,9 +26,10 @@ class RefreshListWrapper extends StatelessWidget {
   }) : super(key: key);
 
   final LoadingBase loadingBase;
+  final Widget Function(Map<String, dynamic> model) itemBuilder;
+  final IndexedWidgetBuilder dividerBuilder;
   final ScrollController controller;
   final EdgeInsetsGeometry padding;
-  final Widget Function(Map<String, dynamic> model) itemBuilder;
 
   final TextStyle refreshHeaderTextStyle;
   final Widget indicatorPlaceholder;
@@ -37,7 +39,6 @@ class RefreshListWrapper extends StatelessWidget {
     BuildContext context,
     IndicatorStatus status,
     LoadingBase loadingBase, {
-    bool isSliver = true,
     Widget indicatorPlaceholder,
     TextStyle indicatorTextStyle,
   }) {
@@ -48,20 +49,21 @@ class RefreshListWrapper extends StatelessWidget {
         break;
       case IndicatorStatus.loadingMoreBusying:
         indicator = LoadMoreIndicator(
+          isSliver: true,
           canLoadMore: true,
           textStyle: indicatorTextStyle,
         );
         break;
       case IndicatorStatus.fullScreenBusying:
         indicator = LoadMoreIndicator(
-          isSliver: isSliver,
+          isSliver: true,
           canLoadMore: true,
           textStyle: indicatorTextStyle,
         );
         break;
       case IndicatorStatus.error:
         indicator = ListEmptyIndicator(
-          isSliver: isSliver,
+          isSliver: false,
           isError: true,
           loadingBase: loadingBase,
           indicator: indicatorPlaceholder,
@@ -70,7 +72,6 @@ class RefreshListWrapper extends StatelessWidget {
         break;
       case IndicatorStatus.fullScreenError:
         indicator = ListEmptyIndicator(
-          isSliver: isSliver,
           isError: true,
           loadingBase: loadingBase,
           indicator: indicatorPlaceholder,
@@ -79,14 +80,12 @@ class RefreshListWrapper extends StatelessWidget {
         break;
       case IndicatorStatus.noMoreLoad:
         indicator = LoadMoreIndicator(
-          isSliver: isSliver,
           canLoadMore: false,
           textStyle: indicatorTextStyle,
         );
         break;
       case IndicatorStatus.empty:
         indicator = ListEmptyIndicator(
-          isSliver: isSliver,
           loadingBase: loadingBase,
           indicator: indicatorPlaceholder,
           textStyle: indicatorTextStyle,
@@ -99,23 +98,47 @@ class RefreshListWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SliverListConfig<Map<String, dynamic>> config;
-    config = SliverListConfig<Map<String, dynamic>>(
-      sourceList: loadingBase,
-      itemBuilder: (BuildContext _, Map<String, dynamic> model, int index) {
-        return itemBuilder(model);
-      },
-      indicatorBuilder: (BuildContext context, IndicatorStatus status) {
-        return indicatorBuilder(
-          context,
-          status,
-          loadingBase,
-          indicatorPlaceholder: indicatorPlaceholder,
-          indicatorTextStyle: indicatorTextStyle,
-        );
-      },
-      padding: padding ?? EdgeInsets.symmetric(vertical: 10.w),
-    );
-    // }
+    if (dividerBuilder != null) {
+      config = SliverListConfig<Map<String, dynamic>>(
+        sourceList: loadingBase,
+        padding: padding ?? EdgeInsets.symmetric(vertical: 10.w),
+        lastChildLayoutType: LastChildLayoutType.fullCrossAxisExtent,
+        childCountBuilder: (int length) => length == 0 ? 0 : length * 2 - 1,
+        itemBuilder: (BuildContext c, Map<String, dynamic> model, int index) {
+          if (index.isEven) {
+            return itemBuilder(loadingBase[index ~/ 2]);
+          }
+          return dividerBuilder(c, index);
+        },
+        indicatorBuilder: (BuildContext context, IndicatorStatus status) {
+          return indicatorBuilder(
+            context,
+            status,
+            loadingBase,
+            indicatorPlaceholder: indicatorPlaceholder,
+            indicatorTextStyle: indicatorTextStyle,
+          );
+        },
+      );
+    } else {
+      config = SliverListConfig<Map<String, dynamic>>(
+        sourceList: loadingBase,
+        padding: padding ?? EdgeInsets.symmetric(vertical: 10.w),
+        lastChildLayoutType: LastChildLayoutType.fullCrossAxisExtent,
+        itemBuilder: (BuildContext _, Map<String, dynamic> model, int index) {
+          return itemBuilder(model);
+        },
+        indicatorBuilder: (BuildContext context, IndicatorStatus status) {
+          return indicatorBuilder(
+            context,
+            status,
+            loadingBase,
+            indicatorPlaceholder: indicatorPlaceholder,
+            indicatorTextStyle: indicatorTextStyle,
+          );
+        },
+      );
+    }
     return PullToRefreshNotification(
       onRefresh: loadingBase.refresh,
       maxDragOffset: maxDragOffset,
@@ -177,7 +200,7 @@ class ListMoreIndicator extends StatelessWidget {
       child = SliverFillRemaining(child: Center(child: child));
     }
     return DefaultTextStyle.merge(
-      style: textStyle ?? TextStyle(fontSize: 18.sp, height: 1.4),
+      style: textStyle ?? TextStyle(fontSize: 18.sp, height: 1.24),
       child: child,
     );
   }
@@ -211,12 +234,20 @@ class ListEmptyIndicator extends StatelessWidget {
           if (indicator != null)
             indicator
           else ...<Widget>[
-            // Image.asset(
-            //   R.ASSETS_COMMON_PLACEHOLDER_LIST_EMPTY_PLACEHOLDER_PNG,
-            //   height: 100.w,
-            // ),
+            SvgPicture.asset(
+              R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
+              width: 50.w,
+              color: context.theme.iconTheme.color,
+            ),
             VGap(20.w),
-            Text(isError ? '出错了~点此重试' : '空空如也'),
+            Text(
+              isError ? '出错了~点此重试' : '空空如也',
+              style: textStyle ??
+                  TextStyle(
+                    color: context.textTheme.caption.color,
+                    fontSize: 22.sp,
+                  ),
+            ),
           ],
           VGap(Screens.height / 6),
         ],

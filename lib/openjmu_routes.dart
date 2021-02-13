@@ -18,7 +18,6 @@ const List<String> routeNames = <String>[
   'openjmu://home',
   'openjmu://image-crop',
   'openjmu://image-viewer',
-  'openjmu://in-app-webview',
   'openjmu://login',
   'openjmu://news-detail',
   'openjmu://notifications',
@@ -121,18 +120,6 @@ class Routes {
   ///
   /// [pageRouteType] : PageRouteType.transparent
   static const _OpenjmuImageViewer openjmuImageViewer = _OpenjmuImageViewer();
-
-  /// '网页浏览'
-  ///
-  /// [name] : 'openjmu://in-app-webview'
-  ///
-  /// [routeName] : '网页浏览'
-  ///
-  /// [constructors] :
-  ///
-  /// InAppWebViewPage : [Key key, String(required) url, String title, WebApp app, bool withCookie, bool withAppBar, bool withAction, bool withScaffold, bool keepAlive]
-  static const _OpenjmuInAppWebview openjmuInAppWebview =
-      _OpenjmuInAppWebview();
 
   /// '登录页'
   ///
@@ -259,7 +246,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// TeamPostDetailPage : [TeamPostProvider provider, TeamPostType(required) type, int postId, Key key]
+  /// TeamPostDetailPage : [Key key, TeamPostType(required) type, TeamPostProvider provider, int postId]
   static const _OpenjmuTeamPostDetail openjmuTeamPostDetail =
       _OpenjmuTeamPostDetail();
 
@@ -354,37 +341,6 @@ class _OpenjmuImageViewer {
         'heroPrefix': heroPrefix,
         'needsClear': needsClear,
         'post': post,
-      };
-
-  @override
-  String toString() => name;
-}
-
-class _OpenjmuInAppWebview {
-  const _OpenjmuInAppWebview();
-
-  String get name => 'openjmu://in-app-webview';
-
-  Map<String, dynamic> d(
-          {Key key,
-          @required String url,
-          String title,
-          WebApp app,
-          bool withCookie = true,
-          bool withAppBar = true,
-          bool withAction = true,
-          bool withScaffold = true,
-          bool keepAlive = false}) =>
-      <String, dynamic>{
-        'key': key,
-        'url': url,
-        'title': title,
-        'app': app,
-        'withCookie': withCookie,
-        'withAppBar': withAppBar,
-        'withAction': withAction,
-        'withScaffold': withScaffold,
-        'keepAlive': keepAlive,
       };
 
   @override
@@ -527,15 +483,15 @@ class _OpenjmuTeamPostDetail {
   String get name => 'openjmu://team-post-detail';
 
   Map<String, dynamic> d(
-          {TeamPostProvider provider,
+          {Key key,
           @required TeamPostType type,
-          int postId,
-          Key key}) =>
+          TeamPostProvider provider,
+          int postId}) =>
       <String, dynamic>{
-        'provider': provider,
-        'type': type,
-        'postId': postId,
         'key': key,
+        'type': type,
+        'provider': provider,
+        'postId': postId,
       };
 
   @override

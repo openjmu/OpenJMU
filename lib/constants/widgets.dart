@@ -150,19 +150,12 @@ class DeveloperTag extends StatelessWidget {
   }
 }
 
-Widget sexualWidget({
-  UserInfo user,
-  double size = 28.0,
-  EdgeInsetsGeometry margin,
-}) {
-  final bool isFemale = ((user ?? currentUser)?.gender == 2) ?? false;
-  return Container(
-    margin: margin ?? EdgeInsets.only(left: 20.w),
-    child: SvgPicture.asset(
-      'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
-      width: size.w,
-      height: size.w,
-    ),
+Widget sexualWidget({UserInfo user, double size = 28.0}) {
+  final bool isFemale = (user ?? currentUser)?.gender == 2;
+  return SvgPicture.asset(
+    'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
+    width: size.w,
+    height: size.w,
   );
 }
 
@@ -181,13 +174,14 @@ Widget badgeIcon({
 }) =>
     Badge(
       padding: padding ?? EdgeInsets.all(6.w),
-      badgeContent: Text(
-        '$content',
-        style: TextStyle(color: Colors.white, fontSize: 16.sp),
-      ),
       badgeColor: currentThemeColor,
       child: icon,
       elevation: Platform.isAndroid ? 2 : 0,
+      badgeContent: Text(
+        '$content',
+        style: TextStyle(color: Colors.white, fontSize: 14.sp),
+      ),
+      position: BadgePosition(top: -14.w, end: -16.w),
       showBadge: showBadge,
     );
 

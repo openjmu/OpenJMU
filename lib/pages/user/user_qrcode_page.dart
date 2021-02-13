@@ -141,7 +141,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                           children: <Widget>[
                             const UserAvatar(size: 64.0),
                             usernameWidget,
-                            sexualWidget(margin: EdgeInsets.zero),
+                            sexualWidget(),
                           ],
                         ),
                         VGap(30.w),

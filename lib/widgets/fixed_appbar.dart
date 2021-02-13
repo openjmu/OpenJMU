@@ -98,7 +98,7 @@ class FixedAppBar extends StatelessWidget {
               top: 0.0,
               bottom: 0.0,
               start: 0.0,
-              width: kMinInteractiveDimension,
+              width: kAppBarHeight.w,
               child: leading ?? const FixedBackButton(),
             ),
           if (_title != null)
@@ -229,8 +229,8 @@ class FixedBackButton extends StatelessWidget {
           }
         },
         behavior: HitTestBehavior.opaque,
-        child: SizedBox.fromSize(
-          size: Size.square(48.w),
+        child: AspectRatio(
+          aspectRatio: 1,
           child: Center(
             child: SvgPicture.asset(
               R.ASSETS_ICONS_BACK_BUTTON_SVG,
@@ -238,7 +238,7 @@ class FixedBackButton extends StatelessWidget {
               height: 24.w,
               color: color ?? context.iconTheme.color,
               semanticsLabel:
-                  MaterialLocalizations.of(context).backButtonTooltip,
+              MaterialLocalizations.of(context).backButtonTooltip,
             ),
           ),
         ),

@@ -171,8 +171,9 @@ class UserInfo {
           sid == other.sid &&
           uid == other.uid &&
           ticket == other.ticket &&
-          blowfish == other.blowfish;
+          blowfish == other.blowfish &&
+          isFollowing == other.isFollowing;
 
   @override
-  int get hashCode => hashValues(sid, uid, ticket, blowfish);
+  int get hashCode => hashValues(sid, uid, ticket, blowfish, isFollowing);
 }

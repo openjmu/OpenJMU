@@ -18,7 +18,7 @@ class _ScorePageState extends State<ScorePage>
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -68,7 +68,7 @@ class _ScorePageState extends State<ScorePage>
       padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(width: 0.5.w, color: context.theme.dividerColor),
+          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
         ),
         color: context.theme.brightness == Brightness.dark
             ? Colors.black

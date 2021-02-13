@@ -362,7 +362,7 @@ class NotificationsPageState extends State<NotificationsPage>
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: badgeIcon(
-                content: count == 0 ? '' : count,
+                content: count,
                 icon: getActionName(j),
                 showBadge: count != 0,
               ),

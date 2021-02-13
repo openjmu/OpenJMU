@@ -94,16 +94,12 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Future<Map<String, dynamic>> getImageRequest(FormData formData) async {
-    try {
-      final Response<Map<String, dynamic>> res =
-          await NetUtils.postWithCookieAndHeaderSet(
-        API.postUploadImage,
-        data: formData,
-      );
-      return res.data;
-    } catch (e) {
-      return null;
-    }
+    final Response<Map<String, dynamic>> res =
+        await NetUtils.postWithCookieAndHeaderSet(
+      API.postUploadImage,
+      data: formData,
+    );
+    return res.data;
   }
 
   Future<void> _request(BuildContext context) async {
@@ -127,14 +123,15 @@ class _PostActionDialogState extends State<PostActionDialog> {
     _requesting.value = true;
 
     /// Sending image if it exist.
-    if (_image != null) {
-      final Map<String, dynamic> data =
-          await getImageRequest(await createForm(_image.value));
-      if (data == null) {
+    if (_image.value != null) {
+      try {
+        final Map<String, dynamic> data =
+            await getImageRequest(await createForm(_image.value));
+        content += ' |${data['image_id']}| ';
+      } catch (e) {
         showCenterErrorToast('图片上传失败');
         return;
       }
-      content += ' |${data['image_id']}| ';
     }
 
     Future<dynamic> postFuture;
@@ -279,7 +276,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Widget _publishButton(BuildContext context) {
-    final bool canSend = _tec.text.isNotEmpty || _image != null;
+    final bool canSend = _tec.text.isNotEmpty || _image.value != null;
     return GestureDetector(
       onTap: canSend ? () => _request(context) : null,
       child: Container(
@@ -429,7 +426,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   borderRadius: BorderRadius.circular(10.w),
                   child: Image(
                     image: AssetEntityImageProvider(
-                      _image.value,
+                      image,
                       thumbSize: const <int>[84, 84],
                     ),
                     fit: BoxFit.cover,

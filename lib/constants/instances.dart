@@ -56,7 +56,7 @@ class Instances {
   static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;
   static ConnectivityResult connectivityResult;
 
-  static final GlobalKey<ScaffoldState> mainPageScaffoldKey =
+  static GlobalKey<ScaffoldState> mainPageScaffoldKey =
       GlobalKey<ScaffoldState>();
   static final GlobalKey<SchoolWorkPageState> schoolWorkPageStateKey =
       GlobalKey<SchoolWorkPageState>();

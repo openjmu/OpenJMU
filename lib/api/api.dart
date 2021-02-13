@@ -327,14 +327,11 @@ class API {
       );
     } else {
       LogUtils.d('Launching web: $uri');
-      return navigatorState.pushNamed(
-        Routes.openjmuInAppWebview.name,
-        arguments: Routes.openjmuInAppWebview.d(
-          url: uri,
-          title: title,
-          app: app,
-          withCookie: withCookie,
-        ),
+      AppWebView.launch(
+        url: uri,
+        title: title,
+        app: app,
+        withCookie: withCookie,
       );
     }
   }

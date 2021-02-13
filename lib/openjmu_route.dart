@@ -31,7 +31,6 @@ import 'pages/user/user_qrcode_page.dart';
 import 'providers/providers.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
-import 'widgets/webview/in_app_webview.dart';
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
@@ -104,22 +103,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: '图片浏览',
         pageRouteType: PageRouteType.transparent,
-      );
-    case 'openjmu://in-app-webview':
-      return RouteResult(
-        name: name,
-        widget: InAppWebViewPage(
-          key: arguments['key'] as Key,
-          url: arguments['url'] as String,
-          title: arguments['title'] as String,
-          app: arguments['app'] as WebApp,
-          withCookie: arguments['withCookie'] as bool ?? true,
-          withAppBar: arguments['withAppBar'] as bool ?? true,
-          withAction: arguments['withAction'] as bool ?? true,
-          withScaffold: arguments['withScaffold'] as bool ?? true,
-          keepAlive: arguments['keepAlive'] as bool ?? false,
-        ),
-        routeName: '网页浏览',
       );
     case 'openjmu://login':
       return RouteResult(
@@ -217,10 +200,10 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       return RouteResult(
         name: name,
         widget: TeamPostDetailPage(
-          provider: arguments['provider'] as TeamPostProvider,
-          type: arguments['type'] as TeamPostType,
-          postId: arguments['postId'] as int,
           key: arguments['key'] as Key,
+          type: arguments['type'] as TeamPostType,
+          provider: arguments['provider'] as TeamPostProvider,
+          postId: arguments['postId'] as int,
         ),
         routeName: '小组动态详情页',
       );

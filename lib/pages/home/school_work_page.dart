@@ -148,7 +148,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
             if (tabs.contains('课程表'))
               currentUser.isTeacher != null
                   ? currentUser?.isTeacher ?? false
-                      ? InAppWebViewPage(
+                      ? AppWebView(
                           url: '${API.courseScheduleTeacher}'
                               '?sid=${currentUser.sid}'
                               '&night=${isDark ? 1 : 0}',
