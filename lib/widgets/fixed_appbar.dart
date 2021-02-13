@@ -2,8 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-19 10:06
 ///
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -22,11 +20,10 @@ class FixedAppBar extends StatelessWidget {
     this.actions,
     this.actionsPadding,
     this.height,
-    this.blurRadius = 0.0,
     this.withBorder = true,
   }) : super(key: key);
 
-  /// Title widget.
+  /// Title widget. Typically a [Text] widget.
   /// 标题部件
   final Widget title;
 
@@ -62,10 +59,6 @@ class FixedAppBar extends StatelessWidget {
   /// 高度
   final double height;
 
-  /// Value that can enable the app bar using filter with [ui.ImageFilter]
-  /// 实现高斯模糊效果的值
-  final double blurRadius;
-
   /// Whether the app bar should implement a border below it.
   /// 是否在底部展示细线
   final bool withBorder;
@@ -84,10 +77,7 @@ class FixedAppBar extends StatelessWidget {
       width: Screens.width,
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       height: (height ?? kAppBarHeight).h + MediaQuery.of(context).padding.top,
-      decoration: BoxDecoration(
-        color: (backgroundColor ?? adaptiveSurfaceColor)
-            .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
-      ),
+      color: backgroundColor ?? context.appBarTheme.color,
       child: Stack(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
@@ -118,7 +108,6 @@ class FixedAppBar extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
-                  softWrap: false,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -140,14 +129,6 @@ class FixedAppBar extends StatelessWidget {
         ],
       ),
     );
-    if (blurRadius > 0.0) {
-      child = ClipRect(
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: blurRadius, sigmaY: blurRadius),
-          child: child,
-        ),
-      );
-    }
     if (withBorder) {
       child = Column(
         mainAxisSize: MainAxisSize.min,

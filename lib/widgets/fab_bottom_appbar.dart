@@ -235,7 +235,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     }
 
     appBar = BottomAppBar(
-      color: widget.backgroundColor ?? adaptiveSurfaceColor,
+      color: widget.backgroundColor ?? context.appBarTheme.color,
       shape: widget.notchedShape,
       elevation: 0,
       child: appBar,

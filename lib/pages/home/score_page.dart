@@ -70,7 +70,7 @@ class _ScorePageState extends State<ScorePage>
         border: Border(
           top: BorderSide(width: 1.w, color: context.theme.dividerColor),
         ),
-        color: adaptiveSurfaceColor,
+        color: context.appBarTheme.color,
       ),
       child: Text.rich(
         TextSpan(
@@ -126,7 +126,7 @@ class _ScorePageState extends State<ScorePage>
             border: Border(
               bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
             ),
-            color: adaptiveSurfaceColor,
+            color: context.appBarTheme.color,
           ),
           child: TabBar(
             controller: _tabController,

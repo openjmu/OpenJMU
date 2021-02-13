@@ -198,7 +198,7 @@ class UserPageState extends State<UserPage>
     return Container(
       height: avatarSize,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      color: adaptiveSurfaceColor,
+      color: context.appBarTheme.color,
       child: Row(
         children: <Widget>[
           userAvatar,
@@ -313,7 +313,7 @@ class UserPageState extends State<UserPage>
         border: Border(
           bottom: BorderSide(width: 1, color: context.theme.dividerColor),
         ),
-        color: adaptiveSurfaceColor,
+        color: context.appBarTheme.color,
       ),
       alignment: AlignmentDirectional.centerStart,
       child: TabBar(
@@ -501,7 +501,7 @@ class UserPageState extends State<UserPage>
         return Container(
           padding:
               EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 16.w),
-          color: adaptiveSurfaceColor,
+          color: context.appBarTheme.color,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -616,7 +616,7 @@ class UserPageState extends State<UserPage>
         body: Column(
           children: <Widget>[
             _userInfo(context),
-            VGap(16.w, color: adaptiveSurfaceColor),
+            VGap(16.w, color: context.appBarTheme.color),
             tagsWidget,
             if (isCurrentUser) userTabBar,
             Expanded(child: body),

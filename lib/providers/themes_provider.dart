@@ -119,9 +119,10 @@ class ThemesProvider with ChangeNotifier {
       textSelectionColor: currentColor.withAlpha(100),
       textSelectionHandleColor: currentColor,
       indicatorColor: currentColor,
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         brightness: Brightness.light,
         elevation: 0,
+        color: primaryColor,
       ),
       iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
@@ -198,6 +199,7 @@ class ThemesProvider with ChangeNotifier {
       appBarTheme: const AppBarTheme(
         brightness: Brightness.dark,
         elevation: 0,
+        color: Colors.black,
       ),
       iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),

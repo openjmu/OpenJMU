@@ -218,7 +218,7 @@ class _AnnouncementItemWidget extends StatelessWidget {
           border: Border(
             bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
           ),
-          color: adaptiveSurfaceColor,
+          color: context.appBarTheme.color,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

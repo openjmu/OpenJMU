@@ -48,14 +48,6 @@ class ThemeGroup {
 
 const ThemeGroup defaultThemeGroup = ThemeGroup();
 
-Color get adaptiveSurfaceColor {
-  if (currentIsDark) {
-    return Colors.black;
-  } else {
-    return currentThemeGroup.lightPrimaryColor;
-  }
-}
-
 Color adaptiveButtonColor([Color color]) {
   if (currentIsDark) {
     return currentThemeGroup.darkButtonTextColor;
