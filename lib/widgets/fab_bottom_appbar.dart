@@ -234,11 +234,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       );
     }
 
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-
     appBar = BottomAppBar(
-      color: widget.backgroundColor ??
-          (isDark ? Colors.black : Theme.of(context).primaryColor),
+      color: widget.backgroundColor ?? adaptiveSurfaceColor,
       shape: widget.notchedShape,
       elevation: 0,
       child: appBar,

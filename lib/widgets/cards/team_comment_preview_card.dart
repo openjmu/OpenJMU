@@ -340,28 +340,25 @@ class TeamCommentPreviewCard extends StatelessWidget {
               child: Container(
                 width: 48.w,
                 height: 48.w,
-                alignment: AlignmentDirectional.topEnd,
-                child: Icon(
-                  Icons.reply,
-                  size: 30.w,
-                  color: Theme.of(context).dividerColor,
-                ),
+                alignment: Alignment.center,
+                child: Icon(Icons.reply, size: 30.w),
               ),
               onTap: () {
                 detailPageState.setReplyToPost(post);
               },
             ),
             if (topPost.uid == currentUser.uid || post.uid == currentUser.uid)
-              SizedBox.fromSize(
-                size: Size.square(50.w),
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    Icons.delete_outline,
-                    color: Theme.of(context).dividerColor,
+              Tapper(
+                onTap: () => confirmDelete(context),
+                child: Container(
+                  width: 48.w,
+                  height: 48.w,
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(
+                    R.ASSETS_ICONS_POST_ACTIONS_DELETE_SVG,
+                    color: context.iconTheme.color,
+                    width: 24.w,
                   ),
-                  iconSize: 40.w,
-                  onPressed: () => confirmDelete(context),
                 ),
               ),
           ],

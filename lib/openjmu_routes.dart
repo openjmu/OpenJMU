@@ -13,10 +13,10 @@ const List<String> routeNames = <String>[
   'openjmu://backpack',
   'openjmu://changelog-page',
   'openjmu://chat-app-message-page',
+  'openjmu://edit-avatar-page',
   'openjmu://edit-profile-page',
   'openjmu://font-scale',
   'openjmu://home',
-  'openjmu://image-crop',
   'openjmu://image-viewer',
   'openjmu://login',
   'openjmu://news-detail',
@@ -76,6 +76,18 @@ class Routes {
   static const _OpenjmuChatAppMessagePage openjmuChatAppMessagePage =
       _OpenjmuChatAppMessagePage();
 
+  /// '修改头像'
+  ///
+  /// [name] : 'openjmu://edit-avatar-page'
+  ///
+  /// [routeName] : '修改头像'
+  ///
+  /// [constructors] :
+  ///
+  /// EditAvatarPage : [Key key]
+  static const _OpenjmuEditAvatarPage openjmuEditAvatarPage =
+      _OpenjmuEditAvatarPage();
+
   /// '编辑资料页'
   ///
   /// [name] : 'openjmu://edit-profile-page'
@@ -100,13 +112,6 @@ class Routes {
   ///
   /// MainPage : [Key key, int initAction]
   static const _OpenjmuHome openjmuHome = _OpenjmuHome();
-
-  /// '图片裁剪'
-  ///
-  /// [name] : 'openjmu://image-crop'
-  ///
-  /// [routeName] : '图片裁剪'
-  static const String openjmuImageCrop = 'openjmu://image-crop';
 
   /// '图片浏览'
   ///
@@ -303,6 +308,19 @@ class _OpenjmuChatAppMessagePage {
 
   Map<String, dynamic> d({@required WebApp app, Key key}) => <String, dynamic>{
         'app': app,
+        'key': key,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _OpenjmuEditAvatarPage {
+  const _OpenjmuEditAvatarPage();
+
+  String get name => 'openjmu://edit-avatar-page';
+
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
         'key': key,
       };
 

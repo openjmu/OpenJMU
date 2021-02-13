@@ -533,7 +533,9 @@ class _AppWebViewState extends State<AppWebView>
                     setState(() {});
                   }
                   Future<void>.delayed(500.milliseconds, () {
-                    progressController?.add(0.0);
+                    if (!progressController.isClosed) {
+                      progressController?.add(0.0);
+                    }
                   });
                 },
                 onProgressChanged: (_, int progress) {

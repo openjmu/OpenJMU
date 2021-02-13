@@ -294,9 +294,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             weekSwitcherAnimationController.value,
           ),
         ).toDouble(),
-        color: context.theme.brightness == Brightness.dark
-            ? Colors.black
-            : context.theme.primaryColor,
+        color: adaptiveSurfaceColor,
         child: TabBar(
           controller: weekTabController,
           isScrollable: true,
@@ -509,23 +507,30 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   Widget get errorTips {
     return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SvgPicture.asset(
-            R.ASSETS_PLACEHOLDERS_COURSE_NOT_READY_SVG,
-            width: 50.w,
-            color: context.theme.iconTheme.color,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(width: 1.w, color: context.theme.dividerColor),
           ),
-          VGap(20.w),
-          Text(
-            '课程表未就绪',
-            style: TextStyle(
-              color: context.textTheme.caption.color,
-              fontSize: 22.sp,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SvgPicture.asset(
+              R.ASSETS_PLACEHOLDERS_COURSE_NOT_READY_SVG,
+              width: 50.w,
+              color: context.theme.iconTheme.color,
             ),
-          ),
-        ],
+            VGap(20.w),
+            Text(
+              '课程表未就绪',
+              style: TextStyle(
+                color: context.textTheme.caption.color,
+                fontSize: 22.sp,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

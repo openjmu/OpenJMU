@@ -64,6 +64,14 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: '应用消息页',
       );
+    case 'openjmu://edit-avatar-page':
+      return RouteResult(
+        name: name,
+        widget: EditAvatarPage(
+          key: arguments['key'] as Key,
+        ),
+        routeName: '修改头像',
+      );
     case 'openjmu://edit-profile-page':
       return RouteResult(
         name: name,
@@ -84,12 +92,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           initAction: arguments['initAction'] as int,
         ),
         routeName: '首页',
-      );
-    case 'openjmu://image-crop':
-      return RouteResult(
-        name: name,
-        widget: ImageCropPage(),
-        routeName: '图片裁剪',
       );
     case 'openjmu://image-viewer':
       return RouteResult(

@@ -18,7 +18,6 @@ class ConfirmationDialog extends StatelessWidget {
     this.content,
     this.contentPadding,
     this.contentAlignment = TextAlign.center,
-    this.backgroundColor = Colors.transparent,
     this.showConfirm = false,
     this.confirmLabel = '确认',
     this.cancelLabel = '取消',
@@ -37,7 +36,6 @@ class ConfirmationDialog extends StatelessWidget {
   final String content;
   final EdgeInsetsGeometry contentPadding;
   final TextAlign contentAlignment;
-  final Color backgroundColor;
   final bool showConfirm;
   final String confirmLabel;
   final String cancelLabel;
@@ -57,114 +55,79 @@ class ConfirmationDialog extends StatelessWidget {
     String cancelLabel = '取消',
   }) async {
     return await showDialog<bool>(
-          context: context,
-          builder: (_) => ConfirmationDialog(
-            title: title,
-            centerTitle: centerTitle,
-            child: child,
-            content: content,
-            contentPadding: contentPadding,
-            contentAlignment: contentAlignment,
-            showConfirm: showConfirm,
-            confirmLabel: confirmLabel,
-            cancelLabel: cancelLabel,
-          ),
-        ) ??
-        false;
-  }
-
-  Widget titleWidget(BuildContext context) => Row(
-        mainAxisAlignment:
-            centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.fade,
-          ),
-        ],
-      );
-
-  Widget confirmButton(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: MaterialButton(
-        elevation: 0.0,
-        highlightElevation: 2.0,
-        height: 60.h,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.w),
-        ),
-        color: Theme.of(context).canvasColor,
-        onPressed: () {
-          if (onConfirm != null) {
-            onConfirm();
-          } else {
-            Navigator.of(context).pop(true);
-          }
-        },
-        child: Text(
-          confirmLabel,
-          style: TextStyle(fontSize: 22.sp),
-        ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      context: context,
+      barrierColor: Colors.black38,
+      barrierDismissible: false,
+      builder: (_) => ConfirmationDialog(
+        title: title,
+        centerTitle: centerTitle,
+        child: child,
+        content: content,
+        contentPadding: contentPadding,
+        contentAlignment: contentAlignment,
+        showConfirm: showConfirm,
+        confirmLabel: confirmLabel,
+        cancelLabel: cancelLabel,
       ),
     );
   }
 
-  Widget cancelButton(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: MaterialButton(
-        elevation: 0.0,
-        highlightElevation: 2.0,
-        height: 60.h,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.w),
-        ),
-        color: currentThemeColor.withOpacity(0.8),
-        onPressed: () {
-          if (onCancel != null) {
-            onCancel();
-          } else {
-            Navigator.of(context).pop(false);
-          }
-        },
-        child: Text(
-          cancelLabel,
-          style: TextStyle(
-            color: adaptiveButtonColor(),
-            fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
+  Widget titleWidget(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30.w),
+      child: Row(
+        mainAxisAlignment:
+            centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title.notBreak,
+            style: TextStyle(
+              height: 1.2,
+              fontSize: 22.sp,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ],
       ),
+    );
+  }
+
+  ConfirmationDialogAction _confirmAction(BuildContext context) {
+    return ConfirmationDialogAction(
+      child: const Text('确定'),
+      isDestructiveAction: true,
+      onPressed: () {
+        context.navigator.maybePop(true);
+      },
+    );
+  }
+
+  ConfirmationDialogAction _cancelAction(BuildContext context) {
+    return ConfirmationDialogAction(
+      child: const Text('取消'),
+      onPressed: () {
+        context.navigator.maybePop(false);
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: backgroundColor ?? Colors.transparent,
-      child: WillPopScope(
-        onWillPop: () async {
-          Navigator.of(context).pop(false);
-          return false;
-        },
-        child: Center(
+    return Center(
+      child: Material(
+        type: MaterialType.transparency,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(13.w),
           child: Container(
             constraints: BoxConstraints(
               minWidth: Screens.width / 5,
-              maxWidth: Screens.width / 1.25,
+              maxWidth: Screens.width / 1.5,
               maxHeight: Screens.height / 1.5,
             ),
-            padding: EdgeInsets.all(30.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24.w),
-              color: Theme.of(context).primaryColor,
-            ),
+            padding: EdgeInsets.only(top: 30.w),
+            color: context.theme.colorScheme.surface,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -174,13 +137,15 @@ class ConfirmationDialog extends StatelessWidget {
                 else
                   Padding(
                     padding:
-                        contentPadding ?? EdgeInsets.symmetric(vertical: 20.h),
+                        contentPadding ?? EdgeInsets.symmetric(vertical: 24.w),
                     child: ExtendedText(
                       content,
                       style: TextStyle(
-                          fontSize: 20.sp, fontWeight: FontWeight.normal),
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.normal,
+                      ),
                       textAlign: contentAlignment,
-                      specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
+                      specialTextSpanBuilder: _RegExpSpecialTextSpanBuilder(),
                       onSpecialTextTap: (dynamic data) {
                         API.launchWeb(
                           url: data['content'] as String,
@@ -189,14 +154,61 @@ class ConfirmationDialog extends StatelessWidget {
                       },
                     ),
                   ),
-                Row(
+                Column(
                   children: <Widget>[
-                    if (showConfirm) confirmButton(context),
-                    if (showConfirm) const Spacer(flex: 1),
-                    cancelButton(context),
+                    _cancelAction(context),
+                    if (showConfirm) _confirmAction(context),
                   ],
                 ),
               ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ConfirmationDialogAction extends StatelessWidget {
+  const ConfirmationDialogAction({
+    Key key,
+    @required this.child,
+    @required this.onPressed,
+    this.isDestructiveAction = false,
+  })  : assert(child != null),
+        assert(onPressed != null),
+        super(key: key);
+
+  final VoidCallback onPressed;
+  final bool isDestructiveAction;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle style = TextStyle(
+      color: Colors.white,
+      height: 1.2,
+      fontSize: 20.sp,
+      fontWeight: FontWeight.w600,
+      textBaseline: TextBaseline.alphabetic,
+    );
+
+    return Tapper(
+      onTap: onPressed,
+      child: Container(
+        height: 72.w,
+        color: isDestructiveAction
+            ? context.theme.accentColor
+            : context.textTheme.caption.color,
+        child: Semantics(
+          button: true,
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: DefaultTextStyle(
+              style: style,
+              child: child,
+              textAlign: TextAlign.center,
             ),
           ),
         ),
@@ -257,7 +269,7 @@ class _LinkOldText extends LinkText {
   }
 }
 
-class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
+class _RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   @override
   TextSpan build(
     String data, {

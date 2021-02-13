@@ -15,16 +15,19 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/image/image_crop_helper.dart';
 
-@FFRoute(name: 'openjmu://image-crop', routeName: '图片裁剪')
-class ImageCropPage extends StatefulWidget {
+@FFRoute(name: 'openjmu://edit-avatar-page', routeName: '修改头像')
+class EditAvatarPage extends StatefulWidget {
+  const EditAvatarPage({Key key}) : super(key: key);
+
   @override
-  _ImageCropPageState createState() => _ImageCropPageState();
+  _EditAvatarPageState createState() => _EditAvatarPageState();
 }
 
-class _ImageCropPageState extends State<ImageCropPage> {
+class _EditAvatarPageState extends State<EditAvatarPage> {
   final GlobalKey<ExtendedImageEditorState> _editorKey =
       GlobalKey<ExtendedImageEditorState>();
   final LoadingDialogController _controller = LoadingDialogController();
+
   Uint8List _imageData;
   bool _cropping = false;
   bool firstLoad = true;

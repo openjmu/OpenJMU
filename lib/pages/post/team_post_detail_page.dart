@@ -470,7 +470,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         ),
         alignment: Alignment.center,
         child: sending
-            ? const PlatformProgressIndicator()
+            ? const PlatformProgressIndicator(color: Colors.white)
             : Text(
                 '发送',
                 style: TextStyle(

@@ -70,9 +70,7 @@ class _ScorePageState extends State<ScorePage>
         border: Border(
           top: BorderSide(width: 1.w, color: context.theme.dividerColor),
         ),
-        color: context.theme.brightness == Brightness.dark
-            ? Colors.black
-            : context.theme.primaryColor,
+        color: adaptiveSurfaceColor,
       ),
       child: Text.rich(
         TextSpan(
@@ -118,39 +116,42 @@ class _ScorePageState extends State<ScorePage>
     return Selector<ScoresProvider, List<String>>(
       selector: (_, ScoresProvider p) => p.terms,
       builder: (_, List<String> terms, __) {
-        if (terms?.isNotEmpty == true) {
-          return Container(
-            height: 80.w,
-            alignment: Alignment.center,
-            color: context.theme.brightness == Brightness.dark
-                ? Colors.black
-                : context.theme.primaryColor,
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              physics: const BouncingScrollPhysics(),
-              labelStyle: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.normal,
-              ),
-              labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
-              labelColor: context.themeColor,
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorWeight: 4.w,
-              tabs: List<Widget>.generate(
-                terms.length,
-                (int index) => _term(
-                  context,
-                  terms[terms.length - index - 1],
-                ),
+        if (terms?.isEmpty != false) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          height: 80.w,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            ),
+            color: adaptiveSurfaceColor,
+          ),
+          child: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            physics: const BouncingScrollPhysics(),
+            labelStyle: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.normal,
+            ),
+            labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
+            labelColor: context.themeColor,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: 4.w,
+            tabs: List<Widget>.generate(
+              terms.length,
+              (int index) => _term(
+                context,
+                terms[terms.length - index - 1],
               ),
             ),
-          );
-        }
-        return const SizedBox.shrink();
+          ),
+        );
       },
     );
   }

@@ -129,18 +129,34 @@ class UserPageState extends State<UserPage>
   Future<bool> onRefresh() => loadingBase.refresh();
 
   void avatarTap() {
-    navigatorState.pushNamed(
-      Routes.openjmuImageViewer.name,
-      arguments: Routes.openjmuImageViewer.d(
-        index: 0,
-        pics: <ImageBean>[
-          ImageBean(
-            id: widget.uid.toInt(),
-            imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
-          ),
-        ],
-        needsClear: true,
-      ),
+    ConfirmationBottomSheet.show(
+      context,
+      actions: <ConfirmationBottomSheetAction>[
+        ConfirmationBottomSheetAction(
+          text: '修改头像',
+          onTap: () {
+            navigatorState.pushNamed(Routes.openjmuEditAvatarPage.name);
+          },
+        ),
+        ConfirmationBottomSheetAction(
+          text: '查看大图',
+          onTap: () {
+            navigatorState.pushNamed(
+              Routes.openjmuImageViewer.name,
+              arguments: Routes.openjmuImageViewer.d(
+                index: 0,
+                pics: <ImageBean>[
+                  ImageBean(
+                    id: widget.uid.toInt(),
+                    imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
+                  ),
+                ],
+                needsClear: true,
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -168,11 +184,21 @@ class UserPageState extends State<UserPage>
     }
   }
 
+  // Future<void> updateSignature(BuildContext context) {
+  //   UserAPI.setSignature(signatureController.text)
+  //       .then((Response<Map<String, dynamic>> response) {
+  //     controller.changeState('success', '更新成功');
+  //   }).catchError((dynamic e) {
+  //     LogUtils.e('Error when update signature: $e');
+  //     controller.changeState('failed', '更新失败');
+  //   });
+  // }
+
   Widget _userInfo(BuildContext context) {
     return Container(
       height: avatarSize,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      color: context.theme.colorScheme.surface,
+      color: adaptiveSurfaceColor,
       child: Row(
         children: <Widget>[
           userAvatar,
@@ -201,11 +227,13 @@ class UserPageState extends State<UserPage>
                   context: context,
                   name: '关注',
                   notifier: userIdols,
+                  type: 1,
                 ),
                 _userCountField(
                   context: context,
                   name: '粉丝',
                   notifier: userFans,
+                  type: 2,
                 ),
               ],
             ),
@@ -219,47 +247,61 @@ class UserPageState extends State<UserPage>
     BuildContext context,
     String name,
     ValueNotifier<int> notifier,
+    int type,
   }) {
-    return ValueListenableBuilder<int>(
-      valueListenable: notifier,
-      builder: (_, int value, __) {
-        String _count;
-        if (value != null) {
-          if (value > 10000) {
-            _count = '${(value / 10000).toStringAsFixed(1)}W';
-          } else if (value > 1000) {
-            _count = '${(value / 1000).toStringAsFixed(1)}K';
-          } else {
-            _count = value.toString();
-          }
-        } else {
-          _count = '--';
+    return Tapper(
+      onTap: () {
+        if (user.value != null) {
+          context.navigator.pushNamed(
+            Routes.openjmuUserListPage.name,
+            arguments: Routes.openjmuUserListPage.d(
+              user: user.value,
+              type: type,
+            ),
+          );
         }
-        return SizedBox(
-          width: 72.w,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                name,
-                style: context.textTheme.caption.copyWith(
-                  height: 1.2,
-                  fontSize: 18.sp,
-                ),
-              ),
-              Text(
-                _count,
-                style: context.textTheme.bodyText2.copyWith(
-                  height: 1.2,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-              ),
-            ],
-          ),
-        );
       },
+      child: ValueListenableBuilder<int>(
+        valueListenable: notifier,
+        builder: (_, int value, __) {
+          String _count;
+          if (value != null) {
+            if (value > 10000) {
+              _count = '${(value / 10000).toStringAsFixed(1)}W';
+            } else if (value > 1000) {
+              _count = '${(value / 1000).toStringAsFixed(1)}K';
+            } else {
+              _count = value.toString();
+            }
+          } else {
+            _count = '--';
+          }
+          return SizedBox(
+            width: 72.w,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text(
+                  name,
+                  style: context.textTheme.caption.copyWith(
+                    height: 1.2,
+                    fontSize: 18.sp,
+                  ),
+                ),
+                Text(
+                  _count,
+                  style: context.textTheme.bodyText2.copyWith(
+                    height: 1.2,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -271,16 +313,22 @@ class UserPageState extends State<UserPage>
         border: Border(
           bottom: BorderSide(width: 1, color: context.theme.dividerColor),
         ),
-        color: context.theme.colorScheme.surface,
+        color: adaptiveSurfaceColor,
       ),
       alignment: AlignmentDirectional.centerStart,
       child: TabBar(
         controller: tabController,
         isScrollable: true,
+        labelStyle: TextStyle(
+          fontSize: 20.sp,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.normal,
+        ),
+        labelPadding: EdgeInsets.symmetric(horizontal: 20.w),
+        labelColor: context.themeColor,
         indicatorWeight: 4.w,
-        indicatorSize: TabBarIndicatorSize.label,
-        labelStyle: TextStyle(fontSize: 18.sp),
-        labelPadding: EdgeInsets.symmetric(horizontal: 12.w),
         tabs: List<Tab>.generate(
           tabList.length,
           (int index) => Tab(text: tabList[index]),
@@ -322,39 +370,23 @@ class UserPageState extends State<UserPage>
   }
 
   Widget get followButton {
-    return MaterialButton(
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      minWidth: 0.0,
-      height: 46.h,
-      padding: EdgeInsets.symmetric(
-        horizontal: 14.w,
-      ),
-      color: Colors.black26,
-      elevation: 0.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14.w),
-      ),
-      onPressed: requestFollow,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (user.value?.isFollowing == false)
-            SvgPicture.asset(
-              R.ASSETS_ICONS_USER_FOLLOW_SVG,
-              width: 30.w,
-              height: 30.w,
-              fit: BoxFit.fill,
-            ),
-          Text(
-            '${(user.value?.isFollowing == true) ? '已' : ''}关注',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w500,
-              height: 1.25,
-            ),
-          ),
-        ],
+    return Tapper(
+      onTap: requestFollow,
+      child: Container(
+        width: 56.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
+        ),
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_USER_FOLLOW_SVG,
+          color: user.value?.isFollowing == true
+              ? currentThemeColor
+              : context.textTheme.bodyText2.color,
+          width: 28.w,
+        ),
       ),
     );
   }
@@ -402,12 +434,15 @@ class UserPageState extends State<UserPage>
       valueListenable: user,
       builder: (_, UserInfo value, __) => Row(
         children: <Widget>[
-          SvgPicture.asset(
-            R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
-            color: context.textTheme.caption.color,
-            width: 20.w,
-          ),
-          Gap(3.w),
+          if (isCurrentUser)
+            Padding(
+              padding: EdgeInsets.only(right: 3.w),
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
+                color: context.textTheme.caption.color,
+                width: 20.w,
+              ),
+            ),
           Expanded(
             child: Text(
               () {
@@ -466,7 +501,7 @@ class UserPageState extends State<UserPage>
         return Container(
           padding:
               EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 16.w),
-          color: context.theme.colorScheme.surface,
+          color: adaptiveSurfaceColor,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -574,14 +609,14 @@ class UserPageState extends State<UserPage>
     return Scaffold(
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
-          actions: <Widget>[qrCodeWidget],
+          actions: <Widget>[if (isCurrentUser) qrCodeWidget else followButton],
           actionsPadding: EdgeInsets.only(right: 16.w),
           withBorder: false,
         ),
         body: Column(
           children: <Widget>[
             _userInfo(context),
-            VGap(16.w, color: context.theme.colorScheme.surface),
+            VGap(16.w, color: adaptiveSurfaceColor),
             tagsWidget,
             if (isCurrentUser) userTabBar,
             Expanded(child: body),

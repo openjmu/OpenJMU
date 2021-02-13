@@ -67,7 +67,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             size: Size.square(116.w),
             child: Tapper(
               onTap: () {
-                navigatorState.pushNamed(Routes.openjmuImageCrop);
+                navigatorState.pushNamed(Routes.openjmuEditAvatarPage.name);
               },
               child: Stack(
                 children: <Widget>[

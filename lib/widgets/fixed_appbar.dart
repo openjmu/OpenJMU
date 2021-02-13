@@ -76,8 +76,6 @@ class FixedAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-
     Widget _title = title;
     if (centerTitle) {
       _title = Center(child: _title);
@@ -87,8 +85,7 @@ class FixedAppBar extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       height: (height ?? kAppBarHeight).h + MediaQuery.of(context).padding.top,
       decoration: BoxDecoration(
-        color: (backgroundColor ??
-                (isDark ? Colors.black : Theme.of(context).primaryColor))
+        color: (backgroundColor ?? adaptiveSurfaceColor)
             .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
       ),
       child: Stack(
