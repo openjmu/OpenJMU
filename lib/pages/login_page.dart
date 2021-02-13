@@ -447,7 +447,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           start: 0.0,
           end: 0.0,
           child: Tapper(
-            behavior: HitTestBehavior.opaque,
             onTap: isEnabled ? () => loginButtonPressed(context) : null,
             child: AnimatedContainer(
               duration: animateDuration,
