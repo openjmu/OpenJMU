@@ -291,7 +291,6 @@ class ImageText extends SpecialText {
     SpecialTextGestureTapCallback onTap, {
     this.start,
     this.builderType,
-    @required this.widgetType,
   }) : super(flag, flag, textStyle, onTap: onTap);
 
   static const String flag = '|';
@@ -300,7 +299,6 @@ class ImageText extends SpecialText {
 
   final int start;
   final BuilderType builderType;
-  final WidgetType widgetType;
 
   int getImageIdFromContent(String content) {
     return int.parse(content.substring(1, content.length - 1));
@@ -345,13 +343,11 @@ class ImageText extends SpecialText {
 class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   StackSpecialTextSpanBuilder({
     this.builderType = BuilderType.extendedText,
-    this.widgetType = WidgetType.post,
     this.prefixSpans,
     this.suffixSpans,
   });
 
   final BuilderType builderType;
-  final WidgetType widgetType;
   final List<InlineSpan> prefixSpans;
   final List<InlineSpan> suffixSpans;
 
@@ -457,7 +453,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     } else if (isStart(flag, API.forum99HostWithoutHttps)) {
       return ForumLinkOlderText(textStyle, onTap);
     } else if (isStart(flag, ImageText.flag) && ImageText.reg.hasMatch(flag)) {
-      return ImageText(textStyle, onTap, widgetType: widgetType);
+      return ImageText(textStyle, onTap);
     }
     return null;
   }

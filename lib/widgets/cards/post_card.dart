@@ -184,7 +184,7 @@ class _PostCardState extends State<PostCard> {
   Widget getPostInfo(Post post) {
     return Text(
       '${PostAPI.postTimeConverter(post.postTime)}  '
-          '来自${post.from}客户端',
+      '来自${post.from}客户端',
       style: TextStyle(
         color: context.textTheme.caption.color,
         fontSize: 16.sp,

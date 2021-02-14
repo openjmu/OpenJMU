@@ -182,8 +182,7 @@ class CommentCard extends StatelessWidget {
       onSpecialTextTap: specialTextTapRecognizer,
       maxLines: 8,
       overflowWidget: contentOverflowWidget,
-      specialTextSpanBuilder:
-          StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
     );
   }
 

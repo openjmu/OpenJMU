@@ -82,6 +82,11 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              if (Constants.developerList.contains(post.uid))
+                Padding(
+                  padding: EdgeInsets.only(left: 6.w),
+                  child: const DeveloperTag(),
+                ),
               Gap(6.w),
               _postTime(context, post),
               if (post.uid == topPost.uid)
@@ -91,11 +96,6 @@ class TeamCommentPreviewCard extends StatelessWidget {
                     height: 1.2,
                     fontSize: 17.sp,
                   ),
-                ),
-              if (Constants.developerList.contains(post.uid))
-                Padding(
-                  padding: EdgeInsets.only(left: 6.w),
-                  child: const DeveloperTag(),
                 ),
             ],
           ),
@@ -110,7 +110,6 @@ class TeamCommentPreviewCard extends StatelessWidget {
       style: context.textTheme.caption.copyWith(
         height: 1.2,
         fontSize: 16.sp,
-        fontWeight: FontWeight.normal,
       ),
     );
   }
@@ -174,7 +173,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
   Widget _replyInfo(BuildContext context, TeamPost post) {
     return Tapper(
       onTap: () {
-        if (post.replyInfo != null && post.replyInfo.isNotEmpty) {
+        if (post.replyInfo?.isNotEmpty == true) {
+          FocusManager.instance.primaryFocus?.unfocus();
           final TeamPostProvider provider = TeamPostProvider(post);
           navigatorState.pushNamed(
             Routes.openjmuTeamPostDetail.name,

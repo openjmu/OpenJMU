@@ -464,7 +464,7 @@ class CommentListInPostState extends State<CommentListInPost>
       PostAPI.postTimeConverter(comment.commentTime),
       style: context.textTheme.caption.copyWith(
         height: 1.2,
-        fontSize: 15.sp,
+        fontSize: 16.sp,
       ),
     );
   }
@@ -474,9 +474,7 @@ class CommentListInPostState extends State<CommentListInPost>
       content != null ? '$content ' : null,
       style: TextStyle(height: 1.2, fontSize: 17.sp),
       onSpecialTextTap: specialTextTapRecognizer,
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder(
-        widgetType: WidgetType.comment,
-      ),
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
     );
   }
 

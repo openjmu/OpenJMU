@@ -234,7 +234,9 @@ class ListEmptyIndicator extends StatelessWidget {
             indicator
           else ...<Widget>[
             SvgPicture.asset(
-              R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
+              isError
+                  ? R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG
+                  : R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
               width: 50.w,
               color: context.theme.iconTheme.color,
             ),

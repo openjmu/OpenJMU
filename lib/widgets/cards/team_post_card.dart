@@ -31,16 +31,17 @@ class _TeamPostCardState extends State<TeamPostCard> {
 
   @override
   void initState() {
-    post = widget.post;
-    TeamPostAPI.getPostDetail(id: widget.post.tid)
-        .then((Response<Map<String, dynamic>> response) {
-      final TeamPost _post = TeamPost.fromJson(response.data);
-      post = _post;
-      if (mounted) {
-        setState(() {});
-      }
-    });
     super.initState();
+    post = widget.post;
+    TeamPostAPI.getPostDetail(id: widget.post.tid).then(
+      (Response<Map<String, dynamic>> response) {
+        final TeamPost _post = TeamPost.fromJson(response.data);
+        post = _post;
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
   }
 
   Widget _header(BuildContext context) {

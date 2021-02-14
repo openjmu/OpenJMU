@@ -129,34 +129,40 @@ class UserPageState extends State<UserPage>
   Future<bool> onRefresh() => loadingBase.refresh();
 
   void avatarTap() {
-    ConfirmationBottomSheet.show(
-      context,
-      actions: <ConfirmationBottomSheetAction>[
-        ConfirmationBottomSheetAction(
-          text: '修改头像',
-          onTap: () {
-            navigatorState.pushNamed(Routes.openjmuEditAvatarPage.name);
-          },
-        ),
-        ConfirmationBottomSheetAction(
-          text: '查看大图',
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.openjmuImageViewer.name,
-              arguments: Routes.openjmuImageViewer.d(
-                index: 0,
-                pics: <ImageBean>[
-                  ImageBean(
-                    id: widget.uid.toInt(),
-                    imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
-                  ),
-                ],
-                needsClear: true,
-              ),
-            );
-          },
-        ),
-      ],
+    if (!isCurrentUser) {
+      checkLargeAvatar();
+    } else {
+      ConfirmationBottomSheet.show(
+        context,
+        actions: <ConfirmationBottomSheetAction>[
+          ConfirmationBottomSheetAction(
+            text: '修改头像',
+            onTap: () {
+              navigatorState.pushNamed(Routes.openjmuEditAvatarPage.name);
+            },
+          ),
+          ConfirmationBottomSheetAction(
+            text: '查看大图',
+            onTap: checkLargeAvatar,
+          ),
+        ],
+      );
+    }
+  }
+
+  void checkLargeAvatar() {
+    navigatorState.pushNamed(
+      Routes.openjmuImageViewer.name,
+      arguments: Routes.openjmuImageViewer.d(
+        index: 0,
+        pics: <ImageBean>[
+          ImageBean(
+            id: widget.uid.toInt(),
+            imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
+          ),
+        ],
+        needsClear: true,
+      ),
     );
   }
 

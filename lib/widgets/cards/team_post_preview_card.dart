@@ -139,8 +139,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       post.nickname ?? post.uid.toString(),
-                      style: TextStyle(
-                        height: 1.2,
+                      style: context.textTheme.bodyText2.copyWith(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -168,9 +167,9 @@ class TeamPostPreviewCard extends StatelessWidget {
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
       TeamPostAPI.timeConverter(post),
-      style: context.textTheme.caption.copyWith(
+      style: TextStyle(
+        color: context.textTheme.caption.color,
         fontSize: 16.sp,
-        fontWeight: FontWeight.normal,
       ),
     );
   }
@@ -436,7 +435,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.symmetric(
               horizontal: 16.w,
-              vertical: 8.w,
+              vertical: 10.w,
             ),
             padding: EdgeInsets.symmetric(
               horizontal: 24.w,
