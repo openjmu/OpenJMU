@@ -622,7 +622,7 @@ class _PublishPostPageState extends State<PublishPostPage>
     String text,
     VoidCallback onTap,
   }) {
-    Widget button = Tapper(
+    Widget button = GestureDetector(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 15.w),
