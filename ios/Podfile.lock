@@ -47,7 +47,7 @@ DEPENDENCIES:
   - device_info (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/device_info-1.0.0//ios/device_info.podspec`)
   - Flutter (from `Flutter`)
   - "flutter_inappwebview (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-4.0.0+4//ios/flutter_inappwebview.podspec`)"
-  - flutter_local_notifications (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-4.0.0//ios/flutter_local_notifications.podspec`)
+  - flutter_local_notifications (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-4.0.1//ios/flutter_local_notifications.podspec`)
   - "flutter_native_image (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec`)"
   - image_editor (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/image_editor-0.7.3//ios/image_editor.podspec`)
   - open_file (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.0.3//ios/open_file.podspec`)
@@ -78,7 +78,7 @@ EXTERNAL SOURCES:
   flutter_inappwebview:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-4.0.0+4//ios/flutter_inappwebview.podspec"
   flutter_local_notifications:
-    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-4.0.0//ios/flutter_local_notifications.podspec"
+    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-4.0.1//ios/flutter_local_notifications.podspec"
   flutter_native_image:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec"
   image_editor:

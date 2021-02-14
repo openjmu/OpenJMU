@@ -77,6 +77,15 @@ class NotificationsPageState extends State<NotificationsPage>
 
   double get shouldPopOffset => maximumSheetHeight / 2;
 
+  final ScrollController scrollController = ScrollController();
+  final ValueNotifier<bool> animating = ValueNotifier<bool>(true);
+  final NotificationProvider provider =
+      currentContext.read<NotificationProvider>();
+
+  bool tapping = false;
+  int _index = 0, _squareIndex = 0, _teamIndex = 0;
+  AnimationController backgroundOpacityController;
+
   Map<String, _Section> get sections {
     return <String, _Section>{
       '广场': _Section(
@@ -141,15 +150,6 @@ class NotificationsPageState extends State<NotificationsPage>
     };
   }
 
-  final ScrollController scrollController = ScrollController();
-  final NotificationProvider provider =
-      currentContext.read<NotificationProvider>();
-
-  int _index = 0, _squareIndex = 0, _teamIndex = 0;
-  bool animating = true, tapping = false;
-
-  AnimationController backgroundOpacityController;
-
   @override
   void initState() {
     super.initState();
@@ -164,7 +164,7 @@ class NotificationsPageState extends State<NotificationsPage>
           scrollController.offset / maximumSheetHeight * maximumOpacity;
       final bool canJump = scrollController.offset < maximumSheetHeight &&
           !tapping &&
-          !animating;
+          !animating.value;
       if (canJump) {
         scrollController.jumpTo(maximumSheetHeight);
       }
@@ -183,18 +183,15 @@ class NotificationsPageState extends State<NotificationsPage>
     _teamIndex = provider.teamInitialIndex;
 
     SchedulerBinding.instance.addPostFrameCallback((Duration _) async {
+      sections[widget.initialPage]
+          .fields[_index == 0 ? _squareIndex : _teamIndex]
+          .action();
       await scrollController.animateTo(
         maximumSheetHeight,
         duration: 250.milliseconds,
         curve: Curves.easeInOut,
       );
-      animating = false;
-      if (mounted) {
-        sections[widget.initialPage]
-            .fields[_index == 0 ? _squareIndex : _teamIndex]
-            .action();
-        setState(() {});
-      }
+      animating.value = false;
     });
   }
 
@@ -246,8 +243,8 @@ class NotificationsPageState extends State<NotificationsPage>
   Future<void> canAnimate() async {
     if (scrollController.offset < shouldPopOffset) {
       onWillPop();
-    } else if (scrollController.offset != maximumSheetHeight) {
-      animating = true;
+    } else if (scrollController.offset.round() < maximumSheetHeight.round()) {
+      animating.value = true;
       await scrollController.animateTo(
         maximumSheetHeight,
         curve: Curves.easeOut,
@@ -260,16 +257,13 @@ class NotificationsPageState extends State<NotificationsPage>
             )
             .milliseconds,
       );
-      animating = false;
-      if (mounted) {
-        setState(() {});
-      }
+      animating.value = false;
     }
   }
 
   Future<bool> onWillPop() async {
-    if (!animating) {
-      animating = true;
+    if (!animating.value) {
+      animating.value = true;
       await scrollController.animateTo(
         0,
         curve: Curves.easeOut,
@@ -278,7 +272,7 @@ class NotificationsPageState extends State<NotificationsPage>
             .milliseconds,
       );
       navigatorState.pop();
-      animating = false;
+      animating.value = false;
       return false;
     }
     return false;
@@ -349,7 +343,7 @@ class NotificationsPageState extends State<NotificationsPage>
       child: Row(
         children: List<Widget>.generate(
           sections[widget.initialPage].fields.length,
-              (int j) {
+          (int j) {
             final _Field field = sections[widget.initialPage].fields[j];
             final int count = field.field();
             return Tapper(
@@ -437,11 +431,15 @@ class NotificationsPageState extends State<NotificationsPage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: onWillPop,
-      child: IgnorePointer(
-        ignoring: animating,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: animating,
+        builder: (_, bool value, Widget child) => IgnorePointer(
+          ignoring: value,
+          child: child,
+        ),
         child: Listener(
           onPointerDown: (PointerDownEvent event) {
-            animating = false;
+            animating.value = false;
             tapping = true;
           },
           onPointerUp: (PointerUpEvent event) {
@@ -458,16 +456,14 @@ class NotificationsPageState extends State<NotificationsPage>
             child: ex.NestedScrollView(
               controller: scrollController,
               physics: const BouncingScrollPhysics(),
-              headerSliverBuilder: (_, __) {
-                return <Widget>[
-                  SliverToBoxAdapter(
-                    child: Tapper(
-                      onTap: navigatorState.maybePop,
-                      child: VGap(Screens.height),
-                    ),
+              headerSliverBuilder: (_, __) => <Widget>[
+                SliverToBoxAdapter(
+                  child: Tapper(
+                    onTap: navigatorState.maybePop,
+                    child: VGap(Screens.height),
                   ),
-                ];
-              },
+                ),
+              ],
               pinnedHeaderSliverHeightBuilder: () => minimumHeaderHeight,
               innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,
               body: ClipRRect(
