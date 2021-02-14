@@ -9,6 +9,10 @@ flutter clean
 # Then run flutter pub get to generate new configuration.
 flutter pub get
 
+# Regenerate resources and routes.
+fgen -o lib/constants/resources.dart --no-preview --no-watch
+ff_route
+
 # Build Android APK
 flutter build apk --release
 

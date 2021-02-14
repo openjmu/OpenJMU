@@ -1,6 +1,7 @@
 @echo off
-start cmd /c flutter clean
-echo "Run next after cleaned."
-pause
-flutter build apk --release
+call flutter clean
+call flutter pub get
+call fgen -o lib/constants/resources.dart --no-preview --no-watch
+call ff_route
+call flutter build apk --release
 pause
