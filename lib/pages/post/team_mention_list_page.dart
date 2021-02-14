@@ -124,10 +124,10 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
 
   Widget _content(TeamMentionItem item) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(vertical: 10.w),
       child: ExtendedText(
         item.post?.content ?? item.comment?.content ?? '',
-        style: TextStyle(fontSize: 19.sp),
+        style: TextStyle(height: 1.2, fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
         overflowWidget: contentOverflowWidget,
@@ -145,47 +145,41 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     }
     final TeamMentionItem item = mentionedList.elementAt(index);
     final TeamPostProvider provider = TeamPostProvider(item.post);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Tapper(
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.openjmuTeamPostDetail.name,
-              arguments: Routes.openjmuTeamPostDetail.d(
-                provider: provider,
-                type: item.type == TeamMentionType.post
-                    ? TeamPostType.post
-                    : TeamPostType.comment,
-                postId: item.comment?.originId,
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 6.h,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 24.w,
-              vertical: 8.w,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.w),
-              color: Theme.of(context).cardColor,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _header(context, index, item),
-                _content(item),
-              ],
-            ),
+    return Tapper(
+      onTap: () {
+        navigatorState.pushNamed(
+          Routes.openjmuTeamPostDetail.name,
+          arguments: Routes.openjmuTeamPostDetail.d(
+            provider: provider,
+            type: item.type == TeamMentionType.post
+                ? TeamPostType.post
+                : TeamPostType.comment,
+            postId: item.comment?.originId,
           ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 10.w,
         ),
-      ],
+        padding: EdgeInsets.symmetric(
+          horizontal: 24.w,
+          vertical: 8.w,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: Theme.of(context).cardColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _header(context, index, item),
+            _content(item),
+          ],
+        ),
+      ),
     );
   }
 
@@ -203,7 +197,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
       );
     }
     return ListView.builder(
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
       itemCount: mentionedList.length + 1,
       itemBuilder: mentionItemBuilder,
     );

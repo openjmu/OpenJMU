@@ -203,7 +203,7 @@ class ScoresProvider extends ChangeNotifier {
       await _scoreBox.put(currentUser.uid, presentData);
       LogUtils.d('Scores cache updated successfully.');
     } else {
-      LogUtils.e('Scores cache don\'t need to update.');
+      LogUtils.d('Scores cache don\'t need to update.');
     }
   }
 

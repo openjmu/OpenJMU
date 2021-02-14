@@ -206,6 +206,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           type: arguments['type'] as TeamPostType,
           provider: arguments['provider'] as TeamPostProvider,
           postId: arguments['postId'] as int,
+          shouldReload: arguments['shouldReload'] as bool ?? false,
         ),
         routeName: '小组动态详情页',
       );

@@ -134,7 +134,7 @@ class CommentCard extends StatelessWidget {
       topic += content;
       return Container(
         width: double.maxFinite,
-        margin: EdgeInsets.only(top: 6.h, bottom: 12.h),
+        margin: EdgeInsets.only(top: 6.w, bottom: 8.w),
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),

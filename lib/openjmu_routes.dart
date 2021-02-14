@@ -251,7 +251,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// TeamPostDetailPage : [Key key, TeamPostType(required) type, TeamPostProvider provider, int postId]
+  /// TeamPostDetailPage : [Key key, TeamPostType(required) type, TeamPostProvider provider, int postId, bool shouldReload]
   static const _OpenjmuTeamPostDetail openjmuTeamPostDetail =
       _OpenjmuTeamPostDetail();
 
@@ -504,12 +504,14 @@ class _OpenjmuTeamPostDetail {
           {Key key,
           @required TeamPostType type,
           TeamPostProvider provider,
-          int postId}) =>
+          int postId,
+          bool shouldReload = false}) =>
       <String, dynamic>{
         'key': key,
         'type': type,
         'provider': provider,
         'postId': postId,
+        'shouldReload': shouldReload,
       };
 
   @override

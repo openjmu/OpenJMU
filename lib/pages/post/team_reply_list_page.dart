@@ -138,27 +138,25 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
   Widget _rootContent(BuildContext context, TeamReplyItem item) {
     return Container(
       width: double.maxFinite,
-      margin: EdgeInsets.only(top: 6.w, bottom: 12.w),
+      margin: EdgeInsets.only(top: 8.w, bottom: 12.w),
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
         color: context.theme.canvasColor,
       ),
-      child: DefaultTextStyle.merge(
+      child: ExtendedText(
+        item.toPost.content,
         style: TextStyle(height: 1.2, fontSize: 18.sp),
-        child: ExtendedText(
-          item.toPost.content,
-          onSpecialTextTap: specialTextTapRecognizer,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          specialTextSpanBuilder: StackSpecialTextSpanBuilder(
-            prefixSpans: <InlineSpan>[
-              TextSpan(
-                text: item.type == TeamReplyType.post ? '回复我的帖子：' : '评论我的回帖：',
-                style: TextStyle(color: context.textTheme.caption.color),
-              ),
-            ],
-          ),
+        onSpecialTextTap: specialTextTapRecognizer,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+          prefixSpans: <InlineSpan>[
+            TextSpan(
+              text: item.type == TeamReplyType.post ? '回复我的帖子：' : '评论我的回帖：',
+              style: TextStyle(color: context.textTheme.caption.color),
+            ),
+          ],
         ),
       ),
     );
@@ -175,50 +173,47 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     }
     final TeamReplyItem item = replyList.elementAt(index);
     TeamPostProvider provider;
-    if (item.post == null) {
+    if (item.type == TeamReplyType.post || item.post == null) {
       provider = TeamPostProvider(item.toPost);
     } else if (item.comment == null) {
       provider = TeamPostProvider(item.post);
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Tapper(
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.openjmuTeamPostDetail.name,
-              arguments: Routes.openjmuTeamPostDetail.d(
-                provider: provider,
-                type: TeamPostType.comment,
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 6.h,
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 24.w,
-              vertical: 8.w,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.w),
-              color: Theme.of(context).cardColor,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _header(context, index, item),
-                _content(item),
-                _rootContent(context, item),
-              ],
-            ),
+    return Tapper(
+      onTap: () {
+        navigatorState.pushNamed(
+          Routes.openjmuTeamPostDetail.name,
+          arguments: Routes.openjmuTeamPostDetail.d(
+            provider: provider,
+            type: item.type == TeamReplyType.post
+                ? TeamPostType.post
+                : TeamPostType.comment,
+            shouldReload: item.type == TeamReplyType.post,
           ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 10.w,
         ),
-      ],
+        padding: EdgeInsets.symmetric(
+          horizontal: 24.w,
+          vertical: 8.w,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.w),
+          color: Theme.of(context).cardColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _header(context, index, item),
+            _content(item),
+            _rootContent(context, item),
+          ],
+        ),
+      ),
     );
   }
 
@@ -236,7 +231,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
       );
     }
     return ListView.builder(
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(vertical: 6.w),
       itemCount: replyList.length + 1,
       itemBuilder: replyItemBuilder,
     );

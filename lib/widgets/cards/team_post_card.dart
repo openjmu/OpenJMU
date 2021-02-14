@@ -197,8 +197,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
       decoration: BoxDecoration(
-        border: Border.symmetric(
-          horizontal: BorderSide(width: 1.w, color: context.theme.dividerColor),
+        border: Border(
+          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
         ),
         color: context.theme.cardColor,
       ),

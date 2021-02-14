@@ -26,11 +26,15 @@ class TeamPostDetailPage extends StatefulWidget {
     @required this.type,
     this.provider,
     this.postId,
-  }) : super(key: key);
+    this.shouldReload = false,
+  })  : assert(type != null),
+        assert(shouldReload != null),
+        super(key: key);
 
   final TeamPostProvider provider;
   final TeamPostType type;
   final int postId;
+  final bool shouldReload;
 
   @override
   TeamPostDetailPageState createState() => TeamPostDetailPageState();
@@ -132,12 +136,17 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           postComments.clear();
           break;
       }
-      if (provider.post == null) {
+      if (widget.shouldReload || provider.post == null) {
         final Map<String, dynamic> data = (await TeamPostAPI.getPostDetail(
-          id: widget.postId,
+          id: widget.postId ?? widget.provider.post?.tid,
           postType: 7,
         ))
             .data;
+        if (data?.toString()?.contains('原帖不存在') == true) {
+          showToast('原贴不存在');
+          navigatorState.pop();
+          return;
+        }
         final TeamPost post = TeamPost.fromJson(data);
         provider = TeamPostProvider(post);
       }
@@ -145,7 +154,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     if (loadMore) {
       ++commentPage;
     }
-    if (provider.post.repliesCount > 0) {
+    if ((provider.post?.repliesCount ?? 0) > 0) {
       TeamCommentAPI.getCommentInPostList(
         id: provider.post.tid,
         page: commentPage,
@@ -436,7 +445,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget get extendedPadButton {
-    return Tapper(
+    return GestureDetector(
       onTap: triggerExtendedPad,
       child: Container(
         width: 52.w,
@@ -535,7 +544,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget get emoticonButton {
-    return Tapper(
+    return GestureDetector(
       onTap: triggerEmoticonPad,
       child: Container(
         margin: EdgeInsets.only(right: 16.w),
