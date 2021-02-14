@@ -54,13 +54,21 @@ class _ScorePageState extends State<ScorePage>
     );
   }
 
-  Widget get noScoreWidget => Center(
-        child: Text(
-          '暂时还没有你的成绩\n🤔',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 30.sp),
+  Widget get noScoreWidget {
+    return Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
         ),
-      );
+      ),
+      child: Text(
+        '暂时还没有你的成绩\n🤔',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 30.sp),
+      ),
+    );
+  }
 
   Widget evaluateTips(BuildContext context) {
     return Container(
