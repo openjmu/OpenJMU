@@ -82,8 +82,13 @@ class _AppWebViewState extends State<AppWebView>
   final StreamController<double> progressController =
       StreamController<double>.broadcast();
 
+  final ValueNotifier<String> title = ValueNotifier<String>('');
+
+  String url = 'about:blank';
+
+  InAppWebView _webView;
   InAppWebViewController _webViewController;
-  String title = '', url = 'about:blank';
+  bool useDesktopMode = false;
 
   String get urlDomain => Uri.parse(url).host ?? url;
 
@@ -95,11 +100,13 @@ class _AppWebViewState extends State<AppWebView>
     super.initState();
 
     url = (widget.url ?? url).trim();
-    title = (widget.app?.name ?? widget.title ?? title).trim();
+    title.value = (widget.app?.name ?? widget.title ?? title.value).trim();
 
     if (url.startsWith(API.labsHost) && currentIsDark) {
       url += '&night=1';
     }
+
+    _webView = newWebView;
 
     Instances.eventBus
         .on<CourseScheduleRefreshEvent>()
@@ -181,123 +188,38 @@ class _AppWebViewState extends State<AppWebView>
     );
   }
 
-  final Widget refreshIndicator = const Center(
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: SizedBox(
-        width: 24.0,
-        height: 24.0,
-        child: PlatformProgressIndicator(strokeWidth: 3.0),
-      ),
-    ),
-  );
-
-  Widget _domainProvider(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 15.w),
-      child: Text(
-        '网页由 $urlDomain 提供',
-        style: context.textTheme.caption.copyWith(height: 1.2, fontSize: 15.sp),
-      ),
-    );
-  }
-
-  Widget _moreAction({
-    @required BuildContext context,
-    @required IconData icon,
-    @required String text,
-    VoidCallback onTap,
-  }) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 12.w).copyWith(left: 30.w),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          InkWell(
-            onTap: onTap != null
-                ? () {
-                    Navigator.of(context).pop();
-                    onTap();
-                  }
-                : null,
-            child: Container(
-              width: 64.w,
-              height: 64.w,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(16.w),
-              ),
-              child: Icon(
-                icon,
-                size: 30.w,
-                color: context.textTheme.bodyText2.color,
-              ),
-            ),
-          ),
-          VGap(12.w),
-          Text(
-            text,
-            style: context.textTheme.caption.copyWith(
-              fontSize: 15.sp,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void showMore(BuildContext context) {
-    showModalBottomSheet<void>(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.w),
-          topRight: Radius.circular(20.w),
+    ConfirmationBottomSheet.show(
+      context,
+      actions: <ConfirmationBottomSheetAction>[
+        ConfirmationBottomSheetAction(
+          text: '刷新',
+          onTap: () => _webViewController?.reload(),
         ),
-      ),
-      backgroundColor: Theme.of(context).cardColor,
-      context: context,
-      builder: (_) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 16.h),
-              width: 40.w,
-              height: 8.w,
-              decoration: BoxDecoration(
-                borderRadius: maxBorderRadius,
-                color: context.iconTheme.color.withOpacity(0.7),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10.h),
-              child: Row(
-                children: <Widget>[
-                  _moreAction(
-                    context: context,
-                    icon: Icons.content_copy,
-                    text: '复制链接',
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: url));
-                      showToast('已复制网址到剪贴板');
-                    },
-                  ),
-                  _moreAction(
-                    context: context,
-                    icon: Icons.open_in_browser,
-                    text: '浏览器打开',
-                    onTap: () => _launchURL(forceSafariVC: false),
-                  ),
-                ],
-              ),
-            ),
-            if (urlDomain != null) _domainProvider(context),
-            VGap(Screens.bottomSafeHeight),
-          ],
-        );
-      },
+        ConfirmationBottomSheetAction(
+          text: '复制链接',
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: url));
+            showToast('已复制网址到剪贴板');
+          },
+        ),
+        ConfirmationBottomSheetAction(
+          text: '浏览器打开',
+          onTap: () => _launchURL(forceSafariVC: false),
+        ),
+        ConfirmationBottomSheetAction(
+          text: '以${useDesktopMode ? '移动' : '桌面'}版显示',
+          onTap: switchDesktopMode,
+        ),
+      ],
     );
+  }
+
+  void switchDesktopMode() {
+    setState(() {
+      useDesktopMode = !useDesktopMode;
+      _webView = newWebView;
+    });
   }
 
   Future<void> _launchURL({String url, bool forceSafariVC = true}) async {
@@ -324,15 +246,14 @@ class _AppWebViewState extends State<AppWebView>
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: widget.app == null ? 16.w : 0),
-              child: Text(
-                title,
-                style: TextStyle(
-                  height: 1.2,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.normal,
+              child: ValueListenableBuilder<String>(
+                valueListenable: title,
+                builder: (_, String value, __) => Text(
+                  value,
+                  style: TextStyle(height: 1.2, fontSize: 20.sp),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -400,46 +321,114 @@ class _AppWebViewState extends State<AppWebView>
     );
   }
 
-  List<Widget> get persistentFooterButtons {
-    return <Widget>[
-      SizedBox(
-        width: Screens.width,
-        height: 32.w,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                Icons.keyboard_arrow_left,
-                color: currentThemeColor,
-                size: 32.w,
-              ),
-              onPressed: _webViewController?.goBack,
-            ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                Icons.keyboard_arrow_right,
-                color: currentThemeColor,
-                size: 32.w,
-              ),
-              onPressed: _webViewController?.goForward,
-            ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                Icons.refresh,
-                color: currentThemeColor,
-                size: 32.w,
-              ),
-              onPressed: _webViewController?.reload,
-            ),
-          ],
+  InAppWebView get newWebView {
+    return InAppWebView(
+      key: Key(currentTimeStamp.toString()),
+      initialUrl: url,
+      initialOptions: InAppWebViewGroupOptions(
+        crossPlatform: InAppWebViewOptions(
+          applicationNameForUserAgent: 'openjmu-webview',
+          cacheEnabled: widget.withCookie ?? true,
+          clearCache: !widget.withCookie ?? false,
+          horizontalScrollBarEnabled: false,
+          javaScriptCanOpenWindowsAutomatically: true,
+          supportZoom: true,
+          transparentBackground: true,
+          useOnDownloadStart: true,
+          useShouldOverrideUrlLoading: true,
+          preferredContentMode: useDesktopMode
+              ? UserPreferredContentMode.DESKTOP
+              : UserPreferredContentMode.RECOMMENDED,
+          verticalScrollBarEnabled: false,
+        ),
+        android: AndroidInAppWebViewOptions(
+          allowFileAccessFromFileURLs: true,
+          allowUniversalAccessFromFileURLs: true,
+          builtInZoomControls: true,
+          displayZoomControls: false,
+          forceDark: currentIsDark
+              ? AndroidForceDark.FORCE_DARK_ON
+              : AndroidForceDark.FORCE_DARK_OFF,
+          loadWithOverviewMode: true,
+          mixedContentMode: AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+          safeBrowsingEnabled: false,
+        ),
+        ios: IOSInAppWebViewOptions(
+          allowsAirPlayForMediaPlayback: true,
+          allowsBackForwardNavigationGestures: true,
+          allowsLinkPreview: true,
+          allowsPictureInPictureMediaPlayback: true,
+          isFraudulentWebsiteWarningEnabled: false,
+          sharedCookiesEnabled: true,
         ),
       ),
-    ];
+      onCreateWindow: (
+        InAppWebViewController controller,
+        CreateWindowRequest createWindowRequest,
+      ) async {
+        if (Uri.tryParse(createWindowRequest.url) != null) {
+          await controller.loadUrl(url: createWindowRequest.url);
+          return true;
+        }
+        return false;
+      },
+      onLoadStart: (_, String url) {
+        LogUtils.d('Webview onLoadStart: $url');
+      },
+      onLoadStop: (InAppWebViewController controller, String url) async {
+        controller.evaluateJavascript(
+          source: 'window.onbeforeunload=null',
+        );
+
+        this.url = url;
+        final String _title = (await controller.getTitle())?.trim();
+        if (_title?.isNotEmpty == true && _title != this.url) {
+          title.value = _title;
+        } else {
+          final String ogTitle = await controller.evaluateJavascript(
+            source:
+                'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
+                'if (ogTitle != undefined) ogTitle.content;',
+          ) as String;
+          if (ogTitle != null) {
+            title.value = ogTitle;
+          }
+        }
+        Future<void>.delayed(500.milliseconds, () {
+          if (!progressController.isClosed) {
+            progressController?.add(0.0);
+          }
+        });
+      },
+      onProgressChanged: (_, int progress) {
+        progressController?.add(progress / 100);
+      },
+      onConsoleMessage: (_, ConsoleMessage consoleMessage) {
+        LogUtils.d(
+          'Console message: '
+          '${consoleMessage.messageLevel.toString()}'
+          ' - '
+          '${consoleMessage.message}',
+        );
+      },
+      onDownloadStart: (_, String url) {
+        LogUtils.d('WebView started download from: $url');
+        NetUtils.download(url);
+      },
+      onWebViewCreated: (InAppWebViewController controller) {
+        _webViewController = controller;
+      },
+      shouldOverrideUrlLoading: (
+        InAppWebViewController controller,
+        ShouldOverrideUrlLoadingRequest request,
+      ) async {
+        if (checkSchemeLoad(controller, request.url)) {
+          return ShouldOverrideUrlLoadingAction.CANCEL;
+        } else {
+          return ShouldOverrideUrlLoadingAction.ALLOW;
+        }
+      },
+    );
   }
 
   @override
@@ -459,117 +448,7 @@ class _AppWebViewState extends State<AppWebView>
           appBar: (widget.withAppBar ?? true) ? appBar(context) : null,
           body: Stack(
             children: <Widget>[
-              InAppWebView(
-                initialUrl: url,
-                initialOptions: InAppWebViewGroupOptions(
-                  crossPlatform: InAppWebViewOptions(
-                    applicationNameForUserAgent: 'openjmu-webview',
-                    cacheEnabled: widget.withCookie ?? true,
-                    clearCache: !widget.withCookie ?? false,
-                    horizontalScrollBarEnabled: false,
-                    javaScriptCanOpenWindowsAutomatically: true,
-                    supportZoom: true,
-                    transparentBackground: true,
-                    useOnDownloadStart: true,
-                    useShouldOverrideUrlLoading: true,
-                    verticalScrollBarEnabled: false,
-                  ),
-                  android: AndroidInAppWebViewOptions(
-                    allowFileAccessFromFileURLs: true,
-                    allowUniversalAccessFromFileURLs: true,
-                    builtInZoomControls: true,
-                    displayZoomControls: false,
-                    forceDark: currentIsDark
-                        ? AndroidForceDark.FORCE_DARK_ON
-                        : AndroidForceDark.FORCE_DARK_OFF,
-                    loadWithOverviewMode: true,
-                    mixedContentMode:
-                        AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-                    safeBrowsingEnabled: false,
-                    useWideViewPort: true,
-                  ),
-                  ios: IOSInAppWebViewOptions(
-                    allowsAirPlayForMediaPlayback: true,
-                    allowsBackForwardNavigationGestures: true,
-                    allowsLinkPreview: true,
-                    allowsPictureInPictureMediaPlayback: true,
-                    isFraudulentWebsiteWarningEnabled: false,
-                    sharedCookiesEnabled: true,
-                  ),
-                ),
-                onCreateWindow: (
-                  InAppWebViewController controller,
-                  CreateWindowRequest createWindowRequest,
-                ) async {
-                  if (Uri.tryParse(createWindowRequest.url) != null) {
-                    await controller.loadUrl(url: createWindowRequest.url);
-                    return true;
-                  }
-                  return false;
-                },
-                onLoadStart: (_, String url) {
-                  LogUtils.d('Webview onLoadStart: $url');
-                },
-                onLoadStop:
-                    (InAppWebViewController controller, String url) async {
-                  controller.evaluateJavascript(
-                    source: 'window.onbeforeunload=null',
-                  );
-
-                  this.url = url;
-                  final String _title = (await controller.getTitle())?.trim();
-                  if (_title != null &&
-                      _title.isNotEmpty &&
-                      _title != this.url) {
-                    title = _title;
-                  } else {
-                    final String ogTitle = await controller.evaluateJavascript(
-                      source:
-                          'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
-                          'if (ogTitle != undefined) ogTitle.content;',
-                    ) as String;
-                    if (ogTitle != null) {
-                      title = ogTitle;
-                    }
-                  }
-                  if (mounted) {
-                    setState(() {});
-                  }
-                  Future<void>.delayed(500.milliseconds, () {
-                    if (!progressController.isClosed) {
-                      progressController?.add(0.0);
-                    }
-                  });
-                },
-                onProgressChanged: (_, int progress) {
-                  progressController?.add(progress / 100);
-                },
-                onConsoleMessage: (_, ConsoleMessage consoleMessage) {
-                  LogUtils.d(
-                    'Console message: '
-                    '${consoleMessage.messageLevel.toString()}'
-                    ' - '
-                    '${consoleMessage.message}',
-                  );
-                },
-                onDownloadStart: (_, String url) {
-                  LogUtils.d('WebView started download from: $url');
-                  NetUtils.download(url);
-                },
-                onWebViewCreated: (InAppWebViewController controller) {
-                  _webViewController = controller;
-                },
-                shouldOverrideUrlLoading: (
-                  InAppWebViewController controller,
-                  ShouldOverrideUrlLoadingRequest request,
-                ) async {
-                  if (checkSchemeLoad(controller, request.url)) {
-                    return ShouldOverrideUrlLoadingAction.CANCEL;
-                  } else {
-                    return ShouldOverrideUrlLoadingAction.ALLOW;
-                  }
-                },
-              ),
+              _webView,
               progressBar,
             ],
           ),
