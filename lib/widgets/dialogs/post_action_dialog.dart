@@ -179,13 +179,19 @@ class _PostActionDialogState extends State<PostActionDialog> {
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
     ).then((User user) {
-      _focusNode.requestFocus();
+      if (_focusNode.canRequestFocus) {
+        _focusNode.requestFocus();
+      }
       if (user != null) {
-        InputUtils.insertText(
-          text: '<M ${user.id}>@${user.nickname}<\/M>',
-          state: this,
-          controller: _tec,
-        );
+        Future<void>.delayed(250.milliseconds, () {
+          if (_focusNode.canRequestFocus) {
+            _focusNode.requestFocus();
+          }
+          InputUtils.insertText(
+            text: '<M ${user.id}>@${user.nickname}<\/M>',
+            controller: _tec,
+          );
+        });
       }
     });
   }
