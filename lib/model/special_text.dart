@@ -13,9 +13,15 @@ import 'package:openjmu/constants/constants.dart';
 class LinkText extends SpecialText {
   LinkText(
     TextStyle textStyle,
-    SpecialTextGestureTapCallback onTap, {
-    String linkHost,
-  }) : super(linkHost ?? API.wbHost, ' ', textStyle, onTap: onTap);
+    SpecialTextGestureTapCallback onTap,
+  ) : super(headReg, ' ', textStyle, onTap: onTap);
+
+  static RegExp get headReg => RegExp(r'http[s]');
+
+  static final RegExp linkRegExp = RegExp(
+    r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+    r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)',
+  );
 
   @override
   InlineSpan finishText() {
@@ -50,39 +56,6 @@ class LinkText extends SpecialText {
   }
 }
 
-/// Older link text class.
-/// 旧链接 (http) 文字类
-///
-/// e.g. 'http://wb.jmu.edu.cn/r/wXn'
-class LinkOlderText extends LinkText {
-  LinkOlderText(
-    TextStyle textStyle,
-    SpecialTextGestureTapCallback onTap,
-  ) : super(textStyle, onTap, linkHost: API.wbHostWithoutHttps);
-}
-
-/// Forum link text class.
-/// 论坛链接文字类
-///
-/// e.g. 'https://forum99.jmu.edu.cn/.....'
-class ForumLinkText extends LinkText {
-  ForumLinkText(
-    TextStyle textStyle,
-    SpecialTextGestureTapCallback onTap,
-  ) : super(textStyle, onTap, linkHost: API.forum99Host);
-}
-
-/// Older forum link text class.
-/// 旧论坛链接 (http) 文字类
-///
-/// e.g. 'http://forum99.jmu.edu.cn/.....'
-class ForumLinkOlderText extends LinkText {
-  ForumLinkOlderText(
-    TextStyle textStyle,
-    SpecialTextGestureTapCallback onTap,
-  ) : super(textStyle, onTap, linkHost: API.forum99HostWithoutHttps);
-}
-
 /// Mention someone text class.
 /// 提到某人文字类
 ///
@@ -97,6 +70,8 @@ class MentionText extends SpecialText {
 
   static const String startKey = '<M';
   static const String endKey = '<\/M>';
+  static const String word = '@';
+
   final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>'); // 前缀正则
   final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>'); // 后缀正则
   final int start;
@@ -143,10 +118,7 @@ class MentionText extends SpecialText {
         start: start,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 6.w),
-          padding: EdgeInsets.symmetric(
-            horizontal: 6.w,
-            vertical: 2.h,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.w),
             color: const Color(0xff363636),
@@ -295,7 +267,7 @@ class ImageText extends SpecialText {
 
   static const String flag = '|';
 
-  static RegExp get reg => RegExp('$flag\d$flag');
+  static RegExp get reg => RegExp('\\$flag(\\d+)\\$flag');
 
   final int start;
   final BuilderType builderType;
@@ -307,6 +279,10 @@ class ImageText extends SpecialText {
   @override
   InlineSpan finishText() {
     final String imageText = toString();
+    if (!reg.hasMatch(imageText)) {
+      return TextSpan(text: toString());
+    }
+
     final int imageId = getImageIdFromContent(imageText);
 
     final InlineSpan span = TextSpan(
@@ -351,10 +327,6 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   final List<InlineSpan> prefixSpans;
   final List<InlineSpan> suffixSpans;
 
-  final RegExp linkRegExp =
-      RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
-          r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
-
   @override
   TextSpan build(
     String data, {
@@ -368,8 +340,9 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
     /// Replace all links at the first time, prevent strange links recognized.
     /// 根据正则替换可识别的链接，防止奇怪的链接被解析。
-    if (linkRegExp.allMatches(data).isNotEmpty) {
-      final Iterable<RegExpMatch> matches = linkRegExp.allMatches(data);
+    if (LinkText.linkRegExp.allMatches(data).isNotEmpty) {
+      final Iterable<RegExpMatch> matches =
+          LinkText.linkRegExp.allMatches(data);
       for (final RegExpMatch match in matches) {
         data = data.replaceFirst(match.group(0), ' ${match.group(0)} ');
       }
@@ -396,9 +369,12 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
             index: i,
           );
           if (specialText != null) {
-            if (textStack.length - specialText.startFlag.length >= 0) {
+            if (textStack.length - specialText.startFlag.toString().length >=
+                0) {
               textStack = textStack.substring(
-                  0, textStack.length - specialText.startFlag.length);
+                0,
+                textStack.length - specialText.startFlag.toString().length,
+              );
               if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
@@ -408,10 +384,12 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
         }
       }
       if (specialText != null) {
-        inlineList.add(TextSpan(
-          text: specialText.startFlag + specialText.getContent(),
-          style: textStyle,
-        ));
+        inlineList.add(
+          TextSpan(
+            text: specialText.startFlag.toString() + specialText.getContent(),
+            style: textStyle,
+          ),
+        );
       } else if (textStack.isNotEmpty) {
         inlineList.add(TextSpan(text: textStack, style: textStyle));
       }
@@ -429,30 +407,24 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
   @override
   SpecialText createSpecialText(
-    String flag, {
+    String data, {
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (flag == null || flag == '') {
+    if (data == null || data == '') {
       return null;
     }
 
-    if (isStart(flag, MentionText.startKey)) {
+    if (isStart(data, MentionText.startKey)) {
       return MentionText(textStyle, onTap, type: BuilderType.extendedText);
-    } else if (isStart(flag, PoundText.flag)) {
+    } else if (isStart(data, PoundText.flag)) {
       return PoundText(textStyle, onTap, type: BuilderType.extendedText);
-    } else if (isStart(flag, EmoticonText.startKey)) {
+    } else if (isStart(data, EmoticonText.startKey)) {
       return EmoticonText(textStyle, type: BuilderType.extendedText);
-    } else if (isStart(flag, API.wbHost)) {
+    } else if (isStart(data, LinkText.headReg)) {
       return LinkText(textStyle, onTap);
-    } else if (isStart(flag, API.wbHostWithoutHttps)) {
-      return LinkOlderText(textStyle, onTap);
-    } else if (isStart(flag, API.forum99Host)) {
-      return ForumLinkText(textStyle, onTap);
-    } else if (isStart(flag, API.forum99HostWithoutHttps)) {
-      return ForumLinkOlderText(textStyle, onTap);
-    } else if (isStart(flag, ImageText.flag) && ImageText.reg.hasMatch(flag)) {
+    } else if (isStart(data, ImageText.flag)) {
       return ImageText(textStyle, onTap);
     }
     return null;
@@ -462,28 +434,35 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
   @override
   SpecialText createSpecialText(
-    String flag, {
+    String data, {
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (flag == null || flag == '') {
+    if (data == null || data == '') {
       return null;
     }
 
-    if (isStart(flag, MentionText.startKey)) {
+    if (isStart(data, MentionText.startKey)) {
       return MentionText(
         textStyle, onTap,
         // Using minus to keep position correct.
         start: index - (MentionText.startKey.length - 1),
         type: BuilderType.extendedTextField,
       );
-    } else if (isStart(flag, PoundText.flag)) {
-      return PoundText(textStyle, onTap,
-          start: index, type: BuilderType.extendedTextField);
-    } else if (isStart(flag, EmoticonText.startKey)) {
-      return EmoticonText(textStyle,
-          start: index, type: BuilderType.extendedTextField);
+    } else if (isStart(data, PoundText.flag)) {
+      return PoundText(
+        textStyle,
+        onTap,
+        start: index,
+        type: BuilderType.extendedTextField,
+      );
+    } else if (isStart(data, EmoticonText.startKey)) {
+      return EmoticonText(
+        textStyle,
+        start: index,
+        type: BuilderType.extendedTextField,
+      );
     }
     return null;
   }
@@ -494,14 +473,14 @@ enum WidgetType { post, comment }
 
 void specialTextTapRecognizer(dynamic data) {
   final String text = data['content'] as String;
-  if (text.startsWith('#')) {
+  if (text.startsWith(PoundText.flag)) {
     navigatorState.pushNamed(
       Routes.openjmuSearch.name,
       arguments: Routes.openjmuSearch.d(
         content: text.substring(1, text.length - 1),
       ),
     );
-  } else if (text.startsWith('@')) {
+  } else if (text.startsWith(MentionText.word)) {
     navigatorState.pushNamed(
       Routes.openjmuUserPage.name,
       arguments: Routes.openjmuUserPage.d(uid: data['uid'].toString()),
@@ -510,7 +489,7 @@ void specialTextTapRecognizer(dynamic data) {
     API.launchWeb(url: text, title: '网页链接');
   } else if (text.startsWith('http://')) {
     API.launchWeb(url: text, title: '网页链接');
-  } else if (text.startsWith('|')) {
+  } else if (text.startsWith(ImageText.flag)) {
     final int imageId = data['image'] as int;
     final String imageUrl = API.commentImageUrl(imageId, 'o');
     navigatorState.pushNamed(
