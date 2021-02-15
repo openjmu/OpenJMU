@@ -284,8 +284,12 @@ class Routes {
   ///
   /// [routeName] : '用户二维码页'
   ///
+  /// [constructors] :
+  ///
+  /// UserQrCodePage : [Key key]
+  ///
   /// [pageRouteType] : PageRouteType.transparent
-  static const String openjmuUserQrCode = 'openjmu://user-qr-code';
+  static const _OpenjmuUserQrCode openjmuUserQrCode = _OpenjmuUserQrCode();
 }
 
 class _OpenjmuAppCenterPage {
@@ -543,6 +547,19 @@ class _OpenjmuUserPage {
   Map<String, dynamic> d({Key key, @required String uid}) => <String, dynamic>{
         'key': key,
         'uid': uid,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _OpenjmuUserQrCode {
+  const _OpenjmuUserQrCode();
+
+  String get name => 'openjmu://user-qr-code';
+
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
+        'key': key,
       };
 
   @override

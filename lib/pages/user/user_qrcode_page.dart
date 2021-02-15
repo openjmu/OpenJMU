@@ -15,6 +15,8 @@ import 'package:openjmu/constants/constants.dart';
   pageRouteType: PageRouteType.transparent,
 )
 class UserQrCodePage extends StatefulWidget {
+  const UserQrCodePage({Key key}) : super(key: key);
+
   @override
   _UserQrCodePageState createState() => _UserQrCodePageState();
 }
@@ -50,60 +52,76 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
       showToast('保存成功');
     } catch (e) {
-      isSaving = false;
       showToast('保存失败');
+    } finally {
+      isSaving = false;
     }
   }
 
-  Widget get usernameWidget {
-    return Flexible(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Text(
-          currentUser.name,
-          style: TextStyle(fontSize: 22.sp),
-          textAlign: TextAlign.left,
-          maxLines: 1,
-          overflow: TextOverflow.fade,
-        ),
-      ),
-    );
-  }
-
   Widget get qrImage {
-    return Padding(
-      padding: EdgeInsets.all(minWidth / 20),
-      child: QrImage(
-        version: 4,
-        data: '${Routes.openjmuUserPage.name}/${currentUser.uid}',
-        padding: EdgeInsets.zero,
-        backgroundColor: context.theme.colorScheme.surface,
-        foregroundColor: context.textTheme.bodyText2.color,
-        embeddedImage: const AssetImage(R.IMAGES_LOGO_1024_ROUNDED_PNG),
-        embeddedImageStyle: QrEmbeddedImageStyle(
-          size: Size.square(minWidth * 0.1),
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: QrImage(
+              version: 3,
+              data: '${Routes.openjmuUserPage.name}/${currentUser.uid}',
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+            ),
+          ),
+          Center(child: UserAvatar(size: minWidth / 7)),
+        ],
+      ),
+    );
+  }
+
+  Widget _qrWidget(BuildContext context) {
+    return RepaintBoundary(
+      key: previewContainer,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: Screens.width * 0.1,
+        ),
+        color: context.theme.colorScheme.surface,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 40.w),
+              child: SvgPicture.asset(
+                R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
+                color: defaultLightColor,
+                width: Screens.width * 0.275,
+              ),
+            ),
+            qrImage,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 40.w),
+              child: Text(
+                '通过 OpenJMU 扫一扫上方的二维码图案，加我为好友',
+                style: context.textTheme.caption.copyWith(fontSize: 18.sp),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget get saveButton {
+  Widget _saveButton(BuildContext context) {
     return Tapper(
       onTap: saveToGallery,
       child: Container(
-        margin: EdgeInsets.only(top: minWidth / 10),
-        width: 80.w,
         height: 80.w,
-        decoration: BoxDecoration(
-          color: context.theme.canvasColor,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            R.ASSETS_ICONS_USER_SAVE_CODE_SVG,
-            color: context.iconTheme.color,
-            width: minWidth * 0.05,
-            height: minWidth * 0.05,
+        alignment: Alignment.center,
+        child: Text(
+          '保存图片',
+          style: context.textTheme.bodyText2.copyWith(
+            fontSize: 22.sp,
           ),
         ),
       ),
@@ -120,37 +138,21 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
             onTap: Navigator.of(context).pop,
             child: const SizedBox.expand(),
           ),
-          Positioned.fill(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RepaintBoundary(
-                  key: previewContainer,
-                  child: Container(
-                    width: minWidth / 1.5,
-                    padding: EdgeInsets.all(25.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.w),
-                      color: context.theme.colorScheme.surface,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            const UserAvatar(size: 64.0),
-                            usernameWidget,
-                            sexualWidget(),
-                          ],
-                        ),
-                        VGap(30.w),
-                        qrImage,
-                      ],
-                    ),
-                  ),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.w),
+              child: Container(
+                width: minWidth / 1.5,
+                color: context.theme.colorScheme.surface,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    _qrWidget(context),
+                    Divider(thickness: 1.w, height: 1.w),
+                    _saveButton(context),
+                  ],
                 ),
-                saveButton,
-              ],
+              ),
             ),
           ),
         ],

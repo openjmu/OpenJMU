@@ -232,7 +232,9 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
     case 'openjmu://user-qr-code':
       return RouteResult(
         name: name,
-        widget: UserQrCodePage(),
+        widget: UserQrCodePage(
+          key: arguments['key'] as Key,
+        ),
         routeName: '用户二维码页',
         pageRouteType: PageRouteType.transparent,
       );

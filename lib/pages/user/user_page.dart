@@ -99,9 +99,11 @@ class UserPageState extends State<UserPage>
   Future<void> _getLevel() async {
     final Response<Map<String, dynamic>> response = await UserAPI.getLevel(uid);
     final Map<String, dynamic> data = response.data;
-    userLevelScore.value = UserLevelScore.fromJson(
-      data['score'] as Map<String, dynamic>,
-    );
+    if (mounted) {
+      userLevelScore.value = UserLevelScore.fromJson(
+        data['score'] as Map<String, dynamic>,
+      );
+    }
   }
 
   Future<void> _getTags() async {
@@ -112,18 +114,22 @@ class UserPageState extends State<UserPage>
     for (final dynamic tag in tags) {
       _userTags.add(UserTag.fromJson(tag as Map<String, dynamic>));
     }
-    userTags.value = _userTags;
+    if (mounted) {
+      userTags.value = _userTags;
+    }
   }
 
   Future<void> _getFollowingCount() async {
     final Response<Map<String, dynamic>> response =
         await UserAPI.getFansAndFollowingsCount(uid);
     final Map<String, dynamic> data = response.data;
-    user.value = user.value.copyWith(
-      isFollowing: data['is_following'] == 1,
-    );
-    userFans.value = data['fans'].toString().toInt();
-    userIdols.value = data['idols'].toString().toInt();
+    if (mounted) {
+      user.value = user.value.copyWith(
+        isFollowing: data['is_following'] == 1,
+      );
+      userFans.value = data['fans'].toString().toInt();
+      userIdols.value = data['idols'].toString().toInt();
+    }
   }
 
   Future<bool> onRefresh() => loadingBase.refresh();
@@ -405,7 +411,7 @@ class UserPageState extends State<UserPage>
   Widget get qrCodeWidget {
     return Tapper(
       onTap: () {
-        navigatorState.pushNamed(Routes.openjmuUserQrCode);
+        navigatorState.pushNamed(Routes.openjmuUserQrCode.name);
       },
       child: Container(
         width: 56.w,
