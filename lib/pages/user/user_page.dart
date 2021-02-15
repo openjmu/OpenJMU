@@ -83,9 +83,14 @@ class UserPageState extends State<UserPage>
       } else {
         final Map<String, dynamic> _user =
             (await UserAPI.getUserInfo(uid: uid)).data as Map<String, dynamic>;
-        user.value = UserInfo.fromJson(_user);
+        if (mounted) {
+          user.value = UserInfo.fromJson(_user);
+        }
       }
 
+      if (!mounted) {
+        return;
+      }
       await Future.wait<void>(
         <Future<dynamic>>[_getLevel(), _getTags(), _getFollowingCount()],
         eagerError: true,

@@ -118,7 +118,7 @@ class MentionText extends SpecialText {
         start: start,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 6.w),
-          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.w),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.w),
             color: const Color(0xff363636),
@@ -137,6 +137,7 @@ class MentionText extends SpecialText {
               Text(
                 mentionText.substring(1, mentionText.length),
                 style: textStyle?.copyWith(
+                  height: 1.21,
                   fontSize: 17.sp,
                   color: Colors.white,
                 ),

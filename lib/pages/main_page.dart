@@ -52,60 +52,60 @@ class MainPage extends StatefulWidget {
     @required BuildContext context,
     bool isTeam = false,
   }) {
-    return Consumer<NotificationProvider>(
-      builder: (_, NotificationProvider provider, __) {
-        return SizedBox(
-          width: 56.w,
-          child: Stack(
-            overflow: Overflow.visible,
-            children: <Widget>[
-              Tapper(
-                onTap: () async {
-                  provider.stopNotification();
-                  await navigatorState.pushNamed(
-                    Routes.openjmuNotifications.name,
-                    arguments: Routes.openjmuNotifications.d(
-                      initialPage: isTeam ? '集市' : '广场',
-                    ),
-                  );
-                  provider.initNotification();
-                },
-                child: Container(
-                  width: 56.w,
-                  height: 56.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(13.w),
-                    color: context.theme.canvasColor,
-                  ),
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(
-                    R.ASSETS_ICONS_NOTIFICATION_SVG,
-                    color: context.textTheme.bodyText2.color,
-                    width: 28.w,
-                  ),
+    return SizedBox(
+      width: 56.w,
+      child: Stack(
+        overflow: Overflow.visible,
+        children: <Widget>[
+          Tapper(
+            onTap: () async {
+              final NotificationProvider p =
+                  context.read<NotificationProvider>();
+              p.stopNotification();
+              await navigatorState.pushNamed(
+                Routes.openjmuNotifications.name,
+                arguments: Routes.openjmuNotifications.d(
+                  initialPage: isTeam ? '集市' : '广场',
                 ),
+              );
+              p.initNotification();
+            },
+            child: Container(
+              width: 56.w,
+              height: 56.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13.w),
+                color: context.theme.canvasColor,
               ),
-              Positioned(
-                top: 5.w,
-                right: 5.w,
-                child: Visibility(
-                  visible: isTeam
-                      ? provider.showTeamNotification
-                      : provider.showNotification,
-                  child: ClipRRect(
-                    borderRadius: maxBorderRadius,
-                    child: Container(
-                      width: 12.w,
-                      height: 12.w,
-                      color: context.themeColor,
-                    ),
-                  ),
-                ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_NOTIFICATION_SVG,
+                color: context.textTheme.bodyText2.color,
+                width: 28.w,
               ),
-            ],
+            ),
           ),
-        );
-      },
+          Positioned(
+            top: 5.w,
+            right: 5.w,
+            child: Selector<NotificationProvider, bool>(
+              selector: (_, NotificationProvider p) =>
+                  isTeam ? p.showTeamNotification : p.showNotification,
+              builder: (_, bool show, __) => Visibility(
+                visible: show,
+                child: ClipRRect(
+                  borderRadius: maxBorderRadius,
+                  child: Container(
+                    width: 12.w,
+                    height: 12.w,
+                    color: context.themeColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -8,128 +8,187 @@ class MentionPeopleDialog extends StatefulWidget {
 }
 
 class EditSignatureDialogState extends State<MentionPeopleDialog> {
-  final TextEditingController _textEditingController = TextEditingController();
-  String query = '';
-  final List<User> users = <User>[];
-
-  bool loading = false;
-
-  @override
-  void initState() {
-    _textEditingController.addListener(() {
-      query = _textEditingController.text;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    super.initState();
-  }
+  final TextEditingController _tec = TextEditingController();
+  final ValueNotifier<List<User>> users = ValueNotifier<List<User>>(<User>[]);
+  final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
 
   @override
   void dispose() {
-    _textEditingController?.dispose();
+    _tec.dispose();
+    users.dispose();
+    isLoading.dispose();
     super.dispose();
   }
 
   void requestSearch() {
-    if (query.isEmpty || loading) {
-      if (query.isEmpty) {
-        showToast('要搜的人难道不配有名字吗？🤔');
-      }
-    } else {
-      loading = true;
-      if (mounted) {
-        setState(() {});
-      }
-      UserAPI.searchUser(query).then((dynamic response) {
-        users.clear();
-        response['data'].forEach((dynamic userData) {
-          users.add(User.fromJson(userData as Map<String, dynamic>));
-        });
-        loading = false;
-        if (mounted) {
-          setState(() {});
-        }
-      }).catchError((dynamic e) {
-        LogUtils.e('Failed when request search: $e');
-        loading = false;
-      });
+    if (isLoading.value) {
+      return;
     }
+    if (_tec.text.isEmpty) {
+      showToast('要搜的人难道不配有名字吗？🤔');
+      return;
+    }
+    InputUtils.hideKeyboard();
+    isLoading.value = true;
+    UserAPI.searchUser(_tec.text).then((dynamic response) {
+      final List<User> _users = <User>[];
+      response['data'].forEach((dynamic userData) {
+        _users.add(User.fromJson(userData as Map<String, dynamic>));
+      });
+      users.value = _users;
+      isLoading.value = false;
+    }).catchError((dynamic e) {
+      LogUtils.e('Failed when request search: $e');
+    }).whenComplete(() => isLoading.value == false);
   }
 
-  Widget get title => Center(
-        child: Text(
-          '提到用户',
-          style: context.textTheme.headline6.copyWith(fontSize: 24.sp),
-        ),
-      );
+  Widget get title {
+    return Expanded(
+      child: Text(
+        '提及用户',
+        style: context.textTheme.headline6.copyWith(fontSize: 22.sp),
+      ),
+    );
+  }
 
-  Widget get searchField => Expanded(
-        child: TextField(
-          autofocus: true,
-          controller: _textEditingController,
-          cursorColor: currentThemeColor,
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.zero,
-            hintText: '请输入名字进行搜索',
-            hintStyle: TextStyle(textBaseline: TextBaseline.alphabetic),
+  Widget closeButton(BuildContext context) {
+    return Tapper(
+      child: Padding(
+        padding: EdgeInsets.all(8.w),
+        child: SvgPicture.asset(
+          R.ASSETS_ICONS_CLEAR_SVG,
+          width: 20.w,
+          color: context.iconTheme.color,
+        ),
+      ),
+      onTap: Navigator.of(context).pop,
+    );
+  }
+
+  Widget get searchField {
+    return Expanded(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
+        ),
+        child: ValueListenableBuilder<bool>(
+          valueListenable: isLoading,
+          builder: (_, bool value, __) => TextField(
+            autofocus: true,
+            controller: _tec,
+            cursorColor: currentThemeColor,
+            enabled: !value,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 14.w,
+                vertical: 15.w,
+              ),
+              isDense: true,
+              hintText: ' 请输入名字进行搜索',
+            ),
+            textInputAction: TextInputAction.search,
+            style: context.textTheme.bodyText2.copyWith(
+              height: 1.24,
+              fontSize: 20.sp,
+            ),
+            scrollPadding: EdgeInsets.zero,
+            maxLines: 1,
+            onSubmitted: (_) => requestSearch(),
           ),
-          textInputAction: TextInputAction.search,
-          style: context.textTheme.bodyText2.copyWith(
-            fontSize: 20.sp,
-            textBaseline: TextBaseline.alphabetic,
-          ),
-          scrollPadding: EdgeInsets.zero,
-          maxLines: 1,
-          onChanged: (String value) {
-            if (value.length + 1 == 30) {
-              return null;
+        ),
+      ),
+    );
+  }
+
+  Widget get searchButton {
+    return GestureDetector(
+      onTap: requestSearch,
+      child: Container(
+        width: 56.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
+        ),
+        alignment: Alignment.center,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: isLoading,
+          builder: (_, bool value, __) {
+            if (value) {
+              return SizedBox.fromSize(
+                size: Size.square(24.w),
+                child: const PlatformProgressIndicator(),
+              );
             }
+            return SvgPicture.asset(
+              R.ASSETS_ICONS_SELF_PAGE_SEARCH_SVG,
+              color: context.textTheme.bodyText2.color,
+              width: 28.w,
+            );
           },
-          onSubmitted: (_) => requestSearch(),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget get searchButton => Tapper(
-        onTap: requestSearch,
-        child: Icon(
-          Icons.search,
-          size: 32.w,
-          color: context.textTheme.bodyText2.color,
-        ),
-      );
-
-  Widget get usersList => ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: Screens.height / 3),
-        child: SingleChildScrollView(
-          child: Wrap(
-            children: List<Widget>.generate(
-              users.length,
-              (int index) => user(index),
+  Widget get usersList {
+    return ValueListenableBuilder<List<User>>(
+      valueListenable: users,
+      builder: (_, List<User> list, __) {
+        if (list.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          constraints: BoxConstraints(maxHeight: Screens.height / 3),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(width: 1.w, color: context.theme.dividerColor),
             ),
           ),
-        ),
-      );
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Wrap(
+                children: List<Widget>.generate(
+                  list.length,
+                  (int index) => userWidget(_, index),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-  Widget user(int index) {
+  Widget userWidget(BuildContext context, int index) {
+    final User user = users.value[index];
     return FractionallySizedBox(
       widthFactor: 0.5,
       child: Tapper(
         onTap: () {
-          Navigator.of(context).maybePop<User>(users[index]);
+          Navigator.of(context).maybePop<User>(user);
         },
-        child: SizedBox(
-          height: 68.h,
+        child: Container(
+          height: 80.w,
+          margin: EdgeInsets.all(10.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13.w),
+            color: context.theme.colorScheme.surface,
+          ),
           child: Row(
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 24.w, right: 30.w),
-                child: UserAvatar(uid: users[index].id, size: 54.0),
+              AspectRatio(
+                aspectRatio: 1,
+                child: Center(
+                  child: UserAvatar(uid: user.id, size: 54.0, canJump: false),
+                ),
               ),
+              Gap(5.w),
               Expanded(
                 child: Text(
-                  users[index].nickname,
+                  user.nickname,
                   style: TextStyle(fontSize: 19.sp),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -144,61 +203,47 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                width: Screens.width - 100.w,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.circular(12.w),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    title,
-                    Container(
-                      margin: EdgeInsets.all(20.w),
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      height: 60.h,
-                      decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: currentThemeColor)),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.w),
+          child: Container(
+            width: Screens.width * 0.75,
+            color: context.theme.canvasColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  color: context.theme.colorScheme.surface,
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24.w),
+                        child: Row(
+                          children: <Widget>[title, closeButton(context)],
+                        ),
                       ),
-                      child: Row(
-                        children: <Widget>[
-                          searchField,
-                          if (!loading)
-                            searchButton
-                          else
-                            SizedBox.fromSize(
-                              size: Size.square(32.w),
-                              child: const PlatformProgressIndicator(),
-                            ),
-                        ],
+                      Container(
+                        height: 56.w,
+                        child: Row(
+                          children: <Widget>[
+                            searchField,
+                            Gap(16.w),
+                            searchButton,
+                          ],
+                        ),
                       ),
-                    ),
-                    if (users.isNotEmpty) usersList,
-                  ],
+                      VGap(24.w),
+                    ],
+                  ),
                 ),
-              ),
-              Positioned(
-                top: 20.w,
-                right: 20.w,
-                child: Tapper(
-                  child: const Icon(Icons.close),
-                  onTap: Navigator.of(context).pop,
-                ),
-              ),
-            ],
+                usersList,
+              ],
+            ),
           ),
-          VGap(MediaQuery.of(context).viewInsets.bottom)
-        ],
+        ),
       ),
     );
   }
