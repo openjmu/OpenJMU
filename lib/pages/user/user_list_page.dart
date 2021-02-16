@@ -204,6 +204,27 @@ class _UserListState extends State<UserListPage> {
     );
   }
 
+  Widget _emptyWidget(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SvgPicture.asset(
+          R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
+          width: 50.w,
+          color: context.theme.iconTheme.color,
+        ),
+        VGap(20.w),
+        Text(
+          '空空如也',
+          style: TextStyle(
+            color: context.textTheme.caption.color,
+            fontSize: 22.sp,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String _type;
@@ -220,20 +241,15 @@ class _UserListState extends State<UserListPage> {
     }
     return Scaffold(
       body: FixedAppBarWrapper(
-        appBar: FixedAppBar(title: Text('$_type列表')),
+        appBar: FixedAppBar(title: Text(_type)),
         body: !isLoading
-            ? users?.isNotEmpty ?? false
+            ? users?.isNotEmpty == true
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     itemCount: (users.length / 2).ceil(),
                     itemBuilder: renderRow,
                   )
-                : Center(
-                    child: Text(
-                      '暂无内容',
-                      style: TextStyle(fontSize: 20.sp),
-                    ),
-                  )
+                : _emptyWidget(context)
             : const Center(child: LoadMoreSpinningIcon(isRefreshing: true)),
       ),
     );

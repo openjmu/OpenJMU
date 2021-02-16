@@ -319,12 +319,10 @@ class ImageText extends SpecialText {
 
 class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   StackSpecialTextSpanBuilder({
-    this.builderType = BuilderType.extendedText,
     this.prefixSpans,
     this.suffixSpans,
   });
 
-  final BuilderType builderType;
   final List<InlineSpan> prefixSpans;
   final List<InlineSpan> suffixSpans;
 

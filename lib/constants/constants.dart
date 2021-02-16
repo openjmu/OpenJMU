@@ -28,9 +28,9 @@ export 'package:wechat_assets_picker/wechat_assets_picker.dart'
     hide ImageFileType;
 export 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
-export 'package:openjmu/openjmu_routes.dart' show Routes;
+export 'package:openjmu/openjmu_routes.dart';
 export 'package:openjmu/openjmu_route_helper.dart'
-    show onGenerateRouteHelper, FFNavigatorObserver, FFRouteSettings;
+    hide RouteBuilder, WidgetBuilder;
 
 export '../api/api.dart';
 export '../extensions/extensions.e.dart';
@@ -45,7 +45,7 @@ export 'resources.dart';
 export 'screens.dart';
 export 'widgets.dart';
 
-const double kAppBarHeight = 76.0;
+const double kAppBarHeight = 86.0;
 
 class Constants {
   const Constants._();

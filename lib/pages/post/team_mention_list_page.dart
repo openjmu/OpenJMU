@@ -14,7 +14,8 @@ class TeamMentionListPage extends StatefulWidget {
   _TeamMentionListPageState createState() => _TeamMentionListPageState();
 }
 
-class _TeamMentionListPageState extends State<TeamMentionListPage> {
+class _TeamMentionListPageState extends State<TeamMentionListPage>
+    with AutomaticKeepAliveClientMixin {
   bool _shouldInit = true;
   bool loading = true, canLoadMore = true;
 
@@ -184,7 +185,12 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     if (loading) {
       return const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
     }

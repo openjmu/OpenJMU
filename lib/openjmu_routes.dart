@@ -5,6 +5,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:openjmu/pages/notification/notifications_page.dart';
 import 'model/models.dart';
 import 'providers/providers.dart';
 
@@ -20,7 +21,7 @@ const List<String> routeNames = <String>[
   'openjmu://image-viewer',
   'openjmu://login',
   'openjmu://news-detail',
-  'openjmu://notifications',
+  'openjmu://notifications-page',
   'openjmu://post-detail',
   'openjmu://publish-post',
   'openjmu://publish-team-post',
@@ -150,17 +151,17 @@ class Routes {
 
   /// '通知页'
   ///
-  /// [name] : 'openjmu://notifications'
+  /// [name] : 'openjmu://notifications-page'
   ///
   /// [routeName] : '通知页'
   ///
   /// [constructors] :
   ///
-  /// NotificationsPage : [Key key, String(required) initialPage]
+  /// NotificationsPage : [Key key, NotificationPageType(required) pageType]
   ///
   /// [pageRouteType] : PageRouteType.transparent
-  static const _OpenjmuNotifications openjmuNotifications =
-      _OpenjmuNotifications();
+  static const _OpenjmuNotificationsPage openjmuNotificationsPage =
+      _OpenjmuNotificationsPage();
 
   /// '动态详情页'
   ///
@@ -397,15 +398,15 @@ class _OpenjmuNewsDetail {
   String toString() => name;
 }
 
-class _OpenjmuNotifications {
-  const _OpenjmuNotifications();
+class _OpenjmuNotificationsPage {
+  const _OpenjmuNotificationsPage();
 
-  String get name => 'openjmu://notifications';
+  String get name => 'openjmu://notifications-page';
 
-  Map<String, dynamic> d({Key key, @required String initialPage}) =>
+  Map<String, dynamic> d({Key key, @required NotificationPageType pageType}) =>
       <String, dynamic>{
         'key': key,
-        'initialPage': initialPage,
+        'pageType': pageType,
       };
 
   @override

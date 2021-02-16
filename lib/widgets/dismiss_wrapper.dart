@@ -121,7 +121,7 @@ class DismissWrapperState extends State<DismissWrapper>
               topLeft: Radius.circular(widget.radius ?? 20.w),
               topRight: Radius.circular(widget.radius ?? 20.w),
             ),
-            color: widget.backgroundColor ?? Theme.of(context).primaryColor,
+            color: widget.backgroundColor ?? context.theme.colorScheme.surface,
           ),
           child: Column(
             key: columnKey,

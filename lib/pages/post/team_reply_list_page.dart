@@ -16,7 +16,8 @@ class TeamReplyListPage extends StatefulWidget {
   _TeamReplyListPageState createState() => _TeamReplyListPageState();
 }
 
-class _TeamReplyListPageState extends State<TeamReplyListPage> {
+class _TeamReplyListPageState extends State<TeamReplyListPage>
+    with AutomaticKeepAliveClientMixin {
   bool _shouldInit = true;
   bool loading = true, canLoadMore = true;
 
@@ -218,7 +219,12 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     if (loading) {
       return const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
     }

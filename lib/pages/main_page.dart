@@ -11,6 +11,7 @@ import 'package:openjmu/pages/home/message_page.dart';
 import 'package:openjmu/pages/home/post_square_page.dart';
 import 'package:openjmu/pages/home/school_work_page.dart';
 import 'package:openjmu/pages/home/self_page.dart';
+import 'package:openjmu/pages/notification/notifications_page.dart';
 
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
@@ -63,9 +64,11 @@ class MainPage extends StatefulWidget {
                   context.read<NotificationProvider>();
               p.stopNotification();
               await navigatorState.pushNamed(
-                Routes.openjmuNotifications.name,
-                arguments: Routes.openjmuNotifications.d(
-                  initialPage: isTeam ? '集市' : '广场',
+                Routes.openjmuNotificationsPage.name,
+                arguments: Routes.openjmuNotificationsPage.d(
+                  pageType: isTeam
+                      ? NotificationPageType.team
+                      : NotificationPageType.square,
                 ),
               );
               p.initNotification();

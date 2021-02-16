@@ -5,6 +5,7 @@
 
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/widgets.dart';
+import 'package:openjmu/pages/notification/notifications_page.dart';
 import 'model/models.dart';
 import 'pages/chat/chat_app_message_page.dart';
 import 'pages/home/app_center_page.dart';
@@ -124,12 +125,12 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: '新闻详情页',
       );
-    case 'openjmu://notifications':
+    case 'openjmu://notifications-page':
       return RouteResult(
         name: name,
         widget: NotificationsPage(
           key: arguments['key'] as Key,
-          initialPage: arguments['initialPage'] as String,
+          pageType: arguments['pageType'] as NotificationPageType,
         ),
         routeName: '通知页',
         pageRouteType: PageRouteType.transparent,

@@ -118,7 +118,11 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         child: Center(
           child: Text(
             widget.confirmLabel ?? '确定',
-            style: TextStyle(color: adaptiveButtonColor(), fontSize: 23.sp),
+            style: TextStyle(
+              color: adaptiveButtonColor(),
+              height: 1.2,
+              fontSize: 21.sp,
+            ),
           ),
         ),
       ),
@@ -130,13 +134,24 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
     return Tapper(
       onTap: () => Navigator.of(context).maybePop(false),
       child: Container(
-        height: 80.w + Screens.bottomSafeHeight,
-        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-        color: currentThemeColor,
+        constraints: BoxConstraints(minHeight: 80.w + Screens.bottomSafeHeight),
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.w,
+        ).copyWith(bottom: Screens.bottomSafeHeight),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+          ),
+          color: context.theme.colorScheme.surface,
+        ),
         child: Center(
           child: Text(
             widget.cancelLabel ?? '取消',
-            style: TextStyle(color: Colors.white, fontSize: 22.sp),
+            style: TextStyle(
+              color: currentThemeColor,
+              height: 1.2,
+              fontSize: 21.sp,
+            ),
           ),
         ),
       ),
@@ -148,9 +163,9 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemBuilder: (_, int index) => widget.actions[index],
       separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
       itemCount: widget.actions.length,
+      itemBuilder: (_, int index) => widget.actions[index],
     );
   }
 

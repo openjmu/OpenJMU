@@ -17,7 +17,8 @@ class TeamPraiseListPage extends StatefulWidget {
   _TeamPraiseListPageState createState() => _TeamPraiseListPageState();
 }
 
-class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
+class _TeamPraiseListPageState extends State<TeamPraiseListPage>
+    with AutomaticKeepAliveClientMixin {
   bool _shouldInit = true;
   bool loading = true, canLoadMore = true;
 
@@ -209,7 +210,12 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     if (loading) {
       return const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
     }

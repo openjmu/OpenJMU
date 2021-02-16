@@ -9,12 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     as ex;
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/post/team_mention_list_page.dart';
 import 'package:openjmu/pages/post/team_praise_list_page.dart';
 import 'package:openjmu/pages/post/team_reply_list_page.dart';
+
+const double _tabHeight = 76.0;
 
 class _Section {
   const _Section({
@@ -32,34 +35,33 @@ class _Field {
     @required this.name,
     @required this.field,
     @required this.action,
-    @required this.select,
-    @required this.index,
   })  : assert(name != null),
         assert(field != null),
-        assert(action != null),
-        assert(select != null),
-        assert(index != null);
+        assert(action != null);
 
   final String name;
   final int Function() field;
   final VoidCallback action;
-  final Function(int index) select;
-  final int index;
 }
 
+enum NotificationPageType { square, team }
+
 @FFRoute(
-  name: 'openjmu://notifications',
+  name: 'openjmu://notifications-page',
   routeName: '通知页',
   pageRouteType: PageRouteType.transparent,
+  argumentImports: <String>[
+    'import \'package:openjmu/pages/notification/notifications_page.dart\';',
+  ],
 )
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({
     Key key,
-    @required this.initialPage,
-  })  : assert(initialPage != null),
+    @required this.pageType,
+  })  : assert(pageType != null),
         super(key: key);
 
-  final String initialPage;
+  final NotificationPageType pageType;
 
   @override
   State<StatefulWidget> createState() => NotificationsPageState();
@@ -83,67 +85,57 @@ class NotificationsPageState extends State<NotificationsPage>
       currentContext.read<NotificationProvider>();
 
   bool tapping = false;
-  int _index = 0, _squareIndex = 0, _teamIndex = 0;
+  TabController _tabController;
   AnimationController backgroundOpacityController;
 
-  Map<String, _Section> get sections {
-    return <String, _Section>{
-      '广场': _Section(
+  _Section get currentSection => sections[widget.pageType];
+
+  List<_Field> get currentFields => currentSection.fields;
+
+  Map<NotificationPageType, _Section> get sections {
+    return <NotificationPageType, _Section>{
+      NotificationPageType.square: _Section(
         notification: provider.notifications,
         fields: <_Field>[
           _Field(
             name: '赞',
             field: () => provider.notifications.praise,
             action: provider.readPraise,
-            select: selectSquareIndex,
-            index: _squareIndex,
           ),
           _Field(
             name: '评论',
             field: () => provider.notifications.comment,
             action: provider.readReply,
-            select: selectSquareIndex,
-            index: _squareIndex,
           ),
           _Field(
             name: '@我的动态',
             field: () => provider.notifications.tAt,
             action: provider.readPostMention,
-            select: selectSquareIndex,
-            index: _squareIndex,
           ),
           _Field(
             name: '@我的评论',
             field: () => provider.notifications.cmtAt,
             action: provider.readCommentMention,
-            select: selectSquareIndex,
-            index: _squareIndex,
           ),
         ],
       ),
-      '集市': _Section(
+      NotificationPageType.team: _Section(
         notification: provider.teamNotifications,
         fields: <_Field>[
           _Field(
             name: '赞',
             field: () => provider.teamNotifications.praise,
             action: provider.readTeamPraise,
-            select: selectTeamIndex,
-            index: _teamIndex,
           ),
           _Field(
             name: '评论',
             field: () => provider.teamNotifications.reply,
             action: provider.readTeamReply,
-            select: selectTeamIndex,
-            index: _teamIndex,
           ),
           _Field(
             name: '提到我',
             field: () => provider.teamNotifications.mention,
             action: provider.readTeamMention,
-            select: selectTeamIndex,
-            index: _teamIndex,
           ),
         ],
       ),
@@ -170,22 +162,23 @@ class NotificationsPageState extends State<NotificationsPage>
       }
     });
 
-    switch (widget.initialPage) {
-      case '广场':
-        _index = 0;
+    int _initialIndex;
+    switch (widget.pageType) {
+      case NotificationPageType.square:
+        _initialIndex = provider.initialIndex;
         break;
-      case '集市':
-        _index = 1;
+      case NotificationPageType.team:
+        _initialIndex = provider.teamInitialIndex;
         break;
     }
-
-    _squareIndex = provider.initialIndex;
-    _teamIndex = provider.teamInitialIndex;
+    _tabController = TabController(
+      initialIndex: _initialIndex,
+      length: currentFields.length,
+      vsync: this,
+    );
 
     SchedulerBinding.instance.addPostFrameCallback((Duration _) async {
-      sections[widget.initialPage]
-          .fields[_index == 0 ? _squareIndex : _teamIndex]
-          .action();
+      currentFields[_initialIndex].action();
       await scrollController.animateTo(
         maximumSheetHeight,
         duration: 250.milliseconds,
@@ -202,42 +195,9 @@ class NotificationsPageState extends State<NotificationsPage>
     super.dispose();
   }
 
-  void selectIndex(int index) {
-    if (index != _index) {
-      setState(() {
-        _index = index;
-      });
-    }
-  }
-
-  void selectSquareIndex(int index) {
-    if (index != _squareIndex) {
-      setState(() {
-        _squareIndex = index;
-      });
-    }
-  }
-
-  void selectTeamIndex(int index) {
-    if (index != _teamIndex) {
-      setState(() {
-        _teamIndex = index;
-      });
-    }
-  }
-
   /// Build current scroll view key for specific scroll view.
   Key innerScrollPositionKeyBuilder() {
-    String keyString = 'List-$_index-';
-    switch (_index) {
-      case 0:
-        keyString += '$_squareIndex';
-        break;
-      case 1:
-        keyString += '$_teamIndex';
-        break;
-    }
-    return Key(keyString);
+    return Key('List-${widget.pageType}-${_tabController.index}');
   }
 
   Future<void> canAnimate() async {
@@ -338,69 +298,67 @@ class NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  Widget get actionBar {
+  Widget get tabBar {
     return Expanded(
-      child: Row(
-        children: List<Widget>.generate(
-          sections[widget.initialPage].fields.length,
-          (int j) {
-            final _Field field = sections[widget.initialPage].fields[j];
-            final int count = field.field();
-            return Tapper(
-              onTap: () {
-                field
-                  ..select(j)
-                  ..action();
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                height: double.maxFinite,
-                child: badgeIcon(
+      child: SizedBox(
+        height: _tabHeight.w,
+        child: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          onTap: (int index) => currentFields[index].action(),
+          indicatorWeight: 4.w,
+          labelColor: currentThemeColor,
+          labelStyle: TextStyle(
+            height: 1.2,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+          labelPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+          ).copyWith(top: 4.w),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
+          tabs: List<Tab>.generate(
+            currentFields.length,
+            (int index) {
+              final _Field field = currentFields[index];
+              final int count = field.field();
+              return Tab(
+                icon: badgeIcon(
                   content: count,
-                  icon: getActionName(j),
+                  icon: getActionName(index),
                   showBadge: count != 0,
                 ),
-              ),
-            );
-          },
+                iconMargin: EdgeInsets.zero,
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
   Widget getActionName(int actionIndex) {
-    final _Field item = sections[widget.initialPage].fields[actionIndex];
-    final bool isSelected = item.index == actionIndex;
-    return AnimatedDefaultTextStyle(
-      duration: kThemeAnimationDuration,
-      child: Text(item.name),
-      style: TextStyle(
-        color: isSelected ? currentThemeColor : context.textTheme.caption.color,
-        height: 1.2,
-        fontSize: 18.sp,
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-      ),
-    );
+    return Text(currentFields[actionIndex].name);
   }
 
   Widget _squareStack(BuildContext context) {
-    return IndexedStack(
-      index: _squareIndex,
+    return ExtendedTabBarView(
+      controller: _tabController,
       children: <Widget>[
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          const Key('List-0-0'),
+          Key('List-${NotificationPageType.square}-0'),
           praiseList,
         ),
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          const Key('List-0-1'),
+          Key('List-${NotificationPageType.square}-1'),
           commentByReply,
         ),
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          const Key('List-0-2'),
+          Key('List-${NotificationPageType.square}-2'),
           postByMention,
         ),
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          const Key('List-0-3'),
+          Key('List-${NotificationPageType.square}-3'),
           commentByMention,
         ),
       ],
@@ -408,22 +366,38 @@ class NotificationsPageState extends State<NotificationsPage>
   }
 
   Widget _teamStack(BuildContext context) {
-    return IndexedStack(
-      index: _teamIndex,
-      children: const <Widget>[
+    return ExtendedTabBarView(
+      controller: _tabController,
+      children: <Widget>[
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-1-0'),
-          TeamPraiseListPage(),
+          Key('List-${NotificationPageType.team}-0'),
+          const TeamPraiseListPage(),
         ),
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-1-1'),
-          TeamReplyListPage(),
+          Key('List-${NotificationPageType.team}-1'),
+          const TeamReplyListPage(),
         ),
         ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-1-2'),
-          TeamMentionListPage(),
+          Key('List-${NotificationPageType.team}-2'),
+          const TeamMentionListPage(),
         ),
       ],
+    );
+  }
+
+  Widget _contentBuilder(BuildContext context) {
+    Widget _content;
+    switch (widget.pageType) {
+      case NotificationPageType.square:
+        _content = _squareStack(context);
+        break;
+      case NotificationPageType.team:
+        _content = _teamStack(context);
+        break;
+    }
+    return ColoredBox(
+      color: context.theme.canvasColor,
+      child: _content,
     );
   }
 
@@ -473,35 +447,24 @@ class NotificationsPageState extends State<NotificationsPage>
                 ),
                 child: Container(
                   constraints: BoxConstraints(
-                    minHeight: kAppBarHeight.w,
+                    minHeight: _tabHeight.w,
                     maxHeight: maximumSheetHeight,
                   ),
                   color: Theme.of(context).primaryColor,
                   child: Column(
                     children: <Widget>[
                       Container(
-                        height: kAppBarHeight.w,
+                        height: _tabHeight.w,
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         color: context.theme.colorScheme.surface,
                         child: SizedBox.expand(
                           child: Row(
-                            children: <Widget>[actionBar, backButton],
+                            children: <Widget>[tabBar, backButton],
                           ),
                         ),
                       ),
                       Divider(thickness: 1.w, height: 1.w),
-                      Expanded(
-                        child: ColoredBox(
-                          color: Theme.of(context).canvasColor,
-                          child: IndexedStack(
-                            index: _index,
-                            children: <Widget>[
-                              _squareStack(context),
-                              _teamStack(context),
-                            ],
-                          ),
-                        ),
-                      ),
+                      Expanded(child: _contentBuilder(context)),
                     ],
                   ),
                 ),
