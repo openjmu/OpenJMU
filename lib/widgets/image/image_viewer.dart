@@ -3,14 +3,21 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:extended_image/extended_image.dart'
+    hide ExtendedNetworkImageProvider;
+
+// ignore: implementation_imports
+import 'package:extended_image_library/src/_network_image_io.dart';
+
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:r_scan/r_scan.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/pages/home/scan_qr_code_page.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
 
 @FFRoute(
@@ -45,8 +52,10 @@ class ImageViewerState extends State<ImageViewer>
       StreamController<double>.broadcast();
   final GlobalKey<ExtendedImageSlidePageState> slidePageKey =
       GlobalKey<ExtendedImageSlidePageState>();
+
   int currentIndex;
   bool popping = false;
+  List<Uint8List> imagesData;
 
   AnimationController _doubleTapAnimationController;
   Animation<double> _doubleTapCurveAnimation;
@@ -64,6 +73,7 @@ class ImageViewerState extends State<ImageViewer>
       clearDiskCachedImages();
     }
     currentIndex = widget.index;
+    imagesData = List<Uint8List>.filled(widget.pics.length, null);
 
     _controller = PageController(initialPage: currentIndex);
 
@@ -93,18 +103,35 @@ class ImageViewerState extends State<ImageViewer>
     backgroundOpacityStreamController.add(0.0);
   }
 
-  Future<void> _downloadImage() async {
+  Future<void> _imageExtraActions(BuildContext context) async {
+    final Uint8List data = imagesData[currentIndex];
+    final RScanResult scanResult = await RScan.scanImageMemory(data);
+    ConfirmationBottomSheet.show(
+      context,
+      actions: <ConfirmationBottomSheetAction>[
+        ConfirmationBottomSheetAction(
+          text: '保存图片',
+          onTap: () => _saveImage(data),
+        ),
+        if (scanResult?.message?.isNotEmpty == true)
+          ConfirmationBottomSheetAction(
+            text: '识别图中二维码',
+            onTap: () => onHandleScan(scanResult: scanResult),
+          ),
+      ],
+    );
+    if (scanResult?.message?.isNotEmpty == true) {}
+  }
+
+  Future<void> _saveImage(Uint8List data) async {
     final bool isAllGranted = await checkPermissions(<Permission>[
       if (Platform.isIOS) Permission.photos,
       if (Platform.isAndroid) Permission.storage,
     ]);
     if (isAllGranted) {
-      final String url = widget.pics[currentIndex].imageUrl;
       try {
-        final Response<List<int>> response =
-            await NetUtils.getBytes<List<int>>(url);
         await PhotoManager.editor.saveImage(
-          Uint8List.fromList(response.data),
+          Uint8List.fromList(data),
           title: '$currentTimeStamp',
         );
         showCenterToast('图片已保存至相册');
@@ -171,7 +198,7 @@ class ImageViewerState extends State<ImageViewer>
       imageViewerState: this,
       slidePageKey: slidePageKey,
       enableTapPop: true,
-      onLongPress: _downloadImage,
+      onLongPress: () => _imageExtraActions(context),
       heroPrefix: widget.heroPrefix,
       child: ExtendedImage.network(
         widget.pics[index].imageUrl,
@@ -228,6 +255,10 @@ class ImageViewerState extends State<ImageViewer>
               );
               break;
             case LoadState.completed:
+              imagesData[index] =
+                  (state.imageProvider as ExtendedNetworkImageProvider)
+                      .rawImageData;
+              break;
             case LoadState.failed:
               break;
           }
@@ -279,7 +310,7 @@ class ImageViewerState extends State<ImageViewer>
                         opacity: popping ? 0.0 : data.data,
                         child: _ViewAppBar(
                           post: widget.post,
-                          onMoreClicked: _downloadImage,
+                          onMoreClicked: () => _imageExtraActions(context),
                         ),
                       );
                     },
@@ -426,11 +457,10 @@ class _ViewAppBar extends StatelessWidget {
         size: Size.square(48.w),
         child: Center(
           child: SvgPicture.asset(
-            R.ASSETS_ICONS_POST_ACTIONS_DOWNLOAD_IMAGE_SVG,
+            R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
             width: 24.w,
             height: 24.w,
             color: Colors.white,
-            semanticsLabel: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
       ),
