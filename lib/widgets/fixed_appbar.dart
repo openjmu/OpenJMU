@@ -8,7 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 
 /// Customized appbar.
 /// 自定义的顶栏。
-class FixedAppBar extends StatelessWidget {
+class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const FixedAppBar({
     Key key,
     this.title,
@@ -21,6 +21,7 @@ class FixedAppBar extends StatelessWidget {
     this.actionsPadding,
     this.height,
     this.withBorder = true,
+    this.bottom,
   }) : super(key: key);
 
   /// Title widget. Typically a [Text] widget.
@@ -63,9 +64,19 @@ class FixedAppBar extends StatelessWidget {
   /// 是否在底部展示细线
   final bool withBorder;
 
+  /// This widget appears across the bottom of the app bar.
+  ///
+  /// 显示在顶栏下方的 widget
+  final PreferredSizeWidget bottom;
+
   static IconThemeData iconTheme(BuildContext context) {
     return IconThemeData(color: context.textTheme.bodyText2.color);
   }
+
+  double get _effectiveHeight => height ?? kAppBarHeight.w;
+
+  @override
+  Size get preferredSize => Size(Screens.width, _effectiveHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +87,7 @@ class FixedAppBar extends StatelessWidget {
     Widget child = Container(
       width: Screens.width,
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      height: (height ?? kAppBarHeight).h + MediaQuery.of(context).padding.top,
+      height: _effectiveHeight + MediaQuery.of(context).padding.top,
       color: backgroundColor ?? context.appBarTheme.color,
       child: Stack(
         children: <Widget>[
@@ -85,7 +96,7 @@ class FixedAppBar extends StatelessWidget {
               top: 0.0,
               bottom: 0.0,
               start: 0.0,
-              width: kAppBarHeight.w,
+              width: _effectiveHeight,
               child: leading ?? const FixedBackButton(),
             ),
           if (_title != null)
@@ -115,7 +126,7 @@ class FixedAppBar extends StatelessWidget {
           if (automaticallyImplyLeading &&
               Navigator.of(context).canPop() &&
               (actions?.isEmpty ?? true))
-            const Gap(kMinInteractiveDimension)
+            Gap(_effectiveHeight)
           else if (actions?.isNotEmpty ?? false)
             PositionedDirectional(
               top: 0.0,
@@ -129,12 +140,14 @@ class FixedAppBar extends StatelessWidget {
         ],
       ),
     );
-    if (withBorder) {
-      child = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[child, Divider(thickness: 1.w, height: 1.w)],
-      );
-    }
+    child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        child,
+        if (bottom != null) bottom,
+        if (withBorder) Divider(thickness: 1.w, height: 1.w),
+      ],
+    );
     return Material(
       type: MaterialType.transparency,
       child: IconTheme(
@@ -167,18 +180,17 @@ class FixedAppBarWrapper extends StatelessWidget {
       type: MaterialType.transparency,
       child: Stack(
         children: <Widget>[
-          Positioned(
-            top: kAppBarHeight.h + MediaQuery.of(context).padding.top,
-            left: 0.0,
-            right: 0.0,
-            bottom: 0.0,
+          Positioned.fill(
+            top: MediaQuery.of(context).padding.top +
+                appBar.preferredSize.height +
+                (appBar.bottom?.preferredSize?.height ?? 0),
             child: MediaQuery.removePadding(
               context: context,
               removeTop: true,
               child: body,
             ),
           ),
-          Positioned(top: 0.0, left: 0.0, right: 0.0, child: appBar),
+          Positioned.fill(bottom: null, child: appBar),
         ],
       ),
     );

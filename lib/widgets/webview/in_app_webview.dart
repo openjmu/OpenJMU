@@ -299,24 +299,21 @@ class _AppWebViewState extends State<AppWebView>
           ),
         ),
       ],
+      bottom: progressBar(context),
     );
   }
 
-  Widget get progressBar {
-    return PositionedDirectional(
-      start: 0,
-      end: 0.0,
-      top: 0,
-      height: 2.w,
+  PreferredSize progressBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: Size(Screens.width, 3.w),
       child: StreamBuilder<double>(
         initialData: 0.0,
         stream: progressController.stream,
-        builder: (BuildContext c, AsyncSnapshot<double> data) {
-          return LinearProgressIndicator(
-            backgroundColor: c.theme.primaryColor,
-            value: data.data,
-          );
-        },
+        builder: (_, AsyncSnapshot<double> data) => LinearProgressIndicator(
+          backgroundColor: context.appBarTheme.color,
+          value: data.data,
+          minHeight: 3.w,
+        ),
       ),
     );
   }
@@ -446,12 +443,7 @@ class _AppWebViewState extends State<AppWebView>
       child: Scaffold(
         body: FixedAppBarWrapper(
           appBar: (widget.withAppBar ?? true) ? appBar(context) : null,
-          body: Stack(
-            children: <Widget>[
-              _webView,
-              progressBar,
-            ],
-          ),
+          body: _webView,
         ),
       ),
     );
