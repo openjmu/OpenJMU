@@ -259,7 +259,6 @@ class _AppWebViewState extends State<AppWebView>
           ),
         ],
       ),
-      actionsPadding: EdgeInsets.symmetric(horizontal: 16.w),
       actions: <Widget>[
         DecoratedBox(
           decoration: BoxDecoration(

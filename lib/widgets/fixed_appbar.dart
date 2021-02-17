@@ -133,7 +133,8 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
               bottom: 0.0,
               end: 0.0,
               child: Padding(
-                padding: actionsPadding ?? EdgeInsets.zero,
+                padding:
+                    actionsPadding ?? EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(mainAxisSize: MainAxisSize.min, children: actions),
               ),
             ),

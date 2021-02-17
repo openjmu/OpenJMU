@@ -735,7 +735,6 @@ class _PublishPostPageState extends State<PublishPostPage>
           children: <Widget>[
             FixedAppBar(
               actions: <Widget>[publishButton],
-              actionsPadding: EdgeInsets.only(right: 18.w),
               withBorder: false,
             ),
             textField,

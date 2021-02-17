@@ -97,12 +97,6 @@ const BorderRadius maxBorderRadius = BorderRadius.all(
   Radius.circular(999999),
 );
 
-/// Constant widgets.
-///
-/// This section was declared for widgets that will be reuse in code.
-/// Including [OpenJMULogo], [DeveloperTag], [separator], [emptyDivider], [badgeIcon],
-/// [PlatformProgressIndicator], [LoadMoreIndicator], [ScaledImage]
-
 /// OpenJMU logo.
 class OpenJMULogo extends StatelessWidget {
   const OpenJMULogo({
@@ -160,11 +154,38 @@ Widget sexualWidget({UserInfo user, double size = 28.0}) {
   );
 }
 
-/// Empty divider. Used in widgets need empty placeholder.
-Widget emptyDivider({double width, double height}) => SizedBox(
-      width: width != null ? width.w : null,
-      height: height != null ? height.w : null,
+BorderSide dividerBS(BuildContext c) {
+  return BorderSide(
+    width: 1.w,
+    color: c.theme.dividerColor,
+  );
+}
+
+class LineDivider extends StatelessWidget {
+  const LineDivider({
+    Key key,
+    this.thickness = 1,
+    this.color,
+    this.indent,
+    this.endIndent,
+  }) : super(key: key);
+
+  final double thickness;
+  final Color color;
+  final double indent;
+  final double endIndent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      color: color,
+      thickness: thickness.w,
+      height: thickness.w,
+      indent: indent,
+      endIndent: endIndent,
     );
+  }
+}
 
 /// Badge Icon. Used in notification.
 Widget badgeIcon({
@@ -207,8 +228,9 @@ class PlatformProgressIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Platform.isIOS
         ? CupertinoTheme(
-            data:
-                CupertinoThemeData(brightness: brightness ?? currentBrightness),
+            data: CupertinoThemeData(
+              brightness: brightness ?? currentBrightness,
+            ),
             child: CupertinoActivityIndicator(radius: radius),
           )
         : CircularProgressIndicator(
@@ -306,7 +328,7 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
   @override
   Widget build(BuildContext context) {
     Widget child = SizedBox(
-      height: 54.w,
+      height: 84.w,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

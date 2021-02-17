@@ -471,7 +471,6 @@ class PostDetailPageState extends State<PostDetailPage>
             else
               postActionButton(context),
           ],
-          actionsPadding: EdgeInsets.only(right: 16.w),
         ),
         body: Column(
           children: <Widget>[

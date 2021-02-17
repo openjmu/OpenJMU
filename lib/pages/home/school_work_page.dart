@@ -73,7 +73,6 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
         Gap(16.w),
         switchButton,
       ],
-      actionsPadding: EdgeInsets.only(right: 16.w),
     );
   }
 

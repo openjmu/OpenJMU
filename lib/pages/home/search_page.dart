@@ -383,7 +383,6 @@ class SearchPageState extends State<SearchPage>
           centerTitle: false,
           title: searchTextField(context),
           actions: <Widget>[searchButton],
-          actionsPadding: EdgeInsets.symmetric(horizontal: 16.w),
         ),
         body: ValueListenableBuilder2<bool, bool>(
           firstNotifier: _loading,

@@ -1038,7 +1038,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 provider.post?.rootUid?.toString() == currentUser.uid)
               deleteButton,
           ],
-          actionsPadding: EdgeInsets.only(right: 16.w),
         ),
         body: Column(
           children: <Widget>[

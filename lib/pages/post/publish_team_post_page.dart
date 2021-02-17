@@ -724,7 +724,6 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
           children: <Widget>[
             FixedAppBar(
               actions: <Widget>[publishButton],
-              actionsPadding: EdgeInsets.only(right: 18.w),
               withBorder: false,
             ),
             textField,
