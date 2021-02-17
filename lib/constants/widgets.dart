@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:badges/badges.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -186,26 +185,6 @@ class LineDivider extends StatelessWidget {
     );
   }
 }
-
-/// Badge Icon. Used in notification.
-Widget badgeIcon({
-  @required dynamic content,
-  @required Widget icon,
-  EdgeInsets padding,
-  bool showBadge = true,
-}) =>
-    Badge(
-      padding: padding ?? EdgeInsets.all(6.w),
-      badgeColor: currentThemeColor,
-      child: icon,
-      elevation: Platform.isAndroid ? 2 : 0,
-      badgeContent: Text(
-        '$content',
-        style: TextStyle(color: Colors.white, fontSize: 14.sp),
-      ),
-      position: BadgePosition(top: -14.w, end: -16.w),
-      showBadge: showBadge,
-    );
 
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {

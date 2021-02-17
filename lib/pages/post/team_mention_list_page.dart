@@ -62,7 +62,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage>
       padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: item.fromUserId),
+          UserAvatar(uid: item.fromUserId, isSysAvatar: item.user.sysAvatar),
           Gap(16.w),
           Expanded(
             child: Column(

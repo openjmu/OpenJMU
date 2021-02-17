@@ -314,7 +314,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              UserAPI.getAvatar(uid: post.uid),
+              UserAvatar(uid: post.uid, isSysAvatar: post.userInfo.sysAvatar),
               Gap(16.w),
               Expanded(
                 child: Column(

@@ -361,6 +361,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
             canLoadMore: canLoadMore && !isLoading,
           );
         } else {
+          final Praise _praise = _praises[index];
           return ColoredBox(
             color: context.theme.cardColor,
             child: Row(
@@ -370,9 +371,12 @@ class PraiseListInPostState extends State<PraiseListInPost>
                     horizontal: 24.w,
                     vertical: 10.h,
                   ),
-                  child: UserAPI.getAvatar(uid: _praises[index].uid),
+                  child: UserAvatar(
+                    uid: _praise.uid,
+                    isSysAvatar: _praise.user.sysAvatar,
+                  ),
                 ),
-                Expanded(child: getPostNickname(context, _praises[index])),
+                Expanded(child: getPostNickname(context, _praise)),
               ],
             ),
           );

@@ -686,7 +686,10 @@ class _PostCardState extends State<PostCard> {
               padding: EdgeInsets.symmetric(vertical: 6.w),
               child: Row(
                 children: <Widget>[
-                  UserAPI.getAvatar(uid: widget.post.uid),
+                  UserAvatar(
+                    uid: widget.post.uid,
+                    isSysAvatar: widget.post.user.sysAvatar,
+                  ),
                   Gap(16.w),
                   Expanded(
                     child: Column(

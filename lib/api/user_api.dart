@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:extended_image/extended_image.dart';
+// ignore: implementation_imports
+import 'package:extended_image_library/src/_network_image_io.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/user_avatar.dart';
 
 UserInfo get currentUser => UserAPI.currentUser;
 
@@ -46,11 +46,11 @@ class UserAPI {
   /// Update cache network image provider after avatar is updated.
   static int avatarLastModified = currentTimeStamp;
 
-  static Widget getAvatar({double size = 48.0, String uid, int t}) {
-    return UserAvatar(uid: uid ?? currentUser.uid, size: size, timestamp: t);
-  }
-
-  static ImageProvider getAvatarProvider({String uid, int t, int size}) {
+  static ExtendedNetworkImageProvider getAvatarProvider({
+    String uid,
+    int t,
+    int size,
+  }) {
     return ExtendedNetworkImageProvider(
       '${API.userAvatar}'
       '?uid=${uid ?? currentUser.uid}'

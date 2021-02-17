@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
@@ -314,7 +315,7 @@ class NotificationsPageState extends State<NotificationsPage>
             fontWeight: FontWeight.w600,
           ),
           labelPadding: EdgeInsets.symmetric(
-            horizontal: 12.w,
+            horizontal: 14.w,
           ).copyWith(top: 4.w),
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
           tabs: List<Tab>.generate(
@@ -336,6 +337,24 @@ class NotificationsPageState extends State<NotificationsPage>
       ),
     );
   }
+
+  /// Badge Icon. Used in notification.
+  Widget badgeIcon({
+    @required dynamic content,
+    @required Widget icon,
+    bool showBadge = true,
+  }) =>
+      Badge(
+        padding: EdgeInsets.all(6.w),
+        badgeColor: currentThemeColor,
+        child: icon,
+        badgeContent: Text(
+          '$content',
+          style: TextStyle(color: Colors.white, fontSize: 14.sp),
+        ),
+        position: BadgePosition(top: -14.w, end: -18.w),
+        showBadge: showBadge,
+      );
 
   Widget getActionName(int actionIndex) {
     return Text(currentFields[actionIndex].name);

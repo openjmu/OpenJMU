@@ -60,6 +60,7 @@ class PraiseAPI {
       topicUid: null,
       topicNickname: null,
       pics: null,
+      user: PostUser.fromJson(itemData['user'] as Map<String, dynamic>),
     );
     return _praise;
   }
@@ -83,6 +84,7 @@ class PraiseAPI {
       topicUid: int.parse(itemData['topic']['user']['uid'].toString()),
       topicNickname: itemData['topic']['user']['nickname']?.toString(),
       pics: itemData['topic']['image'] as List<dynamic>,
+      user: PostUser.fromJson(itemData['user'] as Map<String, dynamic>),
     );
     return _praise;
   }

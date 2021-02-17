@@ -273,7 +273,11 @@ class SearchPageState extends State<SearchPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   VGap(2.w),
-                  UserAvatar(uid: userList[index].id, size: 56),
+                  UserAvatar(
+                    uid: userList[index].id,
+                    size: 56,
+                    isSysAvatar: userList[index].sysAvatar,
+                  ),
                   VGap(12.w),
                   Text(
                     userList[index].nickname.notBreak,

@@ -2,8 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-24 06:52
 ///
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart';
 
@@ -62,7 +60,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage>
       padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: item.fromUserId),
+          UserAvatar(uid: item.fromUserId, isSysAvatar: item.user.sysAvatar),
           Gap(16.w),
           Expanded(
             child: Column(
@@ -243,61 +241,3 @@ class _TeamReplyListPageState extends State<TeamReplyListPage>
     );
   }
 }
-
-class TeamReplyItem {
-  TeamReplyItem({
-    this.post,
-    this.comment,
-    this.toPost,
-    this.scope,
-    this.fromUserId,
-    this.fromUsername,
-    this.type,
-  });
-
-  factory TeamReplyItem.fromJson(Map<String, dynamic> json) {
-    final TeamPost toPost =
-        TeamPost.fromJson(json['to_post_info'] as Map<String, dynamic>);
-    final Map<String, dynamic> user = json['user_info'] as Map<String, dynamic>;
-    return TeamReplyItem(
-      post: TeamPost.fromJson(json['post_info'] as Map<String, dynamic>),
-      comment: TeamPostComment.fromJson(
-        json['reply_info'] as Map<String, dynamic>,
-      ),
-      toPost: toPost,
-      scope: json['to_post_info']['scope'] as Map<String, dynamic>,
-      fromUserId: user['uid'].toString(),
-      fromUsername: user['nickname'] as String,
-      type: json['to_post_info']['type'] == 'first'
-          ? TeamReplyType.post
-          : TeamReplyType.thread,
-    );
-  }
-
-  final TeamPost post;
-  final TeamPostComment comment;
-  final TeamPost toPost;
-  final Map<String, dynamic> scope;
-  final String fromUserId;
-  final String fromUsername;
-  final TeamReplyType type;
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'post': post,
-      'comment': comment,
-      'toPost': toPost,
-      'scope': scope,
-      'fromUserId': fromUserId,
-      'fromUsername': fromUsername,
-      'type': type,
-    };
-  }
-
-  @override
-  String toString() {
-    return const JsonEncoder.withIndent('  ').convert(toJson());
-  }
-}
-
-enum TeamReplyType { post, thread }

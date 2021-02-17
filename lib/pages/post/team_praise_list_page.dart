@@ -2,7 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-24 08:23
 ///
-import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -63,7 +62,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage>
       padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: item.fromUserId),
+          UserAvatar(uid: item.fromUserId, isSysAvatar: item.user.sysAvatar),
           Gap(16.w),
           Expanded(
             child: Column(
@@ -232,56 +231,5 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage>
       itemCount: praiseList.length + 1,
       itemBuilder: praiseItemBuilder,
     );
-  }
-}
-
-@immutable
-class TeamPraiseItem {
-  const TeamPraiseItem({
-    this.post,
-    this.from,
-    this.time,
-    this.scope,
-    this.fromUserId,
-    this.fromUsername,
-  });
-
-  factory TeamPraiseItem.fromJson(Map<String, dynamic> json) {
-    final TeamPost post =
-        TeamPost.fromJson(json['post_info'] as Map<String, dynamic>);
-    final Map<String, dynamic> user = json['user_info'] as Map<String, dynamic>;
-    return TeamPraiseItem(
-      post: post,
-      from: json['from'] as String,
-      time: DateTime.fromMillisecondsSinceEpoch(
-        json['post_time'].toString().toInt(),
-      ),
-      scope: json['post_info']['scope'] as Map<String, dynamic>,
-      fromUserId: user['uid'].toString(),
-      fromUsername: user['nickname'] as String,
-    );
-  }
-
-  final TeamPost post;
-  final String from;
-  final DateTime time;
-  final Map<String, dynamic> scope;
-  final String fromUserId;
-  final String fromUsername;
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'post': post,
-      'from': from,
-      'time': time.toString(),
-      'scope': scope,
-      'fromUserId': fromUserId,
-      'fromUsername': fromUsername,
-    };
-  }
-
-  @override
-  String toString() {
-    return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

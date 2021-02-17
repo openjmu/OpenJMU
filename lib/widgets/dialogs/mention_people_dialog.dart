@@ -182,7 +182,12 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
               AspectRatio(
                 aspectRatio: 1,
                 child: Center(
-                  child: UserAvatar(uid: user.id, size: 54.0, canJump: false),
+                  child: UserAvatar(
+                    uid: user.id,
+                    size: 54.0,
+                    canJump: false,
+                    isSysAvatar: user.sysAvatar,
+                  ),
                 ),
               ),
               Gap(5.w),

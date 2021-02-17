@@ -19,6 +19,7 @@ class User {
     this.fans,
     this.idols,
     this.isFollowing,
+    this.sysAvatar,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -33,6 +34,7 @@ class User {
       fans: json['fans'] as int ?? 0,
       idols: json['idols'] as int ?? 0,
       isFollowing: json['is_following'] == 1,
+      sysAvatar: json['sysavatar']?.toString() == '1',
     );
   }
 
@@ -44,6 +46,7 @@ class User {
   final int idols;
   final int fans;
   final bool isFollowing;
+  final bool sysAvatar;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -55,6 +58,7 @@ class User {
       'fans': fans,
       'idols': idols,
       'isFollowing': isFollowing,
+      'sysavatar': sysAvatar ? 1 : 0,
     };
   }
 
@@ -64,10 +68,12 @@ class User {
       other is User &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          latestTid == other.latestTid;
+          gender == other.gender &&
+          latestTid == other.latestTid &&
+          sysAvatar == other.sysAvatar;
 
   @override
-  int get hashCode => hashValues(id, latestTid);
+  int get hashCode => hashValues(id, gender, latestTid, sysAvatar);
 
   @override
   String toString() {

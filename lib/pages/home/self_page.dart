@@ -181,7 +181,10 @@ class SelfPage extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            const UserAvatar(size: 64),
+            UserAvatar(
+              size: 64,
+              isSysAvatar: UserAPI.currentUser.sysAvatar,
+            ),
             Gap(20.w),
             Expanded(
               child: Text(

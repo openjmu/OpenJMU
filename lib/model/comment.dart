@@ -28,6 +28,7 @@ class Comment {
     this.toTopicUserName,
     this.toTopicContent,
     this.post,
+    this.user,
   });
 
   final int id, floor;
@@ -44,6 +45,7 @@ class Comment {
   final String toReplyContent, toTopicContent;
 
   final Post post;
+  final PostUser user;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -63,7 +65,8 @@ class Comment {
       'toTopicUserName': toTopicUserName,
       'toReplyContent': toReplyContent,
       'toTopicContent': toTopicContent,
-      'post': post,
+      'post': post.toJson(),
+      'user': user.toJson(),
     };
   }
 

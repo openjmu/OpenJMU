@@ -74,15 +74,16 @@ class TeamPost {
       pics: (json['file_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
       postInfo:
           (json['post_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
-      userInfo: _user,
+      userInfo: PostUser.fromJson(_user),
       replyInfo:
           (json['reply_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
       repliesCount: json['replys'].toString().toIntOrNull(),
       praisesCount: json['praises'].toString().toIntOrNull(),
       glances: json['glances'].toString().toIntOrNull(),
       isLike: json['praised'].toString().toIntOrNull() == 1,
-      praisor:
-          (json['praisor'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
+      praisor: (json['praisor'] as List<dynamic>)
+          ?.map((dynamic e) => PostUser.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
       heat: json['heat'].toString().toDoubleOrNull(),
       floor: json['floor'].toString().toIntOrNull(),
       unitId: json['unit_id'].toString().toIntOrNull(),
@@ -101,13 +102,13 @@ class TeamPost {
   final String article;
   final List<Map<dynamic, dynamic>> pics;
   final List<Map<dynamic, dynamic>> postInfo;
-  final Map<String, dynamic> userInfo;
+  final PostUser userInfo;
   final List<Map<dynamic, dynamic>> replyInfo;
   int repliesCount;
   int praisesCount;
   int glances;
   bool isLike;
-  final List<Map<dynamic, dynamic>> praisor;
+  final List<PostUser> praisor;
   final double heat;
   final int floor;
   final int unitId;
@@ -143,7 +144,7 @@ class TeamPost {
       'praisesCount': praisesCount,
       'glances': glances,
       'isLike': isLike,
-      'praisor': praisor,
+      'praisor': praisor?.map((PostUser u) => u.toJson())?.toList(),
       'heat': heat,
       'floor': floor,
       'unitId': unitId,

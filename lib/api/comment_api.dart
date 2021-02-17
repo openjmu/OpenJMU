@@ -144,6 +144,7 @@ class CommentAPI {
       toTopicUserName: null,
       toTopicContent: null,
       post: itemData['post'] as Post,
+      user: PostUser.fromJson(itemData['user'] as Map<String, dynamic>),
     );
     return _comment;
   }

@@ -211,7 +211,10 @@ class CommentCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 6.w),
               child: Row(
                 children: <Widget>[
-                  UserAPI.getAvatar(uid: comment.fromUserUid),
+                  UserAvatar(
+                    uid: comment.fromUserUid,
+                    isSysAvatar: comment.user.sysAvatar,
+                  ),
                   Gap(16.w),
                   Expanded(
                     child: Column(

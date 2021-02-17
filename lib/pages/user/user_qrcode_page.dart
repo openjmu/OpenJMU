@@ -72,7 +72,12 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
               foregroundColor: Colors.black,
             ),
           ),
-          Center(child: UserAvatar(size: minWidth / 7)),
+          Center(
+            child: UserAvatar(
+              size: minWidth / 7,
+              isSysAvatar: UserAPI.currentUser.sysAvatar,
+            ),
+          ),
         ],
       ),
     );

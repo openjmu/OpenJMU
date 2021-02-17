@@ -24,6 +24,7 @@ class UserInfo {
     this.classId,
     this.gender,
     this.isFollowing,
+    this.sysAvatar,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -45,6 +46,7 @@ class UserInfo {
       classId: (json['classId'] ?? json['classid'])?.toString()?.toInt(),
       gender: json['gender'].toString().toInt(),
       isFollowing: false,
+      sysAvatar: json['sysavatar']?.toString() == '1',
     );
   }
 
@@ -61,6 +63,7 @@ class UserInfo {
     String signature,
     String workId,
     bool isFollowing,
+    bool sysAvatar,
   }) {
     return UserInfo(
       sid: sid ?? this.sid,
@@ -75,6 +78,7 @@ class UserInfo {
       signature: signature ?? this.signature,
       workId: workId ?? this.workId,
       isFollowing: isFollowing ?? this.isFollowing,
+      sysAvatar: sysAvatar ?? this.sysAvatar,
     );
   }
 
@@ -93,6 +97,7 @@ class UserInfo {
   final String signature;
   final String workId;
   final bool isFollowing;
+  final bool sysAvatar;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -111,6 +116,7 @@ class UserInfo {
       'isPostgraduate': isPostgraduate,
       'isContinuingEducation': isContinuingEducation,
       'isCY': isCY,
+      'sysAvatar': sysAvatar ? 1 : 0,
     };
   }
 
@@ -172,8 +178,18 @@ class UserInfo {
           uid == other.uid &&
           ticket == other.ticket &&
           blowfish == other.blowfish &&
-          isFollowing == other.isFollowing;
+          signature == other.signature &&
+          isFollowing == other.isFollowing &&
+          sysAvatar == other.sysAvatar;
 
   @override
-  int get hashCode => hashValues(sid, uid, ticket, blowfish, isFollowing);
+  int get hashCode => hashValues(
+        sid,
+        uid,
+        ticket,
+        blowfish,
+        signature,
+        isFollowing,
+        sysAvatar,
+      );
 }

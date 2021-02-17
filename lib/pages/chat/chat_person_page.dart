@@ -77,7 +77,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              UserAPI.getAvatar(size: 50.0, uid: '164466'),
+              UserAvatar(size: 50.0, uid: '164466'),
               Text(
                 '陈嘉旺',
                 style: context.textTheme.bodyText2.copyWith(

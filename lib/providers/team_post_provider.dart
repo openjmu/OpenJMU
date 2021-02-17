@@ -23,11 +23,13 @@ class TeamPostProvider extends ChangeNotifier {
     post.praisesCount++;
     post.isLike = true;
     if (post.praisor != null) {
-      post.praisor.add(<String, dynamic>{
-        'uid': UserAPI.currentUser.uid,
-        'nickname': UserAPI.currentUser.name,
-        'sysavatar': 0,
-      });
+      post.praisor.add(
+        PostUser(
+          uid: UserAPI.currentUser.uid,
+          nickname: UserAPI.currentUser.name,
+          sysAvatar: UserAPI.currentUser.sysAvatar,
+        ),
+      );
     }
     notifyListeners();
   }
@@ -37,7 +39,7 @@ class TeamPostProvider extends ChangeNotifier {
     post.isLike = false;
     if (post.praisor != null) {
       post.praisor.removeWhere(
-        (Map<dynamic, dynamic> user) => user['uid'] == UserAPI.currentUser.uid,
+        (PostUser user) => user.uid == UserAPI.currentUser.uid,
       );
     }
     notifyListeners();

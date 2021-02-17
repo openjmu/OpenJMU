@@ -123,8 +123,14 @@ class Post {
   }
 }
 
+@immutable
 class PostUser {
-  const PostUser({this.uid, this.nickname, this.gender, this.sysavatar});
+  const PostUser({
+    this.uid,
+    this.nickname,
+    this.gender,
+    this.sysAvatar,
+  });
 
   factory PostUser.fromJson(Map<String, dynamic> json) {
     json.forEach((String k, dynamic v) {
@@ -136,21 +142,34 @@ class PostUser {
       uid: json['uid']?.toString(),
       nickname: json['nickname'] as String,
       gender: json['gender'] as int,
-      sysavatar: json['sysavatar'] as int,
+      sysAvatar: json['sysavatar']?.toString() == '1',
     );
   }
 
   final String uid;
   final String nickname;
   final int gender;
-  final int sysavatar;
+  final bool sysAvatar;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'uid': uid,
       'nickname': nickname,
-      'gender': gender,
-      'sysavatar': sysavatar,
+      if (gender != null) 'gender': gender,
+      'sysavatar': sysAvatar ? 1 : 0,
     };
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is PostUser &&
+              runtimeType == other.runtimeType &&
+              uid == other.uid &&
+              nickname == other.nickname &&
+              gender == other.gender &&
+              sysAvatar == other.sysAvatar;
+
+  @override
+  int get hashCode => hashValues(uid, nickname, gender, sysAvatar);
 }

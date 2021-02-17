@@ -50,7 +50,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: post.uid),
+          UserAvatar(uid: post.uid, isSysAvatar: post.userInfo.sysAvatar),
           Gap(16.w),
           Expanded(
             child: Column(
@@ -225,8 +225,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                         <String>[
                           ...post.praisor
                               .sublist(0, math.min(post.praisor.length, 3))
-                              .map((Map<dynamic, dynamic> userInfo) =>
-                                  userInfo['nickname'] as String)
+                              .map((PostUser user) => user.nickname)
                               .toList()
                         ].join('、'),
                         maxLines: 1,
@@ -252,9 +251,10 @@ class _TeamPostCardState extends State<TeamPostCard> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: math.min(post.praisor.length, 3),
-              itemBuilder: (_, int index) => UserAPI.getAvatar(
-                uid: post.praisor[index]['uid'].toString(),
+              itemBuilder: (_, int index) => UserAvatar(
+                uid: post.praisor[index].uid,
                 size: 40,
+                isSysAvatar: post.praisor[index].sysAvatar,
               ),
               separatorBuilder: (_, __) => Gap(10.w),
             ),

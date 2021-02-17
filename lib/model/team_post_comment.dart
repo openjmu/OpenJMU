@@ -7,8 +7,7 @@ part of 'models.dart';
 /// 小组动态评论实体
 ///
 /// [rid] 评论id, [originId] 原动态id, [uid] 用户uid, [originType] 原动态类型,
-/// [postTime] 发布时间, [content] 评论内容, [floor] 楼层,
-/// [userInfo] 用户信息
+/// [postTime] 发布时间, [content] 评论内容, [floor] 楼层
 @immutable
 class TeamPostComment {
   const TeamPostComment({
@@ -19,7 +18,7 @@ class TeamPostComment {
     this.postTime,
     this.content,
     this.floor,
-    this.userInfo,
+    this.user,
   });
 
   factory TeamPostComment.fromJson(Map<String, dynamic> json) {
@@ -47,7 +46,7 @@ class TeamPostComment {
       ),
       content: json['content'] as String,
       floor: int.parse(json['floor_id'].toString()),
-      userInfo: _user,
+      user: PostUser.fromJson(_user),
     );
   }
 
@@ -57,7 +56,7 @@ class TeamPostComment {
   final DateTime postTime;
   final String content;
   final int floor;
-  final Map<String, dynamic> userInfo;
+  final PostUser user;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -68,7 +67,7 @@ class TeamPostComment {
       'postTime': postTime.toString(),
       'content': content,
       'floor': floor,
-      'userInfo': userInfo,
+      'user': user.toJson(),
     };
   }
 

@@ -217,9 +217,8 @@ class _UserItemWidget extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
-          color: wrapper.following
-              ? context.iconTheme.color
-              : currentThemeColor,
+          color:
+              wrapper.following ? context.iconTheme.color : currentThemeColor,
         ),
         child: Text(
           wrapper.following ? '已关注' : '关注',
@@ -243,7 +242,7 @@ class _UserItemWidget extends StatelessWidget {
       ),
       child: Row(
         children: <Widget>[
-          UserAvatar(uid: user.uid),
+          UserAvatar(uid: user.uid, isSysAvatar: user.sysAvatar),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),

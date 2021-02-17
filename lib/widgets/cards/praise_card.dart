@@ -107,7 +107,11 @@ class PraiseCard extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 6.w),
                 child: Row(
                   children: <Widget>[
-                    UserAPI.getAvatar(uid: praise.uid, size: 32),
+                    UserAvatar(
+                      uid: praise.uid,
+                      size: 32,
+                      isSysAvatar: praise.user.sysAvatar,
+                    ),
                     Gap(16.w),
                     getPraiseNickname(context, praise),
                     Container(

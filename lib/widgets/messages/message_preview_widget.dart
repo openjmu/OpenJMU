@@ -91,7 +91,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 16.w),
-            child: UserAPI.getAvatar(size: 60.0, uid: widget.uid),
+            child: UserAvatar(size: 60.0, uid: widget.uid),
           ),
           Expanded(
             child: SizedBox(

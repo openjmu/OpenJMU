@@ -505,7 +505,10 @@ class CommentListInPostState extends State<CommentListInPost>
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: UserAPI.getAvatar(uid: comment.fromUserUid),
+                child: UserAvatar(
+                  uid: comment.fromUserUid,
+                  isSysAvatar: comment.user.sysAvatar,
+                ),
               ),
               Expanded(
                 child: Column(

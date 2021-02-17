@@ -521,7 +521,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: UserAPI.getAvatar(uid: post.uid),
+            child: UserAvatar(uid: post.uid, isSysAvatar: post.user.sysAvatar),
           ),
           Expanded(
             child: Column(

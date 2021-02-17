@@ -43,7 +43,11 @@ class MainPage extends StatefulWidget {
               height: 14.w,
             ),
           ),
-          const UserAvatar(size: 54.0, canJump: false)
+          UserAvatar(
+            size: 54.0,
+            canJump: false,
+            isSysAvatar: UserAPI.currentUser.sysAvatar,
+          )
         ],
       ),
     );

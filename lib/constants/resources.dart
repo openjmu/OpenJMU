@@ -3,9 +3,6 @@
 class R {
   const R._();
 
-  static const String ASSETS_AVATAR_PLACEHOLDER_PNG =
-      'assets/avatar_placeholder.png';
-
   static const String ASSETS_EMOTION_ICONS_NO_PNG =
       'assets/emotion-icons/NO.png';
 
@@ -541,6 +538,9 @@ class R {
   static const String ASSETS_ICONS_PUBLISH_ADD_TOPIC_SVG =
       'assets/icons/publish/add-topic.svg';
 
+  static const String ASSETS_ICONS_PUBLISH_EMOJI_ACTIVE_SVG =
+      'assets/icons/publish/emoji-active.svg';
+
   static const String ASSETS_ICONS_PUBLISH_EMOJI_SVG =
       'assets/icons/publish/emoji.svg';
 
@@ -619,6 +619,9 @@ class R {
 
   static const String ASSETS_LOGIN_BACKGROUND_VIDEO_MP4 =
       'assets/login-background-video.mp4';
+
+  static const String ASSETS_PLACEHOLDERS_AVATAR_SVG =
+      'assets/placeholders/avatar.svg';
 
   static const String ASSETS_PLACEHOLDERS_COURSE_NOT_READY_SVG =
       'assets/placeholders/course-not-ready.svg';

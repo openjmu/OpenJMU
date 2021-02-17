@@ -16,7 +16,7 @@ class LinkText extends SpecialText {
     SpecialTextGestureTapCallback onTap,
   ) : super(headReg, ' ', textStyle, onTap: onTap);
 
-  static RegExp get headReg => RegExp(r'http[s]');
+  static RegExp get headReg => RegExp(r'http|https');
 
   static final RegExp linkRegExp = RegExp(
     r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
@@ -47,7 +47,7 @@ class LinkText extends SpecialText {
             ),
             Text(
               ' 网页链接 ',
-              style: textStyle?.copyWith(color: Colors.blue),
+              style: textStyle?.copyWith(color: Colors.blue, height: 1.2),
             )
           ],
         ),

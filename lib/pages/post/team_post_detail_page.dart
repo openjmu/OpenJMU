@@ -245,7 +245,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   void setReplyToComment(TeamPostComment comment) {
     replyToComment = comment;
-    replyHint = '回复@${comment.userInfo['nickname']}:';
+    replyHint = '回复@${comment.user.nickname}:';
     if (mounted) {
       setState(() {});
     }

@@ -128,7 +128,10 @@ class TeamPostPreviewCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 6.w),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: post.uid),
+          UserAvatar(
+            uid: post.uid,
+            isSysAvatar: post.userInfo.sysAvatar,
+          ),
           Gap(16.w),
           Expanded(
             child: Column(

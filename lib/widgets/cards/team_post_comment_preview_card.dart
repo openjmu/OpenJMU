@@ -64,7 +64,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
 
   Widget _getName(BuildContext context) {
     return Text(
-      (comment.userInfo['nickname'] ?? comment.uid).toString(),
+      (comment.user.nickname ?? comment.uid).toString(),
       style: context.textTheme.bodyText2.copyWith(
         height: 1.2,
         fontSize: 18.sp,
@@ -110,7 +110,10 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: UserAPI.getAvatar(uid: comment.uid),
+                child: UserAvatar(
+                  uid: comment.uid,
+                  isSysAvatar: comment.user.sysAvatar,
+                ),
               ),
               Expanded(
                 child: Column(

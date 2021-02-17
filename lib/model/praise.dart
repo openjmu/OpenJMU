@@ -21,6 +21,7 @@ class Praise {
     this.topicUid,
     this.topicNickname,
     this.pics,
+    this.user,
   });
 
   final int id, postId;
@@ -33,6 +34,8 @@ class Praise {
   final String topicNickname;
   final List<dynamic> pics;
 
+  final PostUser user;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -40,8 +43,9 @@ class Praise {
           runtimeType == other.runtimeType &&
           id == other.id &&
           uid == other.uid &&
-          postId == other.postId;
+          postId == other.postId &&
+          user == other.user;
 
   @override
-  int get hashCode => hashValues(id, uid, postId);
+  int get hashCode => hashValues(id, uid, postId, user);
 }
