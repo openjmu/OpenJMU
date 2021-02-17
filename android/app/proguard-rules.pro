@@ -39,7 +39,7 @@
 
 ## Packages wrapper
 -keep class com.dexterous.** { *; }
--keep class com.pichillilorenzo.** { *; }
+-keep class com.rhyme.r_scan.** { *; }
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
