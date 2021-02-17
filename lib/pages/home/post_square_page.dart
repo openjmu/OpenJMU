@@ -62,7 +62,6 @@ class _PostSquarePageState extends State<PostSquarePage> {
             route: Routes.openjmuPublishPost.name,
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 16.w),
       ),
       body: RefreshListWrapper(
         loadingBase: loadingBase,

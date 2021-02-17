@@ -260,12 +260,7 @@ class SearchPageState extends State<SearchPage>
         Container(
           height: 132.w,
           decoration: BoxDecoration(
-            border: Border.symmetric(
-              horizontal: BorderSide(
-                width: 1.w,
-                color: context.theme.dividerColor,
-              ),
-            ),
+            border: Border.symmetric(horizontal: dividerBS(context)),
             color: context.theme.colorScheme.surface,
           ),
           child: ListView.builder(

@@ -565,7 +565,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
     return ExtendedListView.separated(
       padding: EdgeInsets.zero,
       extendedListDelegate: const ExtendedListDelegate(),
-      separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
+      separatorBuilder: (_, __) => const LineDivider(),
       itemCount: _posts.length + 1,
       itemBuilder: (BuildContext _, int index) {
         if (index == _posts.length - 1 && canLoadMore) {

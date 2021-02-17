@@ -712,7 +712,7 @@ class _PostCardState extends State<PostCard> {
             else
               Padding(
                 padding: EdgeInsets.only(top: 12.w),
-                child: Divider(thickness: 1.w, height: 1.w),
+                child: const LineDivider(),
               ),
             if (!widget.isDetail)
               Container(

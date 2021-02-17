@@ -59,7 +59,7 @@ class _ScorePageState extends State<ScorePage>
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+          top: dividerBS(context),
         ),
       ),
       child: Text(
@@ -76,7 +76,7 @@ class _ScorePageState extends State<ScorePage>
       padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+          top: dividerBS(context),
         ),
         color: context.appBarTheme.color,
       ),
@@ -132,7 +132,7 @@ class _ScorePageState extends State<ScorePage>
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+              bottom: dividerBS(context),
             ),
             color: context.appBarTheme.color,
           ),

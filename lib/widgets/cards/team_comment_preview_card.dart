@@ -307,7 +307,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+              bottom: dividerBS(context),
             ),
             color: context.theme.cardColor,
           ),

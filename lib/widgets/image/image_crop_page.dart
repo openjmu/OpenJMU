@@ -2,17 +2,15 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/image/image_crop_helper.dart';
 
 @FFRoute(name: 'openjmu://edit-avatar-page', routeName: '修改头像')
@@ -129,14 +127,13 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
           title: Text(_imageData == null ? '上传头像' : '裁剪头像'),
-          actions: _imageData != null
-              ? <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.check),
-                    onPressed: () => _cropImage(context),
-                  ),
-                ]
-              : null,
+          actions: <Widget>[
+            if (_imageData != null)
+              IconButton(
+                icon: const Icon(Icons.check),
+                onPressed: () => _cropImage(context),
+              ),
+          ],
         ),
         body: _imageData != null
             ? ExtendedImage.memory(
@@ -168,7 +165,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Icon(Icons.add, size: 60.sp),
-                        emptyDivider(height: 20.0),
+                        VGap(20.w),
                         Text(
                           '选择需要上传的头像',
                           style: context.textTheme.bodyText2.copyWith(

@@ -667,7 +667,7 @@ class _PublishPostPageState extends State<PublishPostPage>
           padding: EdgeInsets.symmetric(horizontal: 7.w),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+              top: dividerBS(context),
             ),
           ),
           child: Row(

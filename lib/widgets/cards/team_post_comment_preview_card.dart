@@ -99,7 +99,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            bottom: dividerBS(context),
           ),
           color: context.theme.cardColor,
         ),

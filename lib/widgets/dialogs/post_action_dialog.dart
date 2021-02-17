@@ -67,6 +67,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
     _tec.dispose();
     _requesting.dispose();
     _hasExtraAction.dispose();
+    _isEmoticonPadActive.dispose();
     _image.dispose();
     super.dispose();
   }
@@ -280,44 +281,50 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Widget _publishButton(BuildContext context) {
-    final bool canSend = _tec.text.isNotEmpty || _image.value != null;
-    return Tapper(
-      onTap: canSend ? () => _request(context) : null,
-      child: Container(
-        width: 84.w,
-        height: 56.w,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.w),
-          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
-        ),
-        alignment: Alignment.center,
-        child: ValueListenableBuilder<bool>(
-          valueListenable: _requesting,
-          builder: (_, bool value, __) {
-            if (value) {
-              return Container(
-                padding: EdgeInsets.all(15.w),
-                alignment: Alignment.center,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: PlatformProgressIndicator(
+    return ValueListenableBuilder2<TextEditingValue, AssetEntity>(
+      firstNotifier: _tec,
+      secondNotifier: _image,
+      builder: (_, TextEditingValue tv, AssetEntity entity, __) {
+        final bool canSend = tv.text.isNotEmpty || entity != null;
+        return Tapper(
+          onTap: canSend ? () => _request(context) : null,
+          child: Container(
+            width: 84.w,
+            height: 56.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.w),
+              color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
+            ),
+            alignment: Alignment.center,
+            child: ValueListenableBuilder<bool>(
+              valueListenable: _requesting,
+              builder: (_, bool value, __) {
+                if (value) {
+                  return Container(
+                    padding: EdgeInsets.all(15.w),
+                    alignment: Alignment.center,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: PlatformProgressIndicator(
+                        color: adaptiveButtonColor(),
+                      ),
+                    ),
+                  );
+                }
+                return Text(
+                  actionType == PostActionType.forward ? '转发' : '评论',
+                  style: TextStyle(
                     color: adaptiveButtonColor(),
+                    height: 1.2,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
                   ),
-                ),
-              );
-            }
-            return Text(
-              '评论',
-              style: TextStyle(
-                color: adaptiveButtonColor(),
-                height: 1.2,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          },
-        ),
-      ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 

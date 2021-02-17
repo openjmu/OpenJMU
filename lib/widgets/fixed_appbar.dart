@@ -145,7 +145,7 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
       children: <Widget>[
         child,
         if (bottom != null) bottom,
-        if (withBorder) Divider(thickness: 1.w, height: 1.w),
+        if (withBorder) const LineDivider(),
       ],
     );
     return Material(

@@ -134,7 +134,7 @@ class MessagePage extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(thickness: 1.w, height: 1.w),
+            const LineDivider(),
             Expanded(
               child: ListView.separated(
                 itemCount: messageProvider.appsMessages.keys.length,
@@ -152,7 +152,7 @@ class MessagePage extends StatelessWidget {
                   );
                 },
                 separatorBuilder: (_, __) =>
-                    Divider(thickness: 1.w, height: 1.w),
+                    const LineDivider(),
               ),
             ),
           ],
@@ -216,7 +216,7 @@ class _AnnouncementItemWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.w),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            bottom: dividerBS(context),
           ),
           color: context.appBarTheme.color,
         ),

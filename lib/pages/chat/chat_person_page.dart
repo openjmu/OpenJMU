@@ -68,14 +68,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         top: Screens.topSafeHeight + 4.w,
         bottom: 4.w,
       ),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).canvasColor,
-            width: 1.5.w,
-          ),
-        ),
-      ),
+      decoration: BoxDecoration(border: Border(bottom: dividerBS(context))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,

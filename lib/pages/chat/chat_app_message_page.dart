@@ -173,7 +173,6 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
           actions: <Widget>[
             if (widget.app.url?.isNotEmpty == true) _appJumpButton(context),
           ],
-          actionsPadding: EdgeInsets.only(right: 18.w),
         ),
         body: Consumer<MessagesProvider>(
           builder: (_, MessagesProvider provider, __) {

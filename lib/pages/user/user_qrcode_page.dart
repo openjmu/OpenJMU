@@ -148,7 +148,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     _qrWidget(context),
-                    Divider(thickness: 1.w, height: 1.w),
+                    const LineDivider(),
                     _saveButton(context),
                   ],
                 ),

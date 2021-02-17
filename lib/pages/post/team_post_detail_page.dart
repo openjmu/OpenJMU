@@ -551,12 +551,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         vertical: 10.w,
       ),
       decoration: BoxDecoration(
-        border: Border.symmetric(
-          horizontal: BorderSide(
-            width: 1.w,
-            color: context.theme.dividerColor,
-          ),
-        ),
+        border: Border.symmetric(horizontal: dividerBS(context)),
       ),
       child: Text(
         '评论',
@@ -1113,7 +1108,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 return const SizedBox.shrink();
               },
             ),
-            Divider(thickness: 1.w, height: 1.w),
+            const LineDivider(),
             Container(
               padding: EdgeInsets.all(16.w),
               color: context.theme.colorScheme.surface,

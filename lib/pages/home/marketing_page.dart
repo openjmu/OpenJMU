@@ -65,7 +65,6 @@ class _MarketingPageState extends State<MarketingPage> {
             route: Routes.openjmuPublishTeamPost.name,
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 16.w),
       ),
       body: RefreshListWrapper(
         loadingBase: loadingBase,

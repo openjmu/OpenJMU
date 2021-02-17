@@ -208,7 +208,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Divider(thickness: 1.w, height: 1.w),
+        const LineDivider(),
         BottomAppBar(
           color: widget.backgroundColor ?? context.appBarTheme.color,
           shape: widget.notchedShape,

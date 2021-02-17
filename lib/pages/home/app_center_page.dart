@@ -128,12 +128,7 @@ class AppCenterPage extends StatelessWidget {
             height: 80.w,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 1.w,
-                  color: context.theme.dividerColor,
-                ),
-              ),
+              border: Border(bottom: dividerBS(context)),
               color: context.theme.colorScheme.surface,
             ),
             child: Row(

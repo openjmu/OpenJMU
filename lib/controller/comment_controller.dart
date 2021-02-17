@@ -552,7 +552,7 @@ class CommentListInPostState extends State<CommentListInPost>
     return ExtendedListView.separated(
       padding: EdgeInsets.zero,
       extendedListDelegate: const ExtendedListDelegate(),
-      separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
+      separatorBuilder: (_, __) => const LineDivider(),
       itemCount: _comments.length + 1,
       itemBuilder: (BuildContext _, int index) {
         if (index == _comments.length - 1 && canLoadMore) {

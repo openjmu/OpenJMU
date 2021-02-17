@@ -25,7 +25,6 @@ import 'pages/settings/settings_page.dart';
 import 'pages/settings/switch_start_up_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/user/backpack_page.dart';
-import 'pages/user/edit_profile_page.dart';
 import 'pages/user/user_list_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
@@ -72,12 +71,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           key: arguments['key'] as Key,
         ),
         routeName: '修改头像',
-      );
-    case 'openjmu://edit-profile-page':
-      return RouteResult(
-        name: name,
-        widget: EditProfilePage(),
-        routeName: '编辑资料页',
       );
     case 'openjmu://font-scale':
       return RouteResult(

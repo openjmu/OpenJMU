@@ -457,7 +457,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   _postInfo(context, p),
                 Padding(
                   padding: EdgeInsets.only(top: 12.w),
-                  child: Divider(thickness: 1.w, height: 1.w),
+                  child: const LineDivider(),
                 ),
                 _actions(context, p),
               ],

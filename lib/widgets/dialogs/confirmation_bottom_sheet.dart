@@ -140,7 +140,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         ).copyWith(bottom: Screens.bottomSafeHeight),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            top: dividerBS(context),
           ),
           color: context.theme.colorScheme.surface,
         ),
@@ -163,7 +163,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      separatorBuilder: (_, __) => Divider(thickness: 1.w, height: 1.w),
+      separatorBuilder: (_, __) => const LineDivider(),
       itemCount: widget.actions.length,
       itemBuilder: (_, int index) => widget.actions[index],
     );

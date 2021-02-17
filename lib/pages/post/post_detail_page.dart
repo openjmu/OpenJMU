@@ -280,7 +280,7 @@ class PostDetailPageState extends State<PostDetailPage>
       color: context.theme.cardColor,
       child: Column(
         children: <Widget>[
-          Divider(thickness: 1.w, height: 1.w),
+          const LineDivider(),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -322,7 +322,7 @@ class PostDetailPageState extends State<PostDetailPage>
               ),
             ),
           ),
-          Divider(thickness: 1.w, height: 1.w),
+          const LineDivider(),
         ],
       ),
     );
@@ -339,9 +339,7 @@ class PostDetailPageState extends State<PostDetailPage>
         height: Screens.bottomSafeHeight + 72.w,
         padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: context.theme.dividerColor, width: 1.w),
-          ),
+          border: Border(top: dividerBS(context)),
           color: Theme.of(context).cardColor,
         ),
         child: Row(

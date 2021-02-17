@@ -463,7 +463,7 @@ class NotificationsPageState extends State<NotificationsPage>
                           ),
                         ),
                       ),
-                      Divider(thickness: 1.w, height: 1.w),
+                      const LineDivider(),
                       Expanded(child: _contentBuilder(context)),
                     ],
                   ),

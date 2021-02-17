@@ -143,7 +143,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           constraints: BoxConstraints(maxHeight: Screens.height / 3),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+              top: dividerBS(context),
             ),
           ),
           child: SingleChildScrollView(

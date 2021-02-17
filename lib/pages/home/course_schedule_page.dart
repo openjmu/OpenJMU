@@ -510,7 +510,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(width: 1.w, color: context.theme.dividerColor),
+            top: dividerBS(context),
           ),
         ),
         child: Column(

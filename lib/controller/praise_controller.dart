@@ -349,7 +349,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
     }
     return ExtendedListView.separated(
       padding: EdgeInsets.zero,
-      separatorBuilder: (_, __) => Divider(height: 1.w, thickness: 1.w),
+      separatorBuilder: (_, __) => const LineDivider(),
       extendedListDelegate: const ExtendedListDelegate(),
       itemCount: _praises.length + 1,
       itemBuilder: (BuildContext context, int index) {
