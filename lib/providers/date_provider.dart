@@ -18,7 +18,6 @@ class DateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Timer _updateCurrentWeekTimer;
   Timer _fetchCurrentWeekTimer;
 
   int _currentWeek = 0;
@@ -58,7 +57,6 @@ class DateProvider extends ChangeNotifier {
       _startDate = _dateInCache;
     }
     await getCurrentWeek();
-    initCurrentWeekTimer();
   }
 
   Future<void> updateStartDate(DateTime date) async {
@@ -103,13 +101,6 @@ class DateProvider extends ChangeNotifier {
       LogUtils.e('Failed when fetching current week: $e');
       startFetchCurrentWeekTimer();
     }
-  }
-
-  void initCurrentWeekTimer() {
-    _updateCurrentWeekTimer?.cancel();
-    _updateCurrentWeekTimer = Timer.periodic(1.minutes, (_) {
-      getCurrentWeek();
-    });
   }
 
   void startFetchCurrentWeekTimer() {
