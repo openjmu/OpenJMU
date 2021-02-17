@@ -20,7 +20,7 @@ class UserPage extends StatefulWidget {
 }
 
 class UserPageState extends State<UserPage>
-    with SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   final List<String> tabList = <String>['动态', '黑名单'];
 
   final ValueNotifier<UserInfo> user = ValueNotifier<UserInfo>(null);
@@ -52,15 +52,22 @@ class UserPageState extends State<UserPage>
     }
     initializeLoadList();
     fetchUserInformation();
+
+    Instances.eventBus.on<UserFollowEvent>().listen((UserFollowEvent event) {
+      if (event.uid == uid) {
+        user.value = user.value.copyWith(isFollowing: event.isFollow);
+      }
+      if (isCurrentUser) {
+        userIdols.value = userIdols.value + (event.isFollow ? 1 : -1);
+      }
+    });
   }
 
   @override
   void dispose() {
     tabController?.dispose();
-    user.dispose();
     userTags.dispose();
     userFans.dispose();
-    userIdols.dispose();
     super.dispose();
   }
 
@@ -178,6 +185,9 @@ class UserPageState extends State<UserPage>
   }
 
   void requestFollow() {
+    if (user.value == null) {
+      return;
+    }
     if (user.value.isFollowing) {
       UserAPI.unFollow(uid);
     } else {
@@ -327,9 +337,7 @@ class UserPageState extends State<UserPage>
       height: tabBarHeight,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 1, color: context.theme.dividerColor),
-        ),
+        border: Border(bottom: dividerBS(context)),
         color: context.appBarTheme.color,
       ),
       alignment: AlignmentDirectional.centerStart,
@@ -606,7 +614,12 @@ class UserPageState extends State<UserPage>
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     Widget body = RefreshListWrapper(
       loadingBase: loadingBase,
       padding: EdgeInsets.symmetric(vertical: 10.w),
@@ -629,7 +642,6 @@ class UserPageState extends State<UserPage>
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
           actions: <Widget>[if (isCurrentUser) qrCodeWidget else followButton],
-          actionsPadding: EdgeInsets.only(right: 16.w),
           withBorder: false,
         ),
         body: Column(

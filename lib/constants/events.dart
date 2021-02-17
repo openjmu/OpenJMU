@@ -134,21 +134,6 @@ class PraiseInPostUpdatedEvent {
   final bool isLike;
 }
 
-class AvatarUpdatedEvent {}
-
-class SignatureUpdatedEvent {
-  const SignatureUpdatedEvent(this.signature);
-
-  final String signature;
-}
-
-class AddEmoticonEvent {
-  const AddEmoticonEvent(this.emoticon, this.route);
-
-  final String emoticon;
-  final String route;
-}
-
 class HasUpdateEvent {
   const HasUpdateEvent({
     this.forceUpdate,
@@ -163,19 +148,14 @@ class HasUpdateEvent {
   final Map<String, dynamic> response;
 }
 
-class OTAEvent {
-  const OTAEvent(this.otaEvent);
-
-  final dynamic otaEvent;
-}
-
-class UserInfoGotEvent {
-  const UserInfoGotEvent(this.userInfo);
-
-  final UserInfo userInfo;
-}
-
 class BlacklistUpdateEvent {}
+
+class UserFollowEvent {
+  const UserFollowEvent({this.isFollow, this.uid});
+
+  final bool isFollow;
+  final String uid;
+}
 
 class ScrollToTopEvent {
   const ScrollToTopEvent({this.tabIndex, this.type});
@@ -199,15 +179,7 @@ class AppCenterRefreshEvent {
   final int currentIndex;
 }
 
-class AppCenterSettingsUpdateEvent {}
-
 class CourseScheduleRefreshEvent {}
-
-class CoursePageShowWeekEvent {
-  const CoursePageShowWeekEvent(this.show);
-
-  final bool show;
-}
 
 /// Events for message
 class MessageReceivedEvent {

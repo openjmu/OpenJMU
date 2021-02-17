@@ -141,7 +141,7 @@ class UserAPI {
   static Future<Response<Map<String, dynamic>>> getNotifications() async =>
       NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(API.postUnread);
 
-  static Future<void> follow(String uid) async {
+  static Future<bool> follow(String uid) async {
     try {
       await NetUtils.postWithCookieAndHeaderSet<dynamic>(
           '${API.userRequestFollow}$uid');
@@ -149,13 +149,16 @@ class UserAPI {
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid, 'tagid': 0},
       );
+      Instances.eventBus.fire(UserFollowEvent(uid: uid, isFollow: true));
+      return true;
     } catch (e) {
       LogUtils.e('Failed when folloe: $e');
       showCenterErrorToast('关注失败');
+      return false;
     }
   }
 
-  static Future<void> unFollow(String uid, {bool fromBlacklist = false}) async {
+  static Future<bool> unFollow(String uid, {bool fromBlacklist = false}) async {
     try {
       await NetUtils.deleteWithCookieAndHeaderSet<dynamic>(
         '${API.userRequestFollow}$uid',
@@ -164,11 +167,14 @@ class UserAPI {
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid},
       );
+      Instances.eventBus.fire(UserFollowEvent(uid: uid, isFollow: false));
+      return true;
     } catch (e) {
       LogUtils.e('Failed when unfollow $uid: $e');
       if (!fromBlacklist) {
         showCenterErrorToast('取消关注失败');
       }
+      return false;
     }
   }
 

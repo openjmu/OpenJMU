@@ -5,6 +5,83 @@
 import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
+class _UserWrapper {
+  _UserWrapper({
+    this.id,
+    this.user,
+    this.idols,
+    this.fans,
+    this.isFollowing,
+    this.followMe,
+  });
+
+  factory _UserWrapper.fromJson(Map<String, dynamic> json) {
+    return _UserWrapper(
+      id: json['id'] as String,
+      user: _User.fromJson(json['user'] as Map<String, dynamic>),
+      idols: json['idols'].toString().toInt(),
+      fans: json['fans'].toString().toInt(),
+      isFollowing: json['is_following'] as int,
+      followMe: json['follow_me'] as int,
+    );
+  }
+
+  final String id;
+  final _User user;
+  final int idols;
+  final int fans;
+  int isFollowing;
+  final int followMe;
+
+  bool get following => isFollowing == 1;
+
+  bool get followedBy => followMe == 1;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'user': user.toJson(),
+      'idols': idols.toString(),
+      'fans': fans.toString(),
+      'is_following': isFollowing,
+      'follow_me': followMe,
+    };
+  }
+}
+
+@immutable
+class _User {
+  const _User({
+    this.uid,
+    this.nickname,
+    this.gender,
+    this.sysAvatar,
+  });
+
+  factory _User.fromJson(Map<String, dynamic> json) {
+    return _User(
+      uid: json['uid'] as String,
+      nickname: json['nickname'] as String,
+      gender: json['gender'] as int,
+      sysAvatar: json['sysavatar'] == 1,
+    );
+  }
+
+  final String uid;
+  final String nickname;
+  final int gender;
+  final bool sysAvatar;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'uid': uid,
+      'nickname': nickname,
+      'gender': gender,
+      'sysavatar': sysAvatar,
+    };
+  }
+}
+
 @FFRoute(name: 'openjmu://user-list-page', routeName: '用户列表页')
 class UserListPage extends StatefulWidget {
   const UserListPage({
@@ -21,207 +98,28 @@ class UserListPage extends StatefulWidget {
 }
 
 class _UserListState extends State<UserListPage> {
-  final List<Map<String, dynamic>> _users = <Map<String, dynamic>>[];
-
-  List<Map<String, dynamic>> get users =>
-      _users.where((Map<String, dynamic> userData) {
-        return userData['user'] != null;
-      }).toList();
-
-  bool canLoadMore = false, isLoading = true;
-  int total, pages = 1;
+  _LoadingBase loadingBase;
 
   @override
   void initState() {
     super.initState();
-    doUpdate(false);
-  }
+    loadingBase = _LoadingBase(
+      request: (int page) => widget.type == 1
+          ? UserAPI.getIdolsList(widget.user.uid, page)
+          : UserAPI.getFansList(widget.user.uid, page),
+      contentFieldName: widget.type == 1 ? 'idols' : 'fans',
+    );
 
-  void doUpdate(bool isMore) {
-    if (isMore) {
-      pages++;
-    }
-    switch (widget.type) {
-      case 1:
-        getIdolsList(pages, isMore);
-        break;
-      case 2:
-        getFansList(pages, isMore);
-        break;
-    }
-  }
-
-  void getIdolsList(int page, bool isMore) {
-    UserAPI.getIdolsList(widget.user.uid, page).then(
-      (Response<Map<String, dynamic>> response) {
-        setUserList(response, isMore);
-      },
-    ).catchError((dynamic e) {
-      LogUtils.e('Failed when getting idol list: $e');
+    Instances.eventBus.on<UserFollowEvent>().listen((_) {
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
-  void getFansList(int page, bool isMore) {
-    UserAPI.getFansList(widget.user.uid, page).then(
-      (Response<Map<String, dynamic>> response) {
-        setUserList(response, isMore);
-      },
-    ).catchError((dynamic e) {
-      LogUtils.e('Failed when getting fans list: $e');
-    });
-  }
-
-  void setUserList(Response<Map<String, dynamic>> response, bool isMore) {
-    List<dynamic> data;
-    switch (widget.type) {
-      case 1:
-        data = response.data['idols'] as List<dynamic>;
-        break;
-      case 2:
-        data = response.data['fans'] as List<dynamic>;
-        break;
-    }
-    final int total = response.data['total'].toString().toInt();
-    if (_users.length + data.length < total) {
-      canLoadMore = true;
-    }
-    final List<Map<String, dynamic>> list = <Map<String, dynamic>>[];
-    for (int i = 0; i < data.length; i++) {
-      list.add(data[i] as Map<String, dynamic>);
-    }
-    if (isMore) {
-      _users.addAll(list);
-    } else {
-      _users
-        ..clear()
-        ..addAll(list);
-    }
-    isLoading = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Widget renderRow(BuildContext context, int i) {
-    final int start = i * 2;
-    if (users != null && i + 1 == (users.length / 2).ceil() && canLoadMore) {
-      doUpdate(true);
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        for (int j = start; j < start + 2 && j < users.length; j++)
-          userCard(context, users[j])
-      ],
-    );
-  }
-
-  Widget userCard(BuildContext context, Map<String, dynamic> userData) {
-    final PostUser _user = PostUser.fromJson(
-      userData['user'] as Map<String, dynamic>,
-    );
-    String name;
-    name = _user.nickname;
-    if (name.length > 3) {
-      name = '${name.substring(0, 3)}...';
-    }
-    final TextStyle _textStyle = TextStyle(fontSize: 16.sp);
-    return Tapper(
-      onTap: () {
-        navigatorState.pushNamed(
-          Routes.openjmuUserPage.name,
-          arguments: Routes.openjmuUserPage.d(uid: _user.uid),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12.w).copyWith(top: 20.h),
-        padding: EdgeInsets.symmetric(
-          horizontal: 20.w,
-          vertical: 12.h,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.w),
-          color: Theme.of(context).cardColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            UserAPI.getAvatar(size: 64.0, uid: _user.uid),
-            Gap(12.w),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          name,
-                          style: TextStyle(fontSize: 20.sp),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                    Divider(height: 6.h),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text('关注', style: _textStyle),
-                            Divider(height: 4.h),
-                            Text(
-                              userData['idols'] as String,
-                              style: _textStyle,
-                            ),
-                          ],
-                        ),
-                        Gap(6.w),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text('粉丝', style: _textStyle),
-                            Divider(height: 4.h),
-                            Text(
-                              userData['fans'] as String,
-                              style: _textStyle,
-                            ),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _emptyWidget(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        SvgPicture.asset(
-          R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
-          width: 50.w,
-          color: context.theme.iconTheme.color,
-        ),
-        VGap(20.w),
-        Text(
-          '空空如也',
-          style: TextStyle(
-            color: context.textTheme.caption.color,
-            fontSize: 22.sp,
-          ),
-        ),
-      ],
+  int findJsonIndexOf(_UserWrapper wrapper) {
+    return loadingBase.indexWhere(
+      (Map<String, dynamic> json) => json['id'] == wrapper.id,
     );
   }
 
@@ -242,16 +140,197 @@ class _UserListState extends State<UserListPage> {
     return Scaffold(
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(title: Text(_type)),
-        body: !isLoading
-            ? users?.isNotEmpty == true
-                ? ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: (users.length / 2).ceil(),
-                    itemBuilder: renderRow,
-                  )
-                : _emptyWidget(context)
-            : const Center(child: LoadMoreSpinningIcon(isRefreshing: true)),
+        body: RefreshListWrapper(
+          loadingBase: loadingBase,
+          padding: EdgeInsets.zero,
+          itemBuilder: (Map<String, dynamic> json) => _UserItemWidget(
+            wrapper: _UserWrapper.fromJson(json),
+            state: this,
+          ),
+        ),
       ),
     );
+  }
+}
+
+class _UserItemWidget extends StatelessWidget {
+  const _UserItemWidget({
+    Key key,
+    @required this.wrapper,
+    @required this.state,
+  })  : assert(wrapper != null),
+        assert(state != null),
+        super(key: key);
+
+  final _UserWrapper wrapper;
+  final _UserListState state;
+
+  _User get user => wrapper.user;
+
+  void updateLoadingBase() {
+    state.loadingBase.setState();
+  }
+
+  Future<void> follow() async {
+    state.loadingBase[state.findJsonIndexOf(wrapper)]['is_following'] = 1;
+    updateLoadingBase();
+    if (!await UserAPI.follow(user.uid)) {
+      state.loadingBase[state.findJsonIndexOf(wrapper)]['is_following'] = 2;
+      updateLoadingBase();
+    }
+  }
+
+  Future<void> unFollow() async {
+    state.loadingBase[state.findJsonIndexOf(wrapper)]['is_following'] = 2;
+    updateLoadingBase();
+    if (!await UserAPI.unFollow(user.uid)) {
+      state.loadingBase[state.findJsonIndexOf(wrapper)]['is_following'] = 1;
+      updateLoadingBase();
+    }
+  }
+
+  Widget _name(BuildContext context) {
+    return Text(
+      user.nickname ?? user.uid,
+      style: TextStyle(
+        height: 1.2,
+        fontSize: 19.sp,
+        fontWeight: FontWeight.w600,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _followButton(BuildContext context) {
+    return Tapper(
+      onTap: throttle(() {
+        if (wrapper.following) {
+          unFollow();
+        } else {
+          follow();
+        }
+      }),
+      child: Container(
+        width: 100.w,
+        height: 56.w,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: wrapper.following
+              ? context.iconTheme.color
+              : currentThemeColor,
+        ),
+        child: Text(
+          wrapper.following ? '已关注' : '关注',
+          style: TextStyle(
+            color: Colors.white,
+            height: 1.2,
+            fontSize: 20.sp,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        border: Border(bottom: dividerBS(context)),
+        color: context.theme.colorScheme.surface,
+      ),
+      child: Row(
+        children: <Widget>[
+          UserAvatar(uid: user.uid),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _name(context),
+                  VGap(10.w),
+                  Row(
+                    children: <Widget>[
+                      _CountWidget(name: '关注', value: wrapper.idols),
+                      _CountWidget(name: '粉丝', value: wrapper.fans),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _followButton(context),
+        ],
+      ),
+    );
+  }
+}
+
+class _CountWidget extends StatelessWidget {
+  const _CountWidget({
+    Key key,
+    @required this.name,
+    @required this.value,
+  }) : super(key: key);
+
+  final String name;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 90.w,
+      child: Text.rich(
+        TextSpan(
+          children: <InlineSpan>[
+            TextSpan(
+              text: '$name ',
+              style: TextStyle(color: context.textTheme.caption.color),
+            ),
+            TextSpan(text: value.count),
+          ],
+          style: TextStyle(height: 1.2, fontSize: 17.sp),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingBase extends LoadingBase {
+  _LoadingBase({
+    @required Future<Response<Map<String, dynamic>>> Function(int id) request,
+    @required String contentFieldName,
+  }) : super(request: request, contentFieldName: contentFieldName);
+
+  int page = 1;
+
+  @override
+  Future<bool> refresh([bool clearBeforeRequest = false]) {
+    page = 1;
+    return super.refresh(clearBeforeRequest);
+  }
+
+  @override
+  Future<bool> loadData([bool isLoadMoreAction = false]) async {
+    final bool result = await super.loadData(isLoadMoreAction);
+    if (result) {
+      page++;
+    }
+    return result;
+  }
+}
+
+extension _CountEx on int {
+  String get count {
+    if (this > 10000) {
+      return '${(this / 10000).toStringAsFixed(1)}W';
+    } else if (this > 1000) {
+      return '${(this / 1000).toStringAsFixed(1)}K';
+    } else {
+      return toString();
+    }
   }
 }
