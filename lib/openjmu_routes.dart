@@ -15,6 +15,7 @@ const List<String> routeNames = <String>[
   'openjmu://changelog-page',
   'openjmu://chat-app-message-page',
   'openjmu://edit-avatar-page',
+  'openjmu://edit-signature-dialog',
   'openjmu://font-scale',
   'openjmu://home',
   'openjmu://image-viewer',
@@ -87,6 +88,20 @@ class Routes {
   /// EditAvatarPage : [Key key]
   static const _OpenjmuEditAvatarPage openjmuEditAvatarPage =
       _OpenjmuEditAvatarPage();
+
+  /// '编辑个性签名'
+  ///
+  /// [name] : 'openjmu://edit-signature-dialog'
+  ///
+  /// [routeName] : '编辑个性签名'
+  ///
+  /// [constructors] :
+  ///
+  /// EditSignatureDialog : [Key key]
+  ///
+  /// [pageRouteType] : PageRouteType.transparent
+  static const _OpenjmuEditSignatureDialog openjmuEditSignatureDialog =
+      _OpenjmuEditSignatureDialog();
 
   /// '更改字号页'
   ///
@@ -316,6 +331,19 @@ class _OpenjmuEditAvatarPage {
   const _OpenjmuEditAvatarPage();
 
   String get name => 'openjmu://edit-avatar-page';
+
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
+        'key': key,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _OpenjmuEditSignatureDialog {
+  const _OpenjmuEditSignatureDialog();
+
+  String get name => 'openjmu://edit-signature-dialog';
 
   Map<String, dynamic> d({Key key}) => <String, dynamic>{
         'key': key,

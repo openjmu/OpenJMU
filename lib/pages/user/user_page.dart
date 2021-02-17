@@ -211,16 +211,6 @@ class UserPageState extends State<UserPage>
     }
   }
 
-  // Future<void> updateSignature(BuildContext context) {
-  //   UserAPI.setSignature(signatureController.text)
-  //       .then((Response<Map<String, dynamic>> response) {
-  //     controller.changeState('success', '更新成功');
-  //   }).catchError((dynamic e) {
-  //     LogUtils.e('Error when update signature: $e');
-  //     controller.changeState('failed', '更新失败');
-  //   });
-  // }
-
   Widget _userInfo(BuildContext context) {
     return Container(
       height: avatarSize,
@@ -460,38 +450,53 @@ class UserPageState extends State<UserPage>
   }
 
   Widget get signatureWidget {
-    return ValueListenableBuilder<UserInfo>(
-      valueListenable: user,
-      builder: (_, UserInfo value, __) => Row(
-        children: <Widget>[
-          if (isCurrentUser)
-            Padding(
-              padding: EdgeInsets.only(right: 3.w),
-              child: SvgPicture.asset(
-                R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
-                color: context.textTheme.caption.color,
-                width: 20.w,
+    return Tapper(
+      onTap: () async {
+        if (!isCurrentUser) {
+          return;
+        }
+        final dynamic result = await navigatorState.pushNamed(
+          Routes.openjmuEditSignatureDialog.name,
+        );
+        if (result == true) {
+          user.value = user.value.copyWith(
+            signature: UserAPI.currentUser.signature,
+          );
+        }
+      },
+      child: ValueListenableBuilder<UserInfo>(
+        valueListenable: user,
+        builder: (_, UserInfo value, __) => Row(
+          children: <Widget>[
+            if (isCurrentUser)
+              Padding(
+                padding: EdgeInsets.only(right: 3.w),
+                child: SvgPicture.asset(
+                  R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
+                  color: context.textTheme.caption.color,
+                  width: 20.w,
+                ),
+              ),
+            Expanded(
+              child: Text(
+                () {
+                  if (value == null) {
+                    return '';
+                  } else {
+                    return value.signature?.notBreak ?? '这个人很懒，什么都没写';
+                  }
+                }(),
+                style: context.textTheme.caption.copyWith(
+                  height: 1.24,
+                  fontSize: 18.sp,
+                ),
+                textAlign: TextAlign.start,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-          Expanded(
-            child: Text(
-              () {
-                if (user.value == null) {
-                  return '';
-                } else {
-                  return user.value.signature?.notBreak ?? '这个人很懒，什么都没写';
-                }
-              }(),
-              style: context.textTheme.caption.copyWith(
-                height: 1.24,
-                fontSize: 18.sp,
-              ),
-              textAlign: TextAlign.start,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
