@@ -54,7 +54,8 @@ class LoadingBase extends LoadingMoreBase<Map<String, dynamic>> {
         if (lastIdBuilder != null) {
           lastId = lastIdBuilder(data);
         } else {
-          lastId = (last ?? <String, dynamic>{})['id'] as int ?? 0;
+          lastId =
+              (last ?? <String, dynamic>{})['id']?.toString()?.toInt() ?? 0;
         }
       }
       canRequestMore = total > length;
