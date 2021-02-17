@@ -702,7 +702,9 @@ class _PublishPostPageState extends State<PublishPostPage>
                     }
                     updateEmoticonPadStatus(context, !value);
                   },
-                  icon: R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+                  icon: value
+                      ? R.ASSETS_ICONS_PUBLISH_EMOJI_ACTIVE_SVG
+                      : R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
                   iconColor: value
                       ? currentThemeColor
                       : context.textTheme.bodyText2.color,

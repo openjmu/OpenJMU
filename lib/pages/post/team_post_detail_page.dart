@@ -797,7 +797,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         child: ValueListenableBuilder<bool>(
           valueListenable: showEmoticonPad,
           builder: (_, bool value, __) => SvgPicture.asset(
-            R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+            value
+                ? R.ASSETS_ICONS_PUBLISH_EMOJI_ACTIVE_SVG
+                : R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
             width: 24.w,
             height: 24.w,
             color:
