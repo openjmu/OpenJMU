@@ -121,31 +121,45 @@ class _PostListState extends State<PostList>
 
     _emptyChild = Tapper(
       onTap: _refreshData,
-      child: Container(
-        child: Center(
-          child: Text(
-            '这里空空如也~轻触重试',
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
+            width: 50.w,
+            color: context.theme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
+            '空空如也，轻触重试',
             style: TextStyle(
-              fontSize: 30.sp,
-              color: currentThemeColor,
+              color: context.textTheme.caption.color,
+              fontSize: 22.sp,
             ),
           ),
-        ),
+        ],
       ),
     );
 
     _errorChild = Tapper(
       onTap: _refreshData,
-      child: Container(
-        child: Center(
-          child: Text(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
+            width: 50.w,
+            color: context.theme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
             '加载失败，轻触重试',
             style: TextStyle(
-              fontSize: 30.sp,
-              color: currentThemeColor,
+              color: context.textTheme.caption.color,
+              fontSize: 22.sp,
             ),
           ),
-        ),
+        ],
       ),
     );
 

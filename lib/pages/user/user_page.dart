@@ -53,14 +53,20 @@ class UserPageState extends State<UserPage>
     initializeLoadList();
     fetchUserInformation();
 
-    Instances.eventBus.on<UserFollowEvent>().listen((UserFollowEvent event) {
-      if (event.uid == uid) {
-        user.value = user.value.copyWith(isFollowing: event.isFollow);
-      }
-      if (isCurrentUser) {
-        userIdols.value = userIdols.value + (event.isFollow ? 1 : -1);
-      }
-    });
+    Instances.eventBus
+      ..on<UserFollowEvent>().listen((UserFollowEvent event) {
+        if (event.uid == uid) {
+          user.value = user.value.copyWith(isFollowing: event.isFollow);
+        }
+        if (isCurrentUser) {
+          userIdols.value = userIdols.value + (event.isFollow ? 1 : -1);
+        }
+      })
+      ..on<BlacklistUpdateEvent>().listen((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
   }
 
   @override
@@ -198,21 +204,6 @@ class UserPageState extends State<UserPage>
       UserAPI.follow(uid);
     }
     user.value = user.value.copyWith(isFollowing: !user.value.isFollowing);
-  }
-
-  Future<void> removeFromBlacklist(
-    BuildContext context,
-    BlacklistUser user,
-  ) async {
-    final bool confirm = await ConfirmationDialog.show(
-      context,
-      title: '移出黑名单',
-      content: '确定不再屏蔽此人吗?',
-      showConfirm: true,
-    );
-    if (confirm) {
-      UserAPI.fRemoveFromBlacklist(user);
-    }
   }
 
   Widget _userInfo(BuildContext context) {
@@ -551,55 +542,32 @@ class UserPageState extends State<UserPage>
 
   Widget get banListWidget {
     if (UserAPI.blacklist.isNotEmpty) {
-      return GridView.count(
-        crossAxisCount: 3,
-        children: List<Widget>.generate(
-          UserAPI.blacklist.length,
-          (int i) => blacklistUser(UserAPI.blacklist.elementAt(i)),
+      return ListView.builder(
+        itemCount: UserAPI.blacklist.length,
+        itemBuilder: (_, int i) => _BlackListUserWidget(
+          user: UserAPI.blacklist.elementAt(i),
         ),
       );
     } else {
-      return Center(
-        child: Text(
-          '黑名单为空',
-          style: TextStyle(fontSize: 20.sp),
-        ),
-      );
-    }
-  }
-
-  Widget blacklistUser(BlacklistUser user) {
-    return Padding(
-      padding: EdgeInsets.all(8.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          UserAvatar(uid: user.uid, size: 64.0, canJump: false),
-          Text(
-            user.username,
-            style: TextStyle(fontSize: 18.sp),
-            overflow: TextOverflow.ellipsis,
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_AVATAR_SVG,
+            width: 100.w,
+            color: context.theme.iconTheme.color,
           ),
-          Tapper(
-            onTap: () => removeFromBlacklist(context, user),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 6.h,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
-                color: currentThemeColor.withAlpha(0x88),
-              ),
-              child: Text(
-                '移出黑名单',
-                style: TextStyle(fontSize: 16.sp),
-              ),
+          VGap(20.w),
+          Text(
+            '网络净土 一片祥和',
+            style: TextStyle(
+              color: context.textTheme.caption.color,
+              fontSize: 22.sp,
             ),
           ),
         ],
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -642,6 +610,89 @@ class UserPageState extends State<UserPage>
             Expanded(child: body),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _BlackListUserWidget extends StatelessWidget {
+  const _BlackListUserWidget({
+    Key key,
+    @required this.user,
+  })  : assert(user != null),
+        super(key: key);
+
+  final BlacklistUser user;
+
+  Future<void> removeFromBlacklist(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
+      context,
+      title: '移出黑名单',
+      content: '确定不再屏蔽此人吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      UserAPI.fRemoveFromBlacklist(user);
+    }
+  }
+
+  Widget _name(BuildContext context) {
+    return Text(
+      user.username,
+      style: TextStyle(
+        height: 1.2,
+        fontSize: 19.sp,
+        fontWeight: FontWeight.w600,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _removeButton(BuildContext context) {
+    return Tapper(
+      onTap: throttle(() {
+        removeFromBlacklist(context);
+      }),
+      child: Container(
+        width: 120.w,
+        height: 56.w,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: currentThemeColor,
+        ),
+        child: Text(
+          '移出黑名单',
+          style: TextStyle(
+            color: Colors.white,
+            height: 1.2,
+            fontSize: 20.sp,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        border: Border(bottom: dividerBS(context)),
+        color: context.theme.colorScheme.surface,
+      ),
+      child: Row(
+        children: <Widget>[
+          UserAvatar(uid: user.uid),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: _name(context),
+            ),
+          ),
+          _removeButton(context),
+        ],
       ),
     );
   }
