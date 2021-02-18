@@ -63,4 +63,6 @@ class Instances {
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =
       GlobalKey<CourseSchedulePageState>();
   static final CookieManager webViewCookieManager = CookieManager();
+
+  static String defaultAvatarData;
 }

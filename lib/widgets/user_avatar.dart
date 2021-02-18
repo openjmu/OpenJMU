@@ -3,12 +3,16 @@
 /// [Date] 2019-11-23 18:15
 ///
 import 'package:flutter/material.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:extended_image/extended_image.dart'
+    hide ExtendedNetworkImageProvider;
+
+// ignore: implementation_imports
+import 'package:extended_image_library/src/_network_image_io.dart';
 
 import 'package:openjmu/openjmu_route_helper.dart';
 import 'package:openjmu/constants/constants.dart';
 
-class UserAvatar extends StatelessWidget {
+class UserAvatar extends StatefulWidget {
   const UserAvatar({
     Key key,
     this.uid,
@@ -27,7 +31,24 @@ class UserAvatar extends StatelessWidget {
   final bool canJump;
   final bool isSysAvatar;
 
-  String get _uid => uid ?? currentUser.uid;
+  @override
+  _UserAvatarState createState() => _UserAvatarState();
+}
+
+class _UserAvatarState extends State<UserAvatar> {
+  ExtendedNetworkImageProvider provider;
+
+  String get _uid => widget.uid ?? currentUser.uid;
+
+  String _stringData;
+
+  @override
+  void initState() {
+    super.initState();
+    provider = UserAPI.getAvatarProvider(
+      uid: _uid,
+    );
+  }
 
   void jump(BuildContext context) {
     final RouteSettings _routeSettings = ModalRoute.of(context).settings;
@@ -53,40 +74,48 @@ class UserAvatar extends StatelessWidget {
   Widget _defaultAvatar(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius:
-            radius != null ? BorderRadius.circular(radius.w) : maxBorderRadius,
+        borderRadius: widget.radius != null
+            ? BorderRadius.circular(widget.radius.w)
+            : maxBorderRadius,
         color: context.theme.dividerColor,
       ),
       alignment: Alignment.center,
       child: SvgPicture.asset(
         R.ASSETS_PLACEHOLDERS_AVATAR_SVG,
-        width: size.w * 0.7,
+        width: widget.size.w * 0.7,
         color: context.textTheme.bodyText2.color,
       ),
+    );
+  }
+
+  Widget _realAvatar(BuildContext context) {
+    return ExtendedImage(
+      borderRadius: widget.radius != null
+          ? BorderRadius.circular(widget.radius.w)
+          : maxBorderRadius,
+      shape: BoxShape.rectangle,
+      image: provider,
+      loadStateChanged: (ExtendedImageState state) {
+        if (state.extendedImageLoadState == LoadState.completed) {
+          _stringData ??= provider.rawImageData.toString();
+          if (_stringData == Instances.defaultAvatarData) {
+            return _defaultAvatar(context);
+          }
+          return null;
+        }
+        return _defaultAvatar(context);
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
-      size: Size.square(size.w),
+      size: Size.square(widget.size.w),
       child: GestureDetector(
-        onTap: canJump ? () => jump(context) : null,
-        child: isSysAvatar
-            ? _defaultAvatar(context)
-            : ExtendedImage(
-                borderRadius: radius != null
-                    ? BorderRadius.circular(radius.w)
-                    : maxBorderRadius,
-                shape: BoxShape.rectangle,
-                image: UserAPI.getAvatarProvider(uid: _uid),
-                loadStateChanged: (ExtendedImageState state) {
-                  if (state.extendedImageLoadState == LoadState.completed) {
-                    return null;
-                  }
-                  return _defaultAvatar(context);
-                },
-              ),
+        onTap: widget.canJump ? () => jump(context) : null,
+        child:
+            widget.isSysAvatar ? _defaultAvatar(context) : _realAvatar(context),
       ),
     );
   }

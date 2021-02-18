@@ -33,7 +33,7 @@ class UserPageState extends State<UserPage>
 
   double get tabBarHeight => 56.w;
 
-  double get avatarSize => Screens.width / 6;
+  double get avatarSize => 86.w;
 
   TabController tabController;
 
@@ -147,9 +147,13 @@ class UserPageState extends State<UserPage>
   Future<bool> onRefresh() => loadingBase.refresh();
 
   void avatarTap() {
-    if (!isCurrentUser) {
+    final bool isSysAvatar = user.value?.sysAvatar == true;
+    if (!isCurrentUser && !isSysAvatar) {
       checkLargeAvatar();
     } else {
+      if (isSysAvatar) {
+        navigatorState.pushNamed(Routes.openjmuEditAvatarPage.name);
+      } else {}
       ConfirmationBottomSheet.show(
         context,
         actions: <ConfirmationBottomSheetAction>[
@@ -355,31 +359,11 @@ class UserPageState extends State<UserPage>
   Widget get userAvatar {
     return Tapper(
       onTap: avatarTap,
-      child: Container(
-        width: avatarSize,
-        height: avatarSize,
-        padding: EdgeInsets.all(Screens.width * 0.01),
-        child: ClipOval(
-          child: Image(
-            image: UserAPI.getAvatarProvider(uid: uid),
-            frameBuilder: (
-              BuildContext _,
-              Widget child,
-              int frame,
-              bool wasSynchronouslyLoaded,
-            ) {
-              if (wasSynchronouslyLoaded) {
-                return child;
-              }
-              return AnimatedOpacity(
-                child: child,
-                opacity: frame == null ? 0 : 1,
-                duration: 1.seconds,
-                curve: Curves.easeOut,
-              );
-            },
-          ),
-        ),
+      child: UserAvatar(
+        uid: uid,
+        canJump: false,
+        isSysAvatar: user.value?.sysAvatar ?? true,
+        size: avatarSize,
       ),
     );
   }

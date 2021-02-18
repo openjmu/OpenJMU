@@ -26,6 +26,12 @@ Future<void> main() async {
   NetUtils.initConfig();
   NotificationUtils.initSettings();
 
+  // In order to compare the default avatar locally, here I decide to compare
+  // the data of the avatar with a local one.
+  rootBundle.load(R.ASSETS_AVATAR_PLACEHOLDER_152_PNG).then((ByteData bd) {
+    Instances.defaultAvatarData = bd.buffer.asUint8List().toString();
+  });
+
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

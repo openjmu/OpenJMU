@@ -3,6 +3,9 @@
 class R {
   const R._();
 
+  static const String ASSETS_AVATAR_PLACEHOLDER_152_PNG =
+      'assets/avatar_placeholder_152.png';
+
   static const String ASSETS_EMOTION_ICONS_NO_PNG =
       'assets/emotion-icons/NO.png';
 
