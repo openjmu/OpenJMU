@@ -109,6 +109,7 @@ class CommentAPI {
       post: itemData['to_topic']['topic'] != null
           ? Post.fromJson(itemData['to_topic']['topic'] as Map<String, dynamic>)
           : null,
+      user: PostUser.fromJson(itemData['user'] as Map<String, dynamic>),
     );
     return _comment;
   }

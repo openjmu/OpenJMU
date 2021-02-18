@@ -167,8 +167,11 @@ class _CommentListState extends State<CommentList>
           },
         );
         if (!UserAPI.blacklist.contains(user)) {
-          commentList.add(CommentAPI.createComment(
-              commentData['reply'] as Map<String, dynamic>));
+          commentList.add(
+            CommentAPI.createComment(
+              commentData['reply'] as Map<String, dynamic>,
+            ),
+          );
           idList.add(commentData['id'] as int);
         }
       }

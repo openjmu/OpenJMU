@@ -56,8 +56,6 @@ class _PostListState extends State<PostList>
 
   Widget _itemList;
 
-  Widget _emptyChild;
-  Widget _errorChild;
   bool error = false;
 
   List<int> _idList = <int>[];
@@ -118,50 +116,6 @@ class _PostListState extends State<PostList>
           setState(() {});
         }
       });
-
-    _emptyChild = Tapper(
-      onTap: _refreshData,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SvgPicture.asset(
-            R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
-            width: 50.w,
-            color: context.theme.iconTheme.color,
-          ),
-          VGap(20.w),
-          Text(
-            '空空如也，轻触重试',
-            style: TextStyle(
-              color: context.textTheme.caption.color,
-              fontSize: 22.sp,
-            ),
-          ),
-        ],
-      ),
-    );
-
-    _errorChild = Tapper(
-      onTap: _refreshData,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SvgPicture.asset(
-            R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
-            width: 50.w,
-            color: context.theme.iconTheme.color,
-          ),
-          VGap(20.w),
-          Text(
-            '加载失败，轻触重试',
-            style: TextStyle(
-              color: context.textTheme.caption.color,
-              fontSize: 22.sp,
-            ),
-          ),
-        ],
-      ),
-    );
 
     _refreshData();
   }
@@ -272,6 +226,54 @@ class _PostListState extends State<PostList>
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Widget get _emptyChild {
+    return Tapper(
+      onTap: _refreshData,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
+            width: 50.w,
+            color: context.theme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
+            '空空如也，轻触重试',
+            style: TextStyle(
+              color: context.textTheme.caption.color,
+              fontSize: 22.sp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get _errorChild {
+    return Tapper(
+      onTap: _refreshData,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
+            width: 50.w,
+            color: context.theme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
+            '加载失败，轻触重试',
+            style: TextStyle(
+              color: context.textTheme.caption.color,
+              fontSize: 22.sp,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

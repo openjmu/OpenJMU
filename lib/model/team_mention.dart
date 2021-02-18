@@ -31,7 +31,7 @@ class TeamMentionItem {
       fromUserId: user['uid'].toString(),
       fromUsername: user['nickname'] as String,
       type: json['type'] == 't' ? TeamMentionType.post : TeamMentionType.thread,
-      user: PostUser.fromJson(json['user'] as Map<String, dynamic>),
+      user: PostUser.fromJson(user),
     );
   }
 
