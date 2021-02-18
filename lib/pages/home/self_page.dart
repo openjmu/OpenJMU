@@ -79,65 +79,67 @@ class SelfPage extends StatelessWidget {
   }
 
   /// 签到按钮
-  Widget get signButton => Consumer<SignProvider>(
-        builder: (BuildContext _, SignProvider provider, Widget __) {
-          return Tapper(
-            onTap: () {
-              if (!provider.hasSigned) {
-                provider.requestSign();
-              }
-            },
-            child: Container(
-              width: 64.w,
-              height: 64.w,
-              decoration: BoxDecoration(
-                color: _.theme.colorScheme.surface,
-                shape: BoxShape.circle,
-              ),
-              child: () {
-                Widget widget;
-                if (provider.isSigning) {
-                  widget = Padding(
-                    padding: EdgeInsets.all(18.w),
-                    child: PlatformProgressIndicator(
-                      strokeWidth: 4.w,
+  Widget get signButton {
+    return Consumer<SignProvider>(
+      builder: (BuildContext _, SignProvider provider, Widget __) {
+        return Tapper(
+          onTap: () {
+            if (!provider.hasSigned) {
+              provider.requestSign();
+            }
+          },
+          child: Container(
+            width: 64.w,
+            height: 64.w,
+            decoration: BoxDecoration(
+              color: _.theme.colorScheme.surface,
+              shape: BoxShape.circle,
+            ),
+            child: () {
+              Widget widget;
+              if (provider.isSigning) {
+                widget = Padding(
+                  padding: EdgeInsets.all(18.w),
+                  child: PlatformProgressIndicator(
+                    strokeWidth: 4.w,
+                  ),
+                );
+              } else {
+                widget = Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    if (provider.hasSigned) VGap(2.w),
+                    SvgPicture.asset(
+                      provider.hasSigned
+                          ? R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG
+                          : R.ASSETS_ICONS_SELF_PAGE_UNSIGNED_SVG,
+                      color: currentThemeColor,
+                      width: provider.hasSigned ? 15.w : 24.w,
+                      height: provider.hasSigned ? 15.w : 24.w,
                     ),
-                  );
-                } else {
-                  widget = Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      if (provider.hasSigned) VGap(2.w),
-                      SvgPicture.asset(
-                        provider.hasSigned
-                            ? R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG
-                            : R.ASSETS_ICONS_SELF_PAGE_UNSIGNED_SVG,
-                        color: currentThemeColor,
-                        width: provider.hasSigned ? 15.w : 24.w,
-                        height: provider.hasSigned ? 15.w : 24.w,
-                      ),
-                      if (provider.hasSigned)
-                        Padding(
-                          padding: EdgeInsets.only(top: 8.w),
-                          child: Text(
-                            '${provider.signedCount}',
-                            style: TextStyle(
-                              color: currentThemeColor,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                              height: 1.0,
-                            ),
+                    if (provider.hasSigned)
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.w),
+                        child: Text(
+                          '${provider.signedCount}',
+                          style: TextStyle(
+                            color: currentThemeColor,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            height: 1.0,
                           ),
                         ),
-                    ],
-                  );
-                }
-                return Center(child: widget);
-              }(),
-            ),
-          );
-        },
-      );
+                      ),
+                  ],
+                );
+              }
+              return Center(child: widget);
+            }(),
+          ),
+        );
+      },
+    );
+  }
 
   /// Item view for setting.
   /// 设置项部件
@@ -173,34 +175,32 @@ class SelfPage extends StatelessWidget {
   }
 
   Widget get userInfoWidget {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w).copyWith(
-          top: 24.w,
-          bottom: 12.w,
-        ),
-        child: Row(
-          children: <Widget>[
-            UserAvatar(
-              size: 64,
-              isSysAvatar: UserAPI.currentUser.sysAvatar,
-            ),
-            Gap(20.w),
-            Expanded(
-              child: Text(
-                currentUser.name,
-                style: TextStyle(
-                  color: adaptiveButtonColor(),
-                  fontSize: 23.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.w).copyWith(
+        top: 24.w,
+        bottom: 12.w,
+      ),
+      child: Row(
+        children: <Widget>[
+          UserAvatar(
+            size: 64,
+            isSysAvatar: UserAPI.currentUser.sysAvatar,
+          ),
+          Gap(20.w),
+          Expanded(
+            child: Text(
+              currentUser.name,
+              style: TextStyle(
+                color: adaptiveButtonColor(),
+                fontSize: 23.sp,
+                fontWeight: FontWeight.bold,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            signButton,
-          ],
-        ),
+          ),
+          signButton,
+        ],
       ),
     );
   }
@@ -428,10 +428,11 @@ class SelfPage extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            height: 200.w,
+            height: 160.w + Screens.topSafeHeight,
             child: ColoredBox(color: currentThemeColor),
           ),
           Positioned.fill(
+            top: Screens.topSafeHeight,
             child: Column(
               children: <Widget>[
                 userInfoWidget,
