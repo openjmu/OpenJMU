@@ -14,9 +14,9 @@ class LinkText extends SpecialText {
   LinkText(
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
-  ) : super(headReg, ' ', textStyle, onTap: onTap);
+  ) : super(startKey, ' ', textStyle, onTap: onTap);
 
-  static RegExp get headReg => RegExp(r'http|https');
+  static const String startKey = 'https://';
 
   static final RegExp linkRegExp = RegExp(
     r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
@@ -47,12 +47,30 @@ class LinkText extends SpecialText {
             ),
             Text(
               ' 网页链接 ',
-              style: textStyle?.copyWith(color: Colors.blue, height: 1.2),
+              style: textStyle?.copyWith(color: Colors.blue, height: 1.24),
             )
           ],
         ),
       ),
     );
+  }
+}
+
+/// Link text class for HTTP Only.
+/// 链接文字类 (仅 HTTP)
+///
+/// e.g. 'http://wb.jmu.edu.cn/r/wXn'
+class LinkOldText extends SpecialText {
+  LinkOldText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  ) : super(startKey, ' ', textStyle, onTap: onTap);
+
+  static const String startKey = 'http://';
+
+  @override
+  InlineSpan finishText() {
+    return LinkText(textStyle, onTap).finishText();
   }
 }
 
@@ -368,11 +386,10 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
             index: i,
           );
           if (specialText != null) {
-            if (textStack.length - specialText.startFlag.toString().length >=
-                0) {
+            if (textStack.length - specialText.startFlag.length >= 0) {
               textStack = textStack.substring(
                 0,
-                textStack.length - specialText.startFlag.toString().length,
+                textStack.length - specialText.startFlag.length,
               );
               if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
@@ -385,7 +402,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       if (specialText != null) {
         inlineList.add(
           TextSpan(
-            text: specialText.startFlag.toString() + specialText.getContent(),
+            text: specialText.startFlag + specialText.getContent(),
             style: textStyle,
           ),
         );
@@ -406,24 +423,26 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
   @override
   SpecialText createSpecialText(
-    String data, {
+    String flag, {
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (data == null || data == '') {
+    if (flag == null || flag == '') {
       return null;
     }
 
-    if (isStart(data, MentionText.startKey)) {
+    if (isStart(flag, MentionText.startKey)) {
       return MentionText(textStyle, onTap, type: BuilderType.extendedText);
-    } else if (isStart(data, PoundText.flag)) {
+    } else if (isStart(flag, PoundText.flag)) {
       return PoundText(textStyle, onTap, type: BuilderType.extendedText);
-    } else if (isStart(data, EmoticonText.startKey)) {
+    } else if (isStart(flag, EmoticonText.startKey)) {
       return EmoticonText(textStyle, type: BuilderType.extendedText);
-    } else if (isStart(data, LinkText.headReg)) {
+    } else if (isStart(flag, LinkText.startKey)) {
       return LinkText(textStyle, onTap);
-    } else if (isStart(data, ImageText.flag)) {
+    } else if (isStart(flag, LinkOldText.startKey)) {
+      return LinkText(textStyle, onTap);
+    } else if (isStart(flag, ImageText.flag)) {
       return ImageText(textStyle, onTap);
     }
     return null;
@@ -433,30 +452,30 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
   @override
   SpecialText createSpecialText(
-    String data, {
+    String flag, {
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (data == null || data == '') {
+    if (flag == null || flag == '') {
       return null;
     }
 
-    if (isStart(data, MentionText.startKey)) {
+    if (isStart(flag, MentionText.startKey)) {
       return MentionText(
         textStyle, onTap,
         // Using minus to keep position correct.
         start: index - (MentionText.startKey.length - 1),
         type: BuilderType.extendedTextField,
       );
-    } else if (isStart(data, PoundText.flag)) {
+    } else if (isStart(flag, PoundText.flag)) {
       return PoundText(
         textStyle,
         onTap,
         start: index,
         type: BuilderType.extendedTextField,
       );
-    } else if (isStart(data, EmoticonText.startKey)) {
+    } else if (isStart(flag, EmoticonText.startKey)) {
       return EmoticonText(
         textStyle,
         start: index,
@@ -484,9 +503,7 @@ void specialTextTapRecognizer(dynamic data) {
       Routes.openjmuUserPage.name,
       arguments: Routes.openjmuUserPage.d(uid: data['uid'].toString()),
     );
-  } else if (text.startsWith('https://')) {
-    API.launchWeb(url: text, title: '网页链接');
-  } else if (text.startsWith('http://')) {
+  } else if (text.startsWith('http')) {
     API.launchWeb(url: text, title: '网页链接');
   } else if (text.startsWith(ImageText.flag)) {
     final int imageId = data['image'] as int;
