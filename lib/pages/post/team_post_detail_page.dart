@@ -802,8 +802,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 : R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
             width: 24.w,
             height: 24.w,
-            color:
-                value ? currentThemeColor : context.textTheme.bodyText2.color,
+            color: context.textTheme.bodyText2.color,
           ),
         ),
       ),
