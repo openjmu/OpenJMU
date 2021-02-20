@@ -18,11 +18,9 @@ ThemeData get currentTheme => Theme.of(currentContext);
 ThemeGroup get currentThemeGroup =>
     currentContext.read<ThemesProvider>().currentThemeGroup;
 
-Brightness get currentBrightness => currentTheme.brightness;
-
 Color get currentThemeColor => currentTheme.accentColor;
 
-bool get currentIsDark => currentBrightness == Brightness.dark;
+bool get currentIsDark => currentTheme.brightness == Brightness.dark;
 
 T lessThanOne<T extends num>(T value) =>
     math.min((value is int ? 1 : 1.0) as T, value);

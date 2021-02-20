@@ -216,42 +216,70 @@ class UserPageState extends State<UserPage>
           userAvatar,
           Gap(16.w),
           Expanded(
-            child: Row(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Flexible(child: usernameWidget),
-                          Gap(8.w),
-                          sexualWidget(user: user.value),
-                          levelWidget,
-                        ],
-                      ),
-                      signatureWidget,
-                    ],
-                  ),
+                Row(
+                  children: <Widget>[
+                    Flexible(child: usernameWidget),
+                    Gap(8.w),
+                    sexualWidget,
+                    levelWidget,
+                  ],
                 ),
-                _userCountField(
-                  context: context,
-                  name: '关注',
-                  notifier: userIdols,
-                  type: 1,
-                ),
-                _userCountField(
-                  context: context,
-                  name: '粉丝',
-                  notifier: userFans,
-                  type: 2,
-                ),
+                signatureWidget,
               ],
             ),
           ),
+          _userCountField(
+            context: context,
+            name: '关注',
+            notifier: userIdols,
+            type: 1,
+          ),
+          _userCountField(
+            context: context,
+            name: '粉丝',
+            notifier: userFans,
+            type: 2,
+          ),
         ],
       ),
+    );
+  }
+
+  Widget get userAvatar {
+    return ValueListenableBuilder<UserInfo>(
+      valueListenable: user,
+      builder: (_, UserInfo value, __) => Tapper(
+        onTap: avatarTap,
+        child: UserAvatar(
+          uid: uid,
+          canJump: false,
+          isSysAvatar: value?.sysAvatar ?? true,
+          size: avatarSize,
+        ),
+      ),
+    );
+  }
+
+  Widget get sexualWidget {
+    return ValueListenableBuilder<UserInfo>(
+      valueListenable: user,
+      builder: (_, UserInfo value, __) {
+        if (value == null) {
+          return const SizedBox.shrink();
+        }
+        final bool isFemale = (user.value ?? currentUser)?.gender == 2;
+        return SvgPicture.asset(
+          isFemale
+              ? R.ASSETS_ICONS_GENDER_FEMALE_SVG
+              : R.ASSETS_ICONS_GENDER_MALE_SVG,
+          width: 28.w,
+          height: 28.w,
+        );
+      },
     );
   }
 
@@ -343,18 +371,6 @@ class UserPageState extends State<UserPage>
           tabList.length,
           (int index) => Tab(text: tabList[index]),
         ),
-      ),
-    );
-  }
-
-  Widget get userAvatar {
-    return Tapper(
-      onTap: avatarTap,
-      child: UserAvatar(
-        uid: uid,
-        canJump: false,
-        isSysAvatar: user.value?.sysAvatar ?? true,
-        size: avatarSize,
       ),
     );
   }

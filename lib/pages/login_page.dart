@@ -326,10 +326,10 @@ class LoginPageState extends State<LoginPage> with RouteAware {
             return const SizedBox.shrink();
           }
           return SizedBox.fromSize(
-            size: Size.square(40.w),
+            size: Size.square(36.w),
             child: IconButton(
               padding: EdgeInsets.zero,
-              icon: Icon(Icons.clear, size: 40.w),
+              icon: Icon(Icons.clear, size: 36.w),
               onPressed: _usernameController.clear,
             ),
           );
@@ -352,13 +352,13 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           actionName: '忘记密码',
           actionOnTap: forgotPassword,
           suffixWidget: SizedBox.fromSize(
-            size: Size.square(40.w),
+            size: Size.square(36.w),
             child: IconButton(
               padding: EdgeInsets.zero,
               icon: Icon(
                 isObscure ? Icons.visibility_off : Icons.visibility,
                 color: isObscure ? null : defaultLightColor,
-                size: 40.w,
+                size: 36.w,
               ),
               onPressed: () {
                 _isObscure.value = !_isObscure.value;
@@ -384,7 +384,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
               return RoundedCheckbox(
                 value: _agreement.value,
                 activeColor: defaultLightColor,
-                inactiveColor: Colors.white12,
+                inactiveColor: context.textTheme.bodyText2.color,
                 onChanged: !isLogin
                     ? (bool value) {
                         _agreement.value = value;
@@ -419,7 +419,10 @@ class LoginPageState extends State<LoginPage> with RouteAware {
               },
           ),
         ],
-        style: TextStyle(fontSize: 18.sp),
+        style: TextStyle(
+          color: _isPreview.value ? Colors.white : null,
+          fontSize: 18.sp,
+        ),
       ),
       maxLines: 1,
       overflow: TextOverflow.fade,
@@ -429,14 +432,17 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Agreement widget.
   /// 用户协议部件。包含复选框和提示。
   Widget get agreementWidget {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          if (!_isPreview.value) agreementCheckbox,
-          agreementTip,
-        ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isPreview,
+      builder: (_, bool value, __) => Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (!value) agreementCheckbox,
+            agreementTip,
+          ],
+        ),
       ),
     );
   }
@@ -530,7 +536,10 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       valueListenable: _isPreview,
       builder: (_, bool isPreview, Widget child) {
         if (isPreview) {
-          return const SizedBox.shrink();
+          return const AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light,
+            child: SizedBox.shrink(),
+          );
         }
         return child;
       },
@@ -563,6 +572,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                             : Text(
                                 '登录',
                                 style: TextStyle(
+                                  color: Colors.white,
                                   height: 1.2,
                                   letterSpacing: 1.sp,
                                   fontSize: 20.sp,
@@ -584,14 +594,20 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     setAlignment(context);
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isPreview,
+      builder: (_, bool v, Widget c) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: v || context.brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: c,
+      ),
       child: WillPopScope(
         onWillPop: doubleBackExit,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: DefaultTextStyle.merge(
-            style: TextStyle(color: Colors.white, fontSize: 18.sp),
+            style: TextStyle(fontSize: 18.sp),
             child: Stack(
               children: <Widget>[
                 videoWidget(context),
@@ -644,7 +660,7 @@ class _InputFieldWrapper extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             height: 100.w,
-            color: Colors.black45,
+            color: context.theme.dividerColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,

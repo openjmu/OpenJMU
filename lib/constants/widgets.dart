@@ -144,15 +144,6 @@ class DeveloperTag extends StatelessWidget {
   }
 }
 
-Widget sexualWidget({UserInfo user, double size = 28.0}) {
-  final bool isFemale = (user ?? currentUser)?.gender == 2;
-  return SvgPicture.asset(
-    'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
-    width: size.w,
-    height: size.w,
-  );
-}
-
 BorderSide dividerBS(BuildContext c) {
   return BorderSide(
     width: 1.w,
@@ -208,7 +199,7 @@ class PlatformProgressIndicator extends StatelessWidget {
     return Platform.isIOS
         ? CupertinoTheme(
             data: CupertinoThemeData(
-              brightness: brightness ?? currentBrightness,
+              brightness: brightness ?? context.brightness,
             ),
             child: CupertinoActivityIndicator(radius: radius),
           )
