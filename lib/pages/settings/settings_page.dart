@@ -2,8 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-09-23 16:36
 ///
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -42,49 +40,42 @@ class _AboutCard extends StatelessWidget {
   const _AboutCard({Key key}) : super(key: key);
 
   Future<void> showDebugInfoDialog(BuildContext context) async {
-    final String info = '[uid      ] ${currentUser.uid}\n'
-        '[sid      ] ${currentUser.sid}\n'
-        '[ticket   ] ${currentUser.ticket}\n'
-        '[workId   ] ${currentUser.workId}\n'
-        '[uuid     ] ${DeviceUtils.deviceUuid}\n'
-        '${DeviceUtils.devicePushToken != null ? '[pushToken] ${DeviceUtils.devicePushToken}\n' : ''}'
-        '[model    ] ${DeviceUtils.deviceModel}';
-    final List<String> list = info.split('\n');
+    final Map<String, String> info = <String, String>{
+      'uid': currentUser.uid,
+      'sid': currentUser.sid,
+      'uuid': DeviceUtils.deviceUuid,
+      'ticket': currentUser.ticket,
+      'workId': currentUser.workId,
+      if (DeviceUtils.devicePushToken != null)
+        'pushToken': DeviceUtils.devicePushToken,
+      'model': DeviceUtils.deviceModel,
+    };
+    final int longestKeyLength = info.keys.fold<int>(0, (int pre, String key) {
+      if (key.length > pre) {
+        return key.length;
+      } else {
+        return pre;
+      }
+    });
+    final List<MapEntry<String, String>> entries = info.entries.toList();
     final bool shouldCopy = await ConfirmationDialog.show(
       context,
       title: '调试信息',
       showConfirm: true,
       confirmLabel: '复制',
       cancelLabel: '返回',
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List<Widget>.generate(list.length, (int i) {
-            return Text.rich(
-              TextSpan(
-                children: List<InlineSpan>.generate(list[i].length, (int j) {
-                  return WidgetSpan(
-                    alignment: ui.PlaceholderAlignment.middle,
-                    child: Text(
-                      list[i].substring(j, j + 1),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontFamily: 'JetBrains Mono',
-                      ),
-                    ),
-                  );
-                }),
-              ),
-              textAlign: TextAlign.left,
-            );
-          }),
-        ),
+      child: debugContentBuilder(
+        context: context,
+        entries: entries,
+        longestKeyLength: longestKeyLength,
       ),
     );
     if (shouldCopy) {
-      Clipboard.setData(ClipboardData(text: info));
+      String data = '';
+      for (final MapEntry<String, String> e in info.entries) {
+        data += '[${e.key.padRight(longestKeyLength, ' ')}] ${e.value}\n';
+      }
+      Clipboard.setData(ClipboardData(text: data));
       showToast('已复制到剪贴板');
     }
   }
@@ -101,7 +92,39 @@ class _AboutCard extends StatelessWidget {
           width: Screens.width / 5,
         ),
       ),
-      applicationLegalese: '© 2020 The OpenJMU Team',
+      applicationLegalese: '© ${currentTime.year} The OpenJMU Team',
+    );
+  }
+
+  Widget debugContentBuilder({
+    BuildContext context,
+    List<MapEntry<String, String>> entries,
+    int longestKeyLength,
+  }) {
+    return Padding(
+      padding: EdgeInsets.all(20.w),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List<Widget>.generate(entries.length, (int i) {
+          final MapEntry<String, String> entry = entries[i];
+          return Text.rich(
+            TextSpan(
+              children: <InlineSpan>[
+                TextSpan(
+                  text: '[${entry.key.padRight(longestKeyLength, ' ')}] ',
+                ),
+                TextSpan(text: entry.value),
+              ],
+            ),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontFamily: 'JetBrains Mono',
+            ),
+            textAlign: TextAlign.left,
+          );
+        }),
+      ),
     );
   }
 
