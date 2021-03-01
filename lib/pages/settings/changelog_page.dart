@@ -17,16 +17,17 @@ class ChangeLogPage extends StatefulWidget {
 class _ChangeLogPageState extends State<ChangeLogPage>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController();
-  double _currentPage = 0.0;
+  final ValueNotifier<double> _currentPage = ValueNotifier<double>(0.0);
+
+  double get currentPage => _currentPage.value;
 
   final Set<ChangeLog> changeLogs = HiveBoxes.changelogBox.values.toSet();
-  bool error = false;
-  bool displayBack = true;
-  bool animating = false;
+  final ValueNotifier<bool> isError = ValueNotifier<bool>(false),
+      displayBack = ValueNotifier<bool>(true),
+      isAnimating = ValueNotifier<bool>(false);
 
-  double _blurOpacity = 0.0;
-  Animation<double> _blurOpacityAnimation;
   AnimationController _blurOpacityController;
+  Animation<double> _blurOpacityAnimation;
 
   @override
   void initState() {
@@ -34,85 +35,101 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     if (changeLogs == null) {
       PackageUtils.checkUpdate();
     }
+    _pageController
+        .addListener(() => _currentPage.value = _pageController.page);
+    _blurOpacityController = AnimationController(
+      duration: 1.seconds,
+      vsync: this,
+    );
+    _blurOpacityAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _blurOpacityController,
+        curve: Curves.ease,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    isError.dispose();
+    displayBack.dispose();
+    isAnimating.dispose();
+    super.dispose();
   }
 
   void blurAnimate(bool forward) {
-    animating = forward;
-    if (mounted) {
-      setState(() {});
+    isAnimating.value = forward;
+
+    _blurOpacityController.stop();
+    if (forward) {
+      _blurOpacityController.forward();
+    } else {
+      _blurOpacityController.reverse();
     }
-
-    _blurOpacityController =
-        AnimationController(duration: 1.seconds, vsync: this);
-    final CurvedAnimation _blurOpacityCurve = CurvedAnimation(
-      parent: _blurOpacityController,
-      curve: Curves.ease,
-    );
-    _blurOpacityAnimation = Tween<double>(
-      begin: forward ? 0.0 : _blurOpacity,
-      end: forward ? 1.0 : 0.0,
-    ).animate(_blurOpacityCurve)
-      ..addListener(() {
-        _blurOpacity = _blurOpacityAnimation.value;
-        if (mounted) {
-          setState(() {});
-        }
-      });
-
-    _blurOpacityController
-      ..stop()
-      ..forward();
   }
 
-  Widget get goBackButton => Container(
-        margin: EdgeInsets.symmetric(vertical: 20.h),
-        child: MaterialButton(
-          elevation: 0.0,
-          highlightElevation: 0.0,
-          hoverElevation: 0.0,
-          focusElevation: 0.0,
-          color: currentThemeColor.withOpacity(0.2),
-          shape: const RoundedRectangleBorder(borderRadius: maxBorderRadius),
-          onPressed: () {
-            blurAnimate(true);
-            Future<void>.delayed(3.seconds, () {
-              blurAnimate(false);
-            });
-            _pageController.animateToPage(
-              displayBack ? changeLogs.length : 0,
-              duration: 4.seconds,
-              curve: Curves.fastOutSlowIn,
-            );
-          },
-          child: AnimatedCrossFade(
-            duration: 300.milliseconds,
-            crossFadeState: displayBack
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: Text(
-              '回到梦开始的地方 →',
-              style: TextStyle(
-                color: currentThemeColor,
-                fontSize: 20.sp,
-              ),
-            ),
-            secondChild: Text(
-              '← 踏上新旅途',
-              style: TextStyle(
-                color: currentThemeColor,
-                fontSize: 20.sp,
+  bool onNotification(ScrollNotification notification) {
+    _currentPage.value = _pageController.page;
+    if (notification.metrics.axisDirection == AxisDirection.right &&
+        currentPage > 2) {
+      if (displayBack.value) {
+        displayBack.value = false;
+      }
+    } else {
+      if (!displayBack.value) {
+        displayBack.value = true;
+      }
+    }
+    return true;
+  }
+
+  Widget get goBackButton {
+    return Container(
+      padding: EdgeInsets.only(bottom: context.bottomPadding),
+      decoration: BoxDecoration(
+        border: Border(top: dividerBS(context)),
+        color: context.theme.cardColor,
+      ),
+      child: Tapper(
+        onTap: () {
+          blurAnimate(true);
+          Future<void>.delayed(3.seconds, () {
+            blurAnimate(false);
+          });
+          _pageController.animateToPage(
+            displayBack.value ? changeLogs.length : 0,
+            duration: 4.seconds,
+            curve: Curves.fastOutSlowIn,
+          );
+        },
+        child: Container(
+          alignment: Alignment.center,
+          height: 80.w,
+          child: DefaultTextStyle.merge(
+            style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+            child: ValueListenableBuilder<bool>(
+              valueListenable: displayBack,
+              builder: (_, bool value, __) => AnimatedCrossFade(
+                duration: 300.milliseconds,
+                crossFadeState: value
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                firstChild: const Text('回到梦开始的地方 →'),
+                secondChild: const Text('← 踏上新旅途'),
               ),
             ),
           ),
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
-      );
+      ),
+    );
+  }
 
   Widget _logLine(bool left) {
     return Expanded(
       child: Container(
         width: double.infinity,
-        height: 10.h,
+        height: 10.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.horizontal(
             left: Radius.circular(left ? 0 : 999),
@@ -125,8 +142,8 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   }
 
   Widget _logVersion(ChangeLog log) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 40.w),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 40.w),
       child: Column(
         children: <Widget>[
           if (log.buildNumber == PackageUtils.buildNumber)
@@ -158,8 +175,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     return Text(
       log.version,
       style: context.textTheme.headline6.copyWith(
-        fontSize:
-            suSetSp(log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
+        fontSize: (log.buildNumber == PackageUtils.buildNumber ? 45 : 50).sp,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -177,59 +193,52 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   Widget buildNumberInfo(ChangeLog log) {
     return Text(
       '(${log.buildNumber})',
-      style: context.textTheme.caption.copyWith(
-        fontSize: 20.sp,
-      ),
+      style: context.textTheme.caption.copyWith(fontSize: 20.sp),
     );
   }
 
   Widget detailWidget(
+    BuildContext context,
     int index,
     ChangeLog log, {
     double parallaxOffset,
   }) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            width: Screens.width,
-            height: Screens.height / 6,
-            child: Row(
-              children: <Widget>[
-                if (index != 0) _logLine(true) else const Spacer(),
-                _logVersion(log),
-                if (index != changeLogs.length - 1)
-                  _logLine(false)
-                else
-                  const Spacer(),
-              ],
-            ),
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          width: Screens.width,
+          height: Screens.height / 6,
+          child: Row(
+            children: <Widget>[
+              if (index != 0) _logLine(true) else const Spacer(),
+              _logVersion(log),
+              if (index != changeLogs.length - 1)
+                _logLine(false)
+              else
+                const Spacer(),
+            ],
           ),
-          Expanded(
-            child: Transform(
-              transform: Matrix4.translationValues(parallaxOffset, 0.0, 0.0),
-              child: Container(
-                margin: EdgeInsets.only(
-                  left: 40.w,
-                  right: 40.w,
-                  bottom: 60.h,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.w),
-                  color: Theme.of(context).cardColor,
-                ),
-                child: SizedBox.expand(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.all(20.w),
-                    physics: const BouncingScrollPhysics(),
-                    child: sectionWidget(log.sections),
-                  ),
+        ),
+        Expanded(
+          child: Transform(
+            transform: Matrix4.translationValues(parallaxOffset, 0.0, 0.0),
+            child: Container(
+              margin: EdgeInsets.all(30.w).copyWith(top: 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.w),
+                color: context.theme.cardColor,
+              ),
+              child: SizedBox.expand(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(20.w),
+                  physics: const BouncingScrollPhysics(),
+                  child: sectionWidget(log.sections),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -264,90 +273,186 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     );
   }
 
-  Widget get startWidget => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.w),
-            child: Image.asset(
-              R.IMAGES_LOGO_1024_PNG,
-              width: 150.w,
-              height: 150.w,
-            ),
-          ),
-          VGap(50.h),
-          Text(
-            'Open The Sky',
-            style: TextStyle(
-              color: defaultLightColor,
-              fontFamily: 'chocolate',
-              fontSize: 50.sp,
-            ),
-          ),
-          VGap(20.h),
-          Text(
-            '2019.03.17',
-            style: TextStyle(
-              fontFamily: 'chocolate',
-              fontSize: 30.sp,
-            ),
-          ),
-          VGap(80.h),
-        ],
-      );
-
-  Widget get emptyTips => Padding(
-        padding: EdgeInsets.all(60.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const LoadMoreSpinningIcon(isRefreshing: true),
-            VGap(40.h),
-            Text.rich(
-              TextSpan(
-                children: <InlineSpan>[
-                  const TextSpan(
-                    text: '履历跑得太快，程序已经追不上它了...待会儿它就会回来的\n',
-                  ),
-                  TextSpan(
-                    text: '🚀',
-                    style: TextStyle(fontSize: 50.sp),
-                  ),
-                ],
+  Widget starterWidget(double parallaxOffset) {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          width: Screens.width,
+          height: Screens.height / 6,
+          child: Row(
+            children: <Widget>[
+              _logLine(true),
+              _logVersion(
+                const ChangeLog(
+                  version: '0.1.0',
+                  buildNumber: 1,
+                  date: '2019-03-17',
+                ),
               ),
-              style: TextStyle(fontSize: 25.sp),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const Spacer(),
+            ],
+          ),
         ),
-      );
+        Expanded(
+          child: Transform(
+            transform: Matrix4.translationValues(parallaxOffset, 0.0, 0.0),
+            child: Container(
+              margin: EdgeInsets.all(30.w).copyWith(top: 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.w),
+                color: context.theme.cardColor,
+              ),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(30.w),
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: <Widget>[
+                    SvgPicture.asset(
+                      R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
+                      color: defaultLightColor,
+                      height: 30.w,
+                    ),
+                    VGap(40.w),
+                    SvgPicture.asset(
+                      R.ASSETS_ICONS_OPEN_THE_SKY_SVG,
+                      color: context.textTheme.bodyText2.color,
+                      width: Screens.width / 4,
+                    ),
+                    VGap(40.w),
+                    Text(
+                      '开发组成员',
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    VGap(15.w),
+                    _developersGrid(context),
+                    VGap(40.w),
+                    Text(
+                      '© ${currentTime.year} The OpenJMU Team',
+                      style: context.textTheme.caption.copyWith(
+                        fontSize: 18.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-  Widget get backdrop => Positioned.fill(
-        child: IgnorePointer(
-          ignoring: !animating,
-          child: BackdropFilter(
+  Widget _developersGrid(BuildContext context) {
+    return GridView.count(
+      childAspectRatio: 1.5,
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: const <Widget>[
+        _DeveloperWidget(name: '李承峻', secondaryName: 'Alex', tag: '负责人'),
+        _DeveloperWidget(name: '徐崎峰', secondaryName: 'evsio0n', tag: '开发'),
+        _DeveloperWidget(name: '叶佳豪', secondaryName: 'Tomcat', tag: '产品/运营'),
+        _DeveloperWidget(name: '陈高仁', secondaryName: 'Andyc', tag: 'UI设计'),
+        _DeveloperWidget(name: '陈嘉旺', tag: '产品'),
+        _DeveloperWidget(name: '兰方正', secondaryName: 'Leo', tag: '开发'),
+        _DeveloperWidget(name: '潘楚坤', secondaryName: '暗云', tag: '产品/运营'),
+        _DeveloperWidget(name: '李安厦', tag: 'UI设计'),
+        _DeveloperWidget(name: '周妍妍', tag: 'UI设计'),
+        _DeveloperWidget(name: '肖建行', secondaryName: 'joe', tag: '开发'),
+        _DeveloperWidget(name: '李炜捷', tag: '产品'),
+        _DeveloperWidget(name: '杜雨菲', tag: '产品'),
+      ],
+    );
+  }
+
+  Widget get emptyTips {
+    return Padding(
+      padding: EdgeInsets.all(60.w),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const LoadMoreSpinningIcon(isRefreshing: true),
+          VGap(40.h),
+          Text.rich(
+            TextSpan(
+              children: <InlineSpan>[
+                const TextSpan(
+                  text: '履历跑得太快，程序已经追不上它了...待会儿它就会回来的\n',
+                ),
+                TextSpan(
+                  text: '🚀',
+                  style: TextStyle(fontSize: 50.sp),
+                ),
+              ],
+            ),
+            style: TextStyle(fontSize: 25.sp),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get backdrop {
+    return Positioned.fill(
+      child: ValueListenableBuilder<bool>(
+        valueListenable: isAnimating,
+        builder: (_, bool value, Widget child) => IgnorePointer(
+          ignoring: !value,
+          child: child,
+        ),
+        child: AnimatedBuilder(
+          animation: _blurOpacityAnimation,
+          builder: (_, __) => BackdropFilter(
             filter: ui.ImageFilter.blur(
-              sigmaX: 2.0 * _blurOpacity,
-              sigmaY: 2.0 * _blurOpacity,
+              sigmaX: 2 * _blurOpacityAnimation.value,
+              sigmaY: 2 * _blurOpacityAnimation.value,
             ),
             child: const Text(' '),
           ),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget logWidgetBuilder({
-    int index,
-    BoxConstraints constraints,
-  }) {
-    if (index != changeLogs.length) {
-      return detailWidget(
-        index,
-        changeLogs.elementAt(index),
-        parallaxOffset: constraints.maxWidth / 2.0 * (index - _currentPage),
-      );
-    } else {
-      return startWidget;
-    }
+  Widget logWidgetBuilder(BuildContext context, int index) {
+    return ValueListenableBuilder<double>(
+      valueListenable: _currentPage,
+      builder: (_, double page, __) {
+        final double offset = Screens.width / 2.0 * (index - page);
+        if (index != changeLogs.length) {
+          return detailWidget(
+            context,
+            index,
+            changeLogs.elementAt(index),
+            parallaxOffset: offset,
+          );
+        } else {
+          return starterWidget(offset);
+        }
+      },
+    );
+  }
+
+  Widget _contentBuilder(BuildContext context, BoxConstraints constraints) {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: PageView.custom(
+            controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (_, int index) => logWidgetBuilder(context, index),
+              childCount: changeLogs.length + 1,
+            ),
+          ),
+        ),
+        goBackButton,
+      ],
+    );
   }
 
   @override
@@ -360,42 +465,11 @@ class _ChangeLogPageState extends State<ChangeLogPage>
             Positioned.fill(
               child: changeLogs != null
                   ? LayoutBuilder(
-                      builder: (_, BoxConstraints constraints) {
-                        return NotificationListener<ScrollNotification>(
-                          onNotification: (ScrollNotification notification) {
-                            _currentPage = _pageController.page;
-                            if (notification.metrics.axisDirection ==
-                                    AxisDirection.right &&
-                                _currentPage > 2.0) {
-                              displayBack = false;
-                            } else {
-                              displayBack = true;
-                            }
-                            if (mounted) {
-                              setState(() {});
-                            }
-                            return true;
-                          },
-                          child: Column(
-                            children: <Widget>[
-                              goBackButton,
-                              Expanded(
-                                child: PageView.custom(
-                                  controller: _pageController,
-                                  physics: const BouncingScrollPhysics(),
-                                  childrenDelegate: SliverChildBuilderDelegate(
-                                    (_, int index) => logWidgetBuilder(
-                                      index: index,
-                                      constraints: constraints,
-                                    ),
-                                    childCount: changeLogs.length + 1,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                      builder: (_, BoxConstraints cs) =>
+                          NotificationListener<ScrollNotification>(
+                        onNotification: onNotification,
+                        child: _contentBuilder(context, cs),
+                      ),
                     )
                   : emptyTips,
             ),
@@ -403,6 +477,48 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DeveloperWidget extends StatelessWidget {
+  const _DeveloperWidget({
+    Key key,
+    this.name,
+    this.secondaryName,
+    this.tag,
+  }) : super(key: key);
+
+  final String name;
+  final String secondaryName;
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text.rich(
+          TextSpan(
+            children: <InlineSpan>[
+              TextSpan(
+                text: name,
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+              ),
+              if (secondaryName != null)
+                TextSpan(
+                  text: ' ($secondaryName)',
+                  style: TextStyle(fontSize: 15.sp),
+                ),
+            ],
+          ),
+        ),
+        VGap(6.w),
+        Text(
+          tag,
+          style: context.textTheme.caption.copyWith(fontSize: 17.sp),
+        ),
+      ],
     );
   }
 }

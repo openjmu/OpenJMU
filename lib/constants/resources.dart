@@ -484,6 +484,9 @@ class R {
   static const String ASSETS_ICONS_NOTIFICATION_SVG =
       'assets/icons/notification.svg';
 
+  static const String ASSETS_ICONS_OPEN_THE_SKY_SVG =
+      'assets/icons/open_the_sky.svg';
+
   static const String ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG =
       'assets/icons/post-actions/comment-fill.svg';
 
