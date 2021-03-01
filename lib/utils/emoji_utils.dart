@@ -68,20 +68,6 @@ class EmojiPad extends StatefulWidget {
 class _EmojiPadState extends State<EmojiPad> {
   List<Emoji> recentEmojis;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchRecentEmojis();
-  }
-
-  @override
-  void didUpdateWidget(EmojiPad oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget != widget) {
-      fetchRecentEmojis();
-    }
-  }
-
   void fetchRecentEmojis() {
     final List<Emoji> _emojis =
         HiveBoxes.emojisBox.get(currentUser.uid)?.cast<Emoji>();
@@ -130,6 +116,7 @@ class _EmojiPadState extends State<EmojiPad> {
 
   @override
   Widget build(BuildContext context) {
+    fetchRecentEmojis();
     final double _height = math.max(EmojiPad.padDefaultHeight, widget.height);
     return Container(
       height: widget.active ? _height : 00,
@@ -138,12 +125,10 @@ class _EmojiPadState extends State<EmojiPad> {
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.w),
               child: Text(
                 '最近使用',
-                style: context.textTheme.caption.copyWith(
-                  fontSize: 20.sp,
-                ),
+                style: context.textTheme.caption.copyWith(fontSize: 19.sp),
               ),
             ),
           ),
@@ -162,14 +147,12 @@ class _EmojiPadState extends State<EmojiPad> {
             ),
           ),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.w),
+            child: Container(
+              alignment: AlignmentDirectional.centerStart,
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.w),
               child: Text(
-                'JIMOJI',
-                style: context.textTheme.caption.copyWith(
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                '全部表情',
+                style: context.textTheme.caption.copyWith(fontSize: 19.sp),
               ),
             ),
           ),

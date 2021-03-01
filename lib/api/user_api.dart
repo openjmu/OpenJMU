@@ -150,6 +150,7 @@ class UserAPI {
         data: <String, dynamic>{'fid': uid, 'tagid': 0},
       );
       Instances.eventBus.fire(UserFollowEvent(uid: uid, isFollow: true));
+      showToast('关注成功');
       return true;
     } catch (e) {
       LogUtils.e('Failed when folloe: $e');
@@ -168,6 +169,9 @@ class UserAPI {
         data: <String, dynamic>{'fid': uid},
       );
       Instances.eventBus.fire(UserFollowEvent(uid: uid, isFollow: false));
+      if (!fromBlacklist) {
+        showToast('已取消关注');
+      }
       return true;
     } catch (e) {
       LogUtils.e('Failed when unfollow $uid: $e');

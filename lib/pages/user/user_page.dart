@@ -154,6 +154,9 @@ class UserPageState extends State<UserPage>
 
   void avatarTap() {
     final bool isSysAvatar = user.value?.sysAvatar == true;
+    if (!isCurrentUser && isSysAvatar) {
+      return;
+    }
     if (!isCurrentUser && !isSysAvatar) {
       checkLargeAvatar();
     } else {
@@ -508,9 +511,9 @@ class UserPageState extends State<UserPage>
           'Lv.${value?.levelInfo?.level ?? 0}',
           style: TextStyle(
             color: Colors.white,
-            height: 1.0,
             fontSize: 16.sp,
-            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
           ),
         ),
       ),

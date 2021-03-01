@@ -81,7 +81,7 @@ class SelfPage extends StatelessWidget {
   /// 签到按钮
   Widget get signButton {
     return Consumer<SignProvider>(
-      builder: (BuildContext _, SignProvider provider, Widget __) {
+      builder: (BuildContext context, SignProvider provider, Widget __) {
         return Tapper(
           onTap: () {
             if (!provider.hasSigned) {
@@ -92,7 +92,7 @@ class SelfPage extends StatelessWidget {
             width: 64.w,
             height: 64.w,
             decoration: BoxDecoration(
-              color: _.theme.colorScheme.surface,
+              color: context.theme.colorScheme.surface,
               shape: BoxShape.circle,
             ),
             child: () {
@@ -109,14 +109,22 @@ class SelfPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     if (provider.hasSigned) VGap(2.w),
-                    SvgPicture.asset(
-                      provider.hasSigned
-                          ? R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG
-                          : R.ASSETS_ICONS_SELF_PAGE_UNSIGNED_SVG,
-                      color: currentThemeColor,
-                      width: provider.hasSigned ? 15.w : 24.w,
-                      height: provider.hasSigned ? 15.w : 24.w,
-                    ),
+                    if (provider.hasSigned)
+                      SvgPicture.asset(
+                        R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG,
+                        color: currentThemeColor,
+                        width: 15.w,
+                        height: 15.w,
+                      )
+                    else
+                      Text(
+                        '签到',
+                        style: context.textTheme.headline6.copyWith(
+                          color: context.theme.accentColor,
+                          fontSize: 16.sp,
+                          height: 1.23,
+                        ),
+                      ),
                     if (provider.hasSigned)
                       Padding(
                         padding: EdgeInsets.only(top: 8.w),
