@@ -310,7 +310,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
                     SvgPicture.asset(
                       R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
                       color: defaultLightColor,
-                      height: 30.w,
+                      height: 28.w,
                     ),
                     VGap(40.w),
                     SvgPicture.asset(
