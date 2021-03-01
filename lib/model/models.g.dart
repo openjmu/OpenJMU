@@ -266,3 +266,33 @@ class WebAppAdapter extends TypeAdapter<WebApp> {
       ..write(obj.menuType);
   }
 }
+
+class EmojiAdapter extends TypeAdapter<Emoji> {
+  @override
+  final typeId = 6;
+
+  @override
+  Emoji read(BinaryReader reader) {
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Emoji(
+      name: fields[0] as String,
+      filename: fields[1] as String,
+      text: fields[2] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Emoji obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.filename)
+      ..writeByte(2)
+      ..write(obj.text);
+  }
+}

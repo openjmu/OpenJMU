@@ -33,7 +33,7 @@ class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
   Widget _emoticonPad(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: widget.emoticonPadNotifier,
-      builder: (_, bool value, __) => EmotionPad(
+      builder: (_, bool value, __) => EmojiPad(
         active: value,
         height: _keyboardHeight,
         controller: widget.controller,

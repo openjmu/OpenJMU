@@ -104,9 +104,9 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
               top: 0.0,
               bottom: 0.0,
               left: automaticallyImplyLeading && Navigator.of(context).canPop()
-                  ? kMinInteractiveDimension
+                  ? _effectiveHeight
                   : 0.0,
-              right: automaticallyImplyActions ? kMinInteractiveDimension : 0.0,
+              right: automaticallyImplyActions ? _effectiveHeight : 0.0,
               child: Align(
                 alignment: centerTitle
                     ? Alignment.center

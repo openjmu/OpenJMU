@@ -16,7 +16,7 @@ export 'package:ff_annotation_route/ff_annotation_route.dart'
     show FFRoute, PageRouteType;
 export 'package:flutter_icons/flutter_icons.dart';
 export 'package:flutter_svg/flutter_svg.dart';
-export 'package:hive/hive.dart' show Box;
+export 'package:hive/hive.dart' show Box, HiveType, HiveField;
 export 'package:intl/intl.dart' show DateFormat;
 export 'package:loading_more_list/loading_more_list.dart';
 export 'package:oktoast/oktoast.dart' hide showToast;

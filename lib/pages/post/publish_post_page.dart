@@ -606,7 +606,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   Widget get emoticonPad {
     return ValueListenableBuilder<bool>(
       valueListenable: isEmoticonPadActive,
-      builder: (_, bool value, __) => EmotionPad(
+      builder: (_, bool value, __) => EmojiPad(
         active: value,
         height: _keyboardHeight,
         controller: textEditingController,

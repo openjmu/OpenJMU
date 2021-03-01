@@ -6,275 +6,254 @@ class R {
   static const String ASSETS_AVATAR_PLACEHOLDER_152_PNG =
       'assets/avatar_placeholder_152.png';
 
-  static const String ASSETS_EMOTION_ICONS_NO_PNG =
-      'assets/emotion-icons/NO.png';
+  static const String ASSETS_EMOJI_666_PNG = 'assets/emoji/666.png';
 
-  static const String ASSETS_EMOTION_ICONS_OK_PNG =
-      'assets/emotion-icons/OK.png';
+  static const String ASSETS_EMOJI_NO_PNG = 'assets/emoji/NO.png';
 
-  static const String ASSETS_EMOTION_ICONS_AINI_PNG =
-      'assets/emotion-icons/aini.png';
+  static const String ASSETS_EMOJI_OK_PNG = 'assets/emoji/OK.png';
 
-  static const String ASSETS_EMOTION_ICONS_AIQING_PNG =
-      'assets/emotion-icons/aiqing.png';
+  static const String ASSETS_EMOJI_AINI_PNG = 'assets/emoji/aini.png';
 
-  static const String ASSETS_EMOTION_ICONS_AIXIN_PNG =
-      'assets/emotion-icons/aixin.png';
+  static const String ASSETS_EMOJI_AIQING_PNG = 'assets/emoji/aiqing.png';
 
-  static const String ASSETS_EMOTION_ICONS_AOMAN_PNG =
-      'assets/emotion-icons/aoman.png';
+  static const String ASSETS_EMOJI_AIXIN_PNG = 'assets/emoji/aixin.png';
 
-  static const String ASSETS_EMOTION_ICONS_BAIYAN1_PNG =
-      'assets/emotion-icons/baiyan1.png';
+  static const String ASSETS_EMOJI_ANZHONGGUANCHA_PNG =
+      'assets/emoji/anzhongguancha.png';
 
-  static const String ASSETS_EMOTION_ICONS_BAOQUAN_PNG =
-      'assets/emotion-icons/baoquan.png';
+  static const String ASSETS_EMOJI_AOMAN_PNG = 'assets/emoji/aoman.png';
 
-  static const String ASSETS_EMOTION_ICONS_BIANBIAN_PNG =
-      'assets/emotion-icons/bianbian.png';
+  static const String ASSETS_EMOJI_BAIYAN1_PNG = 'assets/emoji/baiyan1.png';
 
-  static const String ASSETS_EMOTION_ICONS_BISHI2_PNG =
-      'assets/emotion-icons/bishi2.png';
+  static const String ASSETS_EMOJI_BAOQUAN_PNG = 'assets/emoji/baoquan.png';
 
-  static const String ASSETS_EMOTION_ICONS_BIZUI1_PNG =
-      'assets/emotion-icons/bizui1.png';
+  static const String ASSETS_EMOJI_BIANBIAN_PNG = 'assets/emoji/bianbian.png';
 
-  static const String ASSETS_EMOTION_ICONS_CAIDAO_PNG =
-      'assets/emotion-icons/caidao.png';
+  static const String ASSETS_EMOJI_BIANPAO_PNG = 'assets/emoji/bianpao.png';
 
-  static const String ASSETS_EMOTION_ICONS_CHAJIN_PNG =
-      'assets/emotion-icons/chajin.png';
+  static const String ASSETS_EMOJI_BISHI2_PNG = 'assets/emoji/bishi2.png';
 
-  static const String ASSETS_EMOTION_ICONS_CIYA_PNG =
-      'assets/emotion-icons/ciya.png';
+  static const String ASSETS_EMOJI_BIZUI1_PNG = 'assets/emoji/bizui1.png';
 
-  static const String ASSETS_EMOTION_ICONS_DABING_PNG =
-      'assets/emotion-icons/dabing.png';
+  static const String ASSETS_EMOJI_CAHAN_PNG = 'assets/emoji/cahan.png';
 
-  static const String ASSETS_EMOTION_ICONS_DAKU7_PNG =
-      'assets/emotion-icons/daku7.png';
+  static const String ASSETS_EMOJI_CAIDAO_PNG = 'assets/emoji/caidao.png';
 
-  static const String ASSETS_EMOTION_ICONS_DANGAO_PNG =
-      'assets/emotion-icons/dangao.png';
+  static const String ASSETS_EMOJI_CANGSANG_PNG = 'assets/emoji/cangsang.png';
 
-  static const String ASSETS_EMOTION_ICONS_DAO_PNG =
-      'assets/emotion-icons/dao.png';
+  static const String ASSETS_EMOJI_CHAJIN_PNG = 'assets/emoji/chajin.png';
 
-  static const String ASSETS_EMOTION_ICONS_DEYI1_PNG =
-      'assets/emotion-icons/deyi1.png';
+  static const String ASSETS_EMOJI_CIYA_PNG = 'assets/emoji/ciya.png';
 
-  static const String ASSETS_EMOTION_ICONS_DIAOXIE_PNG =
-      'assets/emotion-icons/diaoxie.png';
+  static const String ASSETS_EMOJI_DABING_PNG = 'assets/emoji/dabing.png';
 
-  static const String ASSETS_EMOTION_ICONS_FADAI2_PNG =
-      'assets/emotion-icons/fadai2.png';
+  static const String ASSETS_EMOJI_DAKU7_PNG = 'assets/emoji/daku7.png';
 
-  static const String ASSETS_EMOTION_ICONS_FAN_PNG =
-      'assets/emotion-icons/fan.png';
+  static const String ASSETS_EMOJI_DALIAN_PNG = 'assets/emoji/dalian.png';
 
-  static const String ASSETS_EMOTION_ICONS_FANU_PNG =
-      'assets/emotion-icons/fanu.png';
+  static const String ASSETS_EMOJI_DANGAO_PNG = 'assets/emoji/dangao.png';
 
-  static const String ASSETS_EMOTION_ICONS_FEIWEN1_PNG =
-      'assets/emotion-icons/feiwen1.png';
+  static const String ASSETS_EMOJI_DAO_PNG = 'assets/emoji/dao.png';
 
-  static const String ASSETS_EMOTION_ICONS_GANGA1_PNG =
-      'assets/emotion-icons/ganga1.png';
+  static const String ASSETS_EMOJI_DENGLONG_PNG = 'assets/emoji/denglong.png';
 
-  static const String ASSETS_EMOTION_ICONS_GUZHANG1_PNG =
-      'assets/emotion-icons/guzhang1.png';
+  static const String ASSETS_EMOJI_DEYI1_PNG = 'assets/emoji/deyi1.png';
 
-  static const String ASSETS_EMOTION_ICONS_HAIXIU5_PNG =
-      'assets/emotion-icons/haixiu5.png';
+  static const String ASSETS_EMOJI_DIAOXIE_PNG = 'assets/emoji/diaoxie.png';
 
-  static const String ASSETS_EMOTION_ICONS_HANXIAO_PNG =
-      'assets/emotion-icons/hanxiao.png';
+  static const String ASSETS_EMOJI_DOGE_PNG = 'assets/emoji/doge.png';
 
-  static const String ASSETS_EMOTION_ICONS_HAQIAN_PNG =
-      'assets/emotion-icons/haqian.png';
+  static const String ASSETS_EMOJI_FADAI2_PNG = 'assets/emoji/fadai2.png';
 
-  static const String ASSETS_EMOTION_ICONS_HUAIXIAO1_PNG =
-      'assets/emotion-icons/huaixiao1.png';
+  static const String ASSETS_EMOJI_FADOU_PNG = 'assets/emoji/fadou.png';
 
-  static const String ASSETS_EMOTION_ICONS_JIDONG3_PNG =
-      'assets/emotion-icons/jidong3.png';
+  static const String ASSETS_EMOJI_FAN_PNG = 'assets/emoji/fan.png';
 
-  static const String ASSETS_EMOTION_ICONS_JIE2_PNG =
-      'assets/emotion-icons/jie2.png';
+  static const String ASSETS_EMOJI_FANGYI_PNG = 'assets/emoji/fangyi.png';
 
-  static const String ASSETS_EMOTION_ICONS_JIEWU_PNG =
-      'assets/emotion-icons/jiewu.png';
+  static const String ASSETS_EMOJI_FANU_PNG = 'assets/emoji/fanu.png';
 
-  static const String ASSETS_EMOTION_ICONS_JINGKONG1_PNG =
-      'assets/emotion-icons/jingkong1.png';
+  static const String ASSETS_EMOJI_FEIWEN1_PNG = 'assets/emoji/feiwen1.png';
 
-  static const String ASSETS_EMOTION_ICONS_JINGYA4_PNG =
-      'assets/emotion-icons/jingya4.png';
+  static const String ASSETS_EMOJI_FENDOU1_PNG = 'assets/emoji/fendou1.png';
 
-  static const String ASSETS_EMOTION_ICONS_KAFEI_PNG =
-      'assets/emotion-icons/kafei.png';
+  static const String ASSETS_EMOJI_FUZI_PNG = 'assets/emoji/fuzi.png';
 
-  static const String ASSETS_EMOTION_ICONS_KEAI1_PNG =
-      'assets/emotion-icons/keai1.png';
+  static const String ASSETS_EMOJI_GANGA1_PNG = 'assets/emoji/ganga1.png';
 
-  static const String ASSETS_EMOTION_ICONS_KELIAN2_PNG =
-      'assets/emotion-icons/kelian2.png';
+  static const String ASSETS_EMOJI_GOUYIN_PNG = 'assets/emoji/gouyin.png';
 
-  static const String ASSETS_EMOTION_ICONS_KETOU_PNG =
-      'assets/emotion-icons/ketou.png';
+  static const String ASSETS_EMOJI_GUZHANG1_PNG = 'assets/emoji/guzhang1.png';
 
-  static const String ASSETS_EMOTION_ICONS_KU_PNG =
-      'assets/emotion-icons/ku.png';
+  static const String ASSETS_EMOJI_HAIXIU5_PNG = 'assets/emoji/haixiu5.png';
 
-  static const String ASSETS_EMOTION_ICONS_KUAIKULE_PNG =
-      'assets/emotion-icons/kuaikule.png';
+  static const String ASSETS_EMOJI_HANXIAO_PNG = 'assets/emoji/hanxiao.png';
 
-  static const String ASSETS_EMOTION_ICONS_KULOU_PNG =
-      'assets/emotion-icons/kulou.png';
+  static const String ASSETS_EMOJI_HAQIAN_PNG = 'assets/emoji/haqian.png';
 
-  static const String ASSETS_EMOTION_ICONS_KUN_PNG =
-      'assets/emotion-icons/kun.png';
+  static const String ASSETS_EMOJI_HUAIXIAO1_PNG = 'assets/emoji/huaixiao1.png';
 
-  static const String ASSETS_EMOTION_ICONS_LANQIU_PNG =
-      'assets/emotion-icons/lanqiu.png';
+  static const String ASSETS_EMOJI_HUAJI_PNG = 'assets/emoji/huaji.png';
 
-  static const String ASSETS_EMOTION_ICONS_LENGHAN_PNG =
-      'assets/emotion-icons/lenghan.png';
+  static const String ASSETS_EMOJI_HUISHOU_PNG = 'assets/emoji/huishou.png';
 
-  static const String ASSETS_EMOTION_ICONS_LIUHAN2_PNG =
-      'assets/emotion-icons/liuhan2.png';
+  static const String ASSETS_EMOJI_HUITOU_PNG = 'assets/emoji/huitou.png';
 
-  static const String ASSETS_EMOTION_ICONS_LIULEI2_PNG =
-      'assets/emotion-icons/liulei2.png';
+  static const String ASSETS_EMOJI_JIDONG3_PNG = 'assets/emoji/jidong3.png';
 
-  static const String ASSETS_EMOTION_ICONS_LIWU_PNG =
-      'assets/emotion-icons/liwu.png';
+  static const String ASSETS_EMOJI_JIE2_PNG = 'assets/emoji/jie2.png';
 
-  static const String ASSETS_EMOTION_ICONS_MEIGUI_PNG =
-      'assets/emotion-icons/meigui.png';
+  static const String ASSETS_EMOJI_JIEWU_PNG = 'assets/emoji/jiewu.png';
 
-  static const String ASSETS_EMOTION_ICONS_NANGUO_PNG =
-      'assets/emotion-icons/nanguo.png';
+  static const String ASSETS_EMOJI_JINGKONG1_PNG = 'assets/emoji/jingkong1.png';
 
-  static const String ASSETS_EMOTION_ICONS_OUHUO_PNG =
-      'assets/emotion-icons/ouhuo.png';
+  static const String ASSETS_EMOJI_JINGYA4_PNG = 'assets/emoji/jingya4.png';
 
-  static const String ASSETS_EMOTION_ICONS_PIAOCHONG_PNG =
-      'assets/emotion-icons/piaochong.png';
+  static const String ASSETS_EMOJI_JIZHI_PNG = 'assets/emoji/jizhi.png';
 
-  static const String ASSETS_EMOTION_ICONS_PIEZUI1_PNG =
-      'assets/emotion-icons/piezui1.png';
+  static const String ASSETS_EMOJI_KAFEI_PNG = 'assets/emoji/kafei.png';
 
-  static const String ASSETS_EMOTION_ICONS_PIJIU_PNG =
-      'assets/emotion-icons/pijiu.png';
+  static const String ASSETS_EMOJI_KEAI1_PNG = 'assets/emoji/keai1.png';
 
-  static const String ASSETS_EMOTION_ICONS_PINGPANG_PNG =
-      'assets/emotion-icons/pingpang.png';
+  static const String ASSETS_EMOJI_KELIAN2_PNG = 'assets/emoji/kelian2.png';
 
-  static const String ASSETS_EMOTION_ICONS_QIANG_PNG =
-      'assets/emotion-icons/qiang.png';
+  static const String ASSETS_EMOJI_KETOU_PNG = 'assets/emoji/ketou.png';
 
-  static const String ASSETS_EMOTION_ICONS_QINQIN_PNG =
-      'assets/emotion-icons/qinqin.png';
+  static const String ASSETS_EMOJI_KOUBI_PNG = 'assets/emoji/koubi.png';
 
-  static const String ASSETS_EMOTION_ICONS_QIUDALE_PNG =
-      'assets/emotion-icons/qiudale.png';
+  static const String ASSETS_EMOJI_KU_PNG = 'assets/emoji/ku.png';
 
-  static const String ASSETS_EMOTION_ICONS_QUANTOU_PNG =
-      'assets/emotion-icons/quantou.png';
+  static const String ASSETS_EMOJI_KUAIKULE_PNG = 'assets/emoji/kuaikule.png';
 
-  static const String ASSETS_EMOTION_ICONS_RUO_PNG =
-      'assets/emotion-icons/ruo.png';
+  static const String ASSETS_EMOJI_KULOU_PNG = 'assets/emoji/kulou.png';
 
-  static const String ASSETS_EMOTION_ICONS_SE4_PNG =
-      'assets/emotion-icons/se4.png';
+  static const String ASSETS_EMOJI_KUN_PNG = 'assets/emoji/kun.png';
 
-  static const String ASSETS_EMOTION_ICONS_SHANDIAN_PNG =
-      'assets/emotion-icons/shandian.png';
+  static const String ASSETS_EMOJI_KUSE_PNG = 'assets/emoji/kuse.png';
 
-  static const String ASSETS_EMOTION_ICONS_SHENGLI_PNG =
-      'assets/emotion-icons/shengli.png';
+  static const String ASSETS_EMOJI_LANQIU_PNG = 'assets/emoji/lanqiu.png';
 
-  static const String ASSETS_EMOTION_ICONS_SHIAI_PNG =
-      'assets/emotion-icons/shiai.png';
+  static const String ASSETS_EMOJI_LENGHAN_PNG = 'assets/emoji/lenghan.png';
 
-  static const String ASSETS_EMOTION_ICONS_SHUAI1_PNG =
-      'assets/emotion-icons/shuai1.png';
+  static const String ASSETS_EMOJI_LIUHAN2_PNG = 'assets/emoji/liuhan2.png';
 
-  static const String ASSETS_EMOTION_ICONS_SHUI_PNG =
-      'assets/emotion-icons/shui.png';
+  static const String ASSETS_EMOJI_LIULEI2_PNG = 'assets/emoji/liulei2.png';
 
-  static const String ASSETS_EMOTION_ICONS_TAIYANG_PNG =
-      'assets/emotion-icons/taiyang.png';
+  static const String ASSETS_EMOJI_LIWU_PNG = 'assets/emoji/liwu.png';
 
-  static const String ASSETS_EMOTION_ICONS_TIAOPI1_PNG =
-      'assets/emotion-icons/tiaopi1.png';
+  static const String ASSETS_EMOJI_MEIGUI_PNG = 'assets/emoji/meigui.png';
 
-  static const String ASSETS_EMOTION_ICONS_TOUXIAO2_PNG =
-      'assets/emotion-icons/touxiao2.png';
+  static const String ASSETS_EMOJI_MOYU_PNG = 'assets/emoji/moyu.png';
 
-  static const String ASSETS_EMOTION_ICONS_TU_PNG =
-      'assets/emotion-icons/tu.png';
+  static const String ASSETS_EMOJI_NANGUO_PNG = 'assets/emoji/nanguo.png';
 
-  static const String ASSETS_EMOTION_ICONS_WEIQU1_PNG =
-      'assets/emotion-icons/weiqu1.png';
+  static const String ASSETS_EMOJI_NINGMENG_PNG = 'assets/emoji/ningmeng.png';
 
-  static const String ASSETS_EMOTION_ICONS_WEIXIAO2_PNG =
-      'assets/emotion-icons/weixiao2.png';
+  static const String ASSETS_EMOJI_OUHUO_PNG = 'assets/emoji/ouhuo.png';
 
-  static const String ASSETS_EMOTION_ICONS_WOSHOU_PNG =
-      'assets/emotion-icons/woshou.png';
+  static const String ASSETS_EMOJI_PIAOCHONG_PNG = 'assets/emoji/piaochong.png';
 
-  static const String ASSETS_EMOTION_ICONS_XIA_PNG =
-      'assets/emotion-icons/xia.png';
+  static const String ASSETS_EMOJI_PIEZUI1_PNG = 'assets/emoji/piezui1.png';
 
-  static const String ASSETS_EMOTION_ICONS_XIGUA_PNG =
-      'assets/emotion-icons/xigua.png';
+  static const String ASSETS_EMOJI_PIJIU_PNG = 'assets/emoji/pijiu.png';
 
-  static const String ASSETS_EMOTION_ICONS_XINSUI_PNG =
-      'assets/emotion-icons/xinsui.png';
+  static const String ASSETS_EMOJI_PINGPANG_PNG = 'assets/emoji/pingpang.png';
 
-  static const String ASSETS_EMOTION_ICONS_XU_PNG =
-      'assets/emotion-icons/xu.png';
+  static const String ASSETS_EMOJI_QIANG_PNG = 'assets/emoji/qiang.png';
 
-  static const String ASSETS_EMOTION_ICONS_YINXIAN_PNG =
-      'assets/emotion-icons/yinxian.png';
+  static const String ASSETS_EMOJI_QIAODA_PNG = 'assets/emoji/qiaoda.png';
 
-  static const String ASSETS_EMOTION_ICONS_YIWEN2_PNG =
-      'assets/emotion-icons/yiwen2.png';
+  static const String ASSETS_EMOJI_QINQIN_PNG = 'assets/emoji/qinqin.png';
 
-  static const String ASSETS_EMOTION_ICONS_YONGBAO_PNG =
-      'assets/emotion-icons/yongbao.png';
+  static const String ASSETS_EMOJI_QIUDALE_PNG = 'assets/emoji/qiudale.png';
 
-  static const String ASSETS_EMOTION_ICONS_YUELIANG_PNG =
-      'assets/emotion-icons/yueliang.png';
+  static const String ASSETS_EMOJI_QUANTOU_PNG = 'assets/emoji/quantou.png';
 
-  static const String ASSETS_EMOTION_ICONS_YUN3_PNG =
-      'assets/emotion-icons/yun3.png';
+  static const String ASSETS_EMOJI_RUO_PNG = 'assets/emoji/ruo.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZAIJIAN_PNG =
-      'assets/emotion-icons/zaijian.png';
+  static const String ASSETS_EMOJI_SE4_PNG = 'assets/emoji/se4.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZHADAN_PNG =
-      'assets/emotion-icons/zhadan.png';
+  static const String ASSETS_EMOJI_SHANDIAN_PNG = 'assets/emoji/shandian.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZHEMO1_PNG =
-      'assets/emotion-icons/zhemo1.png';
+  static const String ASSETS_EMOJI_SHENGLI_PNG = 'assets/emoji/shengli.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZHOUMA_PNG =
-      'assets/emotion-icons/zhouma.png';
+  static const String ASSETS_EMOJI_SHIAI_PNG = 'assets/emoji/shiai.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZHUAKUANG_PNG =
-      'assets/emotion-icons/zhuakuang.png';
+  static const String ASSETS_EMOJI_SHUAI1_PNG = 'assets/emoji/shuai1.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZHUANQUAN_PNG =
-      'assets/emotion-icons/zhuanquan.png';
+  static const String ASSETS_EMOJI_SHUI_PNG = 'assets/emoji/shui.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZHUTOU_PNG =
-      'assets/emotion-icons/zhutou.png';
+  static const String ASSETS_EMOJI_TAIYANG_PNG = 'assets/emoji/taiyang.png';
 
-  static const String ASSETS_EMOTION_ICONS_ZUQIU_PNG =
-      'assets/emotion-icons/zuqiu.png';
+  static const String ASSETS_EMOJI_TIAOPI1_PNG = 'assets/emoji/tiaopi1.png';
+
+  static const String ASSETS_EMOJI_TIAOSHENG_PNG = 'assets/emoji/tiaosheng.png';
+
+  static const String ASSETS_EMOJI_TIAOTIAO_PNG = 'assets/emoji/tiaotiao.png';
+
+  static const String ASSETS_EMOJI_TOUXIAO2_PNG = 'assets/emoji/touxiao2.png';
+
+  static const String ASSETS_EMOJI_TU_PNG = 'assets/emoji/tu.png';
+
+  static const String ASSETS_EMOJI_WEIQU1_PNG = 'assets/emoji/weiqu1.png';
+
+  static const String ASSETS_EMOJI_WEIXIAO2_PNG = 'assets/emoji/weixiao2.png';
+
+  static const String ASSETS_EMOJI_WOSHOU_PNG = 'assets/emoji/woshou.png';
+
+  static const String ASSETS_EMOJI_WULIAN_PNG = 'assets/emoji/wulian.png';
+
+  static const String ASSETS_EMOJI_XIA_PNG = 'assets/emoji/xia.png';
+
+  static const String ASSETS_EMOJI_XIANWEN_PNG = 'assets/emoji/xianwen.png';
+
+  static const String ASSETS_EMOJI_XIAOKU_PNG = 'assets/emoji/xiaoku.png';
+
+  static const String ASSETS_EMOJI_XIGUA_PNG = 'assets/emoji/xigua.png';
+
+  static const String ASSETS_EMOJI_XINSUI_PNG = 'assets/emoji/xinsui.png';
+
+  static const String ASSETS_EMOJI_XU_PNG = 'assets/emoji/xu.png';
+
+  static const String ASSETS_EMOJI_YANHUO_PNG = 'assets/emoji/yanhuo.png';
+
+  static const String ASSETS_EMOJI_YASUIQIAN_PNG = 'assets/emoji/yasuiqian.png';
+
+  static const String ASSETS_EMOJI_YINXIAN_PNG = 'assets/emoji/yinxian.png';
+
+  static const String ASSETS_EMOJI_YIWEN2_PNG = 'assets/emoji/yiwen2.png';
+
+  static const String ASSETS_EMOJI_YONGBAO_PNG = 'assets/emoji/yongbao.png';
+
+  static const String ASSETS_EMOJI_YOUHENGHENG_PNG =
+      'assets/emoji/youhengheng.png';
+
+  static const String ASSETS_EMOJI_YOUTAIJI_PNG = 'assets/emoji/youtaiji.png';
+
+  static const String ASSETS_EMOJI_YUELIANG_PNG = 'assets/emoji/yueliang.png';
+
+  static const String ASSETS_EMOJI_YUN3_PNG = 'assets/emoji/yun3.png';
+
+  static const String ASSETS_EMOJI_ZAIJIAN_PNG = 'assets/emoji/zaijian.png';
+
+  static const String ASSETS_EMOJI_ZHADAN_PNG = 'assets/emoji/zhadan.png';
+
+  static const String ASSETS_EMOJI_ZHEMO1_PNG = 'assets/emoji/zhemo1.png';
+
+  static const String ASSETS_EMOJI_ZHOUMA_PNG = 'assets/emoji/zhouma.png';
+
+  static const String ASSETS_EMOJI_ZHUAKUANG_PNG = 'assets/emoji/zhuakuang.png';
+
+  static const String ASSETS_EMOJI_ZHUANQUAN_PNG = 'assets/emoji/zhuanquan.png';
+
+  static const String ASSETS_EMOJI_ZHUTOU_PNG = 'assets/emoji/zhutou.png';
+
+  static const String ASSETS_EMOJI_ZUOHENGHENG_PNG =
+      'assets/emoji/zuohengheng.png';
+
+  static const String ASSETS_EMOJI_ZUOTAIJI_PNG = 'assets/emoji/zuotaiji.png';
+
+  static const String ASSETS_EMOJI_ZUQIU_PNG = 'assets/emoji/zuqiu.png';
 
   static const String ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG =
       'assets/icons/add-button/guangchang.svg';

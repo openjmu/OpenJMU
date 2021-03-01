@@ -47,6 +47,9 @@ class HiveBoxes {
   /// 更新日志缓存表
   static Box<ChangeLog> changelogBox;
 
+  /// 最近表情表
+  static Box<List<dynamic>> emojisBox;
+
   static Future<void> openBoxes() async {
     Hive
       ..registerAdapter(AppMessageAdapter())
@@ -54,28 +57,34 @@ class HiveBoxes {
       ..registerAdapter(CourseAdapter())
       ..registerAdapter(MessageAdapter())
       ..registerAdapter(ScoreAdapter())
-      ..registerAdapter(WebAppAdapter());
+      ..registerAdapter(WebAppAdapter())
+      ..registerAdapter(EmojiAdapter());
 
     appMessagesBox = await Hive.openBox<Map<dynamic, dynamic>>(
-        '${hiveBoxPrefix}_app_messages');
+      '${hiveBoxPrefix}_app_messages',
+    );
 //    personalMessagesBox = await Hive.openBox<Map>('${hiveBoxPrefix}_personal_messages');
 
     coursesBox = await Hive.openBox<Map<dynamic, dynamic>>(
-        '${hiveBoxPrefix}_user_courses');
-    courseRemarkBox =
-        await Hive.openBox<String>('${hiveBoxPrefix}_user_course_remark');
+      '${hiveBoxPrefix}_user_courses',
+    );
+    courseRemarkBox = await Hive.openBox<String>(
+      '${hiveBoxPrefix}_user_course_remark',
+    );
     startWeekBox = await Hive.openBox<DateTime>('${hiveBoxPrefix}_start_week');
     scoresBox = await Hive.openBox<Map<dynamic, dynamic>>(
-        '${hiveBoxPrefix}_user_scores');
+      '${hiveBoxPrefix}_user_scores',
+    );
     webAppsBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_webapps');
-    webAppsCommonBox =
-        await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_webapps_recent');
-
-    reportRecordBox =
-        await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_report_record');
+    webAppsCommonBox = await Hive.openBox<List<dynamic>>(
+      '${hiveBoxPrefix}_webapps_recent',
+    );
+    reportRecordBox = await Hive.openBox<List<dynamic>>(
+      '${hiveBoxPrefix}_report_record',
+    );
     settingsBox = await Hive.openBox<dynamic>('${hiveBoxPrefix}_app_settings');
-
     changelogBox = await Hive.openBox<ChangeLog>('${hiveBoxPrefix}_changelog');
+    emojisBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_emojis');
   }
 
   static Future<void> clearCacheBoxes({BuildContext context}) async {
@@ -94,7 +103,7 @@ class HiveBoxes {
       await courseRemarkBox?.clear();
       await scoresBox?.clear();
       await startWeekBox?.clear();
-      LogUtils.d('Boxes cleared');
+      LogUtils.d('Cache boxes cleared.');
       if (kReleaseMode) {
         SystemNavigator.pop();
       }
@@ -117,6 +126,7 @@ class HiveBoxes {
       await changelogBox?.clear();
       await coursesBox?.clear();
       await courseRemarkBox?.clear();
+      await emojisBox?.clear();
       await personalMessagesBox?.clear();
       await reportRecordBox?.clear();
       await scoresBox?.clear();
@@ -124,7 +134,7 @@ class HiveBoxes {
       await webAppsCommonBox?.clear();
       await settingsBox?.clear();
       await startWeekBox?.clear();
-      LogUtils.d('Boxes cleared');
+      LogUtils.d('Boxes cleared.');
       if (kReleaseMode) {
         SystemNavigator.pop();
       }
@@ -141,4 +151,5 @@ class HiveAdapterTypeIds {
   static const int score = 3;
   static const int webapp = 4;
   static const int changelog = 5;
+  static const int emoji = 6;
 }

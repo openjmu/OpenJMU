@@ -812,7 +812,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   Widget get emoticonPad {
     return ValueListenableBuilder<bool>(
       valueListenable: showEmoticonPad,
-      builder: (_, bool value, __) => EmotionPad(
+      builder: (_, bool value, __) => EmojiPad(
         active: value,
         height: _keyboardHeight,
         controller: _textEditingController,

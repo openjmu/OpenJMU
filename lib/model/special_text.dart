@@ -225,8 +225,11 @@ class PoundText extends SpecialText {
 ///
 /// e.g. '[哭]'
 class EmoticonText extends SpecialText {
-  EmoticonText(TextStyle textStyle, {this.start, this.type})
-      : super(startKey, endKey, textStyle);
+  EmoticonText(
+    TextStyle textStyle, {
+    this.start = 0,
+    this.type,
+  }) : super(startKey, endKey, textStyle);
 
   static const String startKey = '[';
   static const String endKey = ']';
@@ -236,36 +239,20 @@ class EmoticonText extends SpecialText {
   @override
   InlineSpan finishText() {
     final String key = toString();
-    if (EmoticonUtils.emoticonMap.containsKey(key)) {
+    if (emojis.containsText(key)) {
       final double size =
           30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
+      final Emoji emoji = emojis.fromText(key);
 
-      if (type == BuilderType.extendedTextField) {
-        return ImageSpan(
-          AssetImage(EmoticonUtils.emoticonMap[key]),
-          actualText: key,
-          imageWidth: size,
-          imageHeight: size,
-          start: start,
-          fit: BoxFit.fill,
-          margin: EdgeInsets.only(
-            left: 1.w,
-            bottom: 2.h,
-            right: 1.w,
-          ),
-        );
-      } else {
-        return ImageSpan(
-          AssetImage(EmoticonUtils.emoticonMap[key]),
-          imageWidth: size,
-          imageHeight: size,
-          margin: EdgeInsets.only(
-            left: 1.w,
-            bottom: 2.h,
-            right: 1.w,
-          ),
-        );
-      }
+      return ImageSpan(
+        AssetImage(emoji.path),
+        actualText: key,
+        imageWidth: size,
+        imageHeight: size,
+        fit: BoxFit.fill,
+        start: start,
+        margin: EdgeInsets.all(2.w),
+      );
     }
 
     return TextSpan(text: toString(), style: textStyle);

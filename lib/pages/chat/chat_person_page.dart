@@ -33,7 +33,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   List<Message> messages = <Message>[];
   bool shrinkWrap = true;
   bool emoticonPadActive = false;
-  double _keyboardHeight = EmotionPad.emoticonPadDefaultHeight;
+  double _keyboardHeight = EmojiPad.padDefaultHeight;
   String pendingMessage = '';
 
   @override
@@ -103,7 +103,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
       color: emoticonPadActive ? currentThemeColor : Colors.grey[400],
       child: Center(
         child: Image.asset(
-          R.ASSETS_EMOTION_ICONS_HANXIAO_PNG,
+          R.ASSETS_EMOJI_HANXIAO_PNG,
           width: 32.w,
         ),
       ),
@@ -258,7 +258,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
     );
   }
 
-  Widget get emoticonPad => EmotionPad(
+  Widget get emoticonPad => EmojiPad(
         active: emoticonPadActive,
         height: _keyboardHeight,
         controller: _textEditingController,
