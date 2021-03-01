@@ -88,7 +88,6 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
       width: Screens.width,
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       height: _effectiveHeight + MediaQuery.of(context).padding.top,
-      color: backgroundColor ?? context.appBarTheme.color,
       child: Stack(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
@@ -141,13 +140,16 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
-    child = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        child,
-        if (bottom != null) bottom,
-        if (withBorder) const LineDivider(),
-      ],
+    child = ColoredBox(
+      color: backgroundColor ?? context.appBarTheme.color,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          child,
+          if (bottom != null) bottom,
+          if (withBorder) const LineDivider(),
+        ],
+      ),
     );
     return Material(
       type: MaterialType.transparency,

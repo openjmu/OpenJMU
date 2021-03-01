@@ -231,74 +231,109 @@ class _AppWebViewState extends State<AppWebView>
     }
   }
 
-  FixedAppBar appBar(BuildContext context) {
-    return FixedAppBar(
-      automaticallyImplyLeading: false,
-      centerTitle: false,
-      title: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          if (widget.app != null)
-            Padding(
-              padding: EdgeInsets.only(left: 16.w, right: 10.w),
-              child: WebAppIcon(app: widget.app, size: 42.0),
+  Widget appBar(BuildContext context) {
+    Widget _appIcon() {
+      return Padding(
+        padding: EdgeInsets.only(right: 10.w),
+        child: WebAppIcon(app: widget.app, size: 42.0),
+      );
+    }
+
+    Widget _title() {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: widget.app == null ? 16.w : 0,
+        ),
+        child: ValueListenableBuilder<String>(
+          valueListenable: title,
+          builder: (_, String value, __) => Text(
+            value,
+            style: TextStyle(height: 1.2, fontSize: 20.sp),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+    }
+
+    Widget _moreButton() {
+      return Tapper(
+        onTap: () => showMore(context),
+        child: SizedBox.fromSize(
+          size: Size.square(56.w),
+          child: Center(
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
+              width: 20.w,
+              color: context.textTheme.bodyText2.color,
             ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: widget.app == null ? 16.w : 0),
-              child: ValueListenableBuilder<String>(
-                valueListenable: title,
-                builder: (_, String value, __) => Text(
-                  value,
-                  style: TextStyle(height: 1.2, fontSize: 20.sp),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+    }
+
+    Widget _closeButton() {
+      return Tapper(
+        onTap: context.navigator.pop,
+        child: SizedBox.fromSize(
+          size: Size.square(56.w),
+          child: Center(
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_CLEAR_SVG,
+              width: 20.w,
+              color: context.textTheme.bodyText2.color,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      color: context.appBarTheme.color,
+      child: Column(
+        children: <Widget>[
+          VGap(Screens.topSafeHeight),
+          Container(
+            height: kAppBarHeight.w,
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            children: <Widget>[
+                              if (widget.app != null) _appIcon(),
+                              Expanded(child: _title()),
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(13.w),
+                                  color: context.theme.canvasColor,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    _moreButton(),
+                                    _closeButton(),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const LineDivider(),
+                    ],
+                  ),
                 ),
-              ),
+                Positioned.fill(top: null, child: progressBar(context)),
+              ],
             ),
           ),
         ],
       ),
-      actions: <Widget>[
-        DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(13.w),
-            color: context.theme.canvasColor,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Tapper(
-                onTap: () => showMore(context),
-                child: SizedBox.fromSize(
-                  size: Size.square(56.w),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
-                      width: 20.w,
-                      color: context.textTheme.bodyText2.color,
-                    ),
-                  ),
-                ),
-              ),
-              Tapper(
-                onTap: context.navigator.pop,
-                child: SizedBox.fromSize(
-                  size: Size.square(56.w),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      R.ASSETS_ICONS_CLEAR_SVG,
-                      width: 20.w,
-                      color: context.textTheme.bodyText2.color,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-      bottom: progressBar(context),
     );
   }
 
@@ -309,9 +344,9 @@ class _AppWebViewState extends State<AppWebView>
         initialData: 0.0,
         stream: progressController.stream,
         builder: (_, AsyncSnapshot<double> data) => LinearProgressIndicator(
-          backgroundColor: context.appBarTheme.color,
+          backgroundColor: Colors.transparent,
           value: data.data,
-          minHeight: 3.w,
+          minHeight: 4.w,
         ),
       ),
     );
@@ -440,9 +475,11 @@ class _AppWebViewState extends State<AppWebView>
         return true;
       },
       child: Scaffold(
-        body: FixedAppBarWrapper(
-          appBar: (widget.withAppBar ?? true) ? appBar(context) : null,
-          body: _webView,
+        body: Column(
+          children: <Widget>[
+            appBar(context),
+            Expanded(child: _webView),
+          ],
         ),
       ),
     );
