@@ -2,11 +2,11 @@ name: openjmu
 description: A JMU Flutter application.
 homepage: https://github.com/openjmu/OpenJMU
 
-version: 1.0.0+219
+version: 1.0.0+220
 
 environment:
   sdk: ">=2.10.4 <3.0.0"
-  flutter: ">=1.22.4"
+  flutter: ">=1.22.6"
 
 dependencies:
   flutter:
