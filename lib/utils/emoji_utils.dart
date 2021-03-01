@@ -166,6 +166,29 @@ class _EmojiPadState extends State<EmojiPad> {
               crossAxisCount: EmojiPad.padGridCount,
             ),
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    '表情来自',
+                    style: context.textTheme.caption.copyWith(
+                      fontSize: 18.sp,
+                      height: 1.2,
+                    ),
+                  ),
+                  Gap(8.w),
+                  SvgPicture.asset(
+                    R.ASSETS_ICONS_JIMOJITAG_SVG,
+                    color: context.textTheme.caption.color,
+                    height: 16.sp,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

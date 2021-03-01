@@ -255,6 +255,8 @@ class R {
 
   static const String ASSETS_EMOJI_ZUQIU_PNG = 'assets/emoji/zuqiu.png';
 
+  static const String ASSETS_ICONS_JIMOJITAG_SVG = 'assets/icons/JIMOJItag.svg';
+
   static const String ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG =
       'assets/icons/add-button/guangchang.svg';
 
