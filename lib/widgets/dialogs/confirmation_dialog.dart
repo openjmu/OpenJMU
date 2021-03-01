@@ -127,34 +127,42 @@ class ConfirmationDialog extends StatelessWidget {
               maxWidth: Screens.width / 1.5,
               maxHeight: Screens.height / 1.5,
             ),
-            padding: EdgeInsets.only(top: 30.w),
-            color: context.theme.colorScheme.surface,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                if (title != null) titleWidget(context),
-                if (child != null)
-                  child
-                else
-                  Padding(
-                    padding: contentPadding ??
-                        EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 24.w,
+                Container(
+                  padding: EdgeInsets.only(top: 30.w),
+                  color: context.theme.colorScheme.surface,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      if (title != null) titleWidget(context),
+                      if (child != null)
+                        child
+                      else
+                        Padding(
+                          padding: contentPadding ??
+                              EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 24.w,
+                              ),
+                          child: ExtendedText(
+                            content,
+                            style: TextStyle(height: 1.2, fontSize: 20.sp),
+                            textAlign: contentAlignment,
+                            specialTextSpanBuilder:
+                                StackSpecialTextSpanBuilder(),
+                            onSpecialTextTap: (dynamic data) {
+                              API.launchWeb(
+                                url: data['content'] as String,
+                                title: '网页链接',
+                              );
+                            },
+                          ),
                         ),
-                    child: ExtendedText(
-                      content,
-                      style: TextStyle(height: 1.2, fontSize: 20.sp),
-                      textAlign: contentAlignment,
-                      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-                      onSpecialTextTap: (dynamic data) {
-                        API.launchWeb(
-                          url: data['content'] as String,
-                          title: '网页链接',
-                        );
-                      },
-                    ),
+                    ],
                   ),
+                ),
                 Column(
                   children: <Widget>[
                     _cancelAction(context),
