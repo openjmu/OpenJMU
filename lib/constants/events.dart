@@ -15,12 +15,6 @@ class ConnectivityChangeEvent {
   final ConnectivityResult type;
 }
 
-class ActionsEvent {
-  const ActionsEvent(this.type);
-
-  final String type;
-}
-
 class LogoutEvent {}
 
 class TicketGotEvent {

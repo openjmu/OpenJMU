@@ -124,7 +124,7 @@ class SplashState extends State<SplashPage> {
             opacity: animation,
             child: !isUserLogin || forceToLogin
                 ? const LoginPage()
-                : MainPage(initAction: widget.initAction),
+                : const MainPage(),
           ),
         ),
         (_) => false,

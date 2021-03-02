@@ -9,7 +9,6 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:quick_actions/quick_actions.dart';
 
 import 'constants/constants.dart' hide PageRouteType;
 import 'pages/no_network_page.dart';
@@ -125,12 +124,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         });
         DataUtils.logout();
       })
-      ..on<ActionsEvent>().listen((ActionsEvent event) {
-        initAction = Constants.quickActionsList.keys.toList().indexOf(
-              Constants.quickActionsList.keys
-                  .firstWhere((String action) => action == event.type),
-            );
-      })
       ..on<HasUpdateEvent>().listen(PackageUtils.showUpdateDialog);
   }
 
@@ -139,12 +132,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     connectivitySubscription?.cancel();
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    initQuickActions();
   }
 
   @override
@@ -169,22 +156,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     if (mounted) {
       setState(() {});
     }
-  }
-
-  void initQuickActions() {
-    QuickActions()
-      ..initialize((String shortcutType) {
-        LogUtils.d('QuickActions triggered: $shortcutType');
-        Instances.eventBus.fire(ActionsEvent(shortcutType));
-      })
-      ..setShortcutItems(List<ShortcutItem>.generate(
-        Constants.quickActionsList.length,
-        (int index) => ShortcutItem(
-          type: Constants.quickActionsList.keys.elementAt(index),
-          icon: Constants.quickActionsList.keys.elementAt(index),
-          localizedTitle: Constants.quickActionsList.values.elementAt(index),
-        ),
-      ));
   }
 
   void connectivityHandler(ConnectivityResult result) {

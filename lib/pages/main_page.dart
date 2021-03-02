@@ -16,13 +16,8 @@ import 'package:openjmu/pages/notification/notifications_page.dart';
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
   const MainPage({
-    Key key,
-    this.initAction,
+    Key key
   }) : super(key: key);
-
-  /// Which page should be loaded at the first init time.
-  /// 设置应初始化加载的页面索引
-  final int initAction;
 
   @override
   State<StatefulWidget> createState() => MainPageState();
@@ -253,9 +248,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     /// Initialize current page index.
     /// 设定初始页面
-    _currentIndex = widget.initAction ??
-        Provider.of<SettingsProvider>(currentContext, listen: false)
-            .homeSplashIndex;
+    _currentIndex = Provider.of<SettingsProvider>(
+      currentContext,
+      listen: false,
+    ).homeSplashIndex;
 
     /// 进入首屏10秒后，公告默认消失
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -264,19 +260,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           showAnnouncement.value = false;
         }
       });
-    });
-
-    Instances.eventBus.on<ActionsEvent>().listen((ActionsEvent event) {
-      /// Listen to actions event to react with quick actions both on Android and iOS.
-      /// 监听原生捷径时间以切换页面
-      final int index =
-          Constants.quickActionsList.keys.toList().indexOf(event.type);
-      if (index != -1) {
-        _selectedTab(index);
-        if (mounted) {
-          setState(() {});
-        }
-      }
     });
   }
 

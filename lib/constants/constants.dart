@@ -57,13 +57,6 @@ class Constants {
   /// Whether force logger to print.
   static bool get forceLogging => false;
 
-  static const Map<String, String> quickActionsList = <String, String>{
-    'actions_home': '广场',
-    'actions_apps': '应用',
-    'actions_message': '消息',
-    'actions_mine': '我的',
-  };
-
   static const List<String> developerList = <String>[
     '136172',
     '182999',

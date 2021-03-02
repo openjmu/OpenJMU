@@ -68,16 +68,6 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     _selectedIndex = widget.initIndex ??
         Provider.of<SettingsProvider>(currentContext, listen: false)
             .homeSplashIndex;
-    Instances.eventBus.on<ActionsEvent>().listen((ActionsEvent event) {
-      final int index =
-          Constants.quickActionsList.keys.toList().indexOf(event.type);
-      if (index != -1) {
-        _selectedIndex = index;
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    });
     super.initState();
   }
 
