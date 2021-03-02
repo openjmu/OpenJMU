@@ -15,9 +15,7 @@ import 'package:openjmu/pages/notification/notifications_page.dart';
 
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
-  const MainPage({
-    Key key
-  }) : super(key: key);
+  const MainPage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
