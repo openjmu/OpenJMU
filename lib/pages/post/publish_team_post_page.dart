@@ -121,12 +121,23 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       context,
       selectedAssets: selectedAssets,
       themeColor: currentThemeColor,
+      requestType: RequestType.image,
+      filterOptions: FilterOptionGroup()
+        ..setOption(
+          AssetType.image,
+          const FilterOption(
+            sizeConstraint: SizeConstraint(ignoreSize: true),
+          ),
+        ),
+      allowSpecialItemWhenEmpty: true,
       specialItemPosition: SpecialItemPosition.prepend,
       specialItemBuilder: (_) => Tapper(
         onTap: () async {
           final AssetEntity cr = await CameraPicker.pickFromCamera(
             context,
-            enableRecording: true,
+            enableAudio: false,
+            enableRecording: false,
+            shouldDeletePreviewFile: true,
           );
           if (cr != null) {
             Navigator.of(context).pop(

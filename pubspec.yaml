@@ -62,8 +62,8 @@ dependencies:
   uuid: 2.2.2
   vibration: 1.7.3
   video_player: ^1.0.1
-  wechat_assets_picker: ^5.0.0-dev.4
-  wechat_camera_picker: ^2.0.0-dev.2
+  wechat_assets_picker: 5.0.0-dev.4
+  wechat_camera_picker: 2.0.0-dev.3
 
 dev_dependencies:
   build_runner: ^1.11.1

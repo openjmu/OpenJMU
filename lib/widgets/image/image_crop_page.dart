@@ -44,6 +44,35 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       maxAssets: 1,
       themeColor: currentThemeColor,
       requestType: RequestType.image,
+      filterOptions: FilterOptionGroup()
+        ..setOption(
+          AssetType.image,
+          const FilterOption(
+            sizeConstraint: SizeConstraint(ignoreSize: true),
+          ),
+        ),
+      allowSpecialItemWhenEmpty: true,
+      specialItemPosition: SpecialItemPosition.prepend,
+      specialItemBuilder: (BuildContext c) => Tapper(
+        onTap: () async {
+          final AssetEntity cr = await CameraPicker.pickFromCamera(
+            c,
+            enableAudio: false,
+            enableRecording: false,
+            shouldDeletePreviewFile: true,
+          );
+          if (cr != null) {
+            Navigator.of(c).pop(<AssetEntity>[cr]);
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.photo_camera_rounded, size: 42.w),
+            Text('拍摄照片', style: TextStyle(fontSize: 16.sp)),
+          ],
+        ),
+      ),
     );
     if (entity?.isNotEmpty ?? false) {
       _imageData = await entity.first.originBytes;
