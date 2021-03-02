@@ -66,7 +66,7 @@ class SignProvider extends ChangeNotifier {
       await SignAPI.requestSign();
       _hasSigned = true;
       _signedCount++;
-      showErrorToast('签到成功');
+      showToast('签到成功');
     } catch (e) {
       LogUtils.e('Failed when requesting sign: $e');
       showErrorToast('签到失败');

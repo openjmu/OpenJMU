@@ -119,9 +119,10 @@ class SelfPage extends StatelessWidget {
                     else
                       Text(
                         '签到',
-                        style: context.textTheme.headline6.copyWith(
+                        style: TextStyle(
                           color: context.theme.accentColor,
                           fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
                           height: 1.23,
                         ),
                       ),
