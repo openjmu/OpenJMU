@@ -118,7 +118,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// MainPage : [Key key, int initAction]
+  /// MainPage : [Key key]
   static const _OpenjmuHome openjmuHome = _OpenjmuHome();
 
   /// '图片浏览'
@@ -142,7 +142,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// LoginPage : [Key key, int initAction]
+  /// LoginPage : [Key key]
   static const _OpenjmuLogin openjmuLogin = _OpenjmuLogin();
 
   /// '新闻详情页'
@@ -358,9 +358,8 @@ class _OpenjmuHome {
 
   String get name => 'openjmu://home';
 
-  Map<String, dynamic> d({Key key, int initAction}) => <String, dynamic>{
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
         'key': key,
-        'initAction': initAction,
       };
 
   @override
@@ -395,9 +394,8 @@ class _OpenjmuLogin {
 
   String get name => 'openjmu://login';
 
-  Map<String, dynamic> d({Key key, int initAction}) => <String, dynamic>{
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
         'key': key,
-        'initAction': initAction,
       };
 
   @override

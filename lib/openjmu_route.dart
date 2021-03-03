@@ -114,7 +114,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         name: name,
         widget: LoginPage(
           key: arguments['key'] as Key,
-          initAction: arguments['initAction'] as int,
         ),
         routeName: '登录页',
       );
