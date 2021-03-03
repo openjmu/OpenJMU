@@ -153,7 +153,7 @@ class LoadingDialogState extends State<LoadingDialog> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-              if (_title != null) VGap(12.w),
+              if (_title != null && _text != null) VGap(12.w),
               if (_text != null) Text(_text, textAlign: TextAlign.center),
             ],
           ),
