@@ -163,12 +163,12 @@ class PostUser {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PostUser &&
-              runtimeType == other.runtimeType &&
-              uid == other.uid &&
-              nickname == other.nickname &&
-              gender == other.gender &&
-              sysAvatar == other.sysAvatar;
+      other is PostUser &&
+          runtimeType == other.runtimeType &&
+          uid == other.uid &&
+          nickname == other.nickname &&
+          gender == other.gender &&
+          sysAvatar == other.sysAvatar;
 
   @override
   int get hashCode => hashValues(uid, nickname, gender, sysAvatar);

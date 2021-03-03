@@ -35,9 +35,9 @@ class ConventionDialog extends StatefulWidget {
 
 class _ConventionDialogState extends State<ConventionDialog> {
   Timer countDownTimer;
-  int countDown = 5;
+  final ValueNotifier<int> countDown = ValueNotifier<int>(5);
 
-  bool get canSend => countDown == 0;
+  bool get canSend => countDown.value == 0;
 
   bool get shouldConfirm => widget.shouldConfirm;
 
@@ -46,12 +46,9 @@ class _ConventionDialogState extends State<ConventionDialog> {
     super.initState();
     if (shouldConfirm) {
       countDownTimer = Timer.periodic(1.seconds, (Timer timer) {
-        --countDown;
-        if (countDown == 0) {
+        --countDown.value;
+        if (canSend) {
           cancelTimer();
-        }
-        if (mounted) {
-          setState(() {});
         }
       });
     }
@@ -73,7 +70,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
       child: Center(
         child: Text(
-          '发布提醒',
+          shouldConfirm ? '发布前提醒' : '平台公约',
           style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
         ),
       ),
@@ -163,7 +160,8 @@ class _ConventionDialogState extends State<ConventionDialog> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const TextSpan(
-            text: '　1、禁止发布链接、二维码。用户若是需要在微博广场首页发布合规的链接、二维码，'
+            text: '　1、禁止发布链接、二维码。'
+                '用户若是需要在微博广场首页发布合规的链接、二维码，'
                 '如用于课题研究的问卷调查、教程、统一考试的报名查询链接等，'
                 '需要向“集大阿通”报备审核后方可发布。\n',
           ),
@@ -187,7 +185,8 @@ class _ConventionDialogState extends State<ConventionDialog> {
           ),
           const TextSpan(
             text: '区。微博广场仅供用户发布生活动态、心得分享等普通消息，'
-                '以及官方组织发布通知公告、校内注册的社团协会/部门发布不含赞助信息的宣传。\n',
+                '以及官方组织发布通知公告、'
+                '校内注册的社团协会/部门发布不含赞助信息的宣传。\n',
           ),
           const TextSpan(
             text: '三、违反公约的处罚规定：\n',
@@ -203,11 +202,13 @@ class _ConventionDialogState extends State<ConventionDialog> {
             text: '　3、严重违规者，将予无限期禁言；\n',
           ),
           const TextSpan(
-            text: '　4、对于频频违规或严重违规发帖的同学，以及涉及前述“一、中的1.和2.”的同学，'
+            text: '　4、对于频频违规或严重违规发帖的同学，'
+                '以及涉及前述“一、中的1.和2.”的同学，'
                 '将报请辅导员协助处理，若不知悔改，将禁止其使用集大通/OpenJMU。\n',
           ),
           const TextSpan(
-            text: '　用户被禁言期满后，需经个人申请（私信“网络中心用户服务”帐号，保证不再违规）方能解禁。'
+            text: '　用户被禁言期满后，需经个人申请'
+                '（私信“网络中心用户服务”帐号，保证不再违规）方能解禁。'
                 '被无限期禁言者至少须在三个月后经书面申请，经确认认识到位后方可解禁，'
                 '认识不到位者不能解禁。禁言不影响集大通其他功能的使用。\n',
           ),
@@ -250,71 +251,47 @@ class _ConventionDialogState extends State<ConventionDialog> {
   }
 
   Widget actions(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          if (shouldConfirm) confirmButton(context),
-          if (shouldConfirm) Gap(16.w),
-          cancelButton(context),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        cancelButton(context),
+        if (shouldConfirm) confirmButton(context),
+      ],
     );
   }
 
   Widget confirmButton(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: MaterialButton(
-        elevation: 0.0,
-        highlightElevation: 2.0,
-        height: 56.h,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.w),
-        ),
-        color: context.theme.canvasColor,
-        onPressed: canSend
-            ? () {
-                Navigator.of(context).pop(true);
-              }
-            : null,
+    return ValueListenableBuilder<int>(
+      valueListenable: countDown,
+      builder: (_, int value, __) => ConfirmationDialogAction(
         child: Text(
           () {
             const String s = '确认无误';
             if (canSend) {
               return s;
             } else {
-              return '$s(${countDown}s)';
+              return '$s (${value}s)';
             }
           }(),
-          style: TextStyle(fontSize: 21.sp),
         ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        isDestructiveAction: true,
+        color: !canSend ? context.textTheme.caption.color : null,
+        onPressed: () {
+          if (canSend) {
+            Navigator.of(context).pop(true);
+          }
+        },
       ),
     );
   }
 
   Widget cancelButton(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: MaterialButton(
-        elevation: 0.0,
-        highlightElevation: 2.0,
-        height: 56.h,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.w),
-        ),
-        color: currentThemeColor.withOpacity(0.8),
-        onPressed: () {
-          Navigator.of(context).pop(false);
-        },
-        child: Text(
-          shouldConfirm ? '我再想想' : '朕知道了',
-          style: TextStyle(color: Colors.white, fontSize: 21.sp),
-        ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
+    return ConfirmationDialogAction(
+      child: Text(shouldConfirm ? '我再想想' : '朕知道了'),
+      isDestructiveAction: !shouldConfirm,
+      onPressed: () {
+        Navigator.of(context).pop(false);
+      },
     );
   }
 
@@ -328,18 +305,17 @@ class _ConventionDialogState extends State<ConventionDialog> {
           child: Container(
             width: Screens.width * 0.75,
             height: Screens.height * 0.7,
-            color: currentIsDark
-                ? context.theme.canvasColor
-                : context.theme.primaryColor,
+            color: context.theme.cardColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 header,
                 Expanded(
-                  child: ColoredBox(
-                    color: currentIsDark
-                        ? context.theme.primaryColor
-                        : context.theme.canvasColor,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.symmetric(horizontal: dividerBS(context)),
+                      color: context.theme.canvasColor,
+                    ),
                     child: Scrollbar(
                       child: ListView(
                         padding: EdgeInsets.symmetric(

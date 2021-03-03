@@ -201,8 +201,10 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         title: '退出发布动态',
         content: '仍有未发送的内容，是否退出？',
         showConfirm: true,
+        confirmLabel: '取消退出',
+        cancelLabel: '确认退出',
       );
-      if (confirm) {
+      if (!confirm) {
         focusNode.unfocus();
         Navigator.of(context).pop();
       }

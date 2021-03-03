@@ -78,7 +78,9 @@ class AnnouncementWidget extends StatelessWidget {
               context,
               title: data['title'] as String,
               content: data['content'] as String,
-              cancelLabel: '朕已阅',
+              confirmLabel: '朕已阅',
+              showConfirm: true,
+              showCancel: false,
             );
           },
           child: Container(

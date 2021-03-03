@@ -124,7 +124,9 @@ class MainPage extends StatefulWidget {
                       title: '校园网未连接',
                       content: '由于校外网络限制，部分页面可能无法获取最新数据，'
                           '请连接校园网后重试。',
-                      cancelLabel: '朕知道了',
+                      confirmLabel: '朕已阅',
+                      showConfirm: true,
+                      showCancel: false,
                     );
                   },
                   child: Padding(

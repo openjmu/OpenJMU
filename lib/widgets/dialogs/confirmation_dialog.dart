@@ -17,8 +17,11 @@ class ConfirmationDialog extends StatelessWidget {
     this.contentPadding,
     this.contentAlignment = TextAlign.center,
     this.showConfirm = false,
+    this.showCancel = true,
     this.confirmLabel = '确认',
     this.cancelLabel = '取消',
+    this.confirmColor,
+    this.cancelColor,
     this.onConfirm,
     this.onCancel,
   })  : assert(
@@ -36,8 +39,11 @@ class ConfirmationDialog extends StatelessWidget {
   final EdgeInsetsGeometry contentPadding;
   final TextAlign contentAlignment;
   final bool showConfirm;
+  final bool showCancel;
   final String confirmLabel;
   final String cancelLabel;
+  final Color confirmColor;
+  final Color cancelColor;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
@@ -50,8 +56,11 @@ class ConfirmationDialog extends StatelessWidget {
     EdgeInsetsGeometry contentPadding,
     TextAlign contentAlignment = TextAlign.center,
     bool showConfirm = false,
+    bool showCancel = true,
     String confirmLabel = '确认',
     String cancelLabel = '取消',
+    Color confirmColor,
+    Color cancelColor,
   }) async {
     return await showDialog<bool>(
       context: context,
@@ -65,8 +74,11 @@ class ConfirmationDialog extends StatelessWidget {
         contentPadding: contentPadding,
         contentAlignment: contentAlignment,
         showConfirm: showConfirm,
+        showCancel: showCancel,
         confirmLabel: confirmLabel,
         cancelLabel: cancelLabel,
+        confirmColor: confirmColor,
+        cancelColor: cancelColor,
       ),
     );
   }
@@ -99,7 +111,7 @@ class ConfirmationDialog extends StatelessWidget {
       isDestructiveAction: true,
       onPressed: () {
         onConfirm?.call();
-        context.navigator.maybePop(true);
+        context.navigator?.maybePop(true);
       },
     );
   }
@@ -109,8 +121,30 @@ class ConfirmationDialog extends StatelessWidget {
       child: Text(cancelLabel),
       onPressed: () {
         onCancel?.call();
-        context.navigator.maybePop(false);
+        context.navigator?.maybePop(false);
       },
+    );
+  }
+
+  Widget _contentBuilder(BuildContext context) {
+    return Padding(
+      padding: contentPadding ??
+          EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 24.w,
+          ),
+      child: ExtendedText(
+        content,
+        style: TextStyle(height: 1.2, fontSize: 20.sp),
+        textAlign: contentAlignment,
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+        onSpecialTextTap: (dynamic data) {
+          API.launchWeb(
+            url: data['content'] as String,
+            title: '网页链接',
+          );
+        },
+      ),
     );
   }
 
@@ -119,58 +153,48 @@ class ConfirmationDialog extends StatelessWidget {
     return Center(
       child: Material(
         type: MaterialType.transparency,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(13.w),
-          child: Container(
-            constraints: BoxConstraints(
-              minWidth: Screens.width / 5,
-              maxWidth: Screens.width / 1.5,
-              maxHeight: Screens.height / 1.5,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(top: 30.w),
-                  color: context.theme.colorScheme.surface,
+        child: Container(
+          constraints: BoxConstraints(
+            minWidth: Screens.width / 5,
+            maxWidth: Screens.width / 1.5,
+            maxHeight: Screens.height / 1.5,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(13.w),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.only(top: 30.w),
+                    color: context.theme.colorScheme.surface,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        if (title != null) titleWidget(context),
+                        if (child != null) child else _contentBuilder(context),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              if (showConfirm || showConfirm) const LineDivider(),
+              if (showConfirm || showConfirm)
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(13.w),
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (title != null) titleWidget(context),
-                      if (child != null)
-                        child
-                      else
-                        Padding(
-                          padding: contentPadding ??
-                              EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 24.w,
-                              ),
-                          child: ExtendedText(
-                            content,
-                            style: TextStyle(height: 1.2, fontSize: 20.sp),
-                            textAlign: contentAlignment,
-                            specialTextSpanBuilder:
-                                StackSpecialTextSpanBuilder(),
-                            onSpecialTextTap: (dynamic data) {
-                              API.launchWeb(
-                                url: data['content'] as String,
-                                title: '网页链接',
-                              );
-                            },
-                          ),
-                        ),
+                      if (showCancel) _cancelAction(context),
+                      if (showConfirm) _confirmAction(context),
                     ],
                   ),
                 ),
-                Column(
-                  children: <Widget>[
-                    _cancelAction(context),
-                    if (showConfirm) _confirmAction(context),
-                  ],
-                ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
@@ -184,21 +208,24 @@ class ConfirmationDialogAction extends StatelessWidget {
     @required this.child,
     @required this.onPressed,
     this.isDestructiveAction = false,
+    this.color,
   })  : assert(child != null),
         assert(onPressed != null),
         super(key: key);
 
+  final Widget child;
   final VoidCallback onPressed;
   final bool isDestructiveAction;
-  final Widget child;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     final TextStyle style = TextStyle(
-      color: Colors.white,
-      height: 1.2,
+      color:
+          isDestructiveAction ? Colors.white : context.textTheme.caption.color,
+      height: 1.23,
       fontSize: 20.sp,
-      fontWeight: FontWeight.w600,
+      fontWeight: isDestructiveAction ? FontWeight.w600 : FontWeight.normal,
       textBaseline: TextBaseline.alphabetic,
     );
 
@@ -206,9 +233,10 @@ class ConfirmationDialogAction extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         height: 72.w,
-        color: isDestructiveAction
-            ? context.theme.accentColor
-            : context.textTheme.caption.color,
+        color: color ??
+            (isDestructiveAction
+                ? context.theme.accentColor
+                : context.theme.cardColor),
         child: Semantics(
           button: true,
           child: Container(

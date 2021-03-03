@@ -151,8 +151,7 @@ class MessagePage extends StatelessWidget {
                     child: AppMessagePreviewWidget(message: message),
                   );
                 },
-                separatorBuilder: (_, __) =>
-                    const LineDivider(),
+                separatorBuilder: (_, __) => const LineDivider(),
               ),
             ),
           ],

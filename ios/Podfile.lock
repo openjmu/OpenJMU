@@ -25,8 +25,6 @@ PODS:
     - Flutter
   - photo_manager (0.0.1):
     - Flutter
-  - quick_actions (0.0.1):
-    - Flutter
   - r_scan (0.0.1):
     - Flutter
     - ZXingObjCCopy (~> 3.6.5)
@@ -55,7 +53,6 @@ DEPENDENCIES:
   - path_provider (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.6.27//ios/path_provider.podspec`)
   - "permission_handler (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-5.1.0+2//ios/permission_handler.podspec`)"
   - photo_manager (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-0.6.0//ios/photo_manager.podspec`)
-  - "quick_actions (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/quick_actions-0.4.0+10//ios/quick_actions.podspec`)"
   - r_scan (from `/Users/alex/Documents/flutter-stable/.pub-cache/git/r_scan-d2f1849f365a1d716d0ade34cfc401f1d6b3d56d//ios/r_scan.podspec`)
   - url_launcher (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-5.7.10//ios/url_launcher.podspec`)
   - vibration (from `/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/vibration-1.7.3//ios/vibration.podspec`)
@@ -93,8 +90,6 @@ EXTERNAL SOURCES:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-5.1.0+2//ios/permission_handler.podspec"
   photo_manager:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-0.6.0//ios/photo_manager.podspec"
-  quick_actions:
-    :path: "/Users/alex/Documents/flutter-stable/.pub-cache/hosted/pub.flutter-io.cn/quick_actions-0.4.0+10//ios/quick_actions.podspec"
   r_scan:
     :path: "/Users/alex/Documents/flutter-stable/.pub-cache/git/r_scan-d2f1849f365a1d716d0ade34cfc401f1d6b3d56d//ios/r_scan.podspec"
   url_launcher:
@@ -118,7 +113,6 @@ SPEC CHECKSUMS:
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
-  quick_actions: 6cb2390c4dab0e737c94573c27e18d9666710720
   r_scan: 73b806baa9094d33c2c3067f78fb76e350d57a93
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
