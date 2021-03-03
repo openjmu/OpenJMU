@@ -23,20 +23,30 @@ export 'user_api.dart';
 class API {
   const API._();
 
+  /// OpenJMU官网
   static const String homePage = 'https://openjmu.jmu.edu.cn'; // OpenJMU官网
 
+  /// 学期起始日（用于确定周数）
   static const String firstDayOfTerm =
-      'https://project.alexv525.com/openjmu/first-day-of-term'; // 学期起始日（用于确定周数）
+      'https://openjmu.alexv525.com/api/first-day-of-term';
+
+  /// 检查更新
   static const String checkUpdate =
-      'https://project.alexv525.com/openjmu/latest-version'; // 检查更新
+      'https://openjmu.alexv525.com/api/latest-version';
+
+  /// 公告
   static const String announcement =
-      'https://project.alexv525.com/openjmu/announcement'; // 公告
+      'https://openjmu.alexv525.com/api/announcement';
+
+  /// 吐个槽
   static String get complaints =>
-      'https://project.alexv525.com/openjmu/tucao/index.html'
+      'https://openjmu.alexv525.com/tucao/index.html'
       '?uid=${currentUser.uid}'
       '&name=${currentUser.name}'
-      '&workId=${currentUser.workId}'; // 吐个槽
-  static const String statusWebsite = 'https://status.openjmu.xyz/'; // 服务状态
+      '&workId=${currentUser.workId}';
+
+  /// 服务状态
+  static const String statusWebsite = 'https://status.openjmu.xyz/';
 
   /// Hosts.
   /// 域名

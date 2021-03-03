@@ -70,10 +70,11 @@ class DateProvider extends ChangeNotifier {
     try {
       DateTime _day;
       _day = box.get('startDate');
-      final String result =
-          (await NetUtils.get<String>(API.firstDayOfTerm)).data;
-      final DateTime onlineDate =
-          DateTime.parse(jsonDecode(result)['start'] as String);
+      final Response<Map<String, dynamic>> res = await NetUtils.get(
+        API.firstDayOfTerm,
+      );
+      final Map<String, dynamic> data = res.data;
+      final DateTime onlineDate = DateTime.parse(data['start'] as String);
       if (_day != onlineDate) {
         _day = onlineDate;
       }

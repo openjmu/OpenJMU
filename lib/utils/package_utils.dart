@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:package_info/package_info.dart';
@@ -28,35 +27,36 @@ class PackageUtils {
   }
 
   static void checkUpdate({bool isManually = false}) {
-    NetUtils.get<String>(API.checkUpdate).then((Response<String> response) {
-      final Map<String, dynamic> data =
-          jsonDecode(response.data) as Map<String, dynamic>;
-      updateChangelog(
-        (data['changelog'] as List<dynamic>).cast<Map<dynamic, dynamic>>(),
-      );
-      final int _currentBuild = buildNumber;
-      final int _remoteBuild = data['buildNumber'].toString().toIntOrNull();
-      final String _currentVersion = version;
-      final String _remoteVersion = data['version'] as String;
-      final bool _forceUpdate = data['forceUpdate'] as bool;
-      LogUtils.d('Build: $_currentVersion+$_currentBuild'
-          ' | '
-          '$_remoteVersion+$_remoteBuild');
-      if (_currentBuild < _remoteBuild) {
-        Instances.eventBus.fire(HasUpdateEvent(
-          forceUpdate: _forceUpdate,
-          currentVersion: _currentVersion,
-          currentBuild: _currentBuild,
-          response: data,
-        ));
-      } else {
-        if (isManually) {
-          showToast('已更新为最新版本');
+    NetUtils.get<Map<String, dynamic>>(API.checkUpdate).then(
+      (Response<Map<String, dynamic>> res) {
+        final Map<String, dynamic> data = res.data;
+        updateChangelog(
+          (data['changelog'] as List<dynamic>).cast<Map<dynamic, dynamic>>(),
+        );
+        final int _currentBuild = buildNumber;
+        final int _remoteBuild = data['buildNumber'].toString().toIntOrNull();
+        final String _currentVersion = version;
+        final String _remoteVersion = data['version'] as String;
+        final bool _forceUpdate = data['forceUpdate'] as bool;
+        LogUtils.d('Build: $_currentVersion+$_currentBuild'
+            ' | '
+            '$_remoteVersion+$_remoteBuild');
+        if (_currentBuild < _remoteBuild) {
+          Instances.eventBus.fire(HasUpdateEvent(
+            forceUpdate: _forceUpdate,
+            currentVersion: _currentVersion,
+            currentBuild: _currentBuild,
+            response: data,
+          ));
+        } else {
+          if (isManually) {
+            showToast('已更新为最新版本');
+          }
         }
-      }
-      remoteVersion = _remoteVersion;
-      remoteBuildNumber = _remoteBuild;
-    }).catchError((dynamic e) {
+        remoteVersion = _remoteVersion;
+        remoteBuildNumber = _remoteBuild;
+      },
+    ).catchError((dynamic e) {
       LogUtils.e('Failed when checking update: $e');
       if (!isManually) {
         Future<void>.delayed(30.seconds, checkUpdate);
