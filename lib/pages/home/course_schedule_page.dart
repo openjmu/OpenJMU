@@ -280,9 +280,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     if (weekTabController == null) {
       weekTabController = TabController(length: 20, vsync: this);
     } else if (weekTabController.index != currentWeek - 1) {
+      final int _index = moreThanZero(math.min(19, currentWeek - 1));
       weekTabController
-        ..index = math.min(19, currentWeek - 1)
-        ..animateTo(math.min(19, currentWeek - 1));
+        ..index = _index
+        ..animateTo(_index);
     }
     return AnimatedBuilder(
       animation: weekSwitcherAnimationController,

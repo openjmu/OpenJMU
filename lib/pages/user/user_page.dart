@@ -213,7 +213,6 @@ class UserPageState extends State<UserPage>
     return Container(
       height: avatarSize,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      color: context.appBarTheme.color,
       child: Row(
         children: <Widget>[
           userAvatar,
@@ -352,10 +351,6 @@ class UserPageState extends State<UserPage>
     return Container(
       height: tabBarHeight,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        border: Border(bottom: dividerBS(context)),
-        color: context.appBarTheme.color,
-      ),
       alignment: AlignmentDirectional.centerStart,
       child: TabBar(
         controller: tabController,
@@ -532,7 +527,6 @@ class UserPageState extends State<UserPage>
           padding: EdgeInsets.symmetric(
             horizontal: 16.w,
           ).copyWith(bottom: 16.w),
-          color: context.appBarTheme.color,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const ClampingScrollPhysics(),
@@ -622,10 +616,19 @@ class UserPageState extends State<UserPage>
         ),
         body: Column(
           children: <Widget>[
-            _userInfo(context),
-            VGap(16.w, color: context.appBarTheme.color),
-            tagsWidget,
-            if (isCurrentUser) userTabBar,
+            ColoredBox(
+              color: context.appBarTheme.color,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _userInfo(context),
+                  VGap(16.w),
+                  tagsWidget,
+                  if (isCurrentUser) userTabBar,
+                ],
+              ),
+            ),
+            const LineDivider(),
             Expanded(child: body),
           ],
         ),

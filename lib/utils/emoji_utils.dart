@@ -119,8 +119,11 @@ class _EmojiPadState extends State<EmojiPad> {
     fetchRecentEmojis();
     final double _height = math.max(EmojiPad.padDefaultHeight, widget.height);
     return Container(
-      height: widget.active ? _height : 00,
-      color: context.theme.canvasColor,
+      height: widget.active ? _height : 0,
+      decoration: BoxDecoration(
+        border: Border(top: dividerBS(context)),
+        color: context.theme.canvasColor,
+      ),
       child: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
