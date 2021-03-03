@@ -66,8 +66,14 @@ class _ConventionDialogState extends State<ConventionDialog> {
   }
 
   Widget get header {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(13.w),
+        ),
+        color: context.theme.colorScheme.surface,
+      ),
       child: Center(
         child: Text(
           shouldConfirm ? '发布前提醒' : '平台公约',
@@ -251,12 +257,17 @@ class _ConventionDialogState extends State<ConventionDialog> {
   }
 
   Widget actions(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        cancelButton(context),
-        if (shouldConfirm) confirmButton(context),
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(13.w),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          cancelButton(context),
+          if (shouldConfirm) confirmButton(context),
+        ],
+      ),
     );
   }
 
@@ -275,7 +286,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
           }(),
         ),
         isDestructiveAction: true,
-        color: !canSend ? context.textTheme.caption.color : null,
+        color: !canSend ? context.iconTheme.color : null,
         onPressed: () {
           if (canSend) {
             Navigator.of(context).pop(true);
@@ -300,40 +311,35 @@ class _ConventionDialogState extends State<ConventionDialog> {
     return Material(
       type: MaterialType.transparency,
       child: Center(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.w),
-          child: Container(
-            width: Screens.width * 0.75,
-            height: Screens.height * 0.7,
-            color: context.theme.cardColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                header,
-                Expanded(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.symmetric(horizontal: dividerBS(context)),
-                      color: context.theme.canvasColor,
-                    ),
-                    child: Scrollbar(
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 12.w,
-                        ),
-                        children: <Widget>[
-                          confirmTips,
-                          conventionTitle,
-                          conventionContent
-                        ],
+        child: Container(
+          width: Screens.width * 0.75,
+          height: Screens.height * 0.7,
+          child: Column(
+            children: <Widget>[
+              header,
+              Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(horizontal: dividerBS(context)),
+                    color: context.theme.canvasColor,
+                  ),
+                  child: Scrollbar(
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 12.w,
                       ),
+                      children: <Widget>[
+                        confirmTips,
+                        conventionTitle,
+                        conventionContent
+                      ],
                     ),
                   ),
                 ),
-                actions(context),
-              ],
-            ),
+              ),
+              actions(context),
+            ],
           ),
         ),
       ),

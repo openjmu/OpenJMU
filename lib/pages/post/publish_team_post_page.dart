@@ -201,8 +201,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         title: '退出发布动态',
         content: '仍有未发送的内容，是否退出？',
         showConfirm: true,
-        confirmLabel: '取消退出',
-        cancelLabel: '确认退出',
+        confirmLabel: '取消',
+        cancelLabel: '确认',
       );
       if (!confirm) {
         focusNode.unfocus();
@@ -372,7 +372,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         ),
         child: Center(
           child: Text(
-            '发表',
+            '发布',
             style: TextStyle(
               color: adaptiveButtonColor(),
               fontSize: 20.sp,
