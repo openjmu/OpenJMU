@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:package_info/package_info.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class PackageUtils {
@@ -84,118 +80,13 @@ class PackageUtils {
     }
   }
 
-  static Widget updateNotifyDialog(HasUpdateEvent event) {
-    String text;
-    if (event.currentVersion == event.response['version']) {
-      text = '${event.currentVersion}(${event.currentBuild}) ->'
-          '${event.response['version']}(${event.response['buildNumber']})';
-    } else {
-      text = '${event.currentVersion} -> ${event.response['version']}';
-    }
-    return Material(
-      color: Colors.black26,
-      child: Stack(
-        children: <Widget>[
-          if (event.forceUpdate)
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                child: const Text(' '),
-              ),
-            ),
-          ConfirmationDialog(
-            child: Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.h),
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 6.h),
-                        child: Text(
-                          'OpenJmu has new version',
-                          style: TextStyle(
-                            color: currentThemeColor,
-                            fontFamily: 'chocolate',
-                            fontSize: 28.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 6.h),
-                        child: Text(
-                          text,
-                          style: TextStyle(
-                            color: currentThemeColor,
-                            fontFamily: 'chocolate',
-                            fontSize: 28.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (!event.forceUpdate)
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 6.h,
-                          ),
-                          child: MaterialButton(
-                            color: currentThemeColor,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: maxBorderRadius,
-                            ),
-                            onPressed: () {
-                              dismissAllToast();
-                              navigatorState
-                                  .pushNamed(Routes.openjmuChangelogPage);
-                            },
-                            child: Text(
-                              '查看版本履历',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(
-                          event.response['updateLog'] as String,
-                          style: TextStyle(fontSize: 18.sp),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            showConfirm: !event.forceUpdate,
-            onConfirm: dismissAllToast,
-            onCancel: tryUpdate,
-            confirmLabel: '下次一定',
-            cancelLabel: '前往更新',
-          ),
-          Positioned(
-            top: Screens.height / 12,
-            left: 0.0,
-            right: 0.0,
-            child: const Center(child: OpenJMULogo(radius: 15.0)),
-          ),
-        ],
-      ),
-    );
-  }
-
   static Future<void> showUpdateDialog(HasUpdateEvent event) async {
     showToastWidget(
-      updateNotifyDialog(event),
+      UpgradeDialog(event: event),
       dismissOtherToast: true,
       duration: 1.weeks,
       handleTouch: true,
+      position: ToastPosition.center,
     );
   }
 

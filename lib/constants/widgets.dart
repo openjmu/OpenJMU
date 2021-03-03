@@ -23,6 +23,7 @@ export '../widgets/dialogs/confirmation_dialog.dart';
 export '../widgets/dialogs/convention_dialog.dart';
 export '../widgets/dialogs/loading_dialog.dart';
 export '../widgets/dialogs/post_action_dialog.dart';
+export '../widgets/dialogs/upgrade_dialog.dart';
 export '../widgets/dismiss_wrapper.dart';
 export '../widgets/fab_bottom_appbar.dart';
 export '../widgets/fixed_appbar.dart';
