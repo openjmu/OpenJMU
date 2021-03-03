@@ -76,30 +76,36 @@ class _PostCardState extends State<PostCard> {
   }
 
   Future<void> confirmDelete(BuildContext context) async {
-    final bool confirm = await ConfirmationDialog.show(
+    if (await ConfirmationDialog.show(
       context,
       title: '删除动态',
-      content: '是否确认删除这条动态?',
+      content: '您正在删除您的动态，请确认操作',
       showConfirm: true,
-    );
-    if (confirm) {
-      final LoadingDialogController _loadingDialogController =
-          LoadingDialogController();
-      LoadingDialog.show(
+    )) {
+      if (await ConfirmationDialog.show(
         context,
-        controller: _loadingDialogController,
-        text: '正在删除动态',
-        isGlobal: false,
-      );
-      try {
-        await PostAPI.deletePost(widget.post.id);
-        _loadingDialogController.changeState('success', '动态删除成功');
-        Instances.eventBus.fire(
-            PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
-      } catch (e) {
-        LogUtils.e(e.toString());
-        LogUtils.e(e.response?.toString());
-        _loadingDialogController.changeState('failed', '动态删除失败');
+        title: '确认删除动态',
+        content: '删除后的动态无法恢复，请确认操作',
+        showConfirm: true,
+      )) {
+        final LoadingDialogController _ldc = LoadingDialogController();
+        LoadingDialog.show(
+          context,
+          controller: _ldc,
+          text: '正在删除动态',
+          isGlobal: false,
+        );
+        try {
+          await PostAPI.deletePost(widget.post.id);
+          _ldc.changeState('success', '动态删除成功');
+          Instances.eventBus.fire(
+            PostDeletedEvent(widget.post.id, widget.fromPage, widget.index),
+          );
+        } catch (e) {
+          LogUtils.e(e.toString());
+          LogUtils.e(e.response?.toString());
+          _ldc.changeState('failed', '动态删除失败');
+        }
       }
     }
   }

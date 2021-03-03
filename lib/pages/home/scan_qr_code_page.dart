@@ -494,10 +494,20 @@ enum _PreviewScaleType { none, width, height }
 Future<bool> onHandleScan({RScanResult scanResult}) async {
   if (API.urlReg.stringMatch(scanResult.message) != null) {
     // Launch web page if a common url was detected.
-    // 如果检测到常见的url格式内容则打开网页
-    navigatorState.pop();
-    API.launchWeb(url: scanResult.message);
-    return true;
+    // 如果检测到常见的 url 格式内容则打开网页
+    if (await ConfirmationDialog.show(
+      currentContext,
+      title: '扫码结果',
+      content: '网页链接安全性未知，请谨慎访问\n${scanResult.message}',
+      resolveSpecialText: false,
+      showConfirm: true,
+      confirmLabel: '继续访问',
+    )) {
+      navigatorState.pop();
+      API.launchWeb(url: scanResult.message);
+      return true;
+    }
+    return false;
   } else if (API.schemeUserPage.stringMatch(scanResult.message) != null) {
     // Push to user page if a user scheme is being detect.
     // 如果检测到用户 scheme 则跳转到用户页
@@ -514,15 +524,14 @@ Future<bool> onHandleScan({RScanResult scanResult}) async {
   } else {
     /// Other types of result will show a dialog to copy.
     /// 其他类型的结果会以弹窗形式提供复制
-    final bool needCopy = await ConfirmationDialog.show(
+    if (!await ConfirmationDialog.show(
       currentContext,
       title: '扫码结果',
       content: scanResult.message,
       showConfirm: true,
-      confirmLabel: '复制',
-      cancelLabel: '返回',
-    );
-    if (needCopy) {
+      confirmLabel: '返回',
+      cancelLabel: '复制文字',
+    )) {
       Clipboard.setData(ClipboardData(text: scanResult.message));
     }
     return false;

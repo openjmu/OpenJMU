@@ -215,8 +215,8 @@ class AppCenterPage extends StatelessWidget {
               ? () async {
                   final bool confirm = await ConfirmationDialog.show(
                     context,
-                    title: '打开应用',
-                    content: '是否使用浏览器打开该应用?',
+                    title: '跳转提醒',
+                    content: '长按应用图标将在外部浏览器中打开应用，请确认跳转',
                     showConfirm: true,
                   );
                   if (confirm) {

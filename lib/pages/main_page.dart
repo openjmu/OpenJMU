@@ -124,7 +124,6 @@ class MainPage extends StatefulWidget {
                       title: '校园网未连接',
                       content: '由于校外网络限制，部分页面可能无法获取最新数据，'
                           '请连接校园网后重试。',
-                      confirmLabel: '朕已阅',
                       showConfirm: true,
                       showCancel: false,
                     );
@@ -299,7 +298,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 context,
                 title: announcement['title'] as String,
                 content: announcement['content'] as String,
-                cancelLabel: '朕已阅',
+                showCancel: false,
               );
             },
             child: Container(

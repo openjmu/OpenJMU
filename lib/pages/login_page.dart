@@ -187,9 +187,9 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       context,
       title: '忘记密码',
       content: '找回密码详见\n网络中心主页 -> 集大通行证',
+      showConfirm: true,
       confirmLabel: '查看',
       cancelLabel: '返回',
-      showConfirm: true,
     );
     if (confirm) {
       API.launchWeb(

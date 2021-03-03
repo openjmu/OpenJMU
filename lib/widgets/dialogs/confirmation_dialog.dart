@@ -16,6 +16,7 @@ class ConfirmationDialog extends StatelessWidget {
     this.content,
     this.contentPadding,
     this.contentAlignment = TextAlign.center,
+    this.resolveSpecialText = true,
     this.showConfirm = false,
     this.showCancel = true,
     this.confirmLabel = '确认',
@@ -29,7 +30,11 @@ class ConfirmationDialog extends StatelessWidget {
               !(child != null && content != null),
           '\'child\' and \'content\' cannot be set or not set at the same time.',
         ),
-        assert(confirmLabel != null && cancelLabel != null),
+        assert(resolveSpecialText != null),
+        assert(showConfirm != null),
+        assert(showCancel != null),
+        assert(confirmLabel != null),
+        assert(cancelLabel != null),
         super(key: key);
 
   final String title;
@@ -38,6 +43,7 @@ class ConfirmationDialog extends StatelessWidget {
   final String content;
   final EdgeInsetsGeometry contentPadding;
   final TextAlign contentAlignment;
+  final bool resolveSpecialText;
   final bool showConfirm;
   final bool showCancel;
   final String confirmLabel;
@@ -55,6 +61,7 @@ class ConfirmationDialog extends StatelessWidget {
     String content,
     EdgeInsetsGeometry contentPadding,
     TextAlign contentAlignment = TextAlign.center,
+    bool resolveSpecialText = true,
     bool showConfirm = false,
     bool showCancel = true,
     String confirmLabel = '确认',
@@ -62,7 +69,7 @@ class ConfirmationDialog extends StatelessWidget {
     Color confirmColor,
     Color cancelColor,
   }) async {
-    return await showDialog<bool>(
+    final bool result = await showDialog<bool>(
       context: context,
       barrierColor: Colors.black38,
       barrierDismissible: false,
@@ -73,6 +80,7 @@ class ConfirmationDialog extends StatelessWidget {
         content: content,
         contentPadding: contentPadding,
         contentAlignment: contentAlignment,
+        resolveSpecialText: resolveSpecialText,
         showConfirm: showConfirm,
         showCancel: showCancel,
         confirmLabel: confirmLabel,
@@ -81,6 +89,7 @@ class ConfirmationDialog extends StatelessWidget {
         cancelColor: cancelColor,
       ),
     );
+    return result ?? false;
   }
 
   Widget titleWidget(BuildContext context) {
@@ -137,13 +146,13 @@ class ConfirmationDialog extends StatelessWidget {
         content,
         style: TextStyle(height: 1.2, fontSize: 20.sp),
         textAlign: contentAlignment,
-        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-        onSpecialTextTap: (dynamic data) {
-          API.launchWeb(
-            url: data['content'] as String,
-            title: '网页链接',
-          );
-        },
+        specialTextSpanBuilder:
+            resolveSpecialText ? StackSpecialTextSpanBuilder() : null,
+        onSpecialTextTap: resolveSpecialText
+            ? (dynamic data) {
+                API.launchWeb(url: '${data['content']}', title: '网页链接');
+              }
+            : null,
       ),
     );
   }

@@ -58,19 +58,18 @@ class _AboutCard extends StatelessWidget {
       }
     });
     final List<MapEntry<String, String>> entries = info.entries.toList();
-    final bool shouldCopy = await ConfirmationDialog.show(
+    if (await ConfirmationDialog.show(
       context,
       title: '调试信息',
-      showConfirm: true,
-      confirmLabel: '复制',
-      cancelLabel: '返回',
       child: debugContentBuilder(
         context: context,
         entries: entries,
         longestKeyLength: longestKeyLength,
       ),
-    );
-    if (shouldCopy) {
+      showConfirm: true,
+      confirmLabel: '复制文字',
+      cancelLabel: '返回',
+    )) {
       String data = '';
       for (final MapEntry<String, String> e in info.entries) {
         data += '[${e.key.padRight(longestKeyLength, ' ')}] ${e.value}\n';

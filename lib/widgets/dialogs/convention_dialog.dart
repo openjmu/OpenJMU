@@ -56,6 +56,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
 
   @override
   void dispose() {
+    countDown.dispose();
     cancelTimer();
     super.dispose();
   }
@@ -277,11 +278,11 @@ class _ConventionDialogState extends State<ConventionDialog> {
       builder: (_, int value, __) => ConfirmationDialogAction(
         child: Text(
           () {
-            const String s = '确认无误';
+            const String s = '发布';
             if (canSend) {
               return s;
             } else {
-              return '$s (${value}s)';
+              return '$value秒后可$s';
             }
           }(),
         ),
@@ -298,7 +299,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
 
   Widget cancelButton(BuildContext context) {
     return ConfirmationDialogAction(
-      child: Text(shouldConfirm ? '我再想想' : '朕知道了'),
+      child: Text(shouldConfirm ? '取消' : '确认'),
       isDestructiveAction: !shouldConfirm,
       onPressed: () {
         Navigator.of(context).pop(false);

@@ -147,8 +147,7 @@ class _AppWebViewState extends State<AppWebView>
           LogUtils.d('Try to launch intent...');
           final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
-            final bool shouldLaunch = await waitForConfirmation(appName);
-            if (shouldLaunch) {
+            if (await waitForConfirmation(appName)) {
               await _launchURL(url: url);
             }
           }
@@ -160,31 +159,13 @@ class _AppWebViewState extends State<AppWebView>
     }
   }
 
-  Future<bool> waitForConfirmation(String applicationLabel) async {
+  Future<bool> waitForConfirmation(String applicationLabel) {
     return ConfirmationDialog.show(
       context,
-      title: '跳转外部应用',
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20.h),
-        child: Text.rich(
-          TextSpan(
-            children: <InlineSpan>[
-              const TextSpan(text: '即将打开应用\n'),
-              TextSpan(
-                text: applicationLabel,
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          style: const TextStyle(fontWeight: FontWeight.normal),
-          textAlign: TextAlign.center,
-        ),
-      ),
+      title: '即将跳转至外部应用',
+      content: applicationLabel,
       showConfirm: true,
-      confirmLabel: '允许',
+      confirmLabel: '允许跳转',
     );
   }
 
@@ -425,7 +406,7 @@ class _AppWebViewState extends State<AppWebView>
             title.value = ogTitle;
           }
         }
-        Future<void>.delayed(500.milliseconds, () {
+        Future<void>.delayed(2.seconds, () {
           if (!progressController.isClosed) {
             progressController?.add(0.0);
           }
