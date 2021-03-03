@@ -8,11 +8,13 @@ class LoadingDialog extends StatefulWidget {
   const LoadingDialog({
     Key key,
     this.text,
+    this.title,
     this.controller,
     this.isGlobal = false,
   }) : super(key: key);
 
   final LoadingDialogController controller;
+  final String title;
   final String text;
   final bool isGlobal;
 
@@ -22,13 +24,15 @@ class LoadingDialog extends StatefulWidget {
   static void show(
     BuildContext context, {
     LoadingDialogController controller,
+    String title,
     String text,
-    bool isGlobal,
+    bool isGlobal = false,
   }) {
     showDialog<void>(
       context: context,
       builder: (_) => LoadingDialog(
         controller: controller,
+        title: title,
         text: text,
         isGlobal: isGlobal,
       ),
@@ -38,18 +42,15 @@ class LoadingDialog extends StatefulWidget {
 
 class LoadingDialogState extends State<LoadingDialog> {
   Duration _duration = 1500.milliseconds;
-  String _type, _text;
+  String _type, _title, _text;
   VoidCallback _customPop;
-  Widget _icon = const Center(child: LoadMoreSpinningIcon(isRefreshing: true));
 
   @override
   void initState() {
     super.initState();
     widget.controller?.dialogState = this;
+    _title = widget.title;
     _text = widget.text;
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -66,13 +67,13 @@ class LoadingDialogState extends State<LoadingDialog> {
 
   void updateContent({
     String type,
-    Widget icon,
+    String title,
     String text,
     Duration duration,
     VoidCallback customPop,
   }) {
     _type = type;
-    _icon = icon;
+    _title = title;
     _text = text;
     if (duration != null) {
       _duration = duration;
@@ -85,8 +86,8 @@ class LoadingDialogState extends State<LoadingDialog> {
     }
   }
 
-  void updateIcon(Widget icon) {
-    _icon = icon;
+  void updateTitle(String title) {
+    _title = title;
     if (mounted) {
       setState(() {});
     }
@@ -127,28 +128,33 @@ class LoadingDialogState extends State<LoadingDialog> {
       }
     }
     Widget child = Center(
-      child: SizedBox.fromSize(
-        size: Size.square(180.w),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
-            borderRadius: BorderRadius.circular(8.w),
+      child: Container(
+        constraints: BoxConstraints(
+          minWidth: Screens.width / 1.5,
+          maxWidth: Screens.width / 1.5,
+          maxHeight: Screens.height / 1.5,
+        ),
+        padding: EdgeInsets.all(30.w),
+        decoration: BoxDecoration(
+          color: context.theme.canvasColor,
+          borderRadius: BorderRadius.circular(8.w),
+        ),
+        child: DefaultTextStyle.merge(
+          style: context.textTheme.bodyText2.copyWith(
+            height: 1.2,
+            fontSize: 19.sp,
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox.fromSize(
-                size: Size.square(50.w),
-                child: Center(child: _icon),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 40.w),
-                child: Text(
-                  _text,
-                  style: TextStyle(height: 1.2, fontSize: 17.sp),
+              if (_title != null)
+                Text(
+                  _title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-              ),
+              if (_title != null) VGap(12.w),
+              if (_text != null) Text(_text, textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -169,22 +175,22 @@ class LoadingDialogState extends State<LoadingDialog> {
 class LoadingDialogController {
   LoadingDialogState dialogState;
 
+  void updateTitle(String title) {
+    dialogState?.updateTitle(title);
+  }
+
   void updateText(String text) {
     dialogState?.updateText(text);
   }
 
-  void updateIcon(Widget icon) {
-    dialogState?.updateIcon(icon);
-  }
-
   void updateContent(String type, Widget icon, String text, Duration duration) {
-    dialogState?.updateContent(
-        type: type, icon: icon, text: text, duration: duration);
+    dialogState?.updateContent(type: type, text: text, duration: duration);
   }
 
   void changeState(
-    String type,
-    String text, {
+    String type, {
+    String title,
+    String text,
     Duration duration,
     VoidCallback customPop,
   }) {
@@ -192,7 +198,7 @@ class LoadingDialogController {
       case 'success':
         dialogState?.updateContent(
           type: 'success',
-          icon: Icon(Icons.check_circle, color: Colors.green, size: 60.w),
+          title: title,
           text: text,
           duration: duration,
           customPop: customPop,
@@ -201,10 +207,7 @@ class LoadingDialogController {
       case 'failed':
         dialogState?.updateContent(
           type: 'failed',
-          icon: RotationTransition(
-            turns: const AlwaysStoppedAnimation<double>(45 / 360),
-            child: Icon(Icons.add_circle, color: Colors.redAccent, size: 60.w),
-          ),
+          title: title,
           text: text,
           duration: duration,
         );
@@ -212,7 +215,7 @@ class LoadingDialogController {
       case 'loading':
         dialogState?.updateContent(
           type: 'loading',
-          icon: const CircularProgressIndicator(),
+          title: title,
           text: text,
           duration: duration,
         );
@@ -220,7 +223,7 @@ class LoadingDialogController {
       case 'dismiss':
         dialogState?.updateContent(
           type: 'dismiss',
-          icon: const CircularProgressIndicator(),
+          title: title,
           text: text,
           duration: duration,
         );

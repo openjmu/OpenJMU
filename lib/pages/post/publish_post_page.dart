@@ -231,9 +231,10 @@ class _PublishPostPageState extends State<PublishPostPage>
       LoadingDialog.show(
         context,
         controller: loadingDialogController,
+        title: '动态发布中...',
         text: hasImages
             ? '正在上传图片 (${uploadedAssets + 1}/$imagesLength)'
-            : '正在发布动态...',
+            : '正在发布动态',
       );
       isLoading.value = true;
       if (hasImages) {
@@ -303,7 +304,10 @@ class _PublishPostPageState extends State<PublishPostPage>
       isLoading.value = false; // 停止Loading
       uploadedAssets = 0; // 上传清零
       failedAssets.add(asset); // 添加失败entity
-      loadingDialogController.changeState('failed', '图片上传失败');
+      loadingDialogController.changeState(
+        'failed',
+        title: '图片上传失败。可能问题：图片质量过高、网络连接较差',
+      );
 
       /// Cancel all request and clear token list.
       /// 取消所有的上传请求并清空所有cancel token
@@ -342,7 +346,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       if (response['tid'] != null) {
         loadingDialogController.changeState(
           'success',
-          '动态发布成功',
+          title: '动态发布成功',
           duration: 3.seconds,
           customPop: () {
             navigatorState.popUntil((Route<dynamic> route) => route.isFirst);
@@ -350,7 +354,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         );
       }
     } catch (e) {
-      loadingDialogController.changeState('failed', '动态发布失败');
+      loadingDialogController.changeState('failed', title: '动态发布失败');
     } finally {
       isLoading.value = false;
       if (mounted) {

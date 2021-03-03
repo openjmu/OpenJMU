@@ -92,19 +92,19 @@ class _PostCardState extends State<PostCard> {
         LoadingDialog.show(
           context,
           controller: _ldc,
-          text: '正在删除动态',
+          title: '正在删除动态...',
           isGlobal: false,
         );
         try {
           await PostAPI.deletePost(widget.post.id);
-          _ldc.changeState('success', '动态删除成功');
+          _ldc.changeState('success', title: '动态已删除');
           Instances.eventBus.fire(
             PostDeletedEvent(widget.post.id, widget.fromPage, widget.index),
           );
         } catch (e) {
           LogUtils.e(e.toString());
           LogUtils.e(e.response?.toString());
-          _ldc.changeState('failed', '动态删除失败');
+          _ldc.changeState('failed', title: '动态删除失败');
         }
       }
     }

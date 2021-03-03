@@ -101,7 +101,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
     }
     LoadingDialog.show(
       context,
-      text: '正在更新头像',
+      title: '正在更新头像',
       controller: _controller,
     );
     _cropping = true;
@@ -118,7 +118,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       uploadImage(context, compressedFile);
     } catch (e) {
       LogUtils.e('Crop image faild: $e');
-      _controller.changeState('failed', '头像更新失败');
+      _controller.changeState('failed', title: '头像更新失败');
     }
   }
 
@@ -127,7 +127,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       final FormData formData = await createForm(file);
       await NetUtils.postWithCookieSet<void>(API.userAvatarUpload,
           data: formData);
-      _controller.changeState('success', '头像更新成功');
+      _controller.changeState('success', title: '头像更新成功');
       _cropping = false;
       UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;
       Future<void>.delayed(2200.milliseconds, () {
@@ -135,7 +135,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       });
     } catch (e) {
       LogUtils.e(e.toString());
-      _controller.changeState('failed', '头像更新失败');
+      _controller.changeState('failed', title: '头像更新失败');
       _cropping = false;
     }
   }

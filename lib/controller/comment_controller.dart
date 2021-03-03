@@ -302,17 +302,17 @@ class CommentListInPostState extends State<CommentListInPost>
           LoadingDialogController();
       LoadingDialog.show(
         context,
-        text: '正在删除评论',
+        title: '正在删除评论...',
         controller: _loadingDialogController,
         isGlobal: false,
       );
       try {
         await CommentAPI.deleteComment(comment.post.id, comment.id);
-        _loadingDialogController.changeState('success', '评论删除成功');
+        _loadingDialogController.changeState('success', title: '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
       } catch (e) {
         LogUtils.e(e.toString());
-        _loadingDialogController.changeState('failed', '评论删除失败');
+        _loadingDialogController.changeState('failed', title: '评论删除失败');
       }
     }
   }

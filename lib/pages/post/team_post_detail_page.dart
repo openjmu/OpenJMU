@@ -357,7 +357,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       failedAssets.value = Set<AssetEntity>.from(
         <AssetEntity>{...failedAssets.value, asset},
       ); // 添加失败entity
-      loadingDialogController.changeState('failed', '图片上传失败');
+      loadingDialogController.changeState('failed', title: '图片上传失败');
 
       /// Cancel all request and clear token list.
       /// 取消所有的上传请求并清空所有cancel token
@@ -381,14 +381,20 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     BuildContext context,
     TeamPostProvider provider,
   ) async {
-    final bool confirm = await ConfirmationDialog.show(
+    if (await ConfirmationDialog.show(
       context,
       title: '删除动态',
-      content: '是否删除该条动态?',
+      content: '您正在删除您的动态，请确认操作',
       showConfirm: true,
-    );
-    if (confirm) {
-      delete(provider);
+    )) {
+      if (await ConfirmationDialog.show(
+        context,
+        title: '确认删除动态',
+        content: '删除后的动态无法恢复，请确认操作',
+        showConfirm: true,
+      )) {
+        delete(provider);
+      }
     }
   }
 

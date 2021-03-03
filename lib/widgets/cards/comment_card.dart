@@ -20,21 +20,20 @@ class CommentCard extends StatelessWidget {
       showConfirm: true,
     );
     if (confirm) {
-      final LoadingDialogController _loadingDialogController =
-          LoadingDialogController();
+      final LoadingDialogController _ldc = LoadingDialogController();
       LoadingDialog.show(
         context,
-        controller: _loadingDialogController,
-        text: '正在删除评论',
+        controller: _ldc,
+        title: '正在删除评论...',
         isGlobal: false,
       );
       try {
         await CommentAPI.deleteComment(comment.post.id, comment.id);
-        _loadingDialogController.changeState('success', '评论删除成功');
+        _ldc.changeState('success', title: '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
       } catch (e) {
         LogUtils.e(e.toString());
-        _loadingDialogController.changeState('failed', '评论删除失败');
+        _ldc.changeState('failed', title: '评论删除失败');
       }
     }
   }

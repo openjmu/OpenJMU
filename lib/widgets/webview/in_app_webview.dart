@@ -228,7 +228,7 @@ class _AppWebViewState extends State<AppWebView>
         child: ValueListenableBuilder<String>(
           valueListenable: title,
           builder: (_, String value, __) => Text(
-            value,
+            value.notBreak,
             style: TextStyle(height: 1.2, fontSize: 20.sp),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -288,6 +288,7 @@ class _AppWebViewState extends State<AppWebView>
                             children: <Widget>[
                               if (widget.app != null) _appIcon(),
                               Expanded(child: _title()),
+                              Gap(10.w),
                               DecoratedBox(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(13.w),
