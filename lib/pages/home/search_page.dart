@@ -135,7 +135,7 @@ class SearchPageState extends State<SearchPage>
         _loading.value = false;
       });
     } else {
-      showToast('一定要搜点什么才行...');
+      showToast('一定要搜点什么才行 ...');
     }
   }
 
@@ -212,7 +212,7 @@ class SearchPageState extends State<SearchPage>
                 cursorColor: currentThemeColor,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
-                  hintText: ' 输入要搜索的内容...',
+                  hintText: ' 输入要搜索的内容 ...',
                 ),
                 focusNode: _focusNode,
                 keyboardType: TextInputType.text,

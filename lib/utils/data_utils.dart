@@ -266,6 +266,7 @@ class DataUtils {
         } else {
           LogUtils.e(
             'Error when initializing WebView\'s Cookie: $dioError',
+            withStackTrace: false,
           );
           return false;
         }

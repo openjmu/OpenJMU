@@ -103,6 +103,7 @@ class NetUtils {
               'Error when requesting ${e.request.uri} '
               '${e.response?.statusCode}'
               ': ${e.response?.data}',
+              withStackTrace: false,
             );
             return e;
           },
@@ -295,7 +296,7 @@ class NetUtils {
       <Permission>[Permission.storage],
     );
     if (isAllGranted) {
-      showToast('开始下载...');
+      showToast('开始下载 ...');
       LogUtils.d('File start download: $url');
       path = '${(await getExternalStorageDirectory()).path}/';
       try {
@@ -308,8 +309,8 @@ class NetUtils {
         );
         String filename = response.headers
             .value('content-disposition')
-            .split('; ')
-            .where((String element) => element.contains('filename'))
+            ?.split('; ')
+            ?.where((String element) => element.contains('filename'))
             ?.first;
         if (filename != null) {
           final RegExp filenameReg = RegExp(r'filename=\"(.+)\"');

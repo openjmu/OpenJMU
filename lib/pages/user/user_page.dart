@@ -650,7 +650,7 @@ class _BlackListUserWidget extends StatelessWidget {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '移出黑名单',
-      content: '确定不再屏蔽此人吗?',
+      content: '确定将此人移出黑名单吗?',
       showConfirm: true,
     );
     if (confirm) {

@@ -378,7 +378,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
             else
               Center(
                 child: Text(
-                  isCamerasEmpty ? '暂无可用的相机' : '准备中......',
+                  isCamerasEmpty ? '暂无可用的相机' : '准备中 ...',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
@@ -498,7 +498,7 @@ Future<bool> onHandleScan({RScanResult scanResult}) async {
     if (await ConfirmationDialog.show(
       currentContext,
       title: '扫码结果',
-      content: '网页链接安全性未知，请谨慎访问\n${scanResult.message}',
+      content: '网页链接安全性未知，请谨慎访问\n\n${scanResult.message}',
       resolveSpecialText: false,
       showConfirm: true,
       confirmLabel: '继续访问',

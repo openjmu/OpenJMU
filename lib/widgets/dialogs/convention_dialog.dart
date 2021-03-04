@@ -282,7 +282,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
             if (canSend) {
               return s;
             } else {
-              return '$value秒后可$s';
+              return '$value 秒后可$s';
             }
           }(),
         ),

@@ -231,7 +231,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       LoadingDialog.show(
         context,
         controller: loadingDialogController,
-        title: '动态发布中...',
+        title: '动态发布中 ...',
         text: hasImages
             ? '正在上传图片 (${uploadedAssets + 1}/$imagesLength)'
             : '正在发布动态',
@@ -417,7 +417,7 @@ class _PublishPostPageState extends State<PublishPostPage>
               isDense: true,
               border: InputBorder.none,
               counterStyle: TextStyle(color: Colors.transparent),
-              hintText: ' 分享你的动态...',
+              hintText: ' 分享你的动态 ...',
               hintStyle: TextStyle(color: Colors.grey),
             ),
             buildCounter: emptyCounterBuilder,

@@ -231,7 +231,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Index for pages.
   /// 当前页面索引
-  int _currentIndex;
+  int _currentIndex = 0;
 
   /// Icon size for bottom navigation bar's item.
   /// 底部导航的图标大小
@@ -244,13 +244,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     LogUtils.d('CurrentUser ${UserAPI.currentUser}');
-
-    /// Initialize current page index.
-    /// 设定初始页面
-    _currentIndex = Provider.of<SettingsProvider>(
-      currentContext,
-      listen: false,
-    ).homeSplashIndex;
 
     /// 进入首屏10秒后，公告默认消失
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -348,6 +341,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// 底部导航栏
   Widget bottomNavigationBar(BuildContext context) {
     return FABBottomAppBar(
+      index: _currentIndex,
       color: context.iconTheme.color,
       height: bottomBarHeight,
       iconSize: bottomBarIconSize,
@@ -355,7 +349,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       itemFontSize: 16.sp,
       onTabSelected: _selectedTab,
       showText: false,
-      initIndex: _currentIndex,
       items: List<FABBottomAppBarItem>.generate(
         pagesTitle.length,
         (int i) => FABBottomAppBarItem(

@@ -23,8 +23,9 @@ class FABBottomAppBarItem {
   }
 }
 
-class FABBottomAppBar extends StatefulWidget {
+class FABBottomAppBar extends StatelessWidget {
   const FABBottomAppBar({
+    this.index,
     this.items,
     this.centerItemText,
     this.height = 64.0,
@@ -35,10 +36,10 @@ class FABBottomAppBar extends StatefulWidget {
     this.selectedColor,
     this.notchedShape,
     this.onTabSelected,
-    this.initIndex,
     this.showText = true,
   }) : assert(items.length == 2 || items.length == 4);
 
+  final int index;
   final List<FABBottomAppBarItem> items;
   final String centerItemText;
   final double height;
@@ -49,44 +50,23 @@ class FABBottomAppBar extends StatefulWidget {
   final Color selectedColor;
   final NotchedShape notchedShape;
   final ValueChanged<int> onTabSelected;
-  final int initIndex;
   final bool showText;
 
-  @override
-  State<StatefulWidget> createState() => FABBottomAppBarState();
-}
-
-class FABBottomAppBarState extends State<FABBottomAppBar>
-    with AutomaticKeepAliveClientMixin {
-  int _selectedIndex;
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    _selectedIndex = widget.initIndex ??
-        Provider.of<SettingsProvider>(currentContext, listen: false)
-            .homeSplashIndex;
-    super.initState();
-  }
+  int get _selectedIndex => index;
 
   void _updateIndex(int index) {
     if (index <= 1 && index == _selectedIndex) {
       Instances.eventBus.fire(
         ScrollToTopEvent(
           tabIndex: index,
-          type: widget.items[index].text,
+          type: items[index].text,
         ),
       );
     }
     if (_selectedIndex == index) {
       return;
     }
-    widget.onTabSelected?.call(index);
-    setState(() {
-      _selectedIndex = index;
-    });
+    onTabSelected?.call(index);
   }
 
   Widget _buildTabItem({
@@ -100,7 +80,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: widget.height.w,
+              height: height.w,
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -110,20 +90,20 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                         SvgPicture.asset(
                           item.iconPath,
                           color: _selectedIndex == index
-                              ? widget.selectedColor
-                              : widget.color,
-                          width: widget.iconSize.w,
-                          height: widget.iconSize.w,
+                              ? selectedColor
+                              : color,
+                          width: iconSize.w,
+                          height: iconSize.w,
                         ),
-                    if (widget.showText) VGap((widget.iconSize / 8).w),
-                    if (widget.showText)
+                    if (showText) VGap((iconSize / 8).w),
+                    if (showText)
                       Text(
                         item.text,
                         style: TextStyle(
                           color: _selectedIndex == index
-                              ? widget.selectedColor
-                              : widget.color,
-                          fontSize: widget.itemFontSize,
+                              ? selectedColor
+                              : color,
+                          fontSize: itemFontSize,
                           fontWeight: FontWeight.normal,
                           height: 1.2,
                         ),
@@ -164,8 +144,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
   Widget dot(bool shouldDisplay) {
     return Positioned(
-      top: widget.height / 7,
-      right: Screens.width / widget.items.length / 4,
+      top: height / 7,
+      right: Screens.width / items.length / 4,
       child: Visibility(
         visible: shouldDisplay,
         child: Container(
@@ -173,22 +153,20 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
           height: 12.w,
           decoration: BoxDecoration(
             borderRadius: maxBorderRadius,
-            color: widget.selectedColor,
+            color: selectedColor,
           ),
         ),
       ),
     );
   }
 
-  @mustCallSuper
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final List<Widget> items = List<Widget>.generate(
-      widget.items.length,
+    final List<Widget> children = List<Widget>.generate(
+      items.length,
       (int index) {
         return _buildTabItem(
-          item: widget.items[index],
+          item: items[index],
           index: index,
           onPressed: _updateIndex,
         );
@@ -200,14 +178,14 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       children: <Widget>[
         const LineDivider(),
         BottomAppBar(
-          color: widget.backgroundColor ?? context.appBarTheme.color,
-          shape: widget.notchedShape,
+          color: backgroundColor ?? context.appBarTheme.color,
+          shape: notchedShape,
           elevation: 0,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: items,
+            children: children,
           ),
         ),
       ],

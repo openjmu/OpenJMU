@@ -231,7 +231,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       LoadingDialog.show(
         context,
         controller: loadingDialogController,
-        title: '动态发布中...',
+        title: '动态发布中 ...',
         text: hasImages
             ? '正在上传图片 (${uploadedAssets + 1}/$imagesLength)'
             : '正在发布动态',

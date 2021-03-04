@@ -29,7 +29,6 @@ const List<String> routeNames = <String>[
   'openjmu://search',
   'openjmu://settings',
   'openjmu://splash',
-  'openjmu://switch-startup',
   'openjmu://team-post-detail',
   'openjmu://user-list-page',
   'openjmu://user-page',
@@ -243,13 +242,6 @@ class Routes {
   ///
   /// SplashPage : [Key key, int initAction]
   static const _OpenjmuSplash openjmuSplash = _OpenjmuSplash();
-
-  /// '切换启动页'
-  ///
-  /// [name] : 'openjmu://switch-startup'
-  ///
-  /// [routeName] : '切换启动页'
-  static const String openjmuSwitchStartup = 'openjmu://switch-startup';
 
   /// '小组动态详情页'
   ///

@@ -8,8 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-import '../main_page.dart';
-
 @FFRoute(name: 'openjmu://settings', routeName: '设置页')
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key key}) : super(key: key);
@@ -25,7 +23,6 @@ class SettingsPage extends StatelessWidget {
             _AboutCard(),
             _NightModeCard(),
             _ThemeCard(),
-            _StartPageCard(),
             _EnhanceCard(),
             _DataCleaningCard(),
             _FlutterBrandingWidget(),
@@ -195,16 +192,16 @@ class _AboutCard extends StatelessWidget {
         logoItemWidget(context),
         const _SettingItemWidget(
           item: _SettingItem(
-            name: '运行状态',
-            description: '看看是谁宕机了 🐶',
+            name: '服务器状态',
+            description: '可用状态监控',
             url: API.statusWebsite,
             urlTitle: 'OpenJMU状态',
           ),
         ),
         _SettingItemWidget(
           item: _SettingItem(
-            name: '吐个槽',
-            description: '意见反馈',
+            name: '意见和建议',
+            description: '问题反馈',
             url: API.complaints,
             urlTitle: '吐个槽',
           ),
@@ -227,6 +224,7 @@ class _AboutCard extends StatelessWidget {
         _SettingItemWidget(
           item: _SettingItem(
             name: '许可证信息',
+            description: '开源组件许可',
             onTap: () => gotoLicensePage(context),
           ),
         ),
@@ -241,11 +239,11 @@ class _NightModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _SettingsCard(
-      title: '夜间模式',
+      title: '深色模式',
       children: <Widget>[
         _SettingItemWidget(
           item: _SettingItem(
-            name: '夜间模式',
+            name: '深色模式',
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
@@ -261,7 +259,7 @@ class _NightModeCard extends StatelessWidget {
         ),
         _SettingItemWidget(
           item: _SettingItem(
-            name: '夜间模式跟随系统',
+            name: '跟随系统',
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
@@ -279,21 +277,55 @@ class _NightModeCard extends StatelessWidget {
   }
 }
 
-class _StartPageCard extends StatelessWidget {
-  const _StartPageCard({Key key}) : super(key: key);
+class _ThemeCard extends StatelessWidget {
+  const _ThemeCard({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return _SettingsCard(
-      title: '启动页设置',
+      title: '主题设置',
       children: <Widget>[
-        _SettingItemWidget(
-          item: _SettingItem(
-            name: '主页',
-            description: MainPageState
-                .pagesTitle[context.watch<SettingsProvider>().homeSplashIndex],
-            route: Routes.openjmuSwitchStartup,
-          ),
+        Consumer<ThemesProvider>(
+          builder: (_, ThemesProvider provider, __) {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+                mainAxisSpacing: 20.w,
+                crossAxisSpacing: 20.w,
+              ),
+              itemCount: supportThemeGroups.length,
+              itemBuilder: (BuildContext _, int index) {
+                final ThemeGroup theme = supportThemeGroups[index];
+                final bool isSelected = provider.currentThemeGroup == theme;
+                return Tapper(
+                  onTap: () {
+                    if (!isSelected) {
+                      provider.updateThemeColor(index);
+                    }
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: currentIsDark
+                          ? theme.darkThemeColor
+                          : theme.lightThemeColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: AnimatedOpacity(
+                      duration: kThemeChangeDuration,
+                      opacity: isSelected ? 1.0 : 0.0,
+                      child: Icon(
+                        Icons.check,
+                        color: adaptiveButtonColor(),
+                        size: 30.w,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ],
     );
@@ -379,61 +411,6 @@ class _EnhanceCard extends StatelessWidget {
   }
 }
 
-class _ThemeCard extends StatelessWidget {
-  const _ThemeCard({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return _SettingsCard(
-      title: '主题设置',
-      children: <Widget>[
-        Consumer<ThemesProvider>(
-          builder: (_, ThemesProvider provider, __) {
-            return GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                mainAxisSpacing: 20.w,
-                crossAxisSpacing: 20.w,
-              ),
-              itemCount: supportThemeGroups.length,
-              itemBuilder: (BuildContext _, int index) {
-                final ThemeGroup theme = supportThemeGroups[index];
-                final bool isSelected = provider.currentThemeGroup == theme;
-                return Tapper(
-                  onTap: () {
-                    if (!isSelected) {
-                      provider.updateThemeColor(index);
-                    }
-                  },
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: currentIsDark
-                          ? theme.darkThemeColor
-                          : theme.lightThemeColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: AnimatedOpacity(
-                      duration: kThemeChangeDuration,
-                      opacity: isSelected ? 1.0 : 0.0,
-                      child: Icon(
-                        Icons.check,
-                        color: adaptiveButtonColor(),
-                        size: 30.w,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
 class _DataCleaningCard extends StatelessWidget {
   const _DataCleaningCard({Key key}) : super(key: key);
 
@@ -472,7 +449,7 @@ class _FlutterBrandingWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          'Made by ',
+          'Made with ',
           style: TextStyle(
             fontSize: 23.sp,
             fontWeight: FontWeight.w200,

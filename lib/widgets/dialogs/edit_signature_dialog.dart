@@ -46,6 +46,7 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
     try {
       await UserAPI.setSignature(_tec.text);
       UserAPI.currentUser = UserAPI.currentUser.copyWith(signature: _tec.text);
+      showToast('个性签名已更新');
       context.navigator.pop(true);
     } catch (e) {
       LogUtils.e('Error when update signature: $e');

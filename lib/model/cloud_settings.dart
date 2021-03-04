@@ -17,7 +17,6 @@ class CloudSettingsModel extends JsonModel {
     final CloudSettingsModel model = CloudSettingsModel()
       .._fontScale = '${settings[_fFontScale] ?? 1.0}'.toDouble()
       .._hideShieldPost = settings[_fHideShieldPost] as bool ?? true
-      .._homeSplashIndex = settings[_fHomeSplashIndex] as int ?? 0
       .._launchFromSystemBrowser =
           settings[_fLaunchFromSystemBrowser] as bool ?? false
       .._newAppCenterIcon = settings[_fNewAppCenterIcon] as bool ?? false
@@ -36,7 +35,6 @@ class CloudSettingsModel extends JsonModel {
     return CloudSettingsModel()
       .._fontScale = settingsProvider.fontScale
       .._hideShieldPost = settingsProvider.hideShieldPost
-      .._homeSplashIndex = settingsProvider.homeSplashIndex
       .._launchFromSystemBrowser = settingsProvider.launchFromSystemBrowser
       .._newAppCenterIcon = settingsProvider.newAppCenterIcon
       .._isDark = themesProvider.dark
@@ -45,7 +43,6 @@ class CloudSettingsModel extends JsonModel {
 
   static const String _fFontScale = 'font_scale';
   static const String _fHideShieldPost = 'hide_shield_post';
-  static const String _fHomeSplashIndex = 'home_splash_index';
   static const String _fLaunchFromSystemBrowser = 'launch_from_system_browser';
   static const String _fNewAppCenterIcon = 'new_app_center_icon';
   static const String _fIsDark = 'theme_is_dark';
@@ -56,9 +53,6 @@ class CloudSettingsModel extends JsonModel {
 
   bool _hideShieldPost = true;
   bool get hideShieldPost => _hideShieldPost;
-
-  int _homeSplashIndex = 0;
-  int get homeSplashIndex => _homeSplashIndex;
 
   bool _launchFromSystemBrowser = false;
   bool get launchFromSystemBrowser => _launchFromSystemBrowser;
@@ -83,7 +77,6 @@ class CloudSettingsModel extends JsonModel {
       'settings': <String, dynamic>{
         _fFontScale: _fontScale,
         _fHideShieldPost: _hideShieldPost,
-        _fHomeSplashIndex: _homeSplashIndex,
         _fLaunchFromSystemBrowser: _launchFromSystemBrowser,
         _fNewAppCenterIcon: _newAppCenterIcon,
         _fIsDark: _isDark,
@@ -101,7 +94,6 @@ class CloudSettingsModel extends JsonModel {
           runtimeType == other.runtimeType &&
           _fontScale == other._fontScale &&
           _hideShieldPost == other._hideShieldPost &&
-          _homeSplashIndex == other._homeSplashIndex &&
           _launchFromSystemBrowser == other._launchFromSystemBrowser &&
           _newAppCenterIcon == other._newAppCenterIcon &&
           _isDark == other._isDark &&
@@ -111,7 +103,6 @@ class CloudSettingsModel extends JsonModel {
   int get hashCode =>
       _fontScale.hashCode ^
       _hideShieldPost.hashCode ^
-      _homeSplashIndex.hashCode ^
       _launchFromSystemBrowser.hashCode ^
       _newAppCenterIcon.hashCode ^
       _isDark.hashCode ^

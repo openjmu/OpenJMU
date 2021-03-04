@@ -9,25 +9,6 @@ class SettingsProvider extends ChangeNotifier {
     init();
   }
 
-  // Fow start index.
-  int _homeSplashIndex = 0;
-
-  int get homeSplashIndex => _homeSplashIndex;
-
-  set homeSplashIndex(int value) {
-    _homeSplashIndex = value;
-    notifyListeners();
-  }
-
-  List<int> _homeStartUpIndex = <int>[0, 0, 0];
-
-  List<int> get homeStartUpIndex => _homeStartUpIndex;
-
-  set homeStartUpIndex(List<int> value) {
-    _homeStartUpIndex = List<int>.from(value);
-    notifyListeners();
-  }
-
   List<Map<dynamic, dynamic>> _announcements = <Map<dynamic, dynamic>>[];
 
   List<Map<dynamic, dynamic>> get announcements => _announcements;
@@ -99,9 +80,6 @@ class SettingsProvider extends ChangeNotifier {
   void init() {
     getAnnouncement();
     _fontScale = HiveFieldUtils.getFontScale() ?? _fontScale;
-    _homeSplashIndex = HiveFieldUtils.getHomeSplashIndex() ?? _homeSplashIndex;
-    _homeStartUpIndex =
-        HiveFieldUtils.getHomeStartUpIndex() ?? _homeStartUpIndex;
     _newAppCenterIcon =
         HiveFieldUtils.getEnabledNewAppsIcon() ?? _newAppCenterIcon;
     _hideShieldPost =
@@ -112,12 +90,9 @@ class SettingsProvider extends ChangeNotifier {
 
   void reset() {
     _fontScale = 1.0;
-    _homeSplashIndex = 0;
-    _homeStartUpIndex = <int>[0, 0, 0];
     _newAppCenterIcon = false;
     _hideShieldPost = true;
     _launchFromSystemBrowser = false;
-
     _announcementsUserEnabled = _announcementsEnabled;
     notifyListeners();
   }

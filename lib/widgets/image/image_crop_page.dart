@@ -125,8 +125,10 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
   Future<void> uploadImage(BuildContext context, File file) async {
     try {
       final FormData formData = await createForm(file);
-      await NetUtils.postWithCookieSet<void>(API.userAvatarUpload,
-          data: formData);
+      await NetUtils.postWithCookieSet<void>(
+        API.userAvatarUpload,
+        data: formData,
+      );
       _controller.changeState('success', title: '头像更新成功');
       _cropping = false;
       UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;

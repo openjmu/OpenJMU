@@ -75,6 +75,7 @@ class ThemesProvider with ChangeNotifier {
     HiveFieldUtils.setColorTheme(themeIndex);
     _currentThemeGroup = supportThemeGroups[themeIndex];
     notifyListeners();
+    showToast('已更换主题色');
   }
 
   void setSystemUIDark(bool isDark) {

@@ -92,7 +92,7 @@ class _PostCardState extends State<PostCard> {
         LoadingDialog.show(
           context,
           controller: _ldc,
-          title: '正在删除动态...',
+          title: '正在删除动态 ...',
           isGlobal: false,
         );
         try {
@@ -104,7 +104,11 @@ class _PostCardState extends State<PostCard> {
         } catch (e) {
           LogUtils.e(e.toString());
           LogUtils.e(e.response?.toString());
-          _ldc.changeState('failed', title: '动态删除失败');
+          _ldc.changeState(
+            'failed',
+            title: '动态删除失败',
+            text: '该动态无法删除。可能问题：动态已被删除但未刷新、网络连接较差',
+          );
         }
       }
     }
@@ -135,7 +139,7 @@ class _PostCardState extends State<PostCard> {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '举报动态',
-      content: '确定举报该条动态吗?',
+      content: '您正在举报一条动态，请确认操作',
       showConfirm: true,
     );
     if (confirm) {

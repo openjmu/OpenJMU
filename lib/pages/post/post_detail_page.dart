@@ -209,7 +209,7 @@ class PostDetailPageState extends State<PostDetailPage>
         showConfirm: true,
       )) {
         final LoadingDialogController _ldc = LoadingDialogController();
-        LoadingDialog.show(context, controller: _ldc, title: '正在删除动态...');
+        LoadingDialog.show(context, controller: _ldc, title: '正在删除动态 ...');
         try {
           await PostAPI.deletePost(widget.post.id);
           _ldc.changeState('success', title: '动态已删除');
@@ -219,7 +219,11 @@ class PostDetailPageState extends State<PostDetailPage>
         } catch (e) {
           LogUtils.e(e.toString());
           LogUtils.e(e.response?.toString());
-          _ldc.changeState('failed', title: '动态删除失败');
+          _ldc.changeState(
+            'failed',
+            title: '动态删除失败',
+            text: '该动态无法删除。可能问题：动态已被删除但未刷新、网络连接较差',
+          );
         }
       }
     }
@@ -243,7 +247,9 @@ class PostDetailPageState extends State<PostDetailPage>
             onTap: () => UserAPI.confirmBlock(
               context,
               BlacklistUser(
-                  uid: widget.post.uid, username: widget.post.nickname),
+                uid: widget.post.uid,
+                username: widget.post.nickname,
+              ),
             ),
           ),
         ConfirmationBottomSheetAction(
@@ -258,7 +264,7 @@ class PostDetailPageState extends State<PostDetailPage>
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '举报动态',
-      content: '确定举报该条动态吗?',
+      content: '您正在举报一条动态，请确认操作',
       showConfirm: true,
     );
     if (confirm) {

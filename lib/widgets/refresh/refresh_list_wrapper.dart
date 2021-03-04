@@ -191,7 +191,7 @@ class ListMoreIndicator extends StatelessWidget {
             duration: kTabScrollDuration,
             width: isRequesting ? 12.w : 0,
           ),
-          Text(isRequesting ? '加载中...' : '暂无更多'),
+          Text(isRequesting ? '加载中 ...' : '暂无更多'),
         ],
       ),
     );

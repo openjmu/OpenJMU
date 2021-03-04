@@ -642,7 +642,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                       horizontal: 12.w,
                     ),
                     prefixText: replyHint,
-                    hintText: replyHint == null ? ' 与对方聊聊...' : null,
+                    hintText: replyHint == null ? ' 与对方聊聊 ...' : null,
                   ),
                   cursorColor: currentThemeColor,
                   style: context.textTheme.bodyText2.copyWith(

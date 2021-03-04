@@ -302,7 +302,7 @@ class CommentListInPostState extends State<CommentListInPost>
           LoadingDialogController();
       LoadingDialog.show(
         context,
-        title: '正在删除评论...',
+        title: '正在删除评论 ...',
         controller: _loadingDialogController,
         isGlobal: false,
       );

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
 
@@ -36,7 +37,7 @@ class UserAPI {
       context,
       title: '退出登录',
       showConfirm: true,
-      content: '是否确认退出登录?',
+      content: '您正在退出账号，请确认操作',
     );
     if (confirm) {
       Instances.eventBus.fire(LogoutEvent());
@@ -247,7 +248,11 @@ class UserAPI {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '${add ? '加入' : '移出'}黑名单',
-      content: '确定将此人${add ? '加入' : '移出'}黑名单吗?',
+      content: add
+          ? '将 ta 加入黑名单后您将无法收看 ta 的动态、'
+              '接收到 ta 的信息，'
+              '请确认操作'
+          : '确定将此人移出黑名单吗?',
       showConfirm: true,
     );
     if (confirm) {

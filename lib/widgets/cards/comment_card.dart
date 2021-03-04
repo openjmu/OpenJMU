@@ -24,7 +24,7 @@ class CommentCard extends StatelessWidget {
       LoadingDialog.show(
         context,
         controller: _ldc,
-        title: '正在删除评论...',
+        title: '正在删除评论 ...',
         isGlobal: false,
       );
       try {

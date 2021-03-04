@@ -22,7 +22,6 @@ import 'pages/post/team_post_detail_page.dart';
 import 'pages/settings/changelog_page.dart';
 import 'pages/settings/font_scale_page.dart';
 import 'pages/settings/settings_page.dart';
-import 'pages/settings/switch_start_up_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/user/backpack_page.dart';
 import 'pages/user/user_list_page.dart';
@@ -193,12 +192,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           initAction: arguments['initAction'] as int,
         ),
         routeName: '启动页',
-      );
-    case 'openjmu://switch-startup':
-      return RouteResult(
-        name: name,
-        widget: SwitchStartUpPage(),
-        routeName: '切换启动页',
       );
     case 'openjmu://team-post-detail':
       return RouteResult(

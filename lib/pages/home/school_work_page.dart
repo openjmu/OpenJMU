@@ -31,12 +31,6 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
   @override
   void initState() {
     super.initState();
-
-    currentIndex = Provider.of<SettingsProvider>(
-      currentContext,
-      listen: false,
-    ).homeStartUpIndex[1];
-
     Instances.eventBus
         .on<AppCenterRefreshEvent>()
         .listen((AppCenterRefreshEvent event) {

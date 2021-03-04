@@ -191,7 +191,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
         LogUtils.d('Push service info upload success.');
       }).catchError((dynamic e) {
-        LogUtils.e('Push service upload error: $e');
+        LogUtils.e('Push service upload error: $e', withStackTrace: false);
       });
     } catch (e) {
       LogUtils.e('Push service init error: $e');

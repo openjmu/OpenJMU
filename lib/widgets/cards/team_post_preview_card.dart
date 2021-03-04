@@ -71,7 +71,7 @@ class TeamPostPreviewCard extends StatelessWidget {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '举报动态',
-      content: '确定举报该条动态吗?',
+      content: '您正在举报一条动态，请确认操作',
       showConfirm: true,
     );
     if (confirm) {

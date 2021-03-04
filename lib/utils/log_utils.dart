@@ -25,13 +25,19 @@ class LogUtils {
     _printLog(message, '$tag ⚠️', stackTrace, level: Level.WARNING);
   }
 
-  static void e(dynamic message, {String tag = _TAG, StackTrace stackTrace}) {
+  static void e(
+    dynamic message, {
+    String tag = _TAG,
+    StackTrace stackTrace,
+    bool withStackTrace = true,
+  }) {
     _printLog(
       message,
       '$tag ❌',
       stackTrace,
       isError: true,
       level: Level.SEVERE,
+      withStackTrace: withStackTrace,
     );
   }
 
@@ -49,6 +55,7 @@ class LogUtils {
     StackTrace stackTrace, {
     bool isError = false,
     Level level = Level.ALL,
+    bool withStackTrace = true,
   }) {
     if (isError) {
       _dev.log(
@@ -57,7 +64,8 @@ class LogUtils {
         name: tag ?? _TAG,
         level: level.value,
         error: message,
-        stackTrace: stackTrace ?? (isError ? StackTrace.current : null),
+        stackTrace: stackTrace ??
+            (isError && withStackTrace ? StackTrace.current : null),
       );
     } else {
       _dev.log(
@@ -65,7 +73,8 @@ class LogUtils {
         time: currentTime,
         name: tag ?? _TAG,
         level: level.value,
-        stackTrace: stackTrace ?? (isError ? StackTrace.current : null),
+        stackTrace: stackTrace ??
+            (isError && withStackTrace ? StackTrace.current : null),
       );
     }
   }

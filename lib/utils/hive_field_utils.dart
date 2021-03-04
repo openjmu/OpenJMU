@@ -19,8 +19,6 @@ class HiveFieldUtils {
   static const String brightnessDark = 'theme_brightness';
   static const String colorThemeIndex = 'theme_colorThemeIndex';
   static const String brightnessPlatform = 'theme_brightness_platform';
-  static const String settingHomeSplashIndex = 'setting_home_splash_index';
-  static const String settingHomeStartUpIndex = 'setting_home_startup_index';
 
   static const String settingFontScale = 'setting_font_scale';
   static const String settingNewIcons = 'setting_new_icons';
@@ -69,13 +67,6 @@ class HiveFieldUtils {
   static Future<void> setBrightnessPlatform(bool value) async =>
       await _box?.put(brightnessPlatform, value);
 
-  /// 获取默认启动页index
-  static int getHomeSplashIndex() => _box?.get(settingHomeSplashIndex) as int;
-
-  /// 获取默认各页启动index
-  static List<int> getHomeStartUpIndex() =>
-      _box?.get(settingHomeStartUpIndex) as List<int>;
-
   /// 获取字体缩放设置
   static double getFontScale() => _box?.get(settingFontScale) as double;
 
@@ -89,18 +80,6 @@ class HiveFieldUtils {
   /// 获取是否通过系统浏览器打开网页
   static bool getLaunchFromSystemBrowser() =>
       _box?.get(settingLaunchFromSystemBrowser) as bool;
-
-  /// 设置首页的初始页
-  static Future<void> setHomeSplashIndex(int index) async {
-    provider.homeSplashIndex = index;
-    await _box?.put(settingHomeSplashIndex, index);
-  }
-
-  /// 设置首页各子页的初始页
-  static Future<void> setHomeStartUpIndex(List<int> indexList) async {
-    provider.homeStartUpIndex = indexList;
-    await _box?.put(settingHomeStartUpIndex, indexList);
-  }
 
   /// 设置字体缩放
   static Future<void> setFontScale(double scale) async {
