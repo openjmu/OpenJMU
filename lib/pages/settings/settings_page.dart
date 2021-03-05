@@ -195,7 +195,7 @@ class _AboutCard extends StatelessWidget {
             name: '服务器状态',
             description: '可用状态监控',
             url: API.statusWebsite,
-            urlTitle: 'OpenJMU状态',
+            urlTitle: 'OpenJMU 状态',
           ),
         ),
         _SettingItemWidget(

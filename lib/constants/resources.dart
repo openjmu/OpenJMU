@@ -263,6 +263,11 @@ class R {
   static const String ASSETS_ICONS_ADD_BUTTON_JISHI_SVG =
       'assets/icons/add-button/jishi.svg';
 
+  static const String ASSETS_ICONS_AGREEMENT_AGREED_SVG =
+      'assets/icons/agreement-agreed.svg';
+
+  static const String ASSETS_ICONS_AGREEMENT_SVG = 'assets/icons/agreement.svg';
+
   static const String ASSETS_ICONS_APP_CENTER_ADD_SVG =
       'assets/icons/app-center/add.svg';
 
@@ -467,6 +472,9 @@ class R {
   static const String ASSETS_ICONS_BOTTOM_NAVIGATION_SQUARE_SVG =
       'assets/icons/bottom-navigation/square.svg';
 
+  static const String ASSETS_ICONS_CLEAR_INPUT_SVG =
+      'assets/icons/clear-input.svg';
+
   static const String ASSETS_ICONS_CLEAR_UNREAD_MESSAGE_SVG =
       'assets/icons/clear-unread-message.svg';
 
@@ -483,8 +491,13 @@ class R {
 
   static const String ASSETS_ICONS_LOAD_MORE_SVG = 'assets/icons/load-more.svg';
 
+  static const String ASSETS_ICONS_NOT_OBSCURE_SVG =
+      'assets/icons/not-obscure.svg';
+
   static const String ASSETS_ICONS_NOTIFICATION_SVG =
       'assets/icons/notification.svg';
+
+  static const String ASSETS_ICONS_OBSCURE_SVG = 'assets/icons/obscure.svg';
 
   static const String ASSETS_ICONS_OPEN_THE_SKY_SVG =
       'assets/icons/open_the_sky.svg';

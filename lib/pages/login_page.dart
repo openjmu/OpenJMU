@@ -6,7 +6,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:video_player/video_player.dart';
@@ -275,7 +274,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         '欢迎使用',
         style: TextStyle(
           color: _isPreview.value ? Colors.white : null,
-          fontSize: 32.sp,
+          fontSize: 40.sp,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -310,11 +309,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       title: '学号/工号',
       disabledNotifier: _isLogin,
       controller: _usernameController,
-      actionName: '账号查询',
-      actionOnTap: () => API.launchWeb(
-        url: 'http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx',
-        title: '集大通行证 - 工号查询',
-      ),
       keyboardType: TextInputType.number,
       suffixWidget: ValueListenableBuilder<bool>(
         valueListenable: _usernameCanClear,
@@ -322,12 +316,12 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           if (!canClear) {
             return const SizedBox.shrink();
           }
-          return SizedBox.fromSize(
-            size: Size.square(36.w),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(Icons.clear, size: 36.w),
-              onPressed: _usernameController.clear,
+          return Tapper(
+            onTap: _usernameController.clear,
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_CLEAR_INPUT_SVG,
+              width: 36.w,
+              color: context.iconTheme.color,
             ),
           );
         },
@@ -346,20 +340,16 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           disabledNotifier: _isLogin,
           controller: _passwordController,
           obscureText: isObscure,
-          actionName: '忘记密码',
-          actionOnTap: forgotPassword,
-          suffixWidget: SizedBox.fromSize(
-            size: Size.square(36.w),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                isObscure ? Icons.visibility_off : Icons.visibility,
-                color: isObscure ? null : defaultLightColor,
-                size: 36.w,
-              ),
-              onPressed: () {
-                _isObscure.value = !_isObscure.value;
-              },
+          suffixWidget: Tapper(
+            onTap: () {
+              _isObscure.value = !_isObscure.value;
+            },
+            child: SvgPicture.asset(
+              isObscure
+                  ? R.ASSETS_ICONS_NOT_OBSCURE_SVG
+                  : R.ASSETS_ICONS_OBSCURE_SVG,
+              width: 36.w,
+              color: isObscure ? context.iconTheme.color : defaultLightColor,
             ),
           ),
         );
@@ -371,26 +361,27 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// 用户协议复选框
   Widget get agreementCheckbox {
     return SizedBox.fromSize(
-      size: Size.square(60.w),
+      size: Size.square(28.w),
       child: ValueListenableBuilder<bool>(
         valueListenable: _agreement,
         builder: (_, bool isAgreed, __) {
           return ValueListenableBuilder<bool>(
             valueListenable: _isLogin,
-            builder: (_, bool isLogin, __) {
-              return RoundedCheckbox(
-                value: _agreement.value,
-                activeColor: defaultLightColor,
-                inactiveColor: context.textTheme.bodyText2.color,
-                onChanged: !isLogin
-                    ? (bool value) {
-                        _agreement.value = value;
-                        validateForm();
-                      }
-                    : null,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              );
-            },
+            builder: (_, bool isLogin, __) => Tapper(
+              onTap: () {
+                if (isLogin) {
+                  return;
+                }
+                _agreement.value = !isAgreed;
+                validateForm();
+              },
+              child: SvgPicture.asset(
+                isAgreed
+                    ? R.ASSETS_ICONS_AGREEMENT_AGREED_SVG
+                    : R.ASSETS_ICONS_AGREEMENT_SVG,
+                color: context.textTheme.bodyText2.color,
+              ),
+            ),
           );
         },
       ),
@@ -437,6 +428,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             if (!value) agreementCheckbox,
+            if (!value) Gap(16.w),
             agreementTip,
           ],
         ),
@@ -517,8 +509,88 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                       ),
                     ),
                   if (!value) const Spacer(flex: 8),
+                  if (!value)
+                    DefaultTextStyle.merge(
+                      style: context.textTheme.bodyText2.copyWith(
+                        fontSize: 17.w,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Tapper(
+                                onTap: () => API.launchWeb(
+                                  url: 'http://myid.jmu.edu.cn'
+                                      '/ids/EmployeeNoQuery.aspx',
+                                  title: '集大通行证 - 工号查询',
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                    vertical: 4.w,
+                                  ),
+                                  child: const Text('学工号查询'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 1.w,
+                            height: 28.w,
+                            color: context.textTheme.bodyText2.color,
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Tapper(
+                                onTap: forgotPassword,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                    vertical: 4.w,
+                                  ),
+                                  child: const Text('忘记密码'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 84.w),
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget statusButton(BuildContext context) {
+    return PositionedDirectional(
+      top: Screens.topSafeHeight + 16.w,
+      end: 16.w,
+      child: Tapper(
+        onTap: () => API.launchWeb(
+          url: API.statusWebsite,
+          title: 'OpenJMU 状态',
+        ),
+        child: Container(
+          width: 130.w,
+          height: 64.w,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13.w),
+            color: context.theme.canvasColor,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            '无法登录?',
+            style: TextStyle(
+              fontSize: 20.sp,
+              height: 1.24,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -542,48 +614,46 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       },
       child: ValueListenableBuilder<bool>(
         valueListenable: _loginButtonEnabled,
-        builder: (_, bool isEnabled, __) {
-          return PositionedDirectional(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            start: 0.0,
-            end: 0.0,
-            child: Tapper(
-              onTap: isEnabled ? () => loginButtonPressed(context) : null,
-              child: AnimatedContainer(
-                duration: animateDuration,
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                height: 84.w,
-                color: isEnabled ? defaultLightColor : Colors.black54,
-                child: Center(
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: _isLogin,
-                    builder: (_, bool isLogin, __) {
-                      return AnimatedSwitcher(
-                        duration: animateDuration,
-                        child: isLogin
-                            ? const LoadMoreSpinningIcon(
-                                isRefreshing: true,
-                                color: Colors.white,
-                                size: 32,
-                              )
-                            : Text(
-                                '登录',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  height: 1.2,
-                                  letterSpacing: 1.sp,
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+        builder: (_, bool isEnabled, Widget child) => Positioned.fill(
+          top: null,
+          child: Tapper(
+            onTap: isEnabled ? () => loginButtonPressed(context) : null,
+            child: AnimatedContainer(
+              duration: animateDuration,
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              height: 84.w,
+              color: isEnabled ? defaultLightColor : Colors.black54,
+              child: child,
             ),
-          );
-        },
+          ),
+        ),
+        child: Center(
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _isLogin,
+            builder: (_, bool isLogin, __) {
+              Widget _child;
+              if (isLogin) {
+                _child = const LoadMoreSpinningIcon(
+                  isRefreshing: true,
+                  color: Colors.white,
+                  size: 32,
+                );
+              } else {
+                _child = Text(
+                  '登录',
+                  style: TextStyle(
+                    color: Colors.white,
+                    height: 1.2,
+                    letterSpacing: 1.sp,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              }
+              return AnimatedSwitcher(duration: animateDuration, child: _child);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -610,6 +680,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                 videoWidget(context),
                 videoFilter(context),
                 contentWrapper(context),
+                statusButton(context),
                 loginButton(context),
               ],
             ),
@@ -629,8 +700,6 @@ class _InputFieldWrapper extends StatelessWidget {
     Key key,
     @required this.title,
     @required this.disabledNotifier,
-    this.actionName,
-    this.actionOnTap,
     this.controller,
     this.keyboardType,
     this.obscureText = false,
@@ -638,8 +707,6 @@ class _InputFieldWrapper extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
-  final String actionName;
-  final VoidCallback actionOnTap;
   final TextEditingController controller;
   final TextInputType keyboardType;
   final bool obscureText;
@@ -657,49 +724,37 @@ class _InputFieldWrapper extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             height: 100.w,
-            color: context.theme.dividerColor,
+            color: context.theme.canvasColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    if (actionName != null)
-                      Tapper(
-                        onTap: actionOnTap,
-                        child: Text(
-                          actionName,
-                          style: const TextStyle(color: defaultLightColor),
-                        ),
-                      ),
-                  ],
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: <Widget>[
                     Expanded(
                       child: ValueListenableBuilder<bool>(
                         valueListenable: disabledNotifier,
-                        builder: (_, bool isDisabled, __) {
-                          return ExtendedTextField(
-                            controller: controller,
-                            keyboardType: keyboardType,
-                            enabled: !isDisabled,
-                            obscureText: obscureText,
-                            obscuringCharacter: '*',
-                            scrollPadding: EdgeInsets.zero,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                              isDense: true,
-                            ),
-                            style: TextStyle(height: 1.26, fontSize: 36.sp),
-                          );
-                        },
+                        builder: (_, bool isDisabled, __) => ExtendedTextField(
+                          controller: controller,
+                          keyboardType: keyboardType,
+                          enabled: !isDisabled,
+                          obscureText: obscureText,
+                          obscuringCharacter: '*',
+                          scrollPadding: EdgeInsets.zero,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true,
+                          ),
+                          style: context.textTheme.bodyText2.copyWith(
+                            height: 1.26,
+                            fontSize: 36.sp,
+                          ),
+                        ),
                       ),
                     ),
                     if (suffixWidget != null) suffixWidget,
