@@ -170,7 +170,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage>
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

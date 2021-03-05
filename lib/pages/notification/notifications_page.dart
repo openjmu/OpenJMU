@@ -469,7 +469,7 @@ class NotificationsPageState extends State<NotificationsPage>
                     minHeight: _tabHeight.w,
                     maxHeight: maximumSheetHeight,
                   ),
-                  color: Theme.of(context).primaryColor,
+                  color: context.surfaceColor,
                   child: Column(
                     children: <Widget>[
                       Container(

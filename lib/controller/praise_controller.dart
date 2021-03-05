@@ -363,7 +363,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
         } else {
           final Praise _praise = _praises[index];
           return ColoredBox(
-            color: context.theme.cardColor,
+            color: context.surfaceColor,
             child: Row(
               children: <Widget>[
                 Padding(

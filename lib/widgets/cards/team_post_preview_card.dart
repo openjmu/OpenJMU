@@ -397,8 +397,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                 ),
               ),
             ),
-            splashColor: Theme.of(context).cardColor,
-            highlightColor: Theme.of(context).cardColor,
+            splashColor: context.surfaceColor,
+            highlightColor: context.surfaceColor,
           ),
         ],
       ),
@@ -446,7 +446,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.w),
-              color: Theme.of(context).cardColor,
+              color: context.surfaceColor,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

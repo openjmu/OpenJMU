@@ -120,7 +120,7 @@ class SelfPage extends StatelessWidget {
                       Text(
                         '签到',
                         style: TextStyle(
-                          color: context.theme.accentColor,
+                          color: context.themeColor,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           height: 1.23,
@@ -227,7 +227,7 @@ class SelfPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 10.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.w),
-              color: context.theme.cardColor,
+              color: context.surfaceColor,
             ),
             child: Column(
               children: <Widget>[

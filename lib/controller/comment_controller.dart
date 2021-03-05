@@ -492,7 +492,7 @@ class CommentListInPostState extends State<CommentListInPost>
 
   Widget _itemBuilder(BuildContext context, Comment comment) {
     return ColoredBox(
-      color: context.theme.cardColor,
+      color: context.surfaceColor,
       child: Tapper(
         onTap: () => showActions(context, comment),
         onLongPress: () {

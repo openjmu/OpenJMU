@@ -169,7 +169,7 @@ class _BackpackPageState extends State<BackpackPage> {
       height: 140.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.w),
-        color: Theme.of(context).primaryColor,
+        color: context.surfaceColor,
       ),
       child: Stack(
         children: <Widget>[
@@ -191,7 +191,7 @@ class _BackpackPageState extends State<BackpackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
+      backgroundColor: context.theme.canvasColor,
       body: FixedAppBarWrapper(
         appBar: const FixedAppBar(title: Text('背包')),
         body: isLoading

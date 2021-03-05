@@ -143,7 +143,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.w),
-          color: Theme.of(context).primaryColor,
+          color: context.surfaceColor,
         ),
         padding: EdgeInsets.all(14.w),
         child: ExtendedTextField(
@@ -171,7 +171,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   }
 
   Widget get bottomBar => Theme(
-        data: Theme.of(context).copyWith(
+        data: context.theme.copyWith(
           splashFactory: InkSplash.splashFactory,
         ),
         child: Container(
@@ -181,7 +181,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
                 : 0.0,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: context.theme.canvasColor,
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -240,7 +240,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             borderRadius: BorderRadius.circular(20.0),
             color: message.isSelf
                 ? currentThemeColor.withOpacity(0.5)
-                : Theme.of(context).canvasColor,
+                : context.theme.canvasColor,
           ),
           child: ExtendedText(
             end == -1

@@ -213,7 +213,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       ),
       bottomNavigationBar: _imageData != null
           ? BottomAppBar(
-              color: Theme.of(context).primaryColor,
+              color: context.surfaceColor,
               elevation: 0.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

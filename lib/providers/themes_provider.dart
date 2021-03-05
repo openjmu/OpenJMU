@@ -125,6 +125,7 @@ class ThemesProvider with ChangeNotifier {
         elevation: 0,
         color: primaryColor,
       ),
+      buttonColor: currentColor,
       iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -151,7 +152,6 @@ class ThemesProvider with ChangeNotifier {
         onError: defaultLightColor,
         brightness: Brightness.light,
       ),
-      buttonColor: currentColor,
       textTheme: TextTheme(
         bodyText1: TextStyle(color: secondaryTextColor),
         bodyText2: TextStyle(color: primaryTextColor),
@@ -165,6 +165,11 @@ class ThemesProvider with ChangeNotifier {
         headline5: TextStyle(color: primaryTextColor),
         headline6: TextStyle(color: primaryTextColor),
         overline: TextStyle(color: primaryTextColor),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: currentColor,
+        selectionColor: currentColor.withOpacity(0.5),
+        selectionHandleColor: currentColor,
       ),
     );
   }
@@ -202,6 +207,7 @@ class ThemesProvider with ChangeNotifier {
         elevation: 0,
         color: Colors.black,
       ),
+      buttonColor: currentColor,
       iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -242,7 +248,11 @@ class ThemesProvider with ChangeNotifier {
         headline6: TextStyle(color: primaryTextColor),
         overline: TextStyle(color: primaryTextColor),
       ),
-      buttonColor: currentColor,
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: currentColor,
+        selectionColor: currentColor.withOpacity(0.5),
+        selectionHandleColor: currentColor,
+      ),
     );
   }
 }

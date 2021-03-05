@@ -201,7 +201,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage>
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

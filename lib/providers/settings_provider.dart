@@ -67,7 +67,7 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<double> fontScaleRange = <double>[0.6, 1.4];
+  final List<double> fontScaleRange = <double>[0.7, 1.3];
   double _fontScale = 1.0;
 
   double get fontScale => _fontScale;

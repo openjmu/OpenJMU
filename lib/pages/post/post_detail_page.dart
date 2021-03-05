@@ -284,7 +284,7 @@ class PostDetailPageState extends State<PostDetailPage>
   Widget actionLists(BuildContext context) {
     return Container(
       height: tabHeight,
-      color: context.theme.cardColor,
+      color: context.surfaceColor,
       child: Column(
         children: <Widget>[
           const LineDivider(),
@@ -335,7 +335,7 @@ class PostDetailPageState extends State<PostDetailPage>
     );
   }
 
-  Widget get toolbar {
+  Widget toolbar(BuildContext context) {
     return DefaultTextStyle.merge(
       style: TextStyle(
         height: 1.2,
@@ -347,7 +347,7 @@ class PostDetailPageState extends State<PostDetailPage>
         padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
         decoration: BoxDecoration(
           border: Border(top: dividerBS(context)),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -525,7 +525,7 @@ class PostDetailPageState extends State<PostDetailPage>
                 ),
               ),
             ),
-            toolbar,
+            toolbar(context),
           ],
         ),
       ),

@@ -303,7 +303,7 @@ class _ScoresGridView extends StatelessWidget {
           padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.w),
-            color: context.theme.cardColor,
+            color: context.surfaceColor,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

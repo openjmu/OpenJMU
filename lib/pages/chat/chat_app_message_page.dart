@@ -137,7 +137,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13.w),
-              color: context.theme.cardColor,
+              color: context.surfaceColor,
             ),
             child: GestureDetector(
               onLongPress: () {

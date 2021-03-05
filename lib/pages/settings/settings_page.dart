@@ -482,7 +482,7 @@ class _SettingsCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.w),
-        color: context.theme.cardColor,
+        color: context.surfaceColor,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

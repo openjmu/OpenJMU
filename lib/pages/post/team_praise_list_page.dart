@@ -150,7 +150,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage>
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
-        color: Theme.of(context).canvasColor,
+        color: context.theme.canvasColor,
       ),
       child: ExtendedText(
         item.post.content,
@@ -193,7 +193,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage>
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

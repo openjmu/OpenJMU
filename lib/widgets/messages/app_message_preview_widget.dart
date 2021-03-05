@@ -177,7 +177,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
           border: Border(
             bottom: dividerBS(context),
           ),
-          color: context.theme.cardColor,
+          color: context.surfaceColor,
         ),
         child: Row(
           children: <Widget>[

@@ -54,7 +54,7 @@ class PraiseCard extends StatelessWidget {
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.w),
-        color: Theme.of(context).canvasColor,
+        color: context.theme.canvasColor,
       ),
       child: getExtendedText(context, topic),
     );
@@ -94,7 +94,7 @@ class PraiseCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

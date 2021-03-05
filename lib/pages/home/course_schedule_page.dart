@@ -372,7 +372,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// 本周的天数指示器
   Widget get weekDayIndicator {
     return Container(
-      color: Theme.of(context).canvasColor,
+      color: context.theme.canvasColor,
       height: weekdayIndicatorHeight.h,
       child: Row(
         children: <Widget>[
@@ -424,7 +424,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// 左侧的课时组件
   Widget courseTimeColumn(int maxDay) {
     return Container(
-      color: Theme.of(context).canvasColor,
+      color: context.theme.canvasColor,
       width: monthWidth,
       child: Column(
         children: List<Widget>.generate(
@@ -791,7 +791,7 @@ class CourseWidget extends StatelessWidget {
                                           currentWeek: currentWeek) ||
                                       isOutOfTerm
                                   ? course.color.withOpacity(0.85)
-                                  : Theme.of(context).dividerColor
+                                  : context.theme.dividerColor
                               : null,
                         ),
                         child: courseContent(context, course),
@@ -1294,7 +1294,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
           color: widget.course != null
               ? widget.course.color
                   .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
-              : Theme.of(context).dividerColor,
+              : context.theme.dividerColor,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 30.h),
@@ -1351,7 +1351,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       );
 
   Widget updateButton(BuildContext context) => Theme(
-        data: Theme.of(context).copyWith(
+        data: context.theme.copyWith(
           splashFactory: InkSplash.splashFactory,
         ),
         child: Positioned(

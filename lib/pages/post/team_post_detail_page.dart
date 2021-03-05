@@ -749,7 +749,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         padding: EdgeInsets.symmetric(
           horizontal: 8.w,
         ).copyWith(bottom: Screens.bottomSafeHeight),
-        color: context.theme.cardColor,
+        color: context.surfaceColor,
         child: child,
       ),
       child: Wrap(
@@ -977,7 +977,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.w),
-          color: context.theme.cardColor.withOpacity(0.75),
+          color: context.surfaceColor.withOpacity(0.75),
         ),
         child: Text(
           '删除',

@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 
 extension BuildContextExtension on BuildContext {
+  NavigatorState get navigator => Navigator.of(this);
+
   MediaQueryData get mediaQuery => MediaQuery.of(this);
 
   double get bottomInsets => mediaQuery.viewInsets.bottom;
@@ -17,11 +19,13 @@ extension BuildContextExtension on BuildContext {
 
   TextTheme get textTheme => theme.textTheme;
 
-  Color get themeColor => theme.accentColor;
-
   IconThemeData get iconTheme => IconTheme.of(this);
 
   AppBarTheme get appBarTheme => AppBarTheme.of(this);
 
-  NavigatorState get navigator => Navigator.of(this);
+  Color get themeColor => theme.accentColor;
+
+  ColorScheme get colorScheme => theme.colorScheme;
+
+  Color get surfaceColor => colorScheme.surface;
 }

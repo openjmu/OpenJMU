@@ -388,7 +388,7 @@ class ScaledImage extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.w),
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: context.surfaceColor.withOpacity(0.7),
             ),
             child: Text(
               '长图',
@@ -418,7 +418,7 @@ class ScaledImage extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.w),
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: context.surfaceColor.withOpacity(0.7),
             ),
             child: Text(
               '动图',

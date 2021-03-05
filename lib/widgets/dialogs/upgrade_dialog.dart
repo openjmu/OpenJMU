@@ -63,7 +63,7 @@ class UpgradeDialog extends StatelessWidget {
             ConfirmationDialog(
               child: Expanded(
                 child: ColoredBox(
-                  color: context.theme.cardColor,
+                  color: context.surfaceColor,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

@@ -101,7 +101,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
           border: Border(
             bottom: dividerBS(context),
           ),
-          color: context.theme.cardColor,
+          color: context.surfaceColor,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16.w),

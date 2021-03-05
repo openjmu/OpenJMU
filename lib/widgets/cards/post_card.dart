@@ -259,7 +259,7 @@ class _PostCardState extends State<PostCard> {
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.w),
-                color: Theme.of(context).canvasColor,
+                color: context.theme.canvasColor,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -488,8 +488,8 @@ class _PostCardState extends State<PostCard> {
                 width: 26.w,
               ),
               label: _action(comments),
-              highlightColor: Theme.of(context).cardColor,
-              splashColor: Theme.of(context).cardColor,
+              highlightColor: context.surfaceColor,
+              splashColor: context.surfaceColor,
             ),
           ),
           Expanded(
@@ -509,8 +509,8 @@ class _PostCardState extends State<PostCard> {
                 width: 26.w,
               ),
               label: _action(forwards),
-              splashColor: Theme.of(context).cardColor,
-              highlightColor: Theme.of(context).cardColor,
+              splashColor: context.surfaceColor,
+              highlightColor: context.surfaceColor,
             ),
           ),
         ],
@@ -665,7 +665,7 @@ class _PostCardState extends State<PostCard> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: getPostBanned('shield'),
       );
@@ -686,7 +686,7 @@ class _PostCardState extends State<PostCard> {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.w),
-          color: Theme.of(context).cardColor,
+          color: context.surfaceColor,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

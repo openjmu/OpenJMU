@@ -130,30 +130,32 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool isDark = context.theme.brightness == Brightness.dark;
     return ColoredBox(
-      color: Theme.of(context).canvasColor,
+      color: context.theme.canvasColor,
       child: FixedAppBarWrapper(
         appBar: _appBar,
         body: IndexedStack(
           index: currentIndex,
           children: <Widget>[
             if (tabs.contains('课程表'))
-              currentUser.isTeacher != null
-                  ? currentUser?.isTeacher ?? false
-                      ? AppWebView(
-                          url: '${API.courseScheduleTeacher}'
-                              '?sid=${currentUser.sid}'
-                              '&night=${isDark ? 1 : 0}',
-                          title: '课程表',
-                          withAppBar: false,
-                          withAction: false,
-                          keepAlive: true,
-                        )
-                      : CourseSchedulePage(
-                          key: Instances.courseSchedulePageStateKey,
-                        )
-                  : const SizedBox.shrink(),
+              if (currentUser?.isTeacher != null)
+                if (currentUser?.isTeacher == true)
+                  AppWebView(
+                    url: '${API.courseScheduleTeacher}'
+                        '?sid=${currentUser.sid}'
+                        '&night=${isDark ? 1 : 0}',
+                    title: '课程表',
+                    withAppBar: false,
+                    withAction: false,
+                    keepAlive: true,
+                  )
+                else
+                  CourseSchedulePage(
+                    key: Instances.courseSchedulePageStateKey,
+                  )
+              else
+                const SizedBox.shrink(),
             if (tabs.contains('成绩')) const ScorePage(),
           ],
         ),

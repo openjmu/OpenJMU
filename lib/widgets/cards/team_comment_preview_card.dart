@@ -309,7 +309,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             border: Border(
               bottom: dividerBS(context),
             ),
-            color: context.theme.cardColor,
+            color: context.surfaceColor,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

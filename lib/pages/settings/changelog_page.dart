@@ -89,7 +89,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
       padding: EdgeInsets.only(bottom: context.bottomPadding),
       decoration: BoxDecoration(
         border: Border(top: dividerBS(context)),
-        color: context.theme.cardColor,
+        color: context.surfaceColor,
       ),
       child: Tapper(
         onTap: () {
@@ -226,7 +226,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               margin: EdgeInsets.all(30.w).copyWith(top: 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15.w),
-                color: context.theme.cardColor,
+                color: context.surfaceColor,
               ),
               child: SizedBox.expand(
                 child: SingleChildScrollView(
@@ -300,7 +300,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               margin: EdgeInsets.all(30.w).copyWith(top: 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15.w),
-                color: context.theme.cardColor,
+                color: context.surfaceColor,
               ),
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(30.w),

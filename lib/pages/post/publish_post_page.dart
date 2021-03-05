@@ -411,7 +411,6 @@ class _PublishPostPageState extends State<PublishPostPage>
             focusNode: focusNode,
             scrollPadding: EdgeInsets.zero,
             specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-            cursorColor: Theme.of(context).cursorColor,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.zero,
               isDense: true,
@@ -502,7 +501,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.w),
-          color: context.theme.cardColor.withOpacity(0.75),
+          color: context.surfaceColor.withOpacity(0.75),
         ),
         child: Text(
           '删除',

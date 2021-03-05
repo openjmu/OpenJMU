@@ -107,7 +107,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         child: user != null
                             ? Text(
                                 user.name ?? user.uid,
-                                style: Theme.of(context)
+                                style: context.theme
                                     .textTheme
                                     .bodyText2
                                     .copyWith(
@@ -120,7 +120,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                       Text(
                         ' $formattedTime',
                         style: context.textTheme.bodyText2.copyWith(
-                          color: Theme.of(context)
+                          color: context.theme
                               .textTheme
                               .bodyText2
                               .color
@@ -150,7 +150,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   Text(
                     '${widget.message.content['content']}',
                     style: context.textTheme.bodyText2.copyWith(
-                      color: Theme.of(context)
+                      color: context.theme
                           .textTheme
                           .bodyText2
                           .color
