@@ -344,7 +344,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           LikeButton(
-            size: 48.w,
+            size: 52.w,
             bubblesColor: BubblesColor(
               dotPrimaryColor: currentThemeColor,
               dotSecondaryColor: currentThemeColor,
@@ -375,32 +375,58 @@ class TeamPostPreviewCard extends StatelessWidget {
             likeCountAnimationType: LikeCountAnimationType.none,
             likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
             onTap: (bool isLiked) => onLikeButtonTap(isLiked, p),
+            padding: EdgeInsets.only(left: 4.w, right: 14.w),
           ),
-          FlatButton.icon(
-            onPressed: null,
-            padding: EdgeInsets.zero,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            minWidth: 120.w,
+          _actionButton(
+            context: context,
             icon: SvgPicture.asset(
               R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
               color: context.iconTheme.color,
               width: 26.w,
             ),
-            label: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w),
+            text: '评论',
+            value: p.post.repliesCount,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionButton({
+    BuildContext context,
+    Widget icon,
+    String text,
+    int value,
+    VoidCallback onTap,
+  }) {
+    final String _content = value == 0
+        ? text ?? ''
+        : value > 999
+            ? '999+'
+            : '$value';
+    return Tapper(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            icon,
+            Gap(6.w),
+            Container(
+              constraints: BoxConstraints(minWidth: 30.w),
+              alignment: Alignment.center,
               child: Text(
-                p.post.repliesCount == 0 ? '评论' : '${p.post.repliesCount}',
+                _content,
                 style: TextStyle(
                   color: context.iconTheme.color,
                   fontSize: 18.sp,
                   fontWeight: FontWeight.normal,
                 ),
               ),
-            ),
-            splashColor: context.surfaceColor,
-            highlightColor: context.surfaceColor,
-          ),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

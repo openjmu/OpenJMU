@@ -417,21 +417,18 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  Widget _action(int value, [Color color]) {
-    return SizedBox(
-      width: 34.w,
-      child: Text(
-        value == 0
-            ? ''
-            : value > 999
-                ? '999+'
-                : '$value',
-        style: TextStyle(
-          color: color ?? context.iconTheme.color,
-          fontSize: 18.sp,
-        ),
-        maxLines: 1,
+  Widget _action(int value, {String text, Color color}) {
+    return Text(
+      value == 0
+          ? text ?? ''
+          : value > 999
+              ? '999+'
+              : '$value',
+      style: TextStyle(
+        color: color ?? context.iconTheme.color,
+        fontSize: 18.sp,
       ),
+      maxLines: 1,
     );
   }
 
@@ -440,80 +437,104 @@ class _PostCardState extends State<PostCard> {
     final int comments = widget.post.comments;
     final int praises = widget.post.praises;
 
-    return SizedBox(
-      width: Screens.width * 0.45,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: LikeButton(
-              padding: EdgeInsets.zero,
-              size: 26.w,
-              circleColor: CircleColor(
-                start: currentThemeColor,
-                end: currentThemeColor,
-              ),
-              countBuilder: (int count, bool isLiked, String text) => _action(
-                count,
-                isLiked ? currentThemeColor : null,
-              ),
-              bubblesColor: BubblesColor(
-                dotPrimaryColor: currentThemeColor,
-                dotSecondaryColor: currentThemeColor,
-              ),
-              likeBuilder: (bool isLiked) => SvgPicture.asset(
-                R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                color: isLiked ? currentThemeColor : context.iconTheme.color,
-                width: 26.w,
-              ),
-              likeCount: widget.post.isLike
-                  ? moreThanOne(praises)
-                  : moreThanZero(praises),
-              likeCountAnimationType: LikeCountAnimationType.none,
-              likeCountPadding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 12.h,
-              ),
-              isLiked: widget.post.isLike,
-              onTap: onLikeButtonTap,
+    return Row(
+      children: <Widget>[
+        LikeButton(
+          padding: EdgeInsets.zero,
+          size: 52.w,
+          circleColor: CircleColor(
+            start: currentThemeColor,
+            end: currentThemeColor,
+          ),
+          countBuilder: (int count, bool isLiked, String text) => _action(
+            count,
+            text: '赞',
+            color: isLiked ? currentThemeColor : null,
+          ),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: currentThemeColor,
+            dotSecondaryColor: currentThemeColor,
+          ),
+          likeBuilder: (bool isLiked) => Center(
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
+              color: isLiked ? currentThemeColor : context.iconTheme.color,
+              width: 26.w,
             ),
           ),
-          Expanded(
-            child: FlatButton.icon(
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onPressed: null,
-              icon: SvgPicture.asset(
-                R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                color: context.iconTheme.color,
-                width: 26.w,
-              ),
-              label: _action(comments),
-              highlightColor: context.surfaceColor,
-              splashColor: context.surfaceColor,
-            ),
+          likeCount:
+              widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
+          likeCountAnimationType: LikeCountAnimationType.none,
+          likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
+          isLiked: widget.post.isLike,
+          onTap: onLikeButtonTap,
+        ),
+        _actionButton(
+          context: context,
+          icon: SvgPicture.asset(
+            R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
+            color: context.iconTheme.color,
+            width: 26.w,
           ),
-          Expanded(
-            child: FlatButton.icon(
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onPressed: () {
-                PostActionDialog.show(
-                  context: context,
-                  post: widget.post,
-                  type: PostActionType.forward,
-                );
-              },
-              icon: SvgPicture.asset(
-                R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                color: context.iconTheme.color,
-                width: 26.w,
-              ),
-              label: _action(forwards),
-              splashColor: context.surfaceColor,
-              highlightColor: context.surfaceColor,
-            ),
+          text: '评论',
+          value: comments,
+        ),
+        _actionButton(
+          context: context,
+          icon: SvgPicture.asset(
+            R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
+            color: context.iconTheme.color,
+            width: 26.w,
           ),
-        ],
+          text: '转发',
+          value: forwards,
+          onTap: () {
+            PostActionDialog.show(
+              context: context,
+              post: widget.post,
+              type: PostActionType.forward,
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _actionButton({
+    BuildContext context,
+    Widget icon,
+    String text,
+    int value,
+    VoidCallback onTap,
+  }) {
+    final String _content = value == 0
+        ? text ?? ''
+        : value > 999
+        ? '999+'
+        : '$value';
+    return Tapper(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            icon,
+            Gap(6.w),
+            Container(
+              constraints: BoxConstraints(minWidth: 30.w),
+              alignment: Alignment.center,
+              child: Text(
+                _content,
+                style: TextStyle(
+                  color: context.iconTheme.color,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

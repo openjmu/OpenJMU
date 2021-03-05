@@ -318,18 +318,22 @@ class NotificationsPageState extends State<NotificationsPage>
             horizontal: 14.w,
           ).copyWith(top: 4.w),
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
-          tabs: List<Tab>.generate(
+          tabs: List<Widget>.generate(
             currentFields.length,
             (int index) {
-              final _Field field = currentFields[index];
-              final int count = field.field();
-              return Tab(
-                icon: badgeIcon(
-                  content: count,
-                  icon: getActionName(index),
-                  showBadge: count != 0,
-                ),
-                iconMargin: EdgeInsets.zero,
+              return Consumer<NotificationProvider>(
+                builder: (_, NotificationProvider p, __) {
+                  final _Field field = currentFields[index];
+                  final int count = field.field();
+                  return Tab(
+                    icon: badgeIcon(
+                      content: count,
+                      icon: getActionName(index),
+                      showBadge: count != 0,
+                    ),
+                    iconMargin: EdgeInsets.zero,
+                  );
+                },
               );
             },
           ),

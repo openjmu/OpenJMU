@@ -478,7 +478,10 @@ class LoginPageState extends State<LoginPage> with RouteAware {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  topLogo,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[topLogo, statusButton(context)],
+                  ),
                   welcomeTip,
                   const Spacer(),
                   if (value) _previewLoginButton(context),
@@ -569,29 +572,25 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   }
 
   Widget statusButton(BuildContext context) {
-    return PositionedDirectional(
-      top: Screens.topSafeHeight + 16.w,
-      end: 16.w,
-      child: Tapper(
-        onTap: () => API.launchWeb(
-          url: API.statusWebsite,
-          title: 'OpenJMU 状态',
+    return Tapper(
+      onTap: () => API.launchWeb(
+        url: API.statusWebsite,
+        title: 'OpenJMU 状态',
+      ),
+      child: Container(
+        width: 130.w,
+        height: 64.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13.w),
+          color: context.theme.canvasColor,
         ),
-        child: Container(
-          width: 130.w,
-          height: 64.w,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(13.w),
-            color: context.theme.canvasColor,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            '无法登录?',
-            style: TextStyle(
-              fontSize: 20.sp,
-              height: 1.24,
-              fontWeight: FontWeight.w500,
-            ),
+        alignment: Alignment.center,
+        child: Text(
+          '无法登录?',
+          style: TextStyle(
+            fontSize: 20.sp,
+            height: 1.24,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
@@ -680,7 +679,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                 videoWidget(context),
                 videoFilter(context),
                 contentWrapper(context),
-                statusButton(context),
                 loginButton(context),
               ],
             ),
