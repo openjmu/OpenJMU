@@ -355,7 +355,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
         _DeveloperWidget(name: '李承峻', secondaryName: 'Alex', tag: '负责人'),
         _DeveloperWidget(name: '徐崎峰', secondaryName: 'evsio0n', tag: '开发'),
         _DeveloperWidget(name: '叶佳豪', secondaryName: 'Tomcat', tag: '产品/运营'),
-        _DeveloperWidget(name: '陈高仁', secondaryName: 'Andyc', tag: 'UI设计'),
+        _DeveloperWidget(name: '陈高仁', tag: 'UI设计'),
         _DeveloperWidget(name: '陈嘉旺', tag: '产品'),
         _DeveloperWidget(name: '兰方正', secondaryName: 'Leo', tag: '开发'),
         _DeveloperWidget(name: '潘楚坤', secondaryName: '暗云', tag: '产品/运营'),
