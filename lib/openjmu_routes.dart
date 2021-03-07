@@ -30,6 +30,7 @@ const List<String> routeNames = <String>[
   'openjmu://settings',
   'openjmu://splash',
   'openjmu://team-post-detail',
+  'openjmu://tutorial-page',
   'openjmu://user-list-page',
   'openjmu://user-page',
   'openjmu://user-qr-code',
@@ -254,6 +255,18 @@ class Routes {
   /// TeamPostDetailPage : [Key key, TeamPostType(required) type, TeamPostProvider provider, int postId, bool shouldReload]
   static const _OpenjmuTeamPostDetail openjmuTeamPostDetail =
       _OpenjmuTeamPostDetail();
+
+  /// '宣传页'
+  ///
+  /// [name] : 'openjmu://tutorial-page'
+  ///
+  /// [routeName] : '宣传页'
+  ///
+  /// [constructors] :
+  ///
+  /// TutorialPage : [Key key]
+  static const _OpenjmuTutorialPage openjmuTutorialPage =
+      _OpenjmuTutorialPage();
 
   /// '用户列表页'
   ///
@@ -527,6 +540,19 @@ class _OpenjmuTeamPostDetail {
         'provider': provider,
         'postId': postId,
         'shouldReload': shouldReload,
+      };
+
+  @override
+  String toString() => name;
+}
+
+class _OpenjmuTutorialPage {
+  const _OpenjmuTutorialPage();
+
+  String get name => 'openjmu://tutorial-page';
+
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
+        'key': key,
       };
 
   @override

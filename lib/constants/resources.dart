@@ -605,6 +605,15 @@ class R {
   static const String ASSETS_ICONS_TEAM_BADGE_SVG =
       'assets/icons/team-badge.svg';
 
+  static const String ASSETS_ICONS_TUTORIAL_COMMENT_WITH_PICS_SVG =
+      'assets/icons/tutorial/comment_with_pics.svg';
+
+  static const String ASSETS_ICONS_TUTORIAL_QR_SCAN_SVG =
+      'assets/icons/tutorial/qr_scan.svg';
+
+  static const String ASSETS_ICONS_TUTORIAL_SIDEBAR_SVG =
+      'assets/icons/tutorial/sidebar.svg';
+
   static const String ASSETS_ICONS_USER_FOLLOW_SVG =
       'assets/icons/user/follow.svg';
 

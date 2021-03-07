@@ -23,6 +23,7 @@ import 'pages/settings/changelog_page.dart';
 import 'pages/settings/font_scale_page.dart';
 import 'pages/settings/settings_page.dart';
 import 'pages/splash_page.dart';
+import 'pages/tutorial_page.dart';
 import 'pages/user/backpack_page.dart';
 import 'pages/user/user_list_page.dart';
 import 'pages/user/user_page.dart';
@@ -204,6 +205,14 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           shouldReload: arguments['shouldReload'] as bool ?? false,
         ),
         routeName: '小组动态详情页',
+      );
+    case 'openjmu://tutorial-page':
+      return RouteResult(
+        name: name,
+        widget: TutorialPage(
+          key: arguments['key'] as Key,
+        ),
+        routeName: '宣传页',
       );
     case 'openjmu://user-list-page':
       return RouteResult(

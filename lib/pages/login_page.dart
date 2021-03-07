@@ -166,7 +166,9 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         await videoController.setLooping(false);
         await videoController.pause();
         navigatorState.pushNamedAndRemoveUntil(
-          Routes.openjmuHome.name,
+          HiveFieldUtils.getFirstOpen() != true
+              ? Routes.openjmuTutorialPage.name
+              : Routes.openjmuHome.name,
           (_) => false,
         );
       } else {

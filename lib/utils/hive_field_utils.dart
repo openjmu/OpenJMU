@@ -19,6 +19,7 @@ class HiveFieldUtils {
   static const String brightnessDark = 'theme_brightness';
   static const String colorThemeIndex = 'theme_colorThemeIndex';
   static const String brightnessPlatform = 'theme_brightness_platform';
+  static const String firstOpen = 'first_open_1.0';
 
   static const String settingFontScale = 'setting_font_scale';
   static const String settingNewIcons = 'setting_new_icons';
@@ -56,16 +57,24 @@ class HiveFieldUtils {
   }
 
   /// 设置选择的主题色
-  static Future<void> setColorTheme(int value) async =>
-      await _box?.put(colorThemeIndex, value);
+  static Future<void> setColorTheme(int value) =>
+      _box?.put(colorThemeIndex, value);
 
   /// 设置选择的夜间模式
-  static Future<void> setBrightnessDark(bool value) async =>
-      await _box?.put(brightnessDark, value);
+  static Future<void> setBrightnessDark(bool value) =>
+      _box?.put(brightnessDark, value);
 
   /// 设置跟随系统的夜间模式
-  static Future<void> setBrightnessPlatform(bool value) async =>
-      await _box?.put(brightnessPlatform, value);
+  static Future<void> setBrightnessPlatform(bool value) =>
+      _box?.put(brightnessPlatform, value);
+
+  /// 获取当前版本是否是第一次打开
+  ///
+  /// 注意目前写死了 1.0，需要让用户再次看到引导页请更改上方的版本号
+  static bool getFirstOpen() => _box?.get(firstOpen) as bool;
+
+  /// 设置首次打开的控制
+  static Future<void> setFirstOpen(bool value) => _box?.put(firstOpen, value);
 
   /// 获取字体缩放设置
   static double getFontScale() => _box?.get(settingFontScale) as double;
@@ -82,27 +91,27 @@ class HiveFieldUtils {
       _box?.get(settingLaunchFromSystemBrowser) as bool;
 
   /// 设置字体缩放
-  static Future<void> setFontScale(double scale) async {
+  static Future<void> setFontScale(double scale) {
     provider.fontScale = scale;
-    await _box?.put(settingFontScale, scale);
+    return _box?.put(settingFontScale, scale);
   }
 
   /// 设置是否启用新应用图标
-  static Future<void> setEnabledNewAppsIcon(bool enable) async {
+  static Future<void> setEnabledNewAppsIcon(bool enable) {
     provider.newAppCenterIcon = enable;
-    await _box?.put(settingNewIcons, enable);
+    return _box?.put(settingNewIcons, enable);
   }
 
   /// 设置是否隐藏被屏蔽的动态
-  static Future<void> setEnabledHideShieldPost(bool enable) async {
+  static Future<void> setEnabledHideShieldPost(bool enable) {
     provider.hideShieldPost = enable;
-    await _box?.put(settingHideShieldPost, enable);
+    return _box?.put(settingHideShieldPost, enable);
   }
 
   /// 设置是否通过系统浏览器打开网页
-  static Future<void> setLaunchFromSystemBrowser(bool enable) async {
+  static Future<void> setLaunchFromSystemBrowser(bool enable) {
     provider.launchFromSystemBrowser = enable;
-    await _box?.put(settingLaunchFromSystemBrowser, enable);
+    return _box?.put(settingLaunchFromSystemBrowser, enable);
   }
 
   /// 获取设备PushToken
@@ -112,14 +121,14 @@ class HiveFieldUtils {
   static String getDeviceUuid() => _box?.get(deviceUuid) as String;
 
   /// 写入PushToken
-  static Future<void> setDevicePushToken(String value) async {
+  static Future<void> setDevicePushToken(String value) {
     DeviceUtils.devicePushToken = value;
-    await _box?.put(devicePushToken, value);
+    return _box?.put(devicePushToken, value);
   }
 
   /// 写入uuid
-  static Future<void> setDeviceUuid(String value) async {
+  static Future<void> setDeviceUuid(String value) {
     DeviceUtils.deviceUuid = value;
-    await _box?.put(deviceUuid, value);
+    return _box?.put(deviceUuid, value);
   }
 }

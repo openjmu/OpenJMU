@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/login_page.dart';
 import 'package:openjmu/pages/main_page.dart';
+import 'package:openjmu/pages/tutorial_page.dart';
 
 @FFRoute(name: 'openjmu://splash', routeName: '启动页')
 class SplashPage extends StatefulWidget {
@@ -120,12 +121,17 @@ class SplashState extends State<SplashPage> {
         PageRouteBuilder<void>(
           transitionDuration:
               !isUserLogin || forceToLogin ? 1.seconds : 500.milliseconds,
-          pageBuilder: (_, Animation<double> animation, __) => FadeTransition(
-            opacity: animation,
-            child: !isUserLogin || forceToLogin
-                ? const LoginPage()
-                : const MainPage(),
-          ),
+          pageBuilder: (_, Animation<double> animation, __) {
+            Widget child;
+            if (!isUserLogin || forceToLogin) {
+              child = const LoginPage();
+            } else if (HiveFieldUtils.getFirstOpen() != true) {
+              child = const TutorialPage();
+            } else {
+              child = const MainPage();
+            }
+            return FadeTransition(opacity: animation, child: child);
+          },
         ),
         (_) => false,
       );
