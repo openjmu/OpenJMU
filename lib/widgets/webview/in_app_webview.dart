@@ -147,7 +147,7 @@ class _AppWebViewState extends State<AppWebView>
           LogUtils.d('Try to launch intent...');
           final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
-            if (await waitForConfirmation(appName)) {
+            if (await isAppJumpConfirm(appName)) {
               await _launchURL(url: url);
             }
           }
@@ -159,7 +159,7 @@ class _AppWebViewState extends State<AppWebView>
     }
   }
 
-  Future<bool> waitForConfirmation(String applicationLabel) {
+  Future<bool> isAppJumpConfirm(String applicationLabel) {
     return ConfirmationDialog.show(
       context,
       title: '即将跳转至外部应用',
@@ -167,6 +167,30 @@ class _AppWebViewState extends State<AppWebView>
       showConfirm: true,
       confirmLabel: '允许跳转',
     );
+  }
+
+  Future<void> onDownload(InAppWebViewController controller, String url) async {
+    final String _headRes = await NetUtils.head(url);
+    final bool hasRealName = _headRes != null;
+    String filename;
+    if (hasRealName) {
+      filename = _headRes;
+    } else {
+      filename = '$currentTimeStamp';
+    }
+    if (await ConfirmationDialog.show(
+      context,
+      title: hasRealName ? '文件下载确认' : '未知文件下载确认',
+      content: '文件安全性未知，请确认下载\n\n'
+          '$url 想要下载文件'
+          '${hasRealName ? ' $filename' : '\n\n文件名称未知，将下载为 $filename'}',
+      showConfirm: true,
+      confirmLabel: '下载',
+      resolveSpecialText: false,
+    )) {
+      LogUtils.d('WebView started download from: $url');
+      NetUtils.download(url, filename);
+    }
   }
 
   void showMore(BuildContext context) {
@@ -386,9 +410,10 @@ class _AppWebViewState extends State<AppWebView>
         return false;
       },
       onLoadStart: (_, String url) {
-        LogUtils.d('Webview onLoadStart: $url');
+        LogUtils.d('WebView onLoadStart: $url');
       },
       onLoadStop: (InAppWebViewController controller, String url) async {
+        LogUtils.d('WebView onLoadStop: $url');
         controller.evaluateJavascript(
           source: 'window.onbeforeunload=null',
         );
@@ -424,10 +449,7 @@ class _AppWebViewState extends State<AppWebView>
           '${consoleMessage.message}',
         );
       },
-      onDownloadStart: (_, String url) {
-        LogUtils.d('WebView started download from: $url');
-        NetUtils.download(url);
-      },
+      onDownloadStart: onDownload,
       onWebViewCreated: (InAppWebViewController controller) {
         _webViewController = controller;
       },

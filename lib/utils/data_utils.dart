@@ -235,7 +235,7 @@ class DataUtils {
     final String url =
         'http://sso.jmu.edu.cn/imapps/2190?sid=${currentUser.sid}';
     try {
-      await NetUtils.head<dynamic>(url);
+      await NetUtils.head(url, options: Options(followRedirects: false));
       LogUtils.d('Cookie response didn\'t return 302.');
       return false;
     } on DioError catch (dioError) {

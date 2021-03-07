@@ -140,24 +140,39 @@ class NetUtils {
   }
 
   /// Get header only.
-  static Future<Response<T>> head<T>(
+  ///
+  /// This request is targeted to get filename directly.
+  static Future<String> head(
     String url, {
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> data,
     Options options,
-  }) async =>
-      await dio.head<T>(
-        url,
-        data: data,
-        queryParameters: queryParameters,
-        options: options ??
-            Options(
-              followRedirects: false,
-            ),
-      );
+  }) async {
+    final Response<dynamic> res = await dio.head<dynamic>(
+      url,
+      data: data,
+      queryParameters: queryParameters,
+      options: options ?? Options(followRedirects: true),
+    );
+    String filename = res.headers
+        .value('content-disposition')
+        ?.split('; ')
+        ?.where((String element) => element.contains('filename'))
+        ?.first;
+    if (filename != null) {
+      final RegExp filenameReg = RegExp(r'filename=\"(.+)\"');
+      filename = filenameReg.allMatches(filename).first.group(1);
+      filename = Uri.decodeComponent(filename);
+    } else {
+      filename = url.split('/').last.split('?')?.first;
+    }
+    return filename;
+  }
 
-  static Future<Response<T>> get<T>(String url,
-          {Map<String, dynamic> data}) async =>
+  static Future<Response<T>> get<T>(
+    String url, {
+    Map<String, dynamic> data,
+  }) async =>
       await dio.get<T>(url, queryParameters: data);
 
   /// Get response through bytes.
@@ -214,8 +229,10 @@ class NetUtils {
         ),
       );
 
-  static Future<Response<T>> post<T>(String url,
-          {Map<String, dynamic> data}) async =>
+  static Future<Response<T>> post<T>(
+    String url, {
+    Map<String, dynamic> data,
+  }) async =>
       await dio.post<T>(
         url,
         data: data,
@@ -286,46 +303,18 @@ class NetUtils {
   ///   the real file name of the attachment.
   /// * Call [dio.download] to download the file with the real name.
   static Future<Response<dynamic>> download(
-    String url, {
+    String url,
+    String filename, {
     Map<String, dynamic> data,
     Map<String, dynamic> headers,
   }) async {
-    Response<dynamic> response;
     String path;
-    final bool isAllGranted = await checkPermissions(
-      <Permission>[Permission.storage],
-    );
-    if (isAllGranted) {
+    if (await checkPermissions(<Permission>[Permission.storage])) {
       showToast('开始下载 ...');
       LogUtils.d('File start download: $url');
-      path = '${(await getExternalStorageDirectory()).path}/';
+      path = '${(await getExternalStorageDirectory()).path}/$filename';
       try {
-        response = await head<void>(
-          url,
-          data: data,
-          options: Options(
-            headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
-          ),
-        );
-        String filename = response.headers
-            .value('content-disposition')
-            ?.split('; ')
-            ?.where((String element) => element.contains('filename'))
-            ?.first;
-        if (filename != null) {
-          final RegExp filenameReg = RegExp(r'filename=\"(.+)\"');
-          filename = filenameReg.allMatches(filename).first.group(1);
-          filename = Uri.decodeComponent(filename);
-          path += filename;
-        } else {
-          path += url.split('/').last.split('?').first;
-        }
-      } catch (e) {
-        LogUtils.e('File download failed when fetching head: $e');
-        return null;
-      }
-      try {
-        response = await dio.download(
+        final Response<dynamic> response = await dio.download(
           url,
           path,
           data: data,
