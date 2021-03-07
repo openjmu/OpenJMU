@@ -81,6 +81,7 @@ class _AppWebViewState extends State<AppWebView>
     with AutomaticKeepAliveClientMixin {
   final StreamController<double> progressController =
       StreamController<double>.broadcast();
+  Timer _progressCancelTimer;
 
   final ValueNotifier<String> title = ValueNotifier<String>('');
 
@@ -121,7 +122,17 @@ class _AppWebViewState extends State<AppWebView>
   void dispose() {
     SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
     progressController.close();
+    _progressCancelTimer?.cancel();
     super.dispose();
+  }
+
+  void cancelProgress([Duration duration = const Duration(seconds: 1)]) {
+    _progressCancelTimer?.cancel();
+    _progressCancelTimer = Timer(duration, () {
+      if (progressController?.isClosed == false) {
+        progressController?.add(0.0);
+      }
+    });
   }
 
   void loadCourseSchedule() {
@@ -432,11 +443,7 @@ class _AppWebViewState extends State<AppWebView>
             title.value = ogTitle;
           }
         }
-        Future<void>.delayed(2.seconds, () {
-          if (!progressController.isClosed) {
-            progressController?.add(0.0);
-          }
-        });
+        cancelProgress();
       },
       onProgressChanged: (_, int progress) {
         progressController?.add(progress / 100);
@@ -462,6 +469,10 @@ class _AppWebViewState extends State<AppWebView>
         } else {
           return ShouldOverrideUrlLoadingAction.ALLOW;
         }
+      },
+      onUpdateVisitedHistory: (_, String url, bool androidIsReload) {
+        LogUtils.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
+        cancelProgress();
       },
     );
   }
