@@ -301,7 +301,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       failedAssets.add(asset); // 添加失败entity
       loadingDialogController.changeState(
         'failed',
-        title: '图片上传失败。可能问题：图片质量过高、网络连接较差',
+        title: '动态发布失败',
+        text: '图片上传失败。可能问题：图片质量过高、网络连接较差',
       );
 
       /// Cancel all request and clear token list.
@@ -344,7 +345,11 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         );
       }
     } catch (e) {
-      loadingDialogController.changeState('failed', title: '动态发布失败');
+      loadingDialogController.changeState(
+        'failed',
+        title: '动态发布失败',
+        text: '发布请求失败。可能问题：网络连接较差',
+      );
       LogUtils.e(e);
     } finally {
       isLoading.value = false;
