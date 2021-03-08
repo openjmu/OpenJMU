@@ -44,6 +44,11 @@ class ThemeGroup {
   final Color darkPrimaryTextColor;
   final Color darkSecondaryTextColor;
   final Color darkButtonTextColor;
+
+  Color adaptiveThemeColor(BuildContext context) =>
+      context.brightness == Brightness.dark
+          ? darkThemeColor
+          : lightThemeColor;
 }
 
 const ThemeGroup defaultThemeGroup = ThemeGroup();

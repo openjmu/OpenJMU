@@ -71,10 +71,12 @@ class HiveFieldUtils {
   /// 获取当前版本是否是第一次打开
   ///
   /// 注意目前写死了 1.0，需要让用户再次看到引导页请更改上方的版本号
-  static bool getFirstOpen() => _box?.get(firstOpen) as bool;
+  static bool getFirstOpen() => HiveBoxes.firstOpenBox?.get(firstOpen);
 
   /// 设置首次打开的控制
-  static Future<void> setFirstOpen(bool value) => _box?.put(firstOpen, value);
+  static Future<void> setFirstOpen(bool value) {
+    return HiveBoxes.firstOpenBox?.put(firstOpen, value);
+  }
 
   /// 获取字体缩放设置
   static double getFontScale() => _box?.get(settingFontScale) as double;

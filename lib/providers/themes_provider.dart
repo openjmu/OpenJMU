@@ -257,35 +257,35 @@ class ThemesProvider with ChangeNotifier {
   }
 }
 
-final List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
+const List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
   defaultThemeGroup, // This is the default theme group.
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xfff06292),
     darkThemeColor: Color(0xffcc537c),
   ),
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xffba68c8),
     darkThemeColor: Color(0xff9e58aa),
   ),
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xff2196f3),
     darkThemeColor: Color(0xff1c7ece),
   ),
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xff00bcd4),
     darkThemeColor: Color(0xff00a0b4),
   ),
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xff26a69a),
     darkThemeColor: Color(0xff208d83),
   ),
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xffffeb3b),
     darkThemeColor: Color(0xffd9c832),
     lightButtonTextColor: Colors.black,
     darkButtonTextColor: Colors.black,
   ),
-  const ThemeGroup(
+  ThemeGroup(
     lightThemeColor: Color(0xffff7043),
     darkThemeColor: Color(0xffd95f39),
   ),

@@ -425,7 +425,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     return ValueListenableBuilder<bool>(
       valueListenable: _isPreview,
       builder: (_, bool value, __) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 10.h),
+        padding: EdgeInsets.symmetric(vertical: 20.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -448,7 +448,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       },
       child: Container(
         height: 72.w,
-        margin: EdgeInsets.only(bottom: 30.w),
+        margin: EdgeInsets.symmetric(vertical: 20.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
           color: currentThemeColor,
@@ -486,8 +486,8 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                   ),
                   welcomeTip,
                   const Spacer(),
-                  if (value) _previewLoginButton(context),
                   if (value) agreementWidget,
+                  if (value) _previewLoginButton(context),
                   if (!value)
                     Expanded(
                       flex: 30,
@@ -563,7 +563,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                         ],
                       ),
                     ),
-                  SizedBox(height: 84.w),
+                  SizedBox(height: 100.w),
                 ],
               ),
             ),
@@ -617,13 +617,18 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         valueListenable: _loginButtonEnabled,
         builder: (_, bool isEnabled, Widget child) => Positioned.fill(
           top: null,
+          bottom: Screens.bottomSafeHeight,
           child: Tapper(
             onTap: isEnabled ? () => loginButtonPressed(context) : null,
             child: AnimatedContainer(
               duration: animateDuration,
+              height: 72.w,
+              margin: EdgeInsets.all(30.w),
               padding: EdgeInsets.symmetric(horizontal: 24.w),
-              height: 84.w,
-              color: isEnabled ? defaultLightColor : Colors.black54,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13.w),
+                color: isEnabled ? defaultLightColor : Colors.black54,
+              ),
               child: child,
             ),
           ),

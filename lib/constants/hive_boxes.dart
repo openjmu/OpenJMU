@@ -44,6 +44,9 @@ class HiveBoxes {
   /// 设置表
   static Box<dynamic> settingsBox;
 
+  /// 设置表
+  static Box<bool> firstOpenBox;
+
   /// 更新日志缓存表
   static Box<ChangeLog> changelogBox;
 
@@ -83,6 +86,7 @@ class HiveBoxes {
       '${hiveBoxPrefix}_report_record',
     );
     settingsBox = await Hive.openBox<dynamic>('${hiveBoxPrefix}_app_settings');
+    firstOpenBox = await Hive.openBox<bool>('${hiveBoxPrefix}_first_open');
     changelogBox = await Hive.openBox<ChangeLog>('${hiveBoxPrefix}_changelog');
     emojisBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_emojis');
   }
@@ -122,18 +126,21 @@ class HiveBoxes {
     }
     if (confirm) {
       LogUtils.d('Clearing Hive Boxes...');
-      await appMessagesBox?.clear();
-      await changelogBox?.clear();
-      await coursesBox?.clear();
-      await courseRemarkBox?.clear();
-      await emojisBox?.clear();
-      await personalMessagesBox?.clear();
-      await reportRecordBox?.clear();
-      await scoresBox?.clear();
-      await webAppsBox?.clear();
-      await webAppsCommonBox?.clear();
-      await settingsBox?.clear();
-      await startWeekBox?.clear();
+      Future.wait<void>(<Future<dynamic>>[
+        appMessagesBox?.clear(),
+        changelogBox?.clear(),
+        coursesBox?.clear(),
+        courseRemarkBox?.clear(),
+        emojisBox?.clear(),
+        personalMessagesBox?.clear(),
+        reportRecordBox?.clear(),
+        scoresBox?.clear(),
+        webAppsBox?.clear(),
+        webAppsCommonBox?.clear(),
+        settingsBox?.clear(),
+        firstOpenBox?.clear(),
+        startWeekBox?.clear(),
+      ]);
       LogUtils.d('Boxes cleared.');
       if (kReleaseMode) {
         SystemNavigator.pop();
