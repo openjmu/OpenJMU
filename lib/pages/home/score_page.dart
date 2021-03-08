@@ -32,40 +32,47 @@ class _ScorePageState extends State<ScorePage>
     API.launchWeb(url: url, title: '教学评测');
   }
 
-  Widget errorWidget(ScoresProvider provider) {
-    final String error = provider.errorString;
-
-    String result;
-    if (error.contains('The method \'transform\' was called on null')) {
-      result = '电波暂时无法到达成绩业务的门口\n😰';
-    } else {
-      result = '成绩好像还没有准备好呢\n🤒';
-    }
-
-    return Center(
-      child: Text(
-        result,
-        style: TextStyle(
-          fontSize: 23.sp,
-          fontWeight: FontWeight.normal,
+  Widget get errorWidget {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SvgPicture.asset(
+          R.ASSETS_PLACEHOLDERS_COURSE_NOT_READY_SVG,
+          width: 50.w,
+          color: context.theme.iconTheme.color,
         ),
-        textAlign: TextAlign.center,
-      ),
+        VGap(20.w),
+        Text(
+          '成绩未就绪',
+          style: TextStyle(
+            color: context.textTheme.caption.color,
+            fontSize: 22.sp,
+          ),
+        ),
+      ],
     );
   }
 
   Widget get noScoreWidget {
     return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border(
-          top: dividerBS(context),
-        ),
-      ),
-      child: Text(
-        '暂时还没有你的成绩\n🤔',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 30.sp),
+      decoration: BoxDecoration(border: Border(top: dividerBS(context))),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_NO_MESSAGE_SVG,
+            width: 50.w,
+            color: context.theme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
+            '暂无成绩',
+            style: TextStyle(
+              color: context.textTheme.caption.color,
+              fontSize: 22.sp,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -212,7 +219,7 @@ class _ScorePageState extends State<ScorePage>
                 children: <Widget>[
                   Expanded(
                     child: provider.loadError
-                        ? errorWidget(provider)
+                        ? errorWidget
                         : provider.hasScore
                             ? Column(
                                 children: <Widget>[

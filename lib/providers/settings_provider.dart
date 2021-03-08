@@ -67,8 +67,10 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<double> fontScaleRange = <double>[0.7, 1.3];
-  double _fontScale = 1.0;
+  List<double> fontScaleRange = DeviceUtils.deviceModel.contains('iPad')
+      ? <double>[0.2, 0.8]
+      : <double>[0.7, 1.3];
+  double _fontScale = DeviceUtils.deviceModel.contains('iPad') ? 0.5 : 1.0;
 
   double get fontScale => _fontScale;
 
@@ -89,7 +91,7 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   void reset() {
-    _fontScale = 1.0;
+    _fontScale = DeviceUtils.deviceModel.contains('iPad') ? 0.5 : 1.0;
     _newAppCenterIcon = false;
     _hideShieldPost = true;
     _launchFromSystemBrowser = false;
