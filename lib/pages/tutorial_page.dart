@@ -59,8 +59,8 @@ class TutorialPage extends StatelessWidget {
         final _Item item = items[index];
         return Row(
           children: <Widget>[
-            SvgPicture.asset(item.icon, width: 56.w, color: item.iconColor),
-            Gap(20.w),
+            SvgPicture.asset(item.icon, width: 48.w, color: item.iconColor),
+            Gap(24.w),
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

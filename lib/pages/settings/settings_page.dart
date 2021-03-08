@@ -423,15 +423,15 @@ class _DataCleaningCard extends StatelessWidget {
           item: _SettingItem(
             name: '清理缓存数据',
             onTap: () {
-              HiveBoxes.clearCacheBoxes(context: context);
+              HiveBoxes.clearCacheBoxes(context);
             },
           ),
         ),
         _SettingItemWidget(
           item: _SettingItem(
-            name: '清理应用数据',
+            name: '重置应用',
             onTap: () {
-              HiveBoxes.clearAllBoxes(context: context);
+              HiveBoxes.clearAllBoxes(context);
             },
           ),
         ),

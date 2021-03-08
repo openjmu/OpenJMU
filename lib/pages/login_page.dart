@@ -438,34 +438,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     );
   }
 
-  Widget _previewLoginButton(BuildContext context) {
-    return Tapper(
-      onTap: () {
-        _isPreview.value = false;
-        Future<void>.delayed(animateDuration * 5, () {
-          videoController.pause();
-        });
-      },
-      child: Container(
-        height: 72.w,
-        margin: EdgeInsets.symmetric(vertical: 20.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13.w),
-          color: currentThemeColor,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          '登录',
-          style: TextStyle(
-            color: Colors.white,
-            height: 1.2,
-            fontSize: 22.sp,
-          ),
-        ),
-      ),
-    );
-  }
-
   /// Wrapper for content part.
   /// 内容块包装
   Widget contentWrapper(BuildContext context) {
@@ -486,8 +458,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                   ),
                   welcomeTip,
                   const Spacer(),
-                  if (value) agreementWidget,
-                  if (value) _previewLoginButton(context),
                   if (!value)
                     Expanded(
                       flex: 30,
@@ -514,6 +484,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                       ),
                     ),
                   if (!value) const Spacer(flex: 8),
+                  if (value) agreementWidget,
                   if (!value)
                     DefaultTextStyle.merge(
                       style: context.textTheme.bodyText2.copyWith(
@@ -604,22 +575,23 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   Widget loginButton(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: _isPreview,
-      builder: (_, bool isPreview, Widget child) {
-        if (isPreview) {
-          return const AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light,
-            child: SizedBox.shrink(),
-          );
-        }
-        return child;
-      },
-      child: ValueListenableBuilder<bool>(
+      builder: (_, bool isPreview, __) => ValueListenableBuilder<bool>(
         valueListenable: _loginButtonEnabled,
         builder: (_, bool isEnabled, Widget child) => Positioned.fill(
           top: null,
           bottom: Screens.bottomSafeHeight,
           child: Tapper(
-            onTap: isEnabled ? () => loginButtonPressed(context) : null,
+            onTap: () {
+              if (isPreview) {
+                _isPreview.value = false;
+                Future<void>.delayed(animateDuration * 5, () {
+                  videoController.pause();
+                });
+              }
+              if (isEnabled) {
+                loginButtonPressed(context);
+              }
+            },
             child: AnimatedContainer(
               duration: animateDuration,
               height: 72.w,
@@ -627,7 +599,8 @@ class LoginPageState extends State<LoginPage> with RouteAware {
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(13.w),
-                color: isEnabled ? defaultLightColor : Colors.black54,
+                color:
+                    isPreview || isEnabled ? defaultLightColor : Colors.black54,
               ),
               child: child,
             ),

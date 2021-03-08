@@ -91,59 +91,65 @@ class HiveBoxes {
     emojisBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_emojis');
   }
 
-  static Future<void> clearCacheBoxes({BuildContext context}) async {
-    bool confirm = true;
-    if (context != null) {
-      confirm = await ConfirmationDialog.show(
+  static Future<void> clearCacheBoxes(BuildContext context) async {
+    if (await ConfirmationDialog.show(
+      context,
+      title: '清除缓存数据',
+      showConfirm: true,
+      content: '即将清除包括课程信息、成绩和学期起始日等缓存数据。请确认操作',
+    )) {
+      if (await ConfirmationDialog.show(
         context,
-        title: '清除缓存数据',
+        title: '确认清除缓存数据',
         showConfirm: true,
-        content: '清除缓存会清除包括课程表、成绩和学期起始日的缓存数据。确定继续吗？',
-      );
-    }
-    if (confirm) {
-      LogUtils.d('Clearing Hive Cache Boxes...');
-      await coursesBox?.clear();
-      await courseRemarkBox?.clear();
-      await scoresBox?.clear();
-      await startWeekBox?.clear();
-      LogUtils.d('Cache boxes cleared.');
-      if (kReleaseMode) {
-        SystemNavigator.pop();
+        content: '清除的数据无法恢复，请确认操作',
+      )) {
+        LogUtils.d('Clearing Hive Cache Boxes...');
+        await coursesBox?.clear();
+        await courseRemarkBox?.clear();
+        await scoresBox?.clear();
+        await startWeekBox?.clear();
+        LogUtils.d('Cache boxes cleared.');
+        if (kReleaseMode) {
+          SystemNavigator.pop();
+        }
       }
     }
   }
 
-  static Future<void> clearAllBoxes({BuildContext context}) async {
-    bool confirm = true;
-    if (context != null) {
-      confirm = await ConfirmationDialog.show(
+  static Future<void> clearAllBoxes(BuildContext context) async {
+    if (await ConfirmationDialog.show(
+      context,
+      title: '重置应用',
+      showConfirm: true,
+      content: '即将清除所有应用内容（包括设置、应用信息），请确认操作',
+    )) {
+      if (await ConfirmationDialog.show(
         context,
-        title: '清除应用数据',
+        title: '确认重置应用',
         showConfirm: true,
-        content: '清除数据会将所有应用内容（包括设置、应用消息）清除。确定继续吗？',
-      );
-    }
-    if (confirm) {
-      LogUtils.d('Clearing Hive Boxes...');
-      Future.wait<void>(<Future<dynamic>>[
-        appMessagesBox?.clear(),
-        changelogBox?.clear(),
-        coursesBox?.clear(),
-        courseRemarkBox?.clear(),
-        emojisBox?.clear(),
-        personalMessagesBox?.clear(),
-        reportRecordBox?.clear(),
-        scoresBox?.clear(),
-        webAppsBox?.clear(),
-        webAppsCommonBox?.clear(),
-        settingsBox?.clear(),
-        firstOpenBox?.clear(),
-        startWeekBox?.clear(),
-      ]);
-      LogUtils.d('Boxes cleared.');
-      if (kReleaseMode) {
-        SystemNavigator.pop();
+        content: '清除的内容无法恢复，请确认操作',
+      )) {
+        LogUtils.d('Clearing Hive Boxes...');
+        Future.wait<void>(<Future<dynamic>>[
+          appMessagesBox?.clear(),
+          changelogBox?.clear(),
+          coursesBox?.clear(),
+          courseRemarkBox?.clear(),
+          emojisBox?.clear(),
+          personalMessagesBox?.clear(),
+          reportRecordBox?.clear(),
+          scoresBox?.clear(),
+          webAppsBox?.clear(),
+          webAppsCommonBox?.clear(),
+          settingsBox?.clear(),
+          firstOpenBox?.clear(),
+          startWeekBox?.clear(),
+        ]);
+        LogUtils.d('Boxes cleared.');
+        if (kReleaseMode) {
+          SystemNavigator.pop();
+        }
       }
     }
   }
