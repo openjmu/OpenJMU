@@ -597,7 +597,6 @@ class UserPageState extends State<UserPage>
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         child: PostCard(
           Post.fromJson(model['topic'] as Map<String, dynamic>),
-          parentContext: context,
           fromPage: 'user',
         ),
       ),

@@ -320,7 +320,6 @@ class _PostListState extends State<PostList>
               fromPage: widget.postController.postType,
               index: index,
               isDetail: false,
-              parentContext: context,
               key: ValueKey<String>('post-key-${_postList[index].id}'),
             );
           } else {

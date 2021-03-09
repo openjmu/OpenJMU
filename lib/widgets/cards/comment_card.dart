@@ -62,10 +62,7 @@ class CommentCard extends StatelessWidget {
             text: '查看动态',
             onTap: () => navigatorState.pushNamed(
               Routes.openjmuPostDetail.name,
-              arguments: Routes.openjmuPostDetail.d(
-                post: comment.post,
-                parentContext: context,
-              ),
+              arguments: Routes.openjmuPostDetail.d(post: comment.post),
             ),
           ),
         ],

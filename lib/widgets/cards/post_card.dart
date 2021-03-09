@@ -22,7 +22,6 @@ class PostCard extends StatefulWidget {
     this.isRootContent,
     this.fromPage,
     this.index,
-    @required this.parentContext,
     Key key,
   }) : super(key: key);
 
@@ -31,7 +30,6 @@ class PostCard extends StatefulWidget {
   final bool isRootContent;
   final String fromPage;
   final int index;
-  final BuildContext parentContext;
 
   @override
   State createState() => _PostCardState();
@@ -155,14 +153,14 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  void pushToDetail() {
+  void pushToDetail({Post post, int index, bool toComment = false}) {
     navigatorState.pushNamed(
       Routes.openjmuPostDetail.name,
       arguments: Routes.openjmuPostDetail.d(
-        post: widget.post,
-        index: widget.index,
+        post: post ?? widget.post,
+        index: index,
         fromPage: widget.fromPage,
-        parentContext: context,
+        toComment: toComment,
       ),
     );
   }
@@ -240,15 +238,7 @@ class _PostCardState extends State<PostCard> {
           padding: EdgeInsets.only(top: 10.w, bottom: 4.w),
           child: Tapper(
             onTap: () {
-              navigatorState.pushNamed(
-                Routes.openjmuPostDetail.name,
-                arguments: Routes.openjmuPostDetail.d(
-                  post: _post,
-                  index: widget.index,
-                  fromPage: widget.fromPage,
-                  parentContext: context,
-                ),
-              );
+              pushToDetail(post: _post);
             },
             child: Container(
               width: Screens.width,
@@ -664,10 +654,8 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final Post post = widget.post;
-    final bool hideShield = post.isShield &&
-        Provider.of<SettingsProvider>(currentContext, listen: false)
-            .hideShieldPost;
+    final bool hideShield =
+        post.isShield && context.read<SettingsProvider>().hideShieldPost;
     if (hideShield) {
       return const SizedBox.shrink();
     }
@@ -693,7 +681,12 @@ class _PostCardState extends State<PostCard> {
     }
 
     return Tapper(
-      onTap: !widget.isDetail ? pushToDetail : null,
+      onTap: () {
+        if (widget.isDetail) {
+          return;
+        }
+        pushToDetail(index: widget.index);
+      },
       child: Container(
         margin: widget.isDetail
             ? EdgeInsets.zero

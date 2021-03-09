@@ -166,9 +166,6 @@ class UserInfo {
     }
   }
 
-  /// 是否为项目组成员
-  bool get isDeveloper => Constants.developerList.contains(currentUser.uid);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

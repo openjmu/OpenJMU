@@ -73,7 +73,6 @@ class _PostSquarePageState extends State<PostSquarePage> {
           return PostCard(
             post,
             key: ValueKey<String>('post-key-${post.id}'),
-            parentContext: context,
             fromPage: 'square',
           );
         },

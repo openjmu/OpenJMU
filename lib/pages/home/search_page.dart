@@ -338,19 +338,11 @@ class SearchPageState extends State<SearchPage>
           if (_canLoadMore.value) {
             search(context, _controller.text, isMore: true);
           }
-          return PostCard(
-            postList[index - 2],
-            isDetail: false,
-            parentContext: context,
-          );
+          return PostCard(postList[index - 2]);
         } else if (index == postList.length + 2) {
           return LoadMoreIndicator(canLoadMore: _canLoadMore.value);
         } else {
-          return PostCard(
-            postList[index - 1],
-            isDetail: false,
-            parentContext: context,
-          );
+          return PostCard(postList[index - 1]);
         }
       },
     );

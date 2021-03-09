@@ -178,7 +178,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// PostDetailPage : [Post(required) post, int index, String fromPage, BuildContext parentContext]
+  /// PostDetailPage : [Post(required) post, int index, String fromPage, bool toComment]
   static const _OpenjmuPostDetail openjmuPostDetail = _OpenjmuPostDetail();
 
   /// '发布动态'
@@ -445,12 +445,12 @@ class _OpenjmuPostDetail {
           {@required Post post,
           int index,
           String fromPage,
-          BuildContext parentContext}) =>
+          bool toComment = false}) =>
       <String, dynamic>{
         'post': post,
         'index': index,
         'fromPage': fromPage,
-        'parentContext': parentContext,
+        'toComment': toComment,
       };
 
   @override

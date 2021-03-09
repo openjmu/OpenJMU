@@ -143,7 +143,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           post: arguments['post'] as Post,
           index: arguments['index'] as int,
           fromPage: arguments['fromPage'] as String,
-          parentContext: arguments['parentContext'] as BuildContext,
+          toComment: arguments['toComment'] as bool ?? false,
         ),
         routeName: '动态详情页',
       );

@@ -23,22 +23,22 @@ class PostDetailPage extends StatefulWidget {
     @required this.post,
     this.index,
     this.fromPage,
-    this.parentContext,
-  });
+    this.toComment = false,
+  })  : assert(post != null),
+        assert(toComment != null);
 
   final Post post;
   final int index;
   final String fromPage;
-  final BuildContext parentContext;
+  final bool toComment;
 
   @override
-  State<StatefulWidget> createState() {
-    return PostDetailPageState();
-  }
+  PostDetailPageState createState() => PostDetailPageState();
 }
 
 class PostDetailPageState extends State<PostDetailPage>
     with SingleTickerProviderStateMixin {
+  ScrollController _scrollController;
   final ForwardListInPostController forwardListInPostController =
       ForwardListInPostController();
   final CommentListInPostController commentListInPostController =
@@ -62,6 +62,9 @@ class PostDetailPageState extends State<PostDetailPage>
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController(
+      initialScrollOffset: widget.toComment ? Screens.height * 2 : 0,
+    );
     _tabController = TabController(length: 3, initialIndex: 1, vsync: this);
 
     PostAPI.glancePost(widget.post.id);
@@ -141,17 +144,18 @@ class PostDetailPageState extends State<PostDetailPage>
     return ValueKey<String>('Detail-List-Key-${_tabController.index}');
   }
 
-  Widget get postCard => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.w),
-        child: PostCard(
-          widget.post,
-          index: widget.index,
-          fromPage: widget.fromPage,
-          isDetail: true,
-          parentContext: widget.parentContext,
-          key: ValueKey<String>('post-key-${widget.post.id}'),
-        ),
-      );
+  Widget get postCard {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.w),
+      child: PostCard(
+        widget.post,
+        index: widget.index,
+        fromPage: widget.fromPage,
+        isDetail: true,
+        key: ValueKey<String>('post-key-${widget.post.id}'),
+      ),
+    );
+  }
 
   Widget deleteButton(BuildContext context) {
     return Tapper(
@@ -485,6 +489,7 @@ class PostDetailPageState extends State<PostDetailPage>
               child: ScrollConfiguration(
                 behavior: const NoGlowScrollBehavior(),
                 child: ex.NestedScrollView(
+                  controller: _scrollController,
                   physics: const ClampingScrollPhysics(),
                   pinnedHeaderSliverHeightBuilder: () => tabHeight,
                   innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,

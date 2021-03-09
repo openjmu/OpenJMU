@@ -79,7 +79,6 @@ class PraiseCard extends StatelessWidget {
           Routes.openjmuPostDetail.name,
           arguments: Routes.openjmuPostDetail.d(
             post: Post.fromJson(praise.post),
-            parentContext: context,
           ),
         );
       },
