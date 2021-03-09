@@ -38,6 +38,8 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final double contentPadding = 16.0;
 
+  Post get post => widget.post;
+
   @override
   void initState() {
     super.initState();
@@ -256,7 +258,8 @@ class _PostCardState extends State<PostCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   getExtendedText(topic, isRoot: true),
-                  if (rootTopic['topic']['image'] != null)
+                  if (rootTopic['topic']['image'] != null &&
+                      !post.shouldFoldRootTopic)
                     Padding(
                       padding: EdgeInsets.only(top: 8.h),
                       child: getRootPostImages(
@@ -408,17 +411,20 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _action(int value, {String text, Color color}) {
-    return Text(
-      value == 0
-          ? text ?? ''
-          : value > 999
-              ? '999+'
-              : '$value',
-      style: TextStyle(
-        color: color ?? context.iconTheme.color,
-        fontSize: 18.sp,
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: 30.w),
+      child: Text(
+        value == 0
+            ? text ?? ''
+            : value > 999
+                ? '999+'
+                : '$value',
+        style: TextStyle(
+          color: color ?? context.iconTheme.color,
+          fontSize: 18.sp,
+        ),
+        maxLines: 1,
       ),
-      maxLines: 1,
     );
   }
 
@@ -431,7 +437,7 @@ class _PostCardState extends State<PostCard> {
       children: <Widget>[
         LikeButton(
           padding: EdgeInsets.zero,
-          size: 52.w,
+          size: 40.w,
           circleColor: CircleColor(
             start: currentThemeColor,
             end: currentThemeColor,
@@ -455,7 +461,7 @@ class _PostCardState extends State<PostCard> {
           likeCount:
               widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
           likeCountAnimationType: LikeCountAnimationType.none,
-          likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
+          likeCountPadding: EdgeInsets.only(right: 16.w),
           isLiked: widget.post.isLike,
           onTap: onLikeButtonTap,
         ),
@@ -468,6 +474,9 @@ class _PostCardState extends State<PostCard> {
           ),
           text: '评论',
           value: comments,
+          onTap: () {
+            pushToDetail(index: widget.index, toComment: true);
+          },
         ),
         _actionButton(
           context: context,
@@ -500,8 +509,8 @@ class _PostCardState extends State<PostCard> {
     final String _content = value == 0
         ? text ?? ''
         : value > 999
-        ? '999+'
-        : '$value';
+            ? '999+'
+            : '$value';
     return Tapper(
       onTap: onTap,
       child: Padding(
@@ -586,7 +595,11 @@ class _PostCardState extends State<PostCard> {
         content != null ? '$content ' : null,
         style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
-        maxLines: widget.isDetail ?? false ? null : 8,
+        maxLines: widget.isDetail != true
+            ? post.shouldFoldRootTopic
+                ? 2
+                : 8
+            : null,
         overflowWidget: widget.isDetail ?? false ? null : contentOverflowWidget,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       ),

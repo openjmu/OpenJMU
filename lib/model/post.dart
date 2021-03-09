@@ -28,6 +28,7 @@ class Post {
     this.praises,
     this.isLike = false,
     this.user,
+    this.shouldFoldRootTopic,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -54,6 +55,7 @@ class Post {
       praises: int.parse(json['praises'].toString()),
       isLike: int.parse(json['praised'].toString()) == 1,
       user: PostUser.fromJson(json['user'] as Map<String, dynamic>),
+      shouldFoldRootTopic: json['should_fold_root_topic'] as bool ?? false,
     );
   }
 
@@ -71,6 +73,10 @@ class Post {
   int comments;
   int praises;
   bool isLike;
+
+  /// Whether the root topic should be fold
+  /// when it's been forward to much times.
+  final bool shouldFoldRootTopic;
 
   bool get isShield => content?.trim() == '此微博已经被屏蔽';
 

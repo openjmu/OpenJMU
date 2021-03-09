@@ -16,7 +16,7 @@ class PostSquarePage extends StatefulWidget {
 }
 
 class _PostSquarePageState extends State<PostSquarePage> {
-  final LoadingBase loadingBase = LoadingBase(
+  final _PostLoadingBase loadingBase = _PostLoadingBase(
     request: (int id) => PostAPI.getPostList(
       'square',
       isMore: id != 0,
@@ -78,5 +78,80 @@ class _PostSquarePageState extends State<PostSquarePage> {
         },
       ),
     );
+  }
+}
+
+class _PostLoadingBase extends LoadingBase {
+  _PostLoadingBase({
+    @required Future<Response<Map<String, dynamic>>> Function(int id) request,
+    @required String contentFieldName,
+    int Function(Map<String, dynamic> data) lastIdBuilder,
+  })  : assert(contentFieldName != null),
+        super(
+          request: request,
+          contentFieldName: contentFieldName,
+          lastIdBuilder: lastIdBuilder,
+        );
+
+  final Map<int, int> redundantRootTopic = <int, int>{};
+
+  @override
+  Future<bool> refresh([bool clearBeforeRequest = false]) async {
+    redundantRootTopic.clear();
+    return super.refresh(clearBeforeRequest);
+  }
+
+  @override
+  Future<bool> loadData([bool isLoadMoreAction = false]) async {
+    try {
+      final Response<Map<String, dynamic>> response = await request(
+        isLoadMoreAction ? lastId : 0,
+      );
+      final Map<String, dynamic> data = response.data;
+      if (!isLoadMoreAction) {
+        clear();
+      }
+      final List<dynamic> _list = data[contentFieldName] as List<dynamic>;
+      final List<Map<String, dynamic>> contents =
+          List<Map<String, dynamic>>.from(_list);
+      addAll(contents);
+      handleRootTopic(contents);
+      total = data['total'].toString().toInt();
+      if (total > 0) {
+        if (lastIdBuilder != null) {
+          lastId = lastIdBuilder(data);
+        } else {
+          lastId =
+              (last ?? <String, dynamic>{})['id']?.toString()?.toInt() ?? 0;
+        }
+      }
+      canRequestMore = total > length;
+      setState();
+      return true;
+    } catch (e) {
+      LogUtils.e('Error when loading data for LoadingBase list: $e');
+      return false;
+    }
+  }
+
+  void handleRootTopic(List<Map<String, dynamic>> contents) {
+    for (int i = 0; i < contents.length; i++) {
+      final Map<String, dynamic> content =
+          contents[i]['topic'] as Map<String, dynamic>;
+      final bool hasRootTopic =
+          content['root_topic'] != null && content['root_topic']['exists'] == 1;
+      if (!hasRootTopic) {
+        continue;
+      }
+      final int rootTid =
+          content['root_topic']['topic']['tid'].toString().toInt();
+      if (!redundantRootTopic.containsKey(rootTid)) {
+        redundantRootTopic[rootTid] = 0;
+      }
+      ++redundantRootTopic[rootTid];
+      if (redundantRootTopic[rootTid] > 2) {
+        content['should_fold_root_topic'] = true;
+      }
+    }
   }
 }
