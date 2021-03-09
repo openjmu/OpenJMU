@@ -331,7 +331,11 @@ class PraiseListInPostState extends State<PraiseListInPost>
   Widget getPostNickname(BuildContext context, Praise praise) {
     return Text(
       praise.nickname,
-      style: TextStyle(fontSize: 19.sp, fontWeight: FontWeight.w600),
+      style: TextStyle(
+        height: 1.2,
+        fontSize: 19.sp,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 
@@ -376,7 +380,12 @@ class PraiseListInPostState extends State<PraiseListInPost>
                     isSysAvatar: _praise.user.sysAvatar,
                   ),
                 ),
-                Expanded(child: getPostNickname(context, _praise)),
+                Flexible(child: getPostNickname(context, _praise)),
+                if (Constants.developerList.contains(_praise.uid))
+                  Padding(
+                    padding: EdgeInsets.only(left: 6.w),
+                    child: const DeveloperTag(),
+                  ),
               ],
             ),
           );
