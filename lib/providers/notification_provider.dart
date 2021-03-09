@@ -52,6 +52,9 @@ class NotificationProvider extends ChangeNotifier {
   bool get showTeamNotification => teamNotifications.total > 0;
 
   int get initialIndex {
+    if (_notifications.praise > 0) {
+      return 0;
+    }
     if (_notifications.comment > 0) {
       return 1;
     }
