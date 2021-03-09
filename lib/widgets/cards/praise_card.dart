@@ -66,7 +66,7 @@ class PraiseCard extends StatelessWidget {
       style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-      maxLines: 8,
+      maxLines: 2,
       overflowWidget: contentOverflowWidget,
     );
   }

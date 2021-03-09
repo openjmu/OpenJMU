@@ -176,7 +176,7 @@ class CommentCard extends StatelessWidget {
       content != null ? '$content ' : null,
       style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
-      maxLines: 8,
+      maxLines: 2,
       overflowWidget: contentOverflowWidget,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
     );

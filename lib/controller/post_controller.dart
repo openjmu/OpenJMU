@@ -147,6 +147,7 @@ class _PostListState extends State<PostList>
         },
       );
       if (!UserAPI.blacklist.contains(user)) {
+        postData['topic']['should_fold_root_topic'] = true;
         postList.add(Post.fromJson(postData['topic'] as Map<String, dynamic>));
         _idList.add(postData['id'].toString().toInt());
       }
@@ -198,8 +199,10 @@ class _PostListState extends State<PostList>
             },
           );
           if (!UserAPI.blacklist.contains(user)) {
-            postList
-                .add(Post.fromJson(postData['topic'] as Map<String, dynamic>));
+            postData['topic']['should_fold_root_topic'] = true;
+            postList.add(
+              Post.fromJson(postData['topic'] as Map<String, dynamic>),
+            );
             idList.add(postData['id'].toString().toInt());
           }
         }
@@ -293,13 +296,15 @@ class _PostListState extends State<PostList>
                 final List<Map<String, dynamic>> pics = element.pics;
                 if (pics != null) {
                   for (final Map<String, dynamic> pic in pics) {
-                    ExtendedNetworkImageProvider(pic['image_thumb'] as String)
-                        .evict();
-                    ExtendedNetworkImageProvider(pic['image_middle'] as String)
-                        .evict();
                     ExtendedNetworkImageProvider(
-                            pic['image_original'] as String)
-                        .evict();
+                      pic['image_thumb'] as String,
+                    ).evict();
+                    ExtendedNetworkImageProvider(
+                      pic['image_middle'] as String,
+                    ).evict();
+                    ExtendedNetworkImageProvider(
+                      pic['image_original'] as String,
+                    ).evict();
                   }
                 }
               }

@@ -344,7 +344,8 @@ class TeamPostPreviewCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           LikeButton(
-            size: 52.w,
+            padding: EdgeInsets.symmetric(vertical: 6.w),
+            size: 40.w,
             bubblesColor: BubblesColor(
               dotPrimaryColor: currentThemeColor,
               dotSecondaryColor: currentThemeColor,
@@ -353,12 +354,16 @@ class TeamPostPreviewCard extends StatelessWidget {
               start: currentThemeColor,
               end: currentThemeColor,
             ),
-            countBuilder: (int count, bool isLiked, String text) => Text(
-              count > 0 ? text : '赞',
-              style: TextStyle(
-                color: isLiked ? currentThemeColor : context.iconTheme.color,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.normal,
+            countBuilder: (int count, bool isLiked, String text) => Container(
+              constraints: BoxConstraints(minWidth: 30.w),
+              alignment: Alignment.center,
+              child: Text(
+                count > 0 ? text : '赞',
+                style: TextStyle(
+                  color: isLiked ? currentThemeColor : context.iconTheme.color,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
             isLiked: p.post.isLike,
@@ -373,9 +378,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                 ? moreThanOne(p.post.praisesCount)
                 : moreThanZero(p.post.praisesCount),
             likeCountAnimationType: LikeCountAnimationType.none,
-            likeCountPadding: EdgeInsets.symmetric(horizontal: 8.w),
+            likeCountPadding: EdgeInsets.only(right: 6.w),
             onTap: (bool isLiked) => onLikeButtonTap(isLiked, p),
-            padding: EdgeInsets.only(left: 4.w, right: 14.w),
           ),
           _actionButton(
             context: context,

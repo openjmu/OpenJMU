@@ -411,8 +411,9 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _action(int value, {String text, Color color}) {
-    return ConstrainedBox(
+    return Container(
       constraints: BoxConstraints(minWidth: 30.w),
+      alignment: Alignment.center,
       child: Text(
         value == 0
             ? text ?? ''
@@ -436,7 +437,7 @@ class _PostCardState extends State<PostCard> {
     return Row(
       children: <Widget>[
         LikeButton(
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(vertical: 6.w),
           size: 40.w,
           circleColor: CircleColor(
             start: currentThemeColor,
@@ -444,7 +445,7 @@ class _PostCardState extends State<PostCard> {
           ),
           countBuilder: (int count, bool isLiked, String text) => _action(
             count,
-            text: '赞',
+            text: '赞　',
             color: isLiked ? currentThemeColor : null,
           ),
           bubblesColor: BubblesColor(
@@ -461,7 +462,7 @@ class _PostCardState extends State<PostCard> {
           likeCount:
               widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
           likeCountAnimationType: LikeCountAnimationType.none,
-          likeCountPadding: EdgeInsets.only(right: 16.w),
+          likeCountPadding: EdgeInsets.only(right: 6.w),
           isLiked: widget.post.isLike,
           onTap: onLikeButtonTap,
         ),
