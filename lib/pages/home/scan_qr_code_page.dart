@@ -212,6 +212,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       maxAssets: 1,
       themeColor: currentThemeColor,
       requestType: RequestType.image,
+      selectedAssets: <AssetEntity>[],
     );
     if (entity?.isEmpty ?? true) {
       return;

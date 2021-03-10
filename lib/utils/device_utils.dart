@@ -64,7 +64,7 @@ class DeviceUtils {
       if (Platform.isIOS) {
         deviceUuid = (deviceInfo as IosDeviceInfo).identifierForVendor;
       } else {
-        await HiveFieldUtils.setDeviceUuid(Uuid().v4());
+        await HiveFieldUtils.setDeviceUuid(const Uuid().v4());
       }
     }
     LogUtils.d('deviceUuid: $deviceUuid');

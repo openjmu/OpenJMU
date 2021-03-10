@@ -10,11 +10,12 @@ import 'package:extended_list/extended_list.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
+@FFArgumentImport()
+import 'package:openjmu/model/models.dart';
 
 @FFRoute(
   name: 'openjmu://chat-app-message-page',
   routeName: '应用消息页',
-  argumentImports: <String>['import \'model/models.dart\';'],
 )
 class ChatAppMessagePage extends StatefulWidget {
   const ChatAppMessagePage({

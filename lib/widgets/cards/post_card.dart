@@ -618,7 +618,6 @@ class _PostCardState extends State<PostCard> {
     PraiseAPI.requestPraise(id, !isLiked).catchError((dynamic e) {
       isLiked ? widget.post.praises++ : widget.post.praises--;
       completer.complete(isLiked);
-      return completer.future;
     });
 
     return completer.future;

@@ -4,8 +4,6 @@
 ///
 part of 'models.dart';
 
-enum TeamMentionType { post, thread }
-
 @immutable
 class TeamMentionItem {
   const TeamMentionItem({

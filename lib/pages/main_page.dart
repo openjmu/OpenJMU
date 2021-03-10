@@ -11,7 +11,6 @@ import 'package:openjmu/pages/home/message_page.dart';
 import 'package:openjmu/pages/home/post_square_page.dart';
 import 'package:openjmu/pages/home/school_work_page.dart';
 import 'package:openjmu/pages/home/self_page.dart';
-import 'package:openjmu/pages/notification/notifications_page.dart';
 
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
@@ -53,7 +52,7 @@ class MainPage extends StatefulWidget {
     return SizedBox(
       width: 56.w,
       child: Stack(
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: <Widget>[
           Tapper(
             onTap: () async {

@@ -116,9 +116,6 @@ class ThemesProvider with ChangeNotifier {
       highlightColor: Colors.transparent,
       splashFactory: const NoSplashFactory(),
       toggleableActiveColor: currentColor,
-      cursorColor: currentColor,
-      textSelectionColor: currentColor.withAlpha(100),
-      textSelectionHandleColor: currentColor,
       indicatorColor: currentColor,
       appBarTheme: AppBarTheme(
         brightness: Brightness.light,
@@ -198,9 +195,6 @@ class ThemesProvider with ChangeNotifier {
       highlightColor: Colors.transparent,
       splashFactory: const NoSplashFactory(),
       toggleableActiveColor: currentColor,
-      cursorColor: currentColor,
-      textSelectionColor: currentColor.withAlpha(100),
-      textSelectionHandleColor: currentColor,
       indicatorColor: currentColor,
       appBarTheme: const AppBarTheme(
         brightness: Brightness.dark,

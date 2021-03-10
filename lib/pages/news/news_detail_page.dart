@@ -2,10 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-03-22 12:43
 ///
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -55,11 +52,6 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         '</head>'
         '<body>${data['content']}</body>'
         '</html>';
-    pageContent = Uri.dataFromString(
-      pageContent,
-      mimeType: 'text/html',
-      encoding: Encoding.getByName('utf-8'),
-    ).toString();
     _contentLoaded = true;
     if (mounted) {
       setState(() {});
@@ -73,7 +65,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         appBar: FixedAppBar(title: Text(widget.news.title)),
         body: (pageContent != null && _contentLoaded)
             ? InAppWebView(
-                initialUrl: pageContent,
+                initialData: InAppWebViewInitialData(
+                  data: pageContent,
+                  mimeType: 'text/html',
+                  encoding: 'utf-8',
+                ),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
                     applicationNameForUserAgent: 'openjmu-webview',

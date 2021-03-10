@@ -138,10 +138,13 @@ class _AppWebViewState extends State<AppWebView>
   void loadCourseSchedule() {
     try {
       _webViewController.loadUrl(
-        url:
+        urlRequest: URLRequest(
+          url: Uri.parse(
             '${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}'
             '?sid=${currentUser.sid}'
             '&night=${currentIsDark ? 1 : 0}',
+          ),
+        ),
       );
     } catch (e) {
       LogUtils.d('$e');
@@ -180,8 +183,8 @@ class _AppWebViewState extends State<AppWebView>
     );
   }
 
-  Future<void> onDownload(InAppWebViewController controller, String url) async {
-    final String _headRes = await NetUtils.head(url);
+  Future<void> onDownload(InAppWebViewController controller, Uri url) async {
+    final String _headRes = await NetUtils.head(url.toString());
     final bool hasRealName = _headRes != null;
     String filename;
     if (hasRealName) {
@@ -200,7 +203,7 @@ class _AppWebViewState extends State<AppWebView>
       resolveSpecialText: false,
     )) {
       LogUtils.d('WebView started download from: $url');
-      NetUtils.download(url, filename);
+      NetUtils.download(url.toString(), filename);
     }
   }
 
@@ -372,7 +375,7 @@ class _AppWebViewState extends State<AppWebView>
   InAppWebView get newWebView {
     return InAppWebView(
       key: Key(currentTimeStamp.toString()),
-      initialUrl: url,
+      initialUrlRequest: URLRequest(url: Uri.parse(url)),
       initialOptions: InAppWebViewGroupOptions(
         crossPlatform: InAppWebViewOptions(
           applicationNameForUserAgent: 'openjmu-webview',
@@ -390,8 +393,7 @@ class _AppWebViewState extends State<AppWebView>
           verticalScrollBarEnabled: false,
         ),
         android: AndroidInAppWebViewOptions(
-          allowFileAccessFromFileURLs: true,
-          allowUniversalAccessFromFileURLs: true,
+          useHybridComposition: true,
           builtInZoomControls: true,
           displayZoomControls: false,
           forceDark: currentIsDark
@@ -400,6 +402,7 @@ class _AppWebViewState extends State<AppWebView>
           loadWithOverviewMode: true,
           mixedContentMode: AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
           safeBrowsingEnabled: false,
+          supportMultipleWindows: false,
         ),
         ios: IOSInAppWebViewOptions(
           allowsAirPlayForMediaPlayback: true,
@@ -412,24 +415,24 @@ class _AppWebViewState extends State<AppWebView>
       ),
       onCreateWindow: (
         InAppWebViewController controller,
-        CreateWindowRequest createWindowRequest,
+        CreateWindowAction createWindowAction,
       ) async {
-        if (Uri.tryParse(createWindowRequest.url) != null) {
-          await controller.loadUrl(url: createWindowRequest.url);
+        if (createWindowAction.request.url != null) {
+          await controller.loadUrl(urlRequest: createWindowAction.request);
           return true;
         }
         return false;
       },
-      onLoadStart: (_, String url) {
+      onLoadStart: (_, Uri url) {
         LogUtils.d('WebView onLoadStart: $url');
       },
-      onLoadStop: (InAppWebViewController controller, String url) async {
+      onLoadStop: (InAppWebViewController controller, Uri url) async {
         LogUtils.d('WebView onLoadStop: $url');
         controller.evaluateJavascript(
           source: 'window.onbeforeunload=null',
         );
 
-        this.url = url;
+        this.url = url.toString();
         final String _title = (await controller.getTitle())?.trim();
         if (_title?.isNotEmpty == true && _title != this.url) {
           title.value = _title;
@@ -462,15 +465,18 @@ class _AppWebViewState extends State<AppWebView>
       },
       shouldOverrideUrlLoading: (
         InAppWebViewController controller,
-        ShouldOverrideUrlLoadingRequest request,
+        NavigationAction navigationAction,
       ) async {
-        if (checkSchemeLoad(controller, request.url)) {
-          return ShouldOverrideUrlLoadingAction.CANCEL;
+        if (checkSchemeLoad(
+          controller,
+          navigationAction.request.url?.toString(),
+        )) {
+          return NavigationActionPolicy.CANCEL;
         } else {
-          return ShouldOverrideUrlLoadingAction.ALLOW;
+          return NavigationActionPolicy.ALLOW;
         }
       },
-      onUpdateVisitedHistory: (_, String url, bool androidIsReload) {
+      onUpdateVisitedHistory: (_, Uri url, bool androidIsReload) {
         LogUtils.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
         cancelProgress();
       },

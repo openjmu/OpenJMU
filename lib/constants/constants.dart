@@ -12,8 +12,7 @@ export 'dart:io' show Cookie;
 
 export 'package:dartx/dartx.dart';
 export 'package:dio/dio.dart' show CancelToken, DioError, FormData, Response;
-export 'package:ff_annotation_route/ff_annotation_route.dart'
-    show FFRoute, PageRouteType;
+export 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 export 'package:flutter_icons/flutter_icons.dart';
 export 'package:flutter_svg/flutter_svg.dart';
 export 'package:hive/hive.dart' show Box, HiveType, HiveField;
@@ -29,14 +28,13 @@ export 'package:wechat_assets_picker/wechat_assets_picker.dart'
 export 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 export 'package:openjmu/openjmu_routes.dart';
-export 'package:openjmu/openjmu_route_helper.dart'
-    hide RouteBuilder, WidgetBuilder;
 
 export '../api/api.dart';
 export '../extensions/extensions.e.dart';
 export '../model/models.dart';
 export '../providers/providers.dart';
 export '../utils/utils.dart';
+export 'enums.dart';
 export 'events.dart';
 export 'hive_boxes.dart';
 export 'instances.dart';

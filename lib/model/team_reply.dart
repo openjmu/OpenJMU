@@ -61,5 +61,3 @@ class TeamReplyItem {
     return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }
-
-enum TeamReplyType { post, thread }

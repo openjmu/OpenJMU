@@ -139,21 +139,20 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         if (list.isEmpty) {
           return const SizedBox.shrink();
         }
-        return Container(
+        return ConstrainedBox(
           constraints: BoxConstraints(maxHeight: Screens.height / 3),
-          decoration: BoxDecoration(
-            border: Border(
-              top: dividerBS(context),
-            ),
-          ),
           child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(10.w),
-              child: Wrap(
-                children: List<Widget>.generate(
-                  list.length,
-                  (int index) => userWidget(_, index),
-                ),
+            padding: EdgeInsets.all(10.w),
+            child: Wrap(
+              children: List<Widget>.generate(
+                list.length,
+                    (int index) {
+                  final User _user = users.value[index];
+                  return _UserWidget(
+                    key: ValueKey<String>('user-${_user.id}'),
+                    user: _user,
+                  );
+                },
               ),
             ),
           ),
@@ -244,9 +243,64 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                     ],
                   ),
                 ),
+                const LineDivider(),
                 usersList,
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UserWidget extends StatelessWidget {
+  const _UserWidget({
+    Key key,
+    @required this.user,
+  })  : assert(user != null),
+        super(key: key);
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox(
+      widthFactor: 0.5,
+      child: Tapper(
+        onTap: () {
+          Navigator.of(context).maybePop<User>(user);
+        },
+        child: Container(
+          height: 80.w,
+          margin: EdgeInsets.all(10.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13.w),
+            color: context.theme.colorScheme.surface,
+          ),
+          child: Row(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 1,
+                child: Center(
+                  child: UserAvatar(
+                    uid: user.id,
+                    size: 54.0,
+                    canJump: false,
+                    isSysAvatar: user.sysAvatar,
+                  ),
+                ),
+              ),
+              Gap(5.w),
+              Expanded(
+                child: Text(
+                  user.nickname,
+                  style: TextStyle(fontSize: 19.sp),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
         ),
       ),

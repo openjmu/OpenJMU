@@ -1,1 +1,1 @@
---route-helper --route-names --route-constants --supper-arguments --no-is-initial-route -s
+--supper-arguments --no-null-safety -s

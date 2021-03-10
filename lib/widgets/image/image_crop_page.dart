@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:extended_image/extended_image.dart' hide MultipartFile;
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -41,6 +41,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
   Future<void> _openImage() async {
     final List<AssetEntity> entity = await AssetPicker.pickAssets(
       context,
+      selectedAssets: <AssetEntity>[],
       maxAssets: 1,
       themeColor: currentThemeColor,
       requestType: RequestType.image,
@@ -180,10 +181,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
                     cropRectPadding: const EdgeInsets.all(30.0),
                     cropAspectRatio: 1.0,
                     hitTestSize: 30.0,
-                    cornerPainter:
-                        const ExtendedImageCropLayerPainterCircleCorner(
-                      color: Colors.grey,
-                    ),
+                    cornerColor: Colors.grey,
                     lineColor: Colors.grey,
                   );
                 },

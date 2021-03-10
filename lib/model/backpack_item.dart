@@ -87,9 +87,3 @@ class BackpackItemType {
     )}';
   }
 }
-
-enum BackpackItemSpecialType {
-  lotteryTicket,
-  flower,
-  common,
-}

@@ -464,7 +464,6 @@ class PostDetailPageState extends State<PostDetailPage>
     ).catchError((dynamic e) {
       isLiked ? widget.post.praises++ : widget.post.praises--;
       completer.complete(isLiked);
-      return completer.future;
     });
 
     return completer.future;

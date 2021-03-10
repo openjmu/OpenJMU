@@ -33,7 +33,6 @@ export '../widgets/keyboard_wrapper.dart';
 export '../widgets/no_scale_text_widget.dart';
 export '../widgets/refresh/pull_to_refresh_header.dart';
 export '../widgets/refresh/refresh_list_wrapper.dart';
-export '../widgets/rounded_check_box.dart';
 export '../widgets/rounded_tab_indicator.dart';
 export '../widgets/slide_menu_item.dart';
 export '../widgets/tapper.dart';
@@ -543,9 +542,11 @@ class NoSplash extends InteractiveInkFeature {
   })  : assert(controller != null),
         assert(referenceBox != null),
         super(
-            controller: controller,
-            referenceBox: referenceBox,
-            onRemoved: onRemoved) {
+          controller: controller,
+          referenceBox: referenceBox,
+          onRemoved: onRemoved,
+          color: Colors.transparent,
+        ) {
     controller.addInkFeature(this);
   }
 

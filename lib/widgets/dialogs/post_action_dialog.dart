@@ -12,8 +12,6 @@ import 'package:openjmu/constants/constants.dart';
 
 import 'mention_people_dialog.dart';
 
-enum PostActionType { forward, reply }
-
 class PostActionDialog extends StatefulWidget {
   const PostActionDialog({
     Key key,
@@ -78,6 +76,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
       maxAssets: 1,
       themeColor: currentThemeColor,
       requestType: RequestType.image,
+      selectedAssets: <AssetEntity>[],
     );
     if (entity?.isEmpty ?? true) {
       return;

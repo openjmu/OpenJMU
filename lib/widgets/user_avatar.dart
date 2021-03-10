@@ -9,7 +9,6 @@ import 'package:extended_image/extended_image.dart'
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
 
-import 'package:openjmu/openjmu_route_helper.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class UserAvatar extends StatefulWidget {

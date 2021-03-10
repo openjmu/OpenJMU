@@ -11,6 +11,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'constants/constants.dart' hide PageRouteType;
+import 'openjmu_route.dart';
 import 'pages/no_network_page.dart';
 import 'pages/no_route_page.dart';
 import 'pages/splash_page.dart';
@@ -84,8 +85,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       ..on<TicketGotEvent>().listen((TicketGotEvent event) {
         initPushService();
         MessageUtils.initMessageSocket();
-        if (!currentUser.isTeacher) {
-          if (!currentUser.isPostgraduate) {
+        if (currentUser.isTeacher != true) {
+          if (currentUser.isPostgraduate != true) {
             currentContext.read<CoursesProvider>().initCourses();
             currentContext.read<ScoresProvider>().initScore();
           }
@@ -105,8 +106,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           Routes.openjmuLogin.name,
           (_) => false,
         );
-        if (!currentUser.isTeacher) {
-          if (!currentUser.isPostgraduate) {
+        if (currentUser.isTeacher != true) {
+          if (currentUser.isPostgraduate != true) {
             currentContext.read<CoursesProvider>().unloadCourses();
             currentContext.read<ScoresProvider>().unloadScore();
           }
@@ -266,10 +267,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   navigatorObservers: <NavigatorObserver>[
                     Instances.routeObserver,
                   ],
-                  onGenerateRoute: (RouteSettings settings) =>
-                      onGenerateRouteHelper(
-                    settings,
-                    notFoundFallback: NoRoutePage(route: settings.name),
+                  onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
+                    settings: settings,
+                    getRouteSettings: getRouteSettings,
+                    notFoundWidget: NoRoutePage(route: settings.name),
                   ),
                   localizationsDelegates: Constants.localizationsDelegates,
                   supportedLocales: Constants.supportedLocales,

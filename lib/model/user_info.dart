@@ -18,13 +18,13 @@ class UserInfo {
     this.signature,
     this.ticket,
     this.blowfish,
-    this.isTeacher,
+    this.isTeacher = false,
     this.unitId,
     this.workId,
     this.classId,
     this.gender,
-    this.isFollowing,
-    this.sysAvatar,
+    this.isFollowing = false,
+    this.sysAvatar = false,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -129,7 +129,7 @@ class UserInfo {
 
   /// 是否为研究生
   bool get isPostgraduate {
-    if (workId.length != 12) {
+    if (workId?.length != 12) {
       return false;
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
@@ -142,7 +142,7 @@ class UserInfo {
 
   /// 是否为继续教育学生
   bool get isContinuingEducation {
-    if (workId.length != 12) {
+    if (workId?.length != 12) {
       return false;
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
@@ -155,7 +155,7 @@ class UserInfo {
 
   /// 是否为诚毅学院学生
   bool get isCY {
-    if (workId.length != 12) {
+    if (workId?.length != 12) {
       return false;
     } else {
       final int code = int.tryParse(workId.substring(4, 6));

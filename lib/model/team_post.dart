@@ -5,8 +5,6 @@
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 part of 'models.dart';
 
-enum TeamPostType { post, comment }
-
 /// 小组动态实体
 ///
 /// [tid] 动态id, [uid] 用户uid, [nickname] 用户名称,

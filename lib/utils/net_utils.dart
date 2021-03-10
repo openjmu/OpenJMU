@@ -298,7 +298,12 @@ class NetUtils {
         if (sid != null) Cookie('OAPSID', sid),
       ];
 
-  static void updateDomainsCookies(List<String> urls, [List<Cookie> cookies]) {
+  static Future<void> updateDomainsCookies(
+    List<String> urls, [
+    List<Cookie> cookies,
+  ]) async {
+    final List<Cookie> _cookies =
+        cookies ?? _buildPHPSESSIDCookies(currentUser.sid);
     for (final String url in urls) {
       final String httpUrl = url.replaceAll(
         RegExp(r'http(s)?://'),
@@ -308,13 +313,13 @@ class NetUtils {
         RegExp(r'http(s)?://'),
         'https://',
       );
-      cookieJar.saveFromResponse(
-        Uri.parse(httpUrl),
-        cookies ?? _buildPHPSESSIDCookies(currentUser.sid),
-      );
-      cookieJar.saveFromResponse(
-        Uri.parse(httpsUrl),
-        cookies ?? _buildPHPSESSIDCookies(currentUser.sid),
+      await Future.wait<void>(
+        <Future<void>>[
+          cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
+          cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
+        ],
       );
     }
   }

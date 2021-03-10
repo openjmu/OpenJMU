@@ -445,7 +445,6 @@ class TeamPostPreviewCard extends StatelessWidget {
         .catchError((dynamic e) {
       isLiked ? provider.praised() : provider.unPraised();
       completer.complete(isLiked);
-      return completer.future;
     });
 
     return completer.future;

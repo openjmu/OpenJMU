@@ -8,26 +8,6 @@ final math.Random _random = math.Random();
 
 int next(int min, int max) => min + _random.nextInt(max - min);
 
-enum CourseType {
-  /// [Course] for current day.
-  ///
-  /// This type of course will only display courses
-  /// belong to the current ***day***.
-  today,
-
-  /// [Course] for current week.
-  ///
-  /// This type of course will only display courses
-  /// belong to the current ***week***.
-  week,
-
-  /// [Course] for current term.
-  ///
-  /// This type of course will only display courses
-  /// belong to the current ***term***.
-  term
-}
-
 class CourseAPI {
   const CourseAPI._();
 
@@ -45,9 +25,9 @@ class CourseAPI {
         ? API.replaceWithWebVPN(API.courseScheduleCourses)
         : API.courseScheduleCourses;
     final List<Cookie> cookies = NetUtils.convertWebViewCookies(
-      await Instances.webViewCookieManager.getCookies(url: url),
+      await Instances.webViewCookieManager.getCookies(url: Uri.parse(url)),
     );
-    NetUtils.updateDomainsCookies(
+    await NetUtils.updateDomainsCookies(
       <String>[
         API.replaceWithWebVPN(API.courseScheduleCourses),
         API.courseScheduleCourses,
@@ -67,9 +47,9 @@ class CourseAPI {
         ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
         : API.courseScheduleClassRemark;
     final List<Cookie> cookies = NetUtils.convertWebViewCookies(
-      await Instances.webViewCookieManager.getCookies(url: url),
+      await Instances.webViewCookieManager.getCookies(url: Uri.parse(url)),
     );
-    NetUtils.updateDomainsCookies(
+    await NetUtils.updateDomainsCookies(
       <String>[
         API.replaceWithWebVPN(API.courseScheduleClassRemark),
         API.courseScheduleClassRemark,

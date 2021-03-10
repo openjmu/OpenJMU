@@ -18,7 +18,7 @@ class DataUtils {
   static const String spUserWorkId = 'userWorkId';
 
   static Future<bool> login(String username, String password) async {
-    final String blowfish = Uuid().v4();
+    final String blowfish = const Uuid().v4();
     final Map<String, dynamic> params = Constants.loginParams(
       username: username,
       password: password,
@@ -30,6 +30,7 @@ class DataUtils {
         sid: loginData['sid'] as String,
         ticket: loginData['ticket'] as String,
       );
+      await NetUtils.updateDomainsCookies(API.ndHosts);
       final Response<dynamic> userInfoResponse = await UserAPI.getUserInfo(
         uid: loginData['uid'].toString(),
       ) as Response<dynamic>;
@@ -212,7 +213,7 @@ class DataUtils {
       final DateTime _end = currentTime;
       LogUtils.d('Done request new ticket in: ${_end.difference(_start)}');
       updateSid(response); // Using 99.
-      NetUtils.updateDomainsCookies(API.ndHosts);
+      await NetUtils.updateDomainsCookies(API.ndHosts);
       await getUserInfo();
       return true;
     } catch (e) {
@@ -241,12 +242,11 @@ class DataUtils {
     } on DioError catch (dioError) {
       try {
         if (dioError.response.statusCode == HttpStatus.movedTemporarily) {
-          final List<Cookie> mainSiteCookies = NetUtils.cookieJar
+          final List<Cookie> mainSiteCookies = await NetUtils.cookieJar
               .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
-          final List<Cookie> vpnCookies = NetUtils.cookieJar.loadForRequest(
-            Uri.parse(
-              API.webVpnHost.replaceAll(RegExp(r'http(s)?://'), ''),
-            ),
+          final List<Cookie> vpnCookies =
+              await NetUtils.cookieJar.loadForRequest(
+            Uri.parse(API.webVpnHost.replaceAll(RegExp(r'http(s)?://'), '')),
           );
           final List<Cookie> cookies = <Cookie>[
             ...mainSiteCookies,
@@ -254,7 +254,7 @@ class DataUtils {
           ];
           for (final Cookie cookie in cookies) {
             Instances.webViewCookieManager.setCookie(
-              url: '${cookie.domain}${cookie.path}',
+              url: Uri.parse('${cookie.domain}${cookie.path}'),
               name: cookie.name,
               value: cookie.value,
               domain: cookie.domain,
