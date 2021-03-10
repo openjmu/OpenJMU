@@ -88,15 +88,18 @@ class _PostActionDialogState extends State<PostActionDialog> {
 
   Future<FormData> createForm(AssetEntity entity) async {
     final File file = await entity.originFile;
-    return FormData.from(<String, dynamic>{
-      'image': UploadFileInfo(file, path.basename(file.path)),
+    return FormData.fromMap(<String, dynamic>{
+      'image': MultipartFile.fromFileSync(
+        file.path,
+        filename: path.basename(file.path),
+      ),
       'image_type': 0,
     });
   }
 
   Future<Map<String, dynamic>> getImageRequest(FormData formData) async {
     final Response<Map<String, dynamic>> res =
-        await NetUtils.postWithCookieAndHeaderSet(
+        await NetUtils.post(
       API.postUploadImage,
       data: formData,
     );

@@ -264,7 +264,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   theme: theme,
                   home: SplashPage(initAction: initAction),
                   navigatorObservers: <NavigatorObserver>[
-                    FFNavigatorObserver(),
                     Instances.routeObserver,
                   ],
                   onGenerateRoute: (RouteSettings settings) =>

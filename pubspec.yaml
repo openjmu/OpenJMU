@@ -17,13 +17,10 @@ dependencies:
   animations: 1.1.2
   badges: ^1.1.6
   connectivity: ^2.0.2
-  cookie_jar: 1.0.1
+  cookie_jar: ^1.0.1
   device_info: ^1.0.0
-  dio:
-    git:
-      url: https://github.com/AlexVincent525/dio.git
-      ref: v2.1.16
-      path: package_src
+  dio: ^3.0.10
+  dio_cookie_manager: ^1.0.0
   equatable: ^1.2.6
   event_bus: 1.1.1
   extended_image: ^1.3.0

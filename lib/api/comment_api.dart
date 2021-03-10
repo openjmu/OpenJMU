@@ -26,9 +26,7 @@ class CommentAPI {
         }
         break;
     }
-    return NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
-      _commentUrl,
-    );
+    return NetUtils.get<Map<String, dynamic>>(_commentUrl);
   }
 
   static Future<Response<Map<String, dynamic>>> getCommentInPostList(
@@ -36,7 +34,7 @@ class CommentAPI {
     bool isMore,
     int lastValue,
   }) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         (isMore ?? false)
             ? '${API.postCommentsList}$id/id_max/$lastValue'
             : '${API.postCommentsList}$id',
@@ -60,13 +58,11 @@ class CommentAPI {
     } else {
       url = '${API.postRequestComment}$postId';
     }
-    return NetUtils.postWithCookieAndHeaderSet(url, data: data);
+    return NetUtils.post(url, data: data);
   }
 
-  static Future<void> deleteComment(int postId, int commentId) async =>
-      NetUtils.deleteWithCookieAndHeaderSet<void>(
-        '${API.postRequestComment}$postId/rid/$commentId',
-      );
+  static Future<void> deleteComment(int postId, int commentId) =>
+      NetUtils.delete<void>('${API.postRequestComment}$postId/rid/$commentId');
 
   static Comment createComment(Map<String, dynamic> itemData) {
     final String _avatar = '${API.userAvatar}'

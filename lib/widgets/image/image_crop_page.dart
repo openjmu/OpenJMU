@@ -125,10 +125,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
   Future<void> uploadImage(BuildContext context, File file) async {
     try {
       final FormData formData = await createForm(file);
-      await NetUtils.postWithCookieSet<void>(
-        API.userAvatarUpload,
-        data: formData,
-      );
+      await NetUtils.post<void>(API.userAvatarUpload, data: formData);
       _controller.changeState('success', title: '头像更新成功');
       _cropping = false;
       UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;
@@ -143,10 +140,14 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
   }
 
   Future<FormData> createForm(File file) async {
-    return FormData.from(<String, dynamic>{
+    final List<int> bytes = await file.readAsBytes();
+    return FormData.fromMap(<String, dynamic>{
       'offset': 0,
-      'md5': md5.convert(await file.readAsBytes()),
-      'photo': UploadFileInfo(file, path.basename(file.path)),
+      'md5': md5.convert(bytes),
+      'photo': MultipartFile.fromBytes(
+        bytes,
+        filename: path.basename(file.path),
+      ),
       'filesize': await file.length(),
       'wizard': 1
     });

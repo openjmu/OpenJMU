@@ -44,17 +44,20 @@ class CourseAPI {
     final String url = isOuterNetwork
         ? API.replaceWithWebVPN(API.courseScheduleCourses)
         : API.courseScheduleCourses;
-    if (isOuterNetwork) {
-      return NetUtils.getWithCookieSet(
-        url,
-        data: <String, dynamic>{'sid': currentUser.sid},
-        cookies: NetUtils.convertWebViewCookies(
-          await Instances.webViewCookieManager.getCookies(url: url),
-        ),
-      );
-    } else {
-      return NetUtils.get(url, data: <String, dynamic>{'sid': currentUser.sid});
-    }
+    final List<Cookie> cookies = NetUtils.convertWebViewCookies(
+      await Instances.webViewCookieManager.getCookies(url: url),
+    );
+    NetUtils.updateDomainsCookies(
+      <String>[
+        API.replaceWithWebVPN(API.courseScheduleCourses),
+        API.courseScheduleCourses,
+      ],
+      cookies,
+    );
+    return NetUtils.get(
+      url,
+      queryParameters: <String, dynamic>{'sid': currentUser.sid},
+    );
   }
 
   static Future<Response<String>> getRemark({
@@ -63,17 +66,20 @@ class CourseAPI {
     final String url = isOuterNetwork
         ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
         : API.courseScheduleClassRemark;
-    if (isOuterNetwork) {
-      return NetUtils.getWithCookieSet(
-        url,
-        data: <String, dynamic>{'sid': currentUser.sid},
-        cookies: NetUtils.convertWebViewCookies(
-          await Instances.webViewCookieManager.getCookies(url: url),
-        ),
-      );
-    } else {
-      return NetUtils.get(url, data: <String, dynamic>{'sid': currentUser.sid});
-    }
+    final List<Cookie> cookies = NetUtils.convertWebViewCookies(
+      await Instances.webViewCookieManager.getCookies(url: url),
+    );
+    NetUtils.updateDomainsCookies(
+      <String>[
+        API.replaceWithWebVPN(API.courseScheduleClassRemark),
+        API.courseScheduleClassRemark,
+      ],
+      cookies,
+    );
+    return NetUtils.get(
+      url,
+      queryParameters: <String, dynamic>{'sid': currentUser.sid},
+    );
   }
 
   static String getCourseTime(int courseIndex) {

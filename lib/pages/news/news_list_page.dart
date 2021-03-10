@@ -54,7 +54,7 @@ class NewsListPageState extends State<NewsListPage>
         maxTimeStamp: isLoadMore ? lastTimeStamp : null,
       );
       final Map<String, dynamic> data =
-          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+          (await NetUtils.get<Map<String, dynamic>>(
         _url,
         headers: Constants.teamHeader,
       ))

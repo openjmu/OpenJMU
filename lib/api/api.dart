@@ -52,10 +52,8 @@ class API {
   /// 域名
   static const String openjmuHost = 'openjmu.jmu.edu.cn';
   static const String wbHost = 'https://wb.jmu.edu.cn';
-  static const String wbHostWithoutHttps = 'https://wb.jmu.edu.cn';
   static const String wpHost = 'https://wp.jmu.edu.cn';
   static const String forum99Host = 'https://forum99.jmu.edu.cn';
-  static const String forum99HostWithoutHttps = 'http://forum99.jmu.edu.cn';
   static const String file99Host = 'https://file99.jmu.edu.cn';
   static const String oa99Host = 'https://oa99.jmu.edu.cn';
   static const String oap99Host = 'https://oap99.jmu.edu.cn';
@@ -63,8 +61,24 @@ class API {
   static const String upApiHost = 'https://upapi.jmu.edu.cn';
   static const String jwglHost = 'http://jwgls.jmu.edu.cn';
   static const String labsHost = 'http://labs.jmu.edu.cn';
-  static const String webVpnHost = 'webvpn.jmu.edu.cn';
+  static const String webVpnHost = 'https://webvpn.jmu.edu.cn';
   static const String pushHost = 'http://push.openjmu.xyz:8787';
+
+  static List<String> get ndHosts {
+    return <String>[
+      wbHost,
+      wpHost,
+      forum99Host,
+      file99Host,
+      oa99Host,
+      oap99Host,
+      middle99Host,
+      upApiHost,
+      jwglHost,
+      labsHost,
+      webVpnHost,
+    ];
+  }
 
   static const String pushUpload = '$pushHost/push'; // 上传推送信息
 
@@ -307,7 +321,8 @@ class API {
     LogUtils.d('Replacing url: $url');
     final Uri previousUri = Uri.parse(url);
     final String concatHost = previousUri.host.replaceAll('.', '-');
-    final String joinedHost = 'https://$concatHost.${API.webVpnHost}';
+    final String joinedHost = 'https://$concatHost.'
+        '${API.webVpnHost.replaceAll('https://', '')}';
     final String replacedUrl = url.replaceAll(API.labsHost, joinedHost);
     LogUtils.d('Replaced with: $replacedUrl');
     return replacedUrl;

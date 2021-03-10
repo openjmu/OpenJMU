@@ -60,7 +60,7 @@ class PostAPI {
         }
         break;
     }
-    return NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(_postUrl);
+    return NetUtils.get<Map<String, dynamic>>(_postUrl);
   }
 
   static Future<Response<Map<String, dynamic>>> getForwardListInPost(
@@ -68,14 +68,14 @@ class PostAPI {
     bool isMore,
     int lastValue,
   }) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         (isMore ?? false)
             ? '${API.postForwardsList}$postId/id_max/$lastValue'
             : '${API.postForwardsList}$postId',
       );
 
   static Future<Response<dynamic>> glancePost(int postId) {
-    return NetUtils.postWithCookieAndHeaderSet<dynamic>(
+    return NetUtils.post<dynamic>(
       API.postGlance,
       data: <String, dynamic>{
         'tids': <int>[postId]
@@ -89,7 +89,7 @@ class PostAPI {
   static Future<Response<Map<String, dynamic>>> deletePost(
     int postId,
   ) =>
-      NetUtils.deleteWithCookieAndHeaderSet(
+      NetUtils.delete(
         '${API.postContent}/tid/$postId',
       );
 
@@ -103,7 +103,7 @@ class PostAPI {
       'root_tid': postId,
       'reply_flag': replyAtTheMeanTime ? 3 : 0,
     };
-    return NetUtils.postWithCookieAndHeaderSet(
+    return NetUtils.post(
       API.postRequestForward,
       data: data,
     );
@@ -186,8 +186,8 @@ class PostAPI {
   /// Create post publish request.
   /// 创建发布动态的请求
   static Future<Response<Map<String, dynamic>>> publishPost(
-      Map<String, dynamic> content) async {
-    return await NetUtils.postWithCookieAndHeaderSet(
+      Map<String, dynamic> content,) async {
+    return await NetUtils.post(
       API.postContent,
       data: content,
     );
@@ -197,10 +197,10 @@ class PostAPI {
   /// 创建用于发布动态上传的图片的 [FormData]
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
     final Uint8List data = await asset.originBytes;
-    return FormData.from(<String, dynamic>{
-      'image': UploadFileInfo.fromBytes(
+    return FormData.fromMap(<String, dynamic>{
+      'image': MultipartFile.fromBytes(
         data,
-        asset.title ?? '$currentTimeStamp.jpg',
+        filename: asset.title ?? '$currentTimeStamp.jpg',
       ),
       'image_type': 0,
     });
@@ -212,7 +212,7 @@ class PostAPI {
     FormData formData,
     CancelToken cancelToken,
   ) {
-    return NetUtils.postWithCookieAndHeaderSet<dynamic>(
+    return NetUtils.post<dynamic>(
       API.postUploadImage,
       data: formData,
       cancelToken: cancelToken,

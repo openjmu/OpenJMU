@@ -5,8 +5,8 @@ class NewsAPI {
 
   static Future<Response<Map<String, dynamic>>> getNewsContent({
     int newsId,
-  }) async {
-    return NetUtils.getWithHeaderSet(
+  }) {
+    return NetUtils.get(
       '${API.newsDetail}$newsId',
       headers: Constants.teamHeader,
     );

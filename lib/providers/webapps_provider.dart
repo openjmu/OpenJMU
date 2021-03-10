@@ -56,7 +56,7 @@ class WebAppsProvider extends ChangeNotifier {
 
   /// 获取当前用户的App列表
   Future<Response<List<dynamic>>> getAppList() async =>
-      NetUtils.getWithCookieSet<List<dynamic>>(API.webAppLists);
+      NetUtils.get<List<dynamic>>(API.webAppLists);
 
   /// 初始化App列表
   void initApps() {

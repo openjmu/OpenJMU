@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
     show Cookie;
 import 'package:open_file/open_file.dart';
@@ -169,132 +171,70 @@ class NetUtils {
     return filename;
   }
 
-  static Future<Response<T>> get<T>(
-    String url, {
-    Map<String, dynamic> data,
-  }) async =>
-      await dio.get<T>(url, queryParameters: data);
-
   /// Get response through bytes.
   ///
   /// For now it provides response for image saving.
   static Future<Response<T>> getBytes<T>(
     String url, {
-    Map<String, dynamic> data,
-  }) async =>
-      await dio.get<T>(
-        url,
-        queryParameters: data,
-        options: Options(responseType: ResponseType.bytes),
-      );
-
-  static Future<Response<T>> getWithHeaderSet<T>(
-    String url, {
-    Map<String, dynamic> data,
+    Map<String, dynamic> queryParameters,
     Map<String, dynamic> headers,
-  }) async =>
-      await dio.get<T>(
+  }) =>
+      dio.get<T>(
         url,
-        queryParameters: data,
+        queryParameters: queryParameters,
         options: Options(
-          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid),
+          responseType: ResponseType.bytes,
         ),
       );
 
-  static Future<Response<T>> getWithCookieSet<T>(
+  static Future<Response<T>> get<T>(
     String url, {
-    Map<String, dynamic> data,
-    List<Cookie> cookies,
-  }) async =>
-      await dio.get<T>(
-        url,
-        queryParameters: data,
-        options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
-        ),
-      );
-
-  static Future<Response<T>> getWithCookieAndHeaderSet<T>(
-    String url, {
-    Map<String, dynamic> data,
-    List<Cookie> cookies,
+    Map<String, dynamic> queryParameters,
     Map<String, dynamic> headers,
-  }) async =>
-      await dio.get<T>(
+    CancelToken cancelToken,
+  }) =>
+      dio.get<T>(
         url,
-        queryParameters: data,
+        queryParameters: queryParameters,
         options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
-          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid),
         ),
+        cancelToken: cancelToken,
       );
 
   static Future<Response<T>> post<T>(
     String url, {
-    Map<String, dynamic> data,
-  }) async =>
-      await dio.post<T>(
-        url,
-        data: data,
-      );
-
-  static Future<Response<T>> postWithHeaderSet<T>(
-    String url, {
+    dynamic data,
     Map<String, dynamic> queryParameters,
-    Map<String, dynamic> data,
     Map<String, dynamic> headers,
+    CancelToken cancelToken,
   }) async =>
       await dio.post<T>(
         url,
         queryParameters: queryParameters,
         data: data,
         options: Options(
-          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
-        ),
-      );
-
-  static Future<Response<T>> postWithCookieSet<T>(
-    String url, {
-    Map<String, dynamic> data,
-    List<Cookie> cookies,
-  }) async =>
-      await dio.post<T>(
-        url,
-        data: data,
-        options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
-        ),
-      );
-
-  static Future<Response<T>> postWithCookieAndHeaderSet<T>(
-    String url, {
-    Map<String, dynamic> data,
-    List<Cookie> cookies,
-    Map<String, dynamic> headers,
-    CancelToken cancelToken,
-  }) async =>
-      await dio.post<T>(
-        url,
-        data: data,
-        options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
-          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid),
         ),
         cancelToken: cancelToken,
       );
 
-  static Future<Response<T>> deleteWithCookieAndHeaderSet<T>(
+  static Future<Response<T>> delete<T>(
     String url, {
+    Map<String, dynamic> queryParameters,
     Map<String, dynamic> data,
     Map<String, dynamic> headers,
-  }) async =>
-      await dio.delete<T>(
+    CancelToken cancelToken,
+  }) =>
+      dio.delete<T>(
         url,
         data: data,
+        queryParameters: queryParameters,
         options: Options(
-          cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid),
-          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid),
         ),
+        cancelToken: cancelToken,
       );
 
   /// For download progress, here we don't simply use the [dio.download],
@@ -319,7 +259,7 @@ class NetUtils {
           path,
           data: data,
           options: Options(
-            headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+            headers: headers ?? _buildPostHeaders(currentUser.sid),
           ),
         );
         LogUtils.d('File downloaded: $path');
@@ -335,6 +275,47 @@ class NetUtils {
       LogUtils.e('No permission to download file: $url');
       showToast('未获得存储权限');
       return null;
+    }
+  }
+
+  static Map<String, dynamic> _buildPostHeaders(String sid) {
+    final Map<String, String> headers = <String, String>{
+      'CLOUDID': 'jmu',
+      'CLOUD-ID': 'jmu',
+      'UAP-SID': sid,
+      'WEIBO-API-KEY': Platform.isIOS
+          ? Constants.postApiKeyIOS
+          : Constants.postApiKeyAndroid,
+      'WEIBO-API-SECRET': Platform.isIOS
+          ? Constants.postApiSecretIOS
+          : Constants.postApiSecretAndroid,
+    };
+    return headers;
+  }
+
+  static List<Cookie> _buildPHPSESSIDCookies(String sid) => <Cookie>[
+        if (sid != null) Cookie('PHPSESSID', sid),
+        if (sid != null) Cookie('OAPSID', sid),
+      ];
+
+  static void updateDomainsCookies(List<String> urls, [List<Cookie> cookies]) {
+    for (final String url in urls) {
+      final String httpUrl = url.replaceAll(
+        RegExp(r'http(s)?://'),
+        'http://',
+      );
+      final String httpsUrl = url.replaceAll(
+        RegExp(r'http(s)?://'),
+        'https://',
+      );
+      cookieJar.saveFromResponse(
+        Uri.parse(httpUrl),
+        cookies ?? _buildPHPSESSIDCookies(currentUser.sid),
+      );
+      cookieJar.saveFromResponse(
+        Uri.parse(httpsUrl),
+        cookies ?? _buildPHPSESSIDCookies(currentUser.sid),
+      );
     }
   }
 }

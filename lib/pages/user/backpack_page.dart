@@ -39,12 +39,11 @@ class _BackpackPageState extends State<BackpackPage> {
 
   /// 获取我的背包
   Future<void> getMyItems() async {
-    final List<dynamic> items =
-        (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+    final List<dynamic> items = (await NetUtils.get<Map<String, dynamic>>(
       API.backPackMyItemList(),
       headers: _header,
     ))
-            .data['data'] as List<dynamic>;
+        .data['data'] as List<dynamic>;
     for (int i = 0; i < items.length; i++) {
       final Map<String, dynamic> _item = items[i] as Map<String, dynamic>;
       _item['name'] = UserAPI.backpackItemTypes['${_item['itemtype']}'].name;
@@ -57,7 +56,7 @@ class _BackpackPageState extends State<BackpackPage> {
   /// 获取我的礼品盒
   Future<void> getMyGiftBox() async {
     final Map<String, dynamic> items =
-        (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+        (await NetUtils.get<Map<String, dynamic>>(
       API.backPackReceiveList(),
       headers: _header,
     ))
@@ -69,16 +68,13 @@ class _BackpackPageState extends State<BackpackPage> {
   Future<void> useItem(BackpackItem item) async {
     try {
       final Map<String, dynamic> result =
-          (await NetUtils.postWithHeaderSet<Map<String, dynamic>>(
+          (await NetUtils.post<Map<String, dynamic>>(
         API.useBackpackItem,
         queryParameters: <String, dynamic>{
           'cuid': currentUser.uid,
           'sid': currentUser.sid,
         },
-        data: <String, dynamic>{
-          'itemid': item.id,
-          'amount': item.count,
-        },
+        data: <String, dynamic>{'itemid': item.id, 'amount': item.count},
         headers: _header,
       ))
               .data;

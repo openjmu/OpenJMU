@@ -14,7 +14,7 @@ class LoggingInterceptor extends Interceptor {
   static const String HTTP_TAG = 'HTTP - LOG';
 
   @override
-  FutureOr<dynamic> onRequest(RequestOptions options) {
+  Future<dynamic> onRequest(RequestOptions options) {
     startTime = DateTime.now();
     LogUtils.d(' ', tag: HTTP_TAG);
     LogUtils.d(
@@ -58,7 +58,7 @@ class LoggingInterceptor extends Interceptor {
   }
 
   @override
-  FutureOr<dynamic> onResponse(Response<dynamic> response) {
+  Future<dynamic> onResponse(Response<dynamic> response) {
     endTime = DateTime.now();
     final int duration = endTime.difference(startTime).inMilliseconds;
     LogUtils.d(
@@ -79,7 +79,7 @@ class LoggingInterceptor extends Interceptor {
   }
 
   @override
-  FutureOr<dynamic> onError(DioError err) {
+  Future<dynamic> onError(DioError err) {
     LogUtils.e(
       '------------------- Error -------------------',
       tag: HTTP_TAG,

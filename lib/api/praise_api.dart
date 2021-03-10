@@ -7,7 +7,7 @@ class PraiseAPI {
     bool isMore,
     int lastValue,
   ) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         (isMore ?? false)
             ? '${API.praiseList}/id_max/$lastValue'
             : API.praiseList,
@@ -18,7 +18,7 @@ class PraiseAPI {
     bool isMore,
     int lastValue,
   }) =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         (isMore ?? false)
             ? '${API.postPraisesList}$postId/id_max/$lastValue'
             : '${API.postPraisesList}$postId',
@@ -27,13 +27,13 @@ class PraiseAPI {
   static Future<Response<Map<String, dynamic>>> requestPraise(
       int id, bool isPraise) async {
     if (isPraise) {
-      return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
+      return NetUtils.post<Map<String, dynamic>>(
         '${API.postRequestPraise}$id',
       ).catchError((dynamic e) {
         LogUtils.e('${e.response}');
       });
     } else {
-      return NetUtils.deleteWithCookieAndHeaderSet<Map<String, dynamic>>(
+      return NetUtils.delete<Map<String, dynamic>>(
         '${API.postRequestPraise}$id',
       ).catchError((dynamic e) {
         LogUtils.e('${e.response}');

@@ -82,9 +82,9 @@ class UserAPI {
     if (uid == null) {
       return currentUser;
     } else {
-      return NetUtils.getWithCookieAndHeaderSet<dynamic>(
+      return NetUtils.get<dynamic>(
         API.userInfo,
-        data: <String, dynamic>{'uid': uid},
+        queryParameters: <String, dynamic>{'uid': uid},
       );
     }
   }
@@ -92,34 +92,34 @@ class UserAPI {
   static Future<Response<Map<String, dynamic>>> getStudentInfo({
     String uid,
   }) async {
-    return NetUtils.getWithCookieSet<Map<String, dynamic>>(
+    return NetUtils.get<Map<String, dynamic>>(
         API.studentInfo(uid: uid ?? currentUser.uid));
   }
 
   static Future<Response<Map<String, dynamic>>> getLevel(String uid) {
-    return NetUtils.getWithCookieSet(API.userLevel(uid: uid));
+    return NetUtils.get(API.userLevel(uid: uid));
   }
 
   static Future<Response<Map<String, dynamic>>> getTags(String uid) {
-    return NetUtils.getWithCookieAndHeaderSet(
+    return NetUtils.get(
       API.userTags,
-      data: <String, dynamic>{'uid': uid},
+      queryParameters: <String, dynamic>{'uid': uid},
     );
   }
 
   static Future<Response<Map<String, dynamic>>> getFans(String uid) {
-    return NetUtils.getWithCookieAndHeaderSet('${API.userFans}$uid');
+    return NetUtils.get('${API.userFans}$uid');
   }
 
   static Future<Response<Map<String, dynamic>>> getIdols(String uid) {
-    return NetUtils.getWithCookieAndHeaderSet('${API.userIdols}$uid');
+    return NetUtils.get('${API.userIdols}$uid');
   }
 
   static Future<Response<Map<String, dynamic>>> getFansList(
     String uid,
     int page,
   ) {
-    return NetUtils.getWithCookieAndHeaderSet(
+    return NetUtils.get(
       '${API.userFans}$uid/page/$page/page_size/20',
     );
   }
@@ -128,7 +128,7 @@ class UserAPI {
     String uid,
     int page,
   ) {
-    return NetUtils.getWithCookieAndHeaderSet(
+    return NetUtils.get(
       '${API.userIdols}$uid/page/$page/page_size/20',
     );
   }
@@ -136,17 +136,16 @@ class UserAPI {
   static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(
     String uid,
   ) {
-    return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
+    return NetUtils.get('${API.userFansAndIdols}$uid');
   }
 
   static Future<Response<Map<String, dynamic>>> getNotifications() async =>
-      NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(API.postUnread);
+      NetUtils.get<Map<String, dynamic>>(API.postUnread);
 
   static Future<bool> follow(String uid) async {
     try {
-      await NetUtils.postWithCookieAndHeaderSet<dynamic>(
-          '${API.userRequestFollow}$uid');
-      await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+      await NetUtils.post<dynamic>('${API.userRequestFollow}$uid');
+      await NetUtils.post<dynamic>(
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid, 'tagid': 0},
       );
@@ -162,10 +161,10 @@ class UserAPI {
 
   static Future<bool> unFollow(String uid, {bool fromBlacklist = false}) async {
     try {
-      await NetUtils.deleteWithCookieAndHeaderSet<dynamic>(
+      await NetUtils.delete<dynamic>(
         '${API.userRequestFollow}$uid',
       );
-      await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+      await NetUtils.post<dynamic>(
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid},
       );
@@ -186,19 +185,18 @@ class UserAPI {
   static Future<Response<Map<String, dynamic>>> setSignature(
     String content,
   ) async {
-    return NetUtils.postWithCookieAndHeaderSet(
+    return NetUtils.post(
       API.userSignature,
       data: <String, dynamic>{'signature': content},
     );
   }
 
   static Future<Map<String, dynamic>> searchUser(String name) async {
-    Map<String, dynamic> users =
-        (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
+    Map<String, dynamic> users = (await NetUtils.get<Map<String, dynamic>>(
       API.searchUser,
-      data: <String, dynamic>{'keyword': name},
+      queryParameters: <String, dynamic>{'keyword': name},
     ))
-            .data;
+        .data;
     if (users['total'] == null) {
       users = <String, dynamic>{
         'total': 1,
@@ -212,7 +210,7 @@ class UserAPI {
   static Future<void> getBackpackItemType() async {
     try {
       final Map<String, dynamic> types =
-          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+          (await NetUtils.get<Map<String, dynamic>>(
         API.backPackItemType,
         headers: <String, dynamic>{'CLOUDID': 'jmu'},
       ))
@@ -235,7 +233,7 @@ class UserAPI {
     int pos,
     int size,
   }) {
-    return NetUtils.getWithCookieSet<Map<String, dynamic>>(
+    return NetUtils.get<Map<String, dynamic>>(
       API.blacklist(pos: pos, size: size),
     );
   }
@@ -268,7 +266,7 @@ class UserAPI {
     if (blacklist.contains(user)) {
       showToast('仇恨值拉满啦！不要重复屏蔽噢~');
     } else {
-      NetUtils.postWithCookieSet<Map<String, dynamic>>(
+      NetUtils.post<Map<String, dynamic>>(
         API.addToBlacklist,
         data: <String, dynamic>{'fid': user.uid},
       ).then((Response<Map<String, dynamic>> _) {
@@ -287,7 +285,7 @@ class UserAPI {
     blacklist.remove(user);
     showToast('移出黑名单成功');
     Instances.eventBus.fire(BlacklistUpdateEvent());
-    NetUtils.postWithCookieSet<dynamic>(
+    NetUtils.post<dynamic>(
       API.removeFromBlacklist,
       data: <String, dynamic>{'fid': user.uid},
     ).catchError((dynamic e) {

@@ -72,7 +72,7 @@ class DataUtils {
   static void logout() {
     UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
-    NetUtils.postWithCookieSet<void>(API.logout).whenComplete(() {
+    NetUtils.post<void>(API.logout).whenComplete(() {
       NetUtils.dio.clear();
       NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();
@@ -124,21 +124,20 @@ class DataUtils {
     }
   }
 
-  static Future<void> getUserInfo([int uid]) async {
+  static Future<void> getUserInfo() async {
     try {
       final DateTime _start = currentTime;
       final Map<String, dynamic> data =
           (await NetUtils.tokenDio.get<Map<String, dynamic>>(
         API.userInfo,
-        queryParameters: <String, dynamic>{'uid': uid ?? currentUser.uid},
-        options: Options(cookies: buildPHPSESSIDCookies(currentUser.sid)),
+        queryParameters: <String, dynamic>{'uid': currentUser.uid},
       ))
               .data;
       final DateTime _end = currentTime;
       LogUtils.d('Done request user info in: ${_end.difference(_start)}');
       getUserInfoFromResponse(data);
     } catch (e) {
-      LogUtils.e('Get user info error: ${e.request.cookies}');
+      LogUtils.e('Get user info error: $e');
     }
   }
 
@@ -213,6 +212,7 @@ class DataUtils {
       final DateTime _end = currentTime;
       LogUtils.d('Done request new ticket in: ${_end.difference(_start)}');
       updateSid(response); // Using 99.
+      NetUtils.updateDomainsCookies(API.ndHosts);
       await getUserInfo();
       return true;
     } catch (e) {
@@ -243,8 +243,11 @@ class DataUtils {
         if (dioError.response.statusCode == HttpStatus.movedTemporarily) {
           final List<Cookie> mainSiteCookies = NetUtils.cookieJar
               .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
-          final List<Cookie> vpnCookies =
-              NetUtils.cookieJar.loadForRequest(Uri.parse(API.webVpnHost));
+          final List<Cookie> vpnCookies = NetUtils.cookieJar.loadForRequest(
+            Uri.parse(
+              API.webVpnHost.replaceAll(RegExp(r'http(s)?://'), ''),
+            ),
+          );
           final List<Cookie> cookies = <Cookie>[
             ...mainSiteCookies,
             ...vpnCookies,
@@ -282,24 +285,4 @@ class DataUtils {
 
   /// 是否登录
   static bool isLogin() => _settingsBox.get(spIsLogin) as bool ?? false;
-
-  static Map<String, dynamic> buildPostHeaders(String sid) {
-    final Map<String, String> headers = <String, String>{
-      'CLOUDID': 'jmu',
-      'CLOUD-ID': 'jmu',
-      'UAP-SID': sid,
-      'WEIBO-API-KEY': Platform.isIOS
-          ? Constants.postApiKeyIOS
-          : Constants.postApiKeyAndroid,
-      'WEIBO-API-SECRET': Platform.isIOS
-          ? Constants.postApiSecretIOS
-          : Constants.postApiSecretAndroid,
-    };
-    return headers;
-  }
-
-  static List<Cookie> buildPHPSESSIDCookies(String sid) => <Cookie>[
-        if (sid != null) Cookie('PHPSESSID', sid),
-        if (sid != null) Cookie('OAPSID', sid),
-      ];
 }

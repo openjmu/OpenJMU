@@ -24,7 +24,7 @@ class TeamPostAPI {
     } else {
       _postUrl = API.teamPosts(teamId: Constants.marketTeamId);
     }
-    return NetUtils.getWithCookieAndHeaderSet(
+    return NetUtils.get(
       _postUrl,
       headers: Constants.teamHeader,
     );
@@ -32,7 +32,7 @@ class TeamPostAPI {
 
   static Future<Response<Map<String, dynamic>>> getPostDetail(
           {int id, int postType = 2}) async =>
-      NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
+      NetUtils.get<Map<String, dynamic>>(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.teamHeader,
       );
@@ -62,7 +62,7 @@ class TeamPostAPI {
     int regionId = 430,
     int regionType = 8,
   }) async {
-    return NetUtils.postWithCookieAndHeaderSet(
+    return NetUtils.post(
       API.teamPostPublish,
       data: <String, dynamic>{
         if (postType != 8) 'article': content,
@@ -100,7 +100,7 @@ class TeamPostAPI {
     @required int postId,
     @required int postType,
   }) async =>
-      NetUtils.deleteWithCookieAndHeaderSet<void>(
+      NetUtils.delete<void>(
         API.teamPostDelete(postId: postId, postType: postType),
         headers: Constants.teamHeader,
       );
@@ -188,7 +188,7 @@ class TeamPostAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> getNotifications() async =>
-      NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
+      NetUtils.get<Map<String, dynamic>>(
         API.teamNotification,
         headers: Constants.teamHeader,
       );
@@ -197,7 +197,7 @@ class TeamPostAPI {
     int page = 1,
     int size = 20,
   }) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         API.teamMentionedList(page: page, size: size),
         headers: Constants.teamHeader,
       );
@@ -207,8 +207,8 @@ class TeamPostAPI {
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
     final Uint8List imageData = await asset.originBytes;
     final String name = asset.title ?? '$currentTimeStamp.jpg';
-    final FormData formData = FormData.from(<String, dynamic>{
-      'file': UploadFileInfo.fromBytes(imageData, name),
+    final FormData formData = FormData.fromMap(<String, dynamic>{
+      'file': MultipartFile.fromBytes(imageData, filename: name),
       'type': 3,
       'sid': UserAPI.currentUser.sid,
       'id': 77,
@@ -225,7 +225,7 @@ class TeamPostAPI {
     FormData formData,
     CancelToken cancelToken,
   }) {
-    return NetUtils.postWithCookieAndHeaderSet(
+    return NetUtils.post(
       API.uploadFile,
       data: formData,
       cancelToken: cancelToken,
@@ -240,7 +240,7 @@ class TeamCommentAPI {
     int page = 1,
     bool isComment = false,
   }) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         API.teamPostCommentsList(
           postId: id,
           page: page,
@@ -258,7 +258,7 @@ class TeamCommentAPI {
     @required int postId,
     int regionType = 128,
   }) async =>
-      NetUtils.postWithCookieAndHeaderSet(
+      NetUtils.post(
         API.teamPostPublish,
         data: <String, dynamic>{
           'article': content,
@@ -277,7 +277,7 @@ class TeamCommentAPI {
     int page = 1,
     int size = 20,
   }) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         API.teamRepliedList(page: page, size: size),
         headers: Constants.teamHeader,
       );
@@ -289,7 +289,7 @@ class TeamPraiseAPI {
     bool isPraise,
   ) async {
     if (isPraise) {
-      return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
+      return NetUtils.post<Map<String, dynamic>>(
         API.teamPostRequestPraise,
         data: <String, dynamic>{
           'atype': 'p',
@@ -300,7 +300,7 @@ class TeamPraiseAPI {
         LogUtils.e('${e?.response['msg']}');
       });
     } else {
-      return NetUtils.deleteWithCookieAndHeaderSet<Map<String, dynamic>>(
+      return NetUtils.delete<Map<String, dynamic>>(
         '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
       ).catchError((dynamic e) {
         LogUtils.e('${e?.response['msg']}');
@@ -312,7 +312,7 @@ class TeamPraiseAPI {
     int page = 1,
     int size = 20,
   }) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+      NetUtils.get(
         API.teamPraisedList(page: page, size: size),
         headers: Constants.teamHeader,
       );

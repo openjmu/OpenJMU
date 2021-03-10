@@ -121,7 +121,7 @@ class SettingsProvider extends ChangeNotifier {
 //  Future<void> getCloudSettings() async {
 //    try {
 //      final Map<String, dynamic> res =
-//          (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
+//          (await NetUtils.get<Map<String, dynamic>>(
 //        API.cloudSettings,
 //        cookies: <Cookie>[Cookie('sid', currentUser.sid)],
 //      ))
