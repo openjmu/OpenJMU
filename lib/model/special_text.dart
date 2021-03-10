@@ -354,36 +354,56 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     if (data.isNotEmpty) {
       SpecialText specialText;
       String textStack = '';
+
+      void _createSpecialText(int index, {bool create = true}) {
+        if (create) {
+          specialText = createSpecialText(
+            textStack,
+            textStyle: textStyle,
+            onTap: onTap,
+            index: index,
+          );
+        }
+        if (specialText != null) {
+          if (textStack.length - specialText.startFlag.length >= 0) {
+            textStack = textStack.substring(
+              0,
+              textStack.length - specialText.startFlag.length,
+            );
+            if (textStack.isNotEmpty) {
+              inlineList.add(TextSpan(text: textStack, style: textStyle));
+            }
+          }
+          textStack = '';
+        }
+      }
+
       for (int i = 0; i < data.length; i++) {
         final String char = data[i];
         textStack += char;
         if (specialText != null) {
-          if (!specialText.isEnd(textStack)) {
-            specialText.appendContent(char);
-          } else {
-            inlineList.add(specialText.finishText());
-            specialText = null;
-            textStack = '';
-          }
-        } else {
-          specialText = createSpecialText(
+          final SpecialText _tempText = createSpecialText(
             textStack,
             textStyle: textStyle,
             onTap: onTap,
             index: i,
           );
-          if (specialText != null) {
-            if (textStack.length - specialText.startFlag.length >= 0) {
-              textStack = textStack.substring(
-                0,
-                textStack.length - specialText.startFlag.length,
-              );
-              if (textStack.isNotEmpty) {
-                inlineList.add(TextSpan(text: textStack, style: textStyle));
-              }
+          if (_tempText != null &&
+              _tempText.runtimeType != specialText.runtimeType) {
+            textStack = '${specialText.startFlag}$textStack';
+            specialText = _tempText;
+            _createSpecialText(i, create: false);
+          } else {
+            if (!specialText.isEnd(textStack)) {
+              specialText.appendContent(char);
+            } else {
+              inlineList.add(specialText.finishText());
+              specialText = null;
+              textStack = '';
             }
-            textStack = '';
           }
+        } else {
+          _createSpecialText(i);
         }
       }
       if (specialText != null) {
@@ -436,7 +456,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   }
 }
 
-class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
+class StackSpecialTextFieldSpanBuilder extends StackSpecialTextSpanBuilder {
   @override
   SpecialText createSpecialText(
     String flag, {
