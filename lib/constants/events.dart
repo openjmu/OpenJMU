@@ -128,6 +128,10 @@ class PraiseInPostUpdatedEvent {
   final bool isLike;
 }
 
+class FontScaleUpdateEvent {
+  const FontScaleUpdateEvent();
+}
+
 class HasUpdateEvent {
   const HasUpdateEvent({
     this.forceUpdate,

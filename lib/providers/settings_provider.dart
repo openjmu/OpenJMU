@@ -68,8 +68,8 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   List<double> fontScaleRange = DeviceUtils.deviceModel.contains('iPad')
-      ? <double>[0.2, 0.8]
-      : <double>[0.7, 1.3];
+      ? <double>[0.3, 0.7]
+      : <double>[0.8, 1.2];
   double _fontScale = DeviceUtils.deviceModel.contains('iPad') ? 0.5 : 1.0;
 
   double get fontScale => _fontScale;

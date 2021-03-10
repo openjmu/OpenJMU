@@ -95,6 +95,7 @@ class HiveFieldUtils {
   /// 设置字体缩放
   static Future<void> setFontScale(double scale) {
     provider.fontScale = scale;
+    Instances.eventBus.fire(const FontScaleUpdateEvent());
     return _box?.put(settingFontScale, scale);
   }
 

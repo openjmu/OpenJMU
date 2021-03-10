@@ -10,10 +10,10 @@ class FontScalePage extends StatefulWidget {
 
 class _FontScalePageState extends State<FontScalePage> with RouteAware {
   final double baseFontSize = 24.0;
-  SettingsProvider settingsProvider;
+  final ValueNotifier<double> scale = ValueNotifier<double>(null);
 
+  SettingsProvider settingsProvider;
   List<double> scaleRange;
-  double scale;
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class _FontScalePageState extends State<FontScalePage> with RouteAware {
       listen: false,
     );
     scaleRange = settingsProvider.fontScaleRange;
-    scale = settingsProvider.fontScale;
+    scale.value = settingsProvider.fontScale;
   }
 
   @override
@@ -40,7 +40,7 @@ class _FontScalePageState extends State<FontScalePage> with RouteAware {
 
   @override
   void didPop() {
-    HiveFieldUtils.setFontScale(scale);
+    HiveFieldUtils.setFontScale(scale.value);
   }
 
   Widget _textIndicator(BuildContext context) {
@@ -108,16 +108,15 @@ class _FontScalePageState extends State<FontScalePage> with RouteAware {
           ),
           tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 4.w),
         ),
-        child: Slider(
-          min: scaleRange[0],
-          max: scaleRange[1],
-          divisions: 6,
-          value: scale,
-          onChanged: (double value) {
-            setState(() {
-              scale = value;
-            });
-          },
+        child: ValueListenableBuilder<double>(
+          valueListenable: scale,
+          builder: (_, double value, __) => Slider(
+            min: scaleRange[0],
+            max: scaleRange[1],
+            divisions: 4,
+            value: value,
+            onChanged: (double value) => scale.value = value,
+          ),
         ),
       ),
     );
@@ -139,11 +138,14 @@ class _FontScalePageState extends State<FontScalePage> with RouteAware {
             ),
             Expanded(
               child: Center(
-                child: Text(
-                  '这是一行示例文字\nThis is a sample sentence',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: suSetSp(baseFontSize, scale: scale),
+                child: ValueListenableBuilder<double>(
+                  valueListenable: scale,
+                  builder: (_, double value, __) => Text(
+                    '这是一行示例文字\nThis is a sample sentence',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: suSetSp(baseFontSize, scale: value),
+                    ),
                   ),
                 ),
               ),

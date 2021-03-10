@@ -124,6 +124,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         });
         DataUtils.logout();
       })
+      ..on<FontScaleUpdateEvent>().listen((_) {
+        if (mounted) {
+          _rebuildAllChildren(context);
+        }
+      })
       ..on<HasUpdateEvent>().listen(PackageUtils.showUpdateDialog);
   }
 
@@ -303,4 +308,12 @@ class _HiddenLogo extends StatelessWidget {
       ),
     );
   }
+}
+
+void _rebuildAllChildren(BuildContext context) {
+  void rebuild(Element el) {
+    el.markNeedsBuild();
+    el.visitChildren(rebuild);
+  }
+  (context as Element).visitChildren(rebuild);
 }
