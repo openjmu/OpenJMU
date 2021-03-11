@@ -534,15 +534,13 @@ class ForwardListInPostState extends State<ForwardListInPost>
 
   Widget _itemBuilder(BuildContext context, Post post) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.w),
+      padding: EdgeInsets.all(16.w),
       color: context.surfaceColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: UserAvatar(uid: post.uid, isSysAvatar: post.user.sysAvatar),
-          ),
+          UserAvatar(uid: post.uid, isSysAvatar: post.user.sysAvatar),
+          Gap(16.w),
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,

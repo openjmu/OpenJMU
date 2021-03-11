@@ -502,17 +502,15 @@ class CommentListInPostState extends State<CommentListInPost>
           showToast('已复制到剪贴板');
         },
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.w),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: UserAvatar(
-                  uid: comment.fromUserUid,
-                  isSysAvatar: comment.user.sysAvatar,
-                ),
+              UserAvatar(
+                uid: comment.fromUserUid,
+                isSysAvatar: comment.user.sysAvatar,
               ),
+              Gap(16.w),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
