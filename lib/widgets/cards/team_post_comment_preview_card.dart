@@ -98,23 +98,19 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
       onTap: () => postExtraActions(context),
       child: Container(
         decoration: BoxDecoration(
-          border: Border(
-            bottom: dividerBS(context),
-          ),
+          border: Border(bottom: dividerBS(context)),
           color: context.surfaceColor,
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.w),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: UserAvatar(
-                  uid: comment.uid,
-                  isSysAvatar: comment.user.sysAvatar,
-                ),
+              UserAvatar(
+                uid: comment.uid,
+                isSysAvatar: comment.user.sysAvatar,
               ),
+              Gap(16.w),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
