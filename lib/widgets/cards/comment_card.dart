@@ -68,7 +68,11 @@ class CommentCard extends StatelessWidget {
         ],
       );
     } else {
-      ConfirmationDialog.show(context, title: '无可用操作', content: '该动态已被删除');
+      ConfirmationDialog.show(
+        context, title: '无可用操作', content: '该动态已被删除',
+        showConfirm: true,
+        showCancel: false,
+      );
     }
   }
 

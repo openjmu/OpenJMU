@@ -189,8 +189,8 @@ class ConfirmationDialog extends StatelessWidget {
                   ),
                 ),
               ),
-              if (showConfirm || showConfirm) const LineDivider(),
-              if (showConfirm || showConfirm)
+              if (showCancel || showConfirm) const LineDivider(),
+              if (showCancel || showConfirm)
                 ClipRRect(
                   borderRadius: BorderRadius.vertical(
                     bottom: Radius.circular(13.w),
