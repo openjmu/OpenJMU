@@ -702,7 +702,7 @@ class CourseWidget extends StatelessWidget {
                 0,
                 math.min(10, course.name.length),
               ),
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
             ),
             if (course.isCustom
                 ? course.name.length > 20
@@ -719,7 +719,7 @@ class CourseWidget extends StatelessWidget {
                   !isOutOfTerm
               ? Colors.grey
               : Colors.black,
-          fontSize: 13.sp,
+          fontSize: 14.sp,
         ),
         overflow: TextOverflow.fade,
       );
