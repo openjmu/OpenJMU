@@ -274,14 +274,11 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_ALL_APPS_SVG =
       'assets/icons/app-center/all-apps.svg';
 
-  static const String ASSETS_ICONS_APP_CENTER_APPS_1023_102301_SVG =
-      'assets/icons/app-center/apps/1023-102301.svg';
-
   static const String ASSETS_ICONS_APP_CENTER_APPS_1064_1001_SVG =
       'assets/icons/app-center/apps/1064-1001.svg';
 
-  static const String ASSETS_ICONS_APP_CENTER_APPS_1065_1002_SVG =
-      'assets/icons/app-center/apps/1065-1002.svg';
+  static const String ASSETS_ICONS_APP_CENTER_APPS_11_1110_SVG =
+      'assets/icons/app-center/apps/11-1110.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_114_114_SVG =
       'assets/icons/app-center/apps/114-114.svg';
@@ -301,9 +298,6 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_APPS_171116_171116_SVG =
       'assets/icons/app-center/apps/171116-171116.svg';
 
-  static const String ASSETS_ICONS_APP_CENTER_APPS_1721_1721_SVG =
-      'assets/icons/app-center/apps/1721-1721.svg';
-
   static const String ASSETS_ICONS_APP_CENTER_APPS_17912_1701_SVG =
       'assets/icons/app-center/apps/17912-1701.svg';
 
@@ -316,26 +310,8 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_APPS_180325_180325_SVG =
       'assets/icons/app-center/apps/180325-180325.svg';
 
-  static const String ASSETS_ICONS_APP_CENTER_APPS_180404_180404_SVG =
-      'assets/icons/app-center/apps/180404-180404.svg';
-
   static const String ASSETS_ICONS_APP_CENTER_APPS_1901_1901_SVG =
       'assets/icons/app-center/apps/1901-1901.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_201709_Z010_SVG =
-      'assets/icons/app-center/apps/201709-Z010.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_2072_2072_SVG =
-      'assets/icons/app-center/apps/2072-2072.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_2075_2075_SVG =
-      'assets/icons/app-center/apps/2075-2075.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_2076_2076_SVG =
-      'assets/icons/app-center/apps/2076-2076.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_2077_2077_SVG =
-      'assets/icons/app-center/apps/2077-2077.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_2210_2210_SVG =
       'assets/icons/app-center/apps/2210-2210.svg';
@@ -373,32 +349,14 @@ class R {
   static const String ASSETS_ICONS_APP_CENTER_APPS_46_4601_SVG =
       'assets/icons/app-center/apps/46-4601.svg';
 
-  static const String ASSETS_ICONS_APP_CENTER_APPS_48_4801_SVG =
-      'assets/icons/app-center/apps/48-4801.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_49_4901_SVG =
-      'assets/icons/app-center/apps/49-4901.svg';
-
   static const String ASSETS_ICONS_APP_CENTER_APPS_50_5001_SVG =
       'assets/icons/app-center/apps/50-5001.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_500_500_SVG =
       'assets/icons/app-center/apps/500-500.svg';
 
-  static const String ASSETS_ICONS_APP_CENTER_APPS_518_1564_SVG =
-      'assets/icons/app-center/apps/518-1564.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_521_52101_SVG =
-      'assets/icons/app-center/apps/521-52101.svg';
-
   static const String ASSETS_ICONS_APP_CENTER_APPS_531_53101_SVG =
       'assets/icons/app-center/apps/531-53101.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_5478_547801_SVG =
-      'assets/icons/app-center/apps/5478-547801.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_55_3401_SVG =
-      'assets/icons/app-center/apps/55-3401.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_551_55101_SVG =
       'assets/icons/app-center/apps/551-55101.svg';
@@ -408,9 +366,6 @@ class R {
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_58_5801_SVG =
       'assets/icons/app-center/apps/58-5801.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_588_58801_SVG =
-      'assets/icons/app-center/apps/588-58801.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_589_58901_SVG =
       'assets/icons/app-center/apps/589-58901.svg';
@@ -426,12 +381,6 @@ class R {
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_666666_666666_SVG =
       'assets/icons/app-center/apps/666666-666666.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_67_6701_SVG =
-      'assets/icons/app-center/apps/67-6701.svg';
-
-  static const String ASSETS_ICONS_APP_CENTER_APPS_68_6801_SVG =
-      'assets/icons/app-center/apps/68-6801.svg';
 
   static const String ASSETS_ICONS_APP_CENTER_APPS_8001_NOTIFY_SVG =
       'assets/icons/app-center/apps/8001-NOTIFY.svg';
