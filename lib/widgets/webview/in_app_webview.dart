@@ -242,7 +242,7 @@ class _AppWebViewState extends State<AppWebView>
   }
 
   Future<void> _launchURL({String url, bool forceSafariVC = true}) async {
-    final String uri = Uri.encodeFull(url ?? this.url);
+    final String uri = Uri.parse(url ?? this.url).toString();
     if (await canLaunch(uri)) {
       await launch(uri, forceSafariVC: Platform.isIOS && forceSafariVC);
     } else {
