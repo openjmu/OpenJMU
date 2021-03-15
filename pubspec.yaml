@@ -2,7 +2,7 @@ name: openjmu
 description: A JMU Flutter application.
 homepage: https://github.com/openjmu/OpenJMU
 publish_to: none
-version: 1.0.1+232
+version: 1.0.1+233
 
 environment:
   sdk: ">=2.10.4 <3.0.0"
@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
 
   animations: ^2.0.0
-  badges: ^1.2.0
+  badges: ^2.0.0-nullsafety.1
   connectivity: ^3.0.2
   cookie_jar: ^3.0.0-beta2
   dartx: ^0.6.0
@@ -25,7 +25,7 @@ dependencies:
   equatable: ^2.0.0
   event_bus: ^2.0.0
   extended_image: ^3.0.0
-  extended_list: ^2.0.2
+  extended_list: ^3.0.0
   extended_tabs: ^2.0.0
   extended_nested_scroll_view: ^3.0.0
   extended_text: ^5.0.2
@@ -44,14 +44,14 @@ dependencies:
   image_editor: ^1.0.0-nullsafety.0
   isolate: ^2.0.2
   like_button: ^2.0.1
-  loading_more_list: ^3.2.0
+  loading_more_list: ^4.0.0
   oktoast: ^3.0.0
   open_file: ^3.1.0
   package_info: ^2.0.0
   permission_handler: ^6.0.1+1
   provider: ^5.0.0
   pull_to_refresh_notification: ^2.0.1
-  qr_flutter: 3.2.0
+  qr_flutter: ^4.0.0
   r_scan:
     git:
       url: https://github.com/CaiJingLong/r_scan.git
@@ -60,7 +60,7 @@ dependencies:
   uuid: ^3.0.1
   vibration: ^1.7.4-nullsafety.0
   video_player: ^2.0.1
-  wechat_assets_picker: ^5.0.0
+  wechat_assets_picker: ^5.0.1
   wechat_camera_picker: ^2.0.0
 
 dev_dependencies:
