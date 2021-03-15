@@ -81,8 +81,9 @@ class _EmojiPadState extends State<EmojiPad> {
   }
 
   void addRecentEmoji(Emoji emoji) {
-    final List<Emoji> _emojis =
-        HiveBoxes.emojisBox.get(currentUser.uid)?.cast<Emoji>();
+    final List<Emoji> _emojis = List<Emoji>.of(
+      HiveBoxes.emojisBox.get(currentUser.uid)?.cast<Emoji>(),
+    );
     if (_emojis.contains(emoji)) {
       _emojis.remove(emoji);
     } else {
