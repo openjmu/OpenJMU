@@ -338,7 +338,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     SpecialTextGestureTapCallback onTap,
   }) {
     if (data == null || data == '') {
-      return null;
+      return const TextSpan(text: '');
     }
     final List<InlineSpan> inlineList = <InlineSpan>[];
 
