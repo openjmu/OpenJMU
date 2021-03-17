@@ -66,7 +66,7 @@ class PackageUtils {
 
   static Future<void> tryUpdate() async {
     if (Platform.isIOS) {
-      launch('https://itunes.apple.com/cn/app/id1459832676');
+      launch('itms-apps://apps.apple.com/cn/app/openjmu/id1459832676');
     } else {
       if (await canLaunch('coolmarket://apk/$packageName')) {
         launch('coolmarket://apk/$packageName');
