@@ -379,7 +379,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         ),
         child: Center(
           child: Text(
-            '发布',
+            '发布集市动态',
             style: TextStyle(
               color: adaptiveButtonColor(),
               fontSize: 20.sp,

@@ -388,7 +388,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         ),
         child: Center(
           child: Text(
-            '发布',
+            '发布广场动态',
             style: TextStyle(
               color: adaptiveButtonColor(),
               fontSize: 20.sp,
