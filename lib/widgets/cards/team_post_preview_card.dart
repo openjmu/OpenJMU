@@ -390,6 +390,16 @@ class TeamPostPreviewCard extends StatelessWidget {
             ),
             text: '评论',
             value: p.post.repliesCount,
+            onTap: () {
+              navigatorState.pushNamed(
+                Routes.openjmuTeamPostDetail.name,
+                arguments: Routes.openjmuTeamPostDetail.d(
+                  provider: p,
+                  type: TeamPostType.post,
+                  toComment: true,
+                ),
+              );
+            },
           ),
         ],
       ),

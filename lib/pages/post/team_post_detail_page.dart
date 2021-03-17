@@ -28,6 +28,7 @@ class TeamPostDetailPage extends StatefulWidget {
     this.provider,
     this.postId,
     this.shouldReload = false,
+    this.toComment = false,
   })  : assert(type != null),
         assert(shouldReload != null),
         super(key: key);
@@ -36,6 +37,7 @@ class TeamPostDetailPage extends StatefulWidget {
   final TeamPostType type;
   final int postId;
   final bool shouldReload;
+  final bool toComment;
 
   @override
   TeamPostDetailPageState createState() => TeamPostDetailPageState();
@@ -68,6 +70,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       ),
     ];
   }
+
+  ScrollController _scrollController;
 
   final TextEditingController _textEditingController = TextEditingController();
   final LoadingDialogController loadingDialogController =
@@ -111,6 +115,12 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     provider = widget.provider;
     canLoadMore.value = (provider.post?.repliesCount ?? -1) >
         (widget.type == TeamPostType.comment ? 50 : 30);
+    _scrollController = ScrollController(
+      initialScrollOffset:
+          (widget.toComment && (provider.post?.repliesCount ?? 0) > 0)
+              ? Screens.height * 2
+              : 0,
+    );
     initialLoad();
 
     _focusNode.addListener(() {
@@ -171,12 +181,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     if (loadMore) {
       ++commentPage;
     }
-    if ((provider.post?.repliesCount ?? 0) > 0) {
-      TeamCommentAPI.getCommentInPostList(
-        id: provider.post.tid,
-        page: commentPage,
-        isComment: widget.type == TeamPostType.comment,
-      ).then((Response<Map<String, dynamic>> response) {
+    try {
+      if ((provider.post?.repliesCount ?? 0) > 0) {
+        final Response<Map<String, dynamic>> response =
+            await TeamCommentAPI.getCommentInPostList(
+          id: provider.post.tid,
+          page: commentPage,
+          isComment: widget.type == TeamPostType.comment,
+        );
         final Map<String, dynamic> data = response.data;
         total = data['total'].toString().toInt();
         canLoadMore.value = data['count'].toString().toInt() >
@@ -207,14 +219,18 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             list.add(_post);
           });
         }
-        isLoading.value = false;
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    } else {
+      } else {
+        total = 0;
+        canLoadMore.value = false;
+      }
+    } catch (e) {
       total = 0;
       canLoadMore.value = false;
+    } finally {
+      isLoading.value = false;
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -1058,6 +1074,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 child: ValueListenableBuilder<bool>(
                   valueListenable: isLoading,
                   builder: (_, bool value, __) => CustomScrollView(
+                    controller: _scrollController,
                     slivers: <Widget>[
                       if (provider.post != null)
                         SliverToBoxAdapter(

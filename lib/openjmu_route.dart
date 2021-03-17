@@ -228,6 +228,7 @@ FFRouteSettings getRouteSettings({
           provider: asT<TeamPostProvider>(safeArguments['provider']),
           postId: asT<int>(safeArguments['postId']),
           shouldReload: asT<bool>(safeArguments['shouldReload'], false),
+          toComment: asT<bool>(safeArguments['toComment'], false),
         ),
         routeName: '小组动态详情页',
       );
