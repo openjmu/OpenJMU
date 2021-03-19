@@ -39,7 +39,7 @@ class MainPage extends StatefulWidget {
             size: 54.0,
             canJump: false,
             isSysAvatar: UserAPI.currentUser.sysAvatar,
-          )
+          ),
         ],
       ),
     );
@@ -230,11 +230,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Index for pages.
   /// 当前页面索引
-  int _currentIndex = 0;
+  int _currentIndex;
 
   /// Icon size for bottom navigation bar's item.
   /// 底部导航的图标大小
-  double get bottomBarIconSize => bottomBarHeight / 1.875;
+  double get bottomBarIconSize => bottomBarHeight / 2.25;
 
   @override
   bool get wantKeepAlive => true;
@@ -243,6 +243,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     LogUtils.d('CurrentUser ${UserAPI.currentUser}');
+
+    /// Initialize current page index.
+    /// 设定初始页面
+    _currentIndex = Provider.of<SettingsProvider>(
+      currentContext,
+      listen: false,
+    ).homeSplashIndex;
 
     /// 进入首屏10秒后，公告默认消失
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -347,7 +354,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       selectedColor: context.themeColor,
       itemFontSize: 16.sp,
       onTabSelected: _selectedTab,
-      showText: false,
       items: List<FABBottomAppBarItem>.generate(
         pagesTitle.length,
         (int i) => FABBottomAppBarItem(

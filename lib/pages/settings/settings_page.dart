@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/pages/main_page.dart';
 
 @FFRoute(name: 'openjmu://settings', routeName: '设置页')
 class SettingsPage extends StatelessWidget {
@@ -23,6 +24,7 @@ class SettingsPage extends StatelessWidget {
             _AboutCard(),
             _NightModeCard(),
             _ThemeCard(),
+            _StartPageCard(),
             _EnhanceCard(),
             _DataCleaningCard(),
             _FlutterBrandingWidget(),
@@ -270,6 +272,39 @@ class _NightModeCard extends StatelessWidget {
                 );
               },
             ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartPageCard extends StatelessWidget {
+  const _StartPageCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final int currentIndex = context.watch<SettingsProvider>().homeSplashIndex;
+    return _SettingsCard(
+      title: '启动页设置',
+      children: <Widget>[
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '主页',
+            description: MainPageState.pagesTitle[currentIndex],
+            onTap: () {
+              ConfirmationBottomSheet.show(
+                context,
+                actions: List<ConfirmationBottomSheetAction>.generate(
+                  MainPageState.pagesTitle.length,
+                  (int index) => ConfirmationBottomSheetAction(
+                    text: MainPageState.pagesTitle[index],
+                    onTap: () => HiveFieldUtils.setHomeSplashIndex(index),
+                    isSelected: currentIndex == index,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],

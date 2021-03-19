@@ -23,6 +23,7 @@ class HiveFieldUtils {
 
   static const String settingFontScale = 'setting_font_scale';
   static const String settingNewIcons = 'setting_new_icons';
+  static const String settingHomeSplashIndex = 'setting_home_splash_index';
   static const String settingHideShieldPost = 'setting_hide_shield_post';
   static const String settingLaunchFromSystemBrowser =
       'setting_launch_from_system_browser';
@@ -84,6 +85,9 @@ class HiveFieldUtils {
   /// 获取新图标是否开启
   static bool getEnabledNewAppsIcon() => _box?.get(settingNewIcons) as bool;
 
+  /// 获取默认启动页index
+  static int getHomeSplashIndex() => _box?.get(settingHomeSplashIndex) as int;
+
   /// 获取是否隐藏被屏蔽的动态
   static bool getEnabledHideShieldPost() =>
       _box?.get(settingHideShieldPost) as bool;
@@ -103,6 +107,12 @@ class HiveFieldUtils {
   static Future<void> setEnabledNewAppsIcon(bool enable) {
     provider.newAppCenterIcon = enable;
     return _box?.put(settingNewIcons, enable);
+  }
+
+  /// 设置首页的初始页
+  static Future<void> setHomeSplashIndex(int index) async {
+    provider.homeSplashIndex = index;
+    await _box?.put(settingHomeSplashIndex, index);
   }
 
   /// 设置是否隐藏被屏蔽的动态

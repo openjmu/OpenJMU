@@ -221,11 +221,15 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
     Key key,
     @required this.text,
     @required this.onTap,
-  })  : assert(text != null && onTap != null),
+    this.isSelected = false,
+  })  : assert(text != null),
+        assert(onTap != null),
+        assert(isSelected != null),
         super(key: key);
 
   final String text;
   final GestureTapCallback onTap;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +244,11 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(height: 1.2, fontSize: 20.sp),
+            style: TextStyle(
+              color: isSelected ? context.themeColor : null,
+              height: 1.2,
+              fontSize: 20.sp,
+            ),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
