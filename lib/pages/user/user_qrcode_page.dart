@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -41,14 +40,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         showToast('未获得存储权限');
         return;
       }
-      final RenderRepaintBoundary boundary = previewContainer.currentContext
-          .findRenderObject() as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(
-        pixelRatio: ui.window.devicePixelRatio,
-      );
-      final ByteData byteData = await image.toByteData(
-        format: ui.ImageByteFormat.png,
-      );
+      final ByteData byteData = await obtainScreenshotData(previewContainer);
       await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
       showToast('保存成功');
     } catch (e) {

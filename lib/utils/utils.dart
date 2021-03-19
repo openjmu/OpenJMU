@@ -1,5 +1,9 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -58,4 +62,17 @@ Future<bool> checkPermissions(List<Permission> permissions) async {
     LogUtils.e('Error when requesting permission: $e');
     return false;
   }
+}
+
+/// Obtain the screenshot data from a [GlobalKey] with [RepaintBoundary].
+Future<ByteData> obtainScreenshotData(GlobalKey key) async {
+  final RenderRepaintBoundary boundary = key.currentContext
+      .findRenderObject() as RenderRepaintBoundary;
+  final ui.Image image = await boundary.toImage(
+    pixelRatio: ui.window.devicePixelRatio,
+  );
+  final ByteData byteData = await image.toByteData(
+    format: ui.ImageByteFormat.png,
+  );
+  return byteData;
 }

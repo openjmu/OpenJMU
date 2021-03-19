@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart' hide SizeExtension;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -18,13 +18,6 @@ import 'pages/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Hive.initFlutter();
-  await HiveBoxes.openBoxes();
-  await DeviceUtils.initDeviceInfo();
-  await PackageUtils.initPackageInfo();
-  NetUtils.initConfig();
-  NotificationUtils.initSettings();
 
   // In order to compare the default avatar locally, here I decide to compare
   // the data of the avatar with a local one.
@@ -40,6 +33,14 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
     statusBarColor: Colors.transparent,
   ));
+
+  await Hive.initFlutter();
+  await HiveBoxes.openBoxes();
+  await DeviceUtils.initDeviceInfo();
+  await PackageUtils.initPackageInfo();
+  NetUtils.initConfig();
+  NotificationUtils.initSettings();
+  _customizeErrorWidget();
 
   runApp(OpenJMUApp());
 }
@@ -264,7 +265,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                         ],
                       );
                     }
-                    return widget;
+                    return RepaintBoundary(
+                      key: Instances.appRepaintBoundaryKey,
+                      child: widget,
+                    );
                   },
                   title: 'OpenJMU',
                   theme: theme,
@@ -315,5 +319,89 @@ void _rebuildAllChildren(BuildContext context) {
     el.markNeedsBuild();
     el.visitChildren(rebuild);
   }
+
   (context as Element).visitChildren(rebuild);
+}
+
+void _customizeErrorWidget() {
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Container(
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(30.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(13.w),
+        color: currentTheme.accentColor.withOpacity(0.125),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          SvgPicture.asset(
+            R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
+            width: 50.w,
+            color: currentTheme.iconTheme.color,
+          ),
+          VGap(20.w),
+          Text(
+            '出现了不可预料的错误 (>_<)',
+            style: TextStyle(
+              color: currentTheme.textTheme.caption.color,
+              fontSize: 22.sp,
+            ),
+          ),
+          VGap(10.w),
+          Text(
+            details.exception.toString(),
+            style: TextStyle(
+              color: currentTheme.textTheme.caption.color,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          VGap(10.w),
+          Text(
+            details.stack.toString(),
+            style: TextStyle(
+              color: currentTheme.textTheme.caption.color,
+              fontSize: 16.sp,
+            ),
+            maxLines: 14,
+            overflow: TextOverflow.ellipsis,
+          ),
+          VGap(20.w),
+          Tapper(
+            onTap: _takeAppScreenshot,
+            child: Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13.w),
+                color: currentTheme.accentColor,
+              ),
+              child: Text(
+                '保存当前位置错误截图',
+                style: TextStyle(
+                  color: adaptiveButtonColor(),
+                  fontSize: 20.sp,
+                  height: 1.24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  };
+}
+
+Future<void> _takeAppScreenshot() async {
+  try {
+    final ByteData byteData = await obtainScreenshotData(
+      Instances.appRepaintBoundaryKey,
+    );
+    await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
+    showToast('截图保存成功');
+  } catch (e) {
+    LogUtils.e('Error when taking app\'s screenshot: $e');
+    showCenterErrorToast('截图保存失败');
+  }
 }
