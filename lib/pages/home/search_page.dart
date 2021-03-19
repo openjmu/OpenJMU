@@ -80,12 +80,6 @@ class SearchPageState extends State<SearchPage>
         final User u = User.fromJson(user as Map<String, dynamic>);
         userList.add(u);
       }
-      if (userList != null && userList.length == 1) {
-        navigatorState.pushReplacementNamed(
-          Routes.openjmuUserPage.name,
-          arguments: Routes.openjmuUserPage.d(uid: userList[0].id),
-        );
-      }
     }).catchError((dynamic e) {
       LogUtils.e('Error when get users: $e');
     });
