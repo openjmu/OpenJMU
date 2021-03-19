@@ -196,8 +196,8 @@ class _AppWebViewState extends State<AppWebView>
       context,
       title: hasRealName ? '文件下载确认' : '未知文件下载确认',
       content: '文件安全性未知，请确认下载\n\n'
-          '$url 想要下载文件'
-          '${hasRealName ? ' $filename' : '\n\n文件名称未知，将下载为 $filename'}',
+          '${url.host.notBreak}\n想要下载文件'
+          '\n${hasRealName ? filename : '\n文件名称未知，将下载为 $filename'}',
       showConfirm: true,
       confirmLabel: '下载',
       resolveSpecialText: false,
