@@ -147,7 +147,7 @@ class PostUser {
     return PostUser(
       uid: json['uid']?.toString(),
       nickname: json['nickname'] as String,
-      gender: json['gender'] as int,
+      gender: json['gender']?.toString()?.toIntOrNull(),
       sysAvatar: json['sysavatar']?.toString() == '1',
     );
   }
