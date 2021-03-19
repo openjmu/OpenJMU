@@ -768,7 +768,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ),
                     const Spacer(),
-                    if (widget.isDetail) VGap(16.w) else postActions(context),
+                    postActions(context),
                   ],
                 ),
               ),
