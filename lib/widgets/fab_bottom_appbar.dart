@@ -74,6 +74,7 @@ class FABBottomAppBar extends StatelessWidget {
     int index,
     ValueChanged<int> onPressed,
   }) {
+    final bool isSelected = _selectedIndex == index;
     return Expanded(
       child: Tapper(
         onTap: () => onPressed(index),
@@ -89,9 +90,7 @@ class FABBottomAppBar extends StatelessWidget {
                     item.child ??
                         SvgPicture.asset(
                           item.iconPath,
-                          color: _selectedIndex == index
-                              ? selectedColor
-                              : color,
+                          color: isSelected ? selectedColor : color,
                           width: iconSize.w,
                           height: iconSize.w,
                         ),
@@ -100,9 +99,7 @@ class FABBottomAppBar extends StatelessWidget {
                       Text(
                         item.text,
                         style: TextStyle(
-                          color: _selectedIndex == index
-                              ? selectedColor
-                              : color,
+                          color: isSelected ? selectedColor : color,
                           fontSize: itemFontSize,
                           fontWeight: FontWeight.normal,
                           height: 1.2,
