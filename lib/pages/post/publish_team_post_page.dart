@@ -371,7 +371,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     return Tapper(
       onTap: checkContentEmptyWhenPublish,
       child: Container(
-        width: 80.w,
+        width: 160.w,
         height: 56.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
