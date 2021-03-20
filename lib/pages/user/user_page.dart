@@ -3,8 +3,10 @@
 /// [Date] 2020/7/24 13:40
 ///
 import 'package:flutter/material.dart';
+import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/widgets/dialogs/edit_signature_dialog.dart';
 
 @FFRoute(name: 'openjmu://user-page', routeName: '用户页')
 class UserPage extends StatefulWidget {
@@ -230,7 +232,7 @@ class UserPageState extends State<UserPage>
                     levelWidget,
                   ],
                 ),
-                signatureWidget,
+                signatureWidget(context),
               ],
             ),
           ),
@@ -438,16 +440,13 @@ class UserPageState extends State<UserPage>
     );
   }
 
-  Widget get signatureWidget {
+  Widget signatureWidget(BuildContext context) {
     return Tapper(
       onTap: () async {
         if (!isCurrentUser) {
           return;
         }
-        final dynamic result = await navigatorState.pushNamed(
-          Routes.openjmuEditSignatureDialog.name,
-        );
-        if (result == true) {
+        if (await EditSignatureDialog.show(context) == true) {
           user.value = user.value.copyWith(
             signature: UserAPI.currentUser.signature,
           );
@@ -467,21 +466,21 @@ class UserPageState extends State<UserPage>
                 ),
               ),
             Expanded(
-              child: Text(
+              child: ExtendedText(
                 () {
                   if (value == null) {
                     return '';
                   } else {
-                    return value.signature?.notBreak ?? '这个人很懒，什么都没写';
+                    return value.signature ?? '这个人很懒，什么都没写';
                   }
                 }(),
                 style: context.textTheme.caption.copyWith(
-                  height: 1.24,
                   fontSize: 18.sp,
                 ),
                 textAlign: TextAlign.start,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
               ),
             ),
           ],

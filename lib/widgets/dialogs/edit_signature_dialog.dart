@@ -2,26 +2,32 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2/17/21 8:22 PM
 ///
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:extended_text_field/extended_text_field.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: 'openjmu://edit-signature-dialog',
-  routeName: '编辑个性签名',
-  pageRouteType: PageRouteType.transparent,
-)
 class EditSignatureDialog extends StatefulWidget {
   const EditSignatureDialog({Key key}) : super(key: key);
+
+  static Future<bool> show(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierColor: Colors.black26,
+      builder: (_) => const EditSignatureDialog(),
+      useSafeArea: false,
+    );
+  }
 
   @override
   _EditSignatureDialogState createState() => _EditSignatureDialogState();
 }
 
 class _EditSignatureDialogState extends State<EditSignatureDialog> {
+  final FocusNode _focusNode = FocusNode();
+  final ValueNotifier<bool> _isEmoticonPadActive = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _requesting = ValueNotifier<bool>(false);
+  final int maxLength = 30;
 
   TextEditingController _tec;
 
@@ -53,6 +59,13 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
       showErrorToast('修改失败');
       _requesting.value = false;
     }
+  }
+
+  void updateEmoticonPadStatus(bool active) {
+    if (context.bottomInsets > 0) {
+      InputUtils.hideKeyboard();
+    }
+    _isEmoticonPadActive.value = active;
   }
 
   Widget textField(BuildContext context) {
@@ -95,6 +108,40 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
           style: context.textTheme.bodyText2.copyWith(
             height: 1.2,
             fontSize: 20.sp,
+          ),
+          specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+        ),
+      ),
+    );
+  }
+
+  Widget _emojiButton(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isEmoticonPadActive,
+      builder: (_, bool value, __) => Tapper(
+        onTap: () {
+          if (value && _focusNode.canRequestFocus) {
+            _focusNode.requestFocus();
+          }
+          updateEmoticonPadStatus(!value);
+        },
+        child: Container(
+          alignment: Alignment.center,
+          width: 60.w,
+          height: 60.w,
+          margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 15.w),
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.w),
+            color: context.theme.canvasColor,
+          ),
+          child: SvgPicture.asset(
+            value
+                ? R.ASSETS_ICONS_PUBLISH_EMOJI_ACTIVE_SVG
+                : R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
+            width: 20.w,
+            height: 20.w,
+            color: context.textTheme.bodyText2.color,
           ),
         ),
       ),
@@ -146,41 +193,20 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Expanded(
-            child: Tapper(
-              onTap: context.navigator.pop,
-              child: Container(color: Colors.black26),
-            ),
-          ),
-          ColoredBox(
-            color: context.theme.colorScheme.surface,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(14.w),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(child: textField(context)),
-                      Gap(16.w),
-                      _publishButton(context),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: math.max(context.bottomInsets, context.bottomPadding),
-                ),
-              ],
-            ),
-          ),
-        ],
+    return EmojiKeyboardWrapper(
+      controller: _tec,
+      emoticonPadNotifier: _isEmoticonPadActive,
+      child: Container(
+        color: context.theme.colorScheme.surface,
+        padding: EdgeInsets.all(14.w),
+        child: Row(
+          children: <Widget>[
+            Expanded(child: textField(context)),
+            Gap(16.w),
+            _emojiButton(context),
+            _publishButton(context),
+          ],
+        ),
       ),
     );
   }

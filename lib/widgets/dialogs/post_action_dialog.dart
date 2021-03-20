@@ -40,6 +40,7 @@ class PostActionDialog extends StatefulWidget {
         type: type,
         comment: comment,
       ),
+      useSafeArea: false,
     );
   }
 
@@ -504,12 +505,6 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   ),
                 ),
                 toolbar(context),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _isEmoticonPadActive,
-                  builder: (_, bool value, __) => SizedBox(
-                    height: value ? 0 : context.bottomPadding,
-                  ),
-                ),
               ],
             ),
           ),

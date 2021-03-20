@@ -14,6 +14,7 @@ class EmojiKeyboardWrapper extends StatefulWidget {
     @required this.child,
     @required this.controller,
     @required this.emoticonPadNotifier,
+    this.bottomPaddingColor,
   })  : assert(child != null),
         assert(controller != null),
         assert(emoticonPadNotifier != null),
@@ -22,12 +23,15 @@ class EmojiKeyboardWrapper extends StatefulWidget {
   final Widget child;
   final TextEditingController controller;
   final ValueNotifier<bool> emoticonPadNotifier;
+  final Color bottomPaddingColor;
 
   @override
   _EmojiKeyboardWrapperState createState() => _EmojiKeyboardWrapperState();
 }
 
 class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
+  MediaQueryData get _mq => MediaQuery.of(context);
+
   double _keyboardHeight = 0;
 
   Widget _emoticonPad(BuildContext context) {
@@ -43,7 +47,7 @@ class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final double kh = MediaQuery.of(context).viewInsets.bottom;
+    final double kh = _mq.viewInsets.bottom;
     if (kh > 0 && kh >= _keyboardHeight) {
       widget.emoticonPadNotifier.value = false;
     }
@@ -60,8 +64,12 @@ class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
             _emoticonPad(context),
             ValueListenableBuilder<bool>(
               valueListenable: widget.emoticonPadNotifier,
-              builder: (_, bool value, __) => SizedBox(
-                height: value ? 0 : MediaQuery.of(context).viewInsets.bottom,
+              builder: (_, bool value, __) => Container(
+                height: value
+                    ? 0
+                    : math.max(_mq.viewInsets.bottom, _mq.padding.bottom),
+                color: widget.bottomPaddingColor ??
+                    Theme.of(context).colorScheme.surface,
               ),
             ),
           ],
