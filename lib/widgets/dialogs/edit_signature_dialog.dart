@@ -65,7 +65,7 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
       ),
       child: ValueListenableBuilder<bool>(
         valueListenable: _requesting,
-        builder: (_, bool value, __) => TextField(
+        builder: (_, bool value, __) => ExtendedTextField(
           autofocus: true,
           controller: _tec,
           cursorColor: currentThemeColor,
@@ -77,7 +77,20 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
             isDense: true,
             border: InputBorder.none,
             hintText: ' 输入您的个性签名',
+            suffix: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _tec,
+              builder: (_, TextEditingValue value, __) => Text(
+                '${value.text.length}/$maxLength',
+                style: TextStyle(
+                  color:
+                      value.text.length > maxLength ? context.themeColor : null,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ),
           ),
+          maxLength: maxLength,
+          buildCounter: emptyCounterBuilder,
           enabled: !value,
           style: context.textTheme.bodyText2.copyWith(
             height: 1.2,
