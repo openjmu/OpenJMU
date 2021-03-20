@@ -57,7 +57,7 @@ class EmojiPad extends StatefulWidget {
   final double height;
   final TextEditingController controller;
 
-  static double get padDefaultHeight => Screens.width / padGridCount * 4;
+  static double get padDefaultHeight => Screens.width / padGridCount * 5;
 
   static int get padGridCount => 7;
 
