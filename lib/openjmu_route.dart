@@ -29,7 +29,6 @@ import 'pages/user/user_list_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
 import 'providers/providers.dart';
-import 'widgets/dialogs/edit_signature_dialog.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
 
@@ -82,16 +81,6 @@ FFRouteSettings getRouteSettings({
           key: asT<Key>(safeArguments['key']),
         ),
         routeName: '修改头像',
-      );
-    case 'openjmu://edit-signature-dialog':
-      return FFRouteSettings(
-        name: name,
-        arguments: arguments,
-        widget: EditSignatureDialog(
-          key: asT<Key>(safeArguments['key']),
-        ),
-        routeName: '编辑个性签名',
-        pageRouteType: PageRouteType.transparent,
       );
     case 'openjmu://font-scale':
       return FFRouteSettings(
