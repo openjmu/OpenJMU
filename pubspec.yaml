@@ -16,9 +16,9 @@ dependencies:
 
   animations: ^2.0.0
   badges: ^2.0.0-nullsafety.1
-  connectivity: ^3.0.2
+  connectivity: ^3.0.3
   cookie_jar: ^3.0.0-beta2
-  dartx: ^0.6.0
+  dartx: ^0.7.0
   device_info: ^2.0.0
   dio: ^4.0.0-prev3
   dio_cookie_manager: ^2.0.0-prev1
@@ -28,27 +28,27 @@ dependencies:
   extended_list: ^3.0.0
   extended_tabs: ^2.0.0
   extended_nested_scroll_view: ^3.0.0
-  extended_text: ^5.0.2
+  extended_text: ^5.0.3
   extended_text_field: ^6.0.1
   ff_annotation_route_library: ^2.0.1
-  flutter_displaymode: ^0.2.0-nullsafety.0
+  flutter_displaymode: 0.2.0-nullsafety.0
   flutter_icons: ^1.1.0
   flutter_inappwebview: ^5.1.0+4
-  flutter_local_notifications: ^5.0.0-nullsafety.1
+  flutter_local_notifications: ^5.0.0
   flutter_native_image: ^0.0.5+3
   flutter_screenutil: 2.3.1
   flutter_svg: ^0.21.0-nullsafety.0
   hive: ^2.0.0
   hive_flutter: ^1.0.0
-  image: ^3.0.1
-  image_editor: ^1.0.0-nullsafety.0
+  image: ^3.0.2
+  image_editor: ^1.0.0
   isolate: ^2.0.2
   like_button: ^2.0.1
   loading_more_list: ^4.0.0
   oktoast: ^3.0.0
   open_file: ^3.1.0
   package_info: ^2.0.0
-  permission_handler: ^6.0.1+1
+  permission_handler: ^6.1.1
   provider: ^5.0.0
   pull_to_refresh_notification: ^2.0.1
   qr_flutter: ^4.0.0
