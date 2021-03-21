@@ -396,7 +396,6 @@ class CommentListInPostState extends State<CommentListInPost>
       if (e.response != null) {
         LogUtils.e('${e.response.data}');
       } else {
-        LogUtils.e('${e.request}');
         LogUtils.e(e.message);
       }
       return;
@@ -444,7 +443,6 @@ class CommentListInPostState extends State<CommentListInPost>
       if (e.response != null) {
         LogUtils.e('${e.response.data}');
       } else {
-        LogUtils.e('${e.request}');
         LogUtils.e(e.message);
       }
       return;

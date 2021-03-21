@@ -61,53 +61,66 @@ class NetUtils {
       if (_isProxyEnabled) {
         client.findProxy = (_) => _proxyDestination;
       }
-      client.badCertificateCallback =
-          (X509Certificate _, String __, int ___) => true;
+      client.badCertificateCallback = (_, __, ___) => true;
     };
+
+    if (Constants.isDebug && shouldLogRequest) {
+      dio.interceptors.add(LoggingInterceptor());
+      tokenDio.interceptors.add(LoggingInterceptor());
+    }
+
     dio.interceptors
       ..add(cookieManager)
       ..add(
         InterceptorsWrapper(
-          onResponse: (Response<dynamic> r) {
-            if (outerFailedUris.value.contains(r.request.uri)) {
+          onResponse: (
+            Response<dynamic> r,
+            ResponseInterceptorHandler handler,
+          ) {
+            if (outerFailedUris.value.contains(r.realUri)) {
               outerFailedUris.value = Set<Uri>.from(
-                outerFailedUris.value..remove(r.request.uri),
+                outerFailedUris.value..remove(r.realUri),
               );
               if (outerFailedUris.value.isEmpty && isOuterNetwork.value) {
                 isOuterNetwork.value = false;
               }
             }
-            return r;
+            handler.next(r);
           },
-          onError: (DioError e) {
+          onError: (
+            DioError e,
+            ErrorInterceptorHandler handler,
+          ) {
             if (e.response?.isRedirect == true ||
                 e.response?.statusCode == HttpStatus.movedPermanently ||
                 e.response?.statusCode == HttpStatus.movedTemporarily ||
                 e.response?.statusCode == HttpStatus.seeOther ||
                 e.response?.statusCode == HttpStatus.temporaryRedirect) {
-              return e;
+              handler.next(e);
+              return;
             }
             if (e.response?.statusCode == 401) {
               updateTicket();
             }
-            if (e.request.uri.toString().contains('jmu.edu.cn') == true &&
+            final Uri _uri = e.requestOptions.uri;
+            if (_uri.toString().contains('jmu.edu.cn') == true &&
                 (e.response?.statusCode == null ||
                     e.response?.statusCode == HttpStatus.forbidden) &&
                 !isOuterNetwork.value) {
               outerFailedUris.value = Set<Uri>.from(
-                outerFailedUris.value..add(e.request.uri),
+                outerFailedUris.value..add(_uri),
               );
               if (!isOuterNetwork.value) {
                 isOuterNetwork.value = true;
               }
             }
             LogUtils.e(
-              'Error when requesting ${e.request.uri} '
+              'Error when requesting $_uri '
               '${e.response?.statusCode}'
               ': ${e.response?.data}',
               withStackTrace: false,
             );
-            return e;
+            handler.reject(e);
           },
         ),
       );
@@ -117,18 +130,15 @@ class NetUtils {
       if (_isProxyEnabled) {
         client.findProxy = (_) => _proxyDestination;
       }
-      client.badCertificateCallback =
-          (X509Certificate _, String __, int ___) => true;
+      client.badCertificateCallback = (_, __, ___) => true;
     };
     tokenDio.interceptors.add(tokenCookieManager);
-
-    if (Constants.isDebug && shouldLogRequest) {
-      dio.interceptors.add(LoggingInterceptor());
-      tokenDio.interceptors.add(LoggingInterceptor());
-    }
   }
 
   static List<Cookie> convertWebViewCookies(List<web_view.Cookie> cookies) {
+    if (cookies?.isNotEmpty != true) {
+      return const <Cookie>[];
+    }
     LogUtils.d('Replacing cookies: $cookies');
     final List<Cookie> replacedCookies = cookies.map((web_view.Cookie cookie) {
       return Cookie(cookie.name, cookie.value?.toString())
@@ -157,7 +167,7 @@ class NetUtils {
       options: options ?? Options(followRedirects: true),
     );
     String filename = res.headers
-        .value('content-disposition')
+        ?.value('content-disposition')
         ?.split('; ')
         ?.where((String element) => element.contains('filename'))
         ?.first;

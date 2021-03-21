@@ -2,8 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-11-16 22:54
 ///
-import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:openjmu/utils/utils.dart';
 
@@ -14,7 +12,10 @@ class LoggingInterceptor extends Interceptor {
   static const String HTTP_TAG = 'HTTP - LOG';
 
   @override
-  Future<dynamic> onRequest(RequestOptions options) {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) {
     startTime = DateTime.now();
     LogUtils.d(' ', tag: HTTP_TAG);
     LogUtils.d(
@@ -54,11 +55,14 @@ class LoggingInterceptor extends Interceptor {
       tag: HTTP_TAG,
     );
     LogUtils.d('--', tag: HTTP_TAG);
-    return super.onRequest(options);
+    handler.next(options);
   }
 
   @override
-  Future<dynamic> onResponse(Response<dynamic> response) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     endTime = DateTime.now();
     final int duration = endTime.difference(startTime).inMilliseconds;
     LogUtils.d(
@@ -75,15 +79,18 @@ class LoggingInterceptor extends Interceptor {
       tag: HTTP_TAG,
     );
     LogUtils.d('' '', tag: HTTP_TAG);
-    return super.onResponse(response);
+    handler.next(response);
   }
 
   @override
-  Future<dynamic> onError(DioError err) {
+  void onError(
+    DioError err,
+    ErrorInterceptorHandler handler,
+  ) {
     LogUtils.e(
       '------------------- Error -------------------',
       tag: HTTP_TAG,
     );
-    return super.onError(err);
+    handler.next(err);
   }
 }

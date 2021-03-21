@@ -282,7 +282,6 @@ class PraiseListInPostState extends State<PraiseListInPost>
       if (e.response != null) {
         LogUtils.e(e.response.data);
       }
-      LogUtils.e(e.request);
       LogUtils.e(e.message);
       return;
     } catch (e) {
@@ -320,7 +319,6 @@ class PraiseListInPostState extends State<PraiseListInPost>
       if (e.response != null) {
         LogUtils.e(e.response.data);
       }
-      LogUtils.e(e.request);
       LogUtils.e(e.message);
       return;
     } catch (e) {

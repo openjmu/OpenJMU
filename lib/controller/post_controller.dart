@@ -448,7 +448,6 @@ class ForwardListInPostState extends State<ForwardListInPost>
       if (e.response != null) {
         LogUtils.e('${e.response.data}');
       } else {
-        LogUtils.e('${e.request}');
         LogUtils.e(e.message);
       }
       return;
@@ -493,7 +492,6 @@ class ForwardListInPostState extends State<ForwardListInPost>
       if (e.response != null) {
         LogUtils.e('${e.response.data}');
       } else {
-        LogUtils.e('${e.request}');
         LogUtils.e(e.message);
       }
       return;
