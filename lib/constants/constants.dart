@@ -48,9 +48,7 @@ const double kAppBarHeight = 86.0;
 class Constants {
   const Constants._();
 
-  /// For test page.
-  /// Set this to [false] before release.
-  static bool get isDebug => !kReleaseMode && true;
+  static const bool isDebug = bool.fromEnvironment('OpenJMUDebug');
 
   /// Whether force logger to print.
   static bool get forceLogging => false;
