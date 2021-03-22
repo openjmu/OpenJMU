@@ -1,3 +1,7 @@
+///
+/// [Author] Alex (https://github.com/AlexV525)
+/// [Date] 2020-01-16 19:10
+///
 import 'dart:async';
 import 'dart:io';
 
@@ -21,6 +25,11 @@ class AppWebView extends StatefulWidget {
     this.withScaffold = true,
     this.keepAlive = false,
   })  : assert(url != null),
+        assert(withCookie != null),
+        assert(withAppBar != null),
+        assert(withAction != null),
+        assert(withScaffold != null),
+        assert(keepAlive != null),
         super(key: key);
 
   final String url;
@@ -379,8 +388,8 @@ class _AppWebViewState extends State<AppWebView>
       initialOptions: InAppWebViewGroupOptions(
         crossPlatform: InAppWebViewOptions(
           applicationNameForUserAgent: 'openjmu-webview',
-          cacheEnabled: widget.withCookie ?? true,
-          clearCache: !widget.withCookie ?? false,
+          cacheEnabled: widget.withCookie,
+          clearCache: !widget.withCookie,
           horizontalScrollBarEnabled: false,
           javaScriptCanOpenWindowsAutomatically: true,
           supportZoom: true,
@@ -410,7 +419,6 @@ class _AppWebViewState extends State<AppWebView>
           allowsLinkPreview: true,
           allowsPictureInPictureMediaPlayback: true,
           isFraudulentWebsiteWarningEnabled: false,
-          sharedCookiesEnabled: true,
         ),
       ),
       onCreateWindow: (
