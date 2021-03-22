@@ -144,6 +144,20 @@ class _AppWebViewState extends State<AppWebView>
     });
   }
 
+  void syncCookies() {
+    final Uri _uri = Uri.parse(url);
+    NetUtils.webViewCookieManager.getCookies(url: _uri).then(
+      (List<Cookie> cookies) {
+        NetUtils.webViewCookieJar.saveFromResponse(
+          _uri,
+          NetUtils.convertWebViewCookies(cookies),
+        );
+      },
+    ).catchError(
+      (Object e) => LogUtils.e('Error when sync WebView\'s cookies: $e'),
+    );
+  }
+
   void loadCourseSchedule() {
     try {
       _webViewController.loadUrl(
@@ -455,6 +469,7 @@ class _AppWebViewState extends State<AppWebView>
           }
         }
         cancelProgress();
+        syncCookies();
       },
       onProgressChanged: (_, int progress) {
         progressController?.add(progress / 100);

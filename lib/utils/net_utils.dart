@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
-    show Cookie;
+    show Cookie, CookieManager;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -28,10 +28,15 @@ class NetUtils {
     BaseOptions(connectTimeout: 15000, followRedirects: true),
   );
 
-  static final DefaultCookieJar cookieJar = DefaultCookieJar();
-  static final CookieManager cookieManager = CookieManager(cookieJar);
-  static final DefaultCookieJar tokenCookieJar = DefaultCookieJar();
-  static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
+  static Future<Directory> get _tempDir => getTemporaryDirectory();
+
+  static PersistCookieJar cookieJar;
+  static PersistCookieJar tokenCookieJar;
+  static PersistCookieJar webViewCookieJar;
+  static CookieManager cookieManager;
+  static CookieManager tokenCookieManager;
+  static final web_view.CookieManager webViewCookieManager =
+      web_view.CookieManager.instance();
 
   static final ValueNotifier<bool> isOuterNetwork = ValueNotifier<bool>(false);
   static final ValueNotifier<Set<Uri>> outerFailedUris =
@@ -55,7 +60,9 @@ class NetUtils {
     dio.unlock();
   }
 
-  static void initConfig() {
+  static Future<void> initConfig() async {
+    await initCookieManagement();
+
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       if (_isProxyEnabled) {
@@ -135,11 +142,68 @@ class NetUtils {
     tokenDio.interceptors.add(tokenCookieManager);
   }
 
+  static Future<void> initCookieManagement() async {
+    // Initialize cookie jars.
+    final Directory _d = await _tempDir;
+    if (!Directory('${_d.path}/cookie_jar').existsSync()) {
+      Directory('${_d.path}/cookie_jar').createSync();
+    }
+    if (!Directory('${_d.path}/token_cookie_jar').existsSync()) {
+      Directory('${_d.path}/token_cookie_jar').createSync();
+    }
+    if (!Directory('${_d.path}/web_view_cookie_jar').existsSync()) {
+      Directory('${_d.path}/web_view_cookie_jar').createSync();
+    }
+    cookieJar = PersistCookieJar(
+      storage: FileStorage('${_d.path}/cookie_jar'),
+    );
+    tokenCookieJar = PersistCookieJar(
+      storage: FileStorage('${_d.path}/token_cookie_jar'),
+    );
+    webViewCookieJar = PersistCookieJar(
+      storage: FileStorage('${_d.path}/web_view_cookie_jar'),
+    );
+    cookieManager = CookieManager(cookieJar);
+    tokenCookieManager = CookieManager(tokenCookieJar);
+  }
+
+  /// Recover cookies from persist storage.
+  static void initPersistWebViewCookies() {
+    for (final MapEntry<String,
+            Map<String, Map<String, SerializableCookie>>> domainMap
+        in webViewCookieJar.domainCookies.entries) {
+      final String domain = domainMap.key;
+      for (final MapEntry<String, Map<String, SerializableCookie>> pathMap
+          in domainMap.value.entries) {
+        final String path = pathMap.key;
+        for (final MapEntry<String, SerializableCookie> _sCookie
+            in pathMap.value.entries) {
+          final Cookie cookie = _sCookie.value.cookie;
+          webViewCookieManager.setCookie(
+            url: Uri.parse('http://$domain'),
+            name: cookie.name,
+            value: cookie.value,
+            domain: domain,
+            path: path,
+            isHttpOnly: cookie.httpOnly,
+          );
+          webViewCookieManager.setCookie(
+            url: Uri.parse('https://$domain'),
+            name: cookie.name,
+            value: cookie.value,
+            domain: domain,
+            path: path,
+            isHttpOnly: cookie.httpOnly,
+          );
+        }
+      }
+    }
+  }
+
   static List<Cookie> convertWebViewCookies(List<web_view.Cookie> cookies) {
     if (cookies?.isNotEmpty != true) {
       return const <Cookie>[];
     }
-    LogUtils.d('Replacing cookies: $cookies');
     final List<Cookie> replacedCookies = cookies.map((web_view.Cookie cookie) {
       return Cookie(cookie.name, cookie.value?.toString())
         ..domain = cookie.domain
@@ -147,7 +211,6 @@ class NetUtils {
         ..secure = cookie.isSecure ?? false
         ..path = cookie.path;
     }).toList();
-    LogUtils.d('Replaced cookies: $replacedCookies');
     return replacedCookies;
   }
 
@@ -326,9 +389,11 @@ class NetUtils {
       await Future.wait<void>(
         <Future<void>>[
           cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          tokenCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          webViewCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
+          cookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
           tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
-          cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
-          tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
+          webViewCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
         ],
       );
     }

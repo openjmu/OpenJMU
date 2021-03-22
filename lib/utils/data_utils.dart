@@ -201,8 +201,6 @@ class DataUtils {
         blowfish: _settingsBox.get(spBlowfish) as String,
         ticket: _settingsBox.get(spTicket) as String,
       );
-      NetUtils.cookieJar.deleteAll();
-      NetUtils.tokenCookieJar.deleteAll();
       final DateTime _start = currentTime;
       final Map<String, dynamic> response =
           (await NetUtils.tokenDio.post<Map<String, dynamic>>(
@@ -253,7 +251,7 @@ class DataUtils {
             ...vpnCookies,
           ];
           for (final Cookie cookie in cookies) {
-            Instances.webViewCookieManager.setCookie(
+            NetUtils.webViewCookieManager.setCookie(
               url: Uri.parse('${cookie.domain}${cookie.path}'),
               name: cookie.name,
               value: cookie.value,

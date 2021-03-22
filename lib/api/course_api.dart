@@ -25,7 +25,7 @@ class CourseAPI {
         ? API.replaceWithWebVPN(API.courseScheduleCourses)
         : API.courseScheduleCourses;
     final List<Cookie> cookies = NetUtils.convertWebViewCookies(
-      await Instances.webViewCookieManager.getCookies(url: Uri.parse(url)),
+      await NetUtils.webViewCookieManager.getCookies(url: Uri.parse(url)),
     );
     await NetUtils.updateDomainsCookies(
       <String>[
@@ -47,7 +47,7 @@ class CourseAPI {
         ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
         : API.courseScheduleClassRemark;
     final List<Cookie> cookies = NetUtils.convertWebViewCookies(
-      await Instances.webViewCookieManager.getCookies(url: Uri.parse(url)),
+      await NetUtils.webViewCookieManager.getCookies(url: Uri.parse(url)),
     );
     await NetUtils.updateDomainsCookies(
       <String>[

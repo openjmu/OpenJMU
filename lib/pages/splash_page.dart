@@ -38,8 +38,6 @@ class SplashState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Instances.webViewCookieManager.deleteAllCookies();
-
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         firstFramed = true;
@@ -125,6 +123,7 @@ class SplashState extends State<SplashPage> {
             Widget child;
             if (!isUserLogin || forceToLogin) {
               child = const LoginPage();
+              NetUtils.webViewCookieManager.deleteAllCookies();
             } else if (HiveFieldUtils.getFirstOpen() != true) {
               child = const TutorialPage();
             } else {
@@ -140,6 +139,7 @@ class SplashState extends State<SplashPage> {
     } catch (e) {
       LogUtils.e('Error when navigating: $e');
       isNavigating = false;
+      NetUtils.webViewCookieManager.deleteAllCookies();
     }
   }
 

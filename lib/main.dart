@@ -36,9 +36,14 @@ Future<void> main() async {
 
   await Hive.initFlutter();
   await HiveBoxes.openBoxes();
-  await DeviceUtils.initDeviceInfo();
-  await PackageUtils.initPackageInfo();
-  NetUtils.initConfig();
+  await Future.wait(
+    <Future<void>>[
+      DeviceUtils.initDeviceInfo(),
+      PackageUtils.initPackageInfo(),
+      NetUtils.initConfig(),
+    ],
+    eagerError: true,
+  );
   NotificationUtils.initSettings();
   _customizeErrorWidget();
 
@@ -86,6 +91,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       ..on<TicketGotEvent>().listen((TicketGotEvent event) {
         initPushService();
         MessageUtils.initMessageSocket();
+        NetUtils.initPersistWebViewCookies();
         if (currentUser.isTeacher != true) {
           if (currentUser.isPostgraduate != true) {
             currentContext.read<CoursesProvider>().initCourses();
