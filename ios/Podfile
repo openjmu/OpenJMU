@@ -78,6 +78,18 @@ post_install do |installer|
       if Gem::Version.new('9.0') > Gem::Version.new(config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
       end
+      # Remove unnecessary permissions.
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_BLUETOOTH=0',
+        'PERMISSION_CONTACTS=0',
+        'PERMISSION_LOCATION=0',
+        'PERMISSION_MEDIA_LIBRARY=0',
+        'PERMISSION_MICROPHONE=0',
+        'PERMISSION_REMINDERS=0',
+        'PERMISSION_SPEECH_RECOGNIZER=0',
+        'PERMISSION_SENSORS=0'
+      ]
     end
   end
 end
