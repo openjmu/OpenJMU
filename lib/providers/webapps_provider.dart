@@ -164,7 +164,7 @@ class WebAppsProvider extends ChangeNotifier {
 
   Future<void> saveCommonApps() async {
     if (_commonBox.keys?.contains(currentUser.uid) ?? false) {
-      _commonBox.get(currentUser.uid)?.clear();
+      _commonBox.put(currentUser.uid, <WebApp>[]);
     }
     final List<WebApp> list = List<WebApp>.from(commonWebApps);
     await _commonBox.put(currentUser.uid, list);
