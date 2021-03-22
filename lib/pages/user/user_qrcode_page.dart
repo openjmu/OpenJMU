@@ -127,32 +127,37 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black54,
-      child: Stack(
-        children: <Widget>[
-          Tapper(
-            onTap: Navigator.of(context).pop,
-            child: const SizedBox.expand(),
-          ),
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.w),
-              child: Container(
-                width: minWidth / 1.5,
-                color: context.theme.colorScheme.surface,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _qrWidget(context),
-                    const LineDivider(),
-                    _saveButton(context),
-                  ],
+    return Theme(
+      data: context.watch<ThemesProvider>().lightTheme,
+      child: Builder(
+        builder: (BuildContext c) => Material(
+          color: Colors.black54,
+          child: Stack(
+            children: <Widget>[
+              Tapper(
+                onTap: Navigator.of(c).pop,
+                child: const SizedBox.expand(),
+              ),
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.w),
+                  child: Container(
+                    width: minWidth / 1.5,
+                    color: c.theme.colorScheme.surface,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        _qrWidget(c),
+                        const LineDivider(),
+                        _saveButton(c),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
