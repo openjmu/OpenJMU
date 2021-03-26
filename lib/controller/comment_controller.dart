@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_list/extended_list.dart';
 

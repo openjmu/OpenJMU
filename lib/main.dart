@@ -58,8 +58,6 @@ class OpenJMUApp extends StatefulWidget {
 class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   StreamSubscription<ConnectivityResult> connectivitySubscription;
 
-  int initAction;
-
   Brightness get _platformBrightness =>
       Screens.mediaQuery.platformBrightness ?? Brightness.light;
 
@@ -89,9 +87,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
     Instances.eventBus
       ..on<TicketGotEvent>().listen((TicketGotEvent event) {
-        initPushService();
         MessageUtils.initMessageSocket();
-        NetUtils.initPersistWebViewCookies();
         if (currentUser.isTeacher != true) {
           if (currentUser.isPostgraduate != true) {
             currentContext.read<CoursesProvider>().initCourses();
@@ -107,6 +103,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         if (UserAPI.backpackItemTypes.isEmpty) {
           UserAPI.getBackpackItemType();
         }
+        initPushService();
       })
       ..on<LogoutEvent>().listen((LogoutEvent event) {
         navigatorState.pushNamedAndRemoveUntil(
@@ -278,7 +275,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   },
                   title: 'OpenJMU',
                   theme: theme,
-                  home: SplashPage(initAction: initAction),
+                  home: const SplashPage(),
                   navigatorObservers: <NavigatorObserver>[
                     Instances.routeObserver,
                   ],

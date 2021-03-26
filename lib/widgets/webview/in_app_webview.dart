@@ -148,7 +148,11 @@ class _AppWebViewState extends State<AppWebView>
     final Uri _uri = Uri.parse(url);
     NetUtils.webViewCookieManager.getCookies(url: _uri).then(
       (List<Cookie> cookies) {
-        NetUtils.webViewCookieJar.saveFromResponse(
+        NetUtils.cookieJar.saveFromResponse(
+          _uri,
+          NetUtils.convertWebViewCookies(cookies),
+        );
+        NetUtils.tokenCookieJar.saveFromResponse(
           _uri,
           NetUtils.convertWebViewCookies(cookies),
         );

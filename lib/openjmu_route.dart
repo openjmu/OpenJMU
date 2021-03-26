@@ -203,7 +203,6 @@ FFRouteSettings getRouteSettings({
         arguments: arguments,
         widget: SplashPage(
           key: asT<Key>(safeArguments['key']),
-          initAction: asT<int>(safeArguments['initAction']),
         ),
         routeName: '启动页',
       );

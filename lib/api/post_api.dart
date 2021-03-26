@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:core';
 import 'dart:typed_data';
 
-import 'package:dio/dio.dart';
-
 import 'package:openjmu/constants/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
 

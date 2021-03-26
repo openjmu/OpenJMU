@@ -11,7 +11,7 @@ import 'package:openjmu/constants/constants.dart';
 export 'dart:io' show Cookie;
 
 export 'package:dartx/dartx.dart';
-export 'package:dio/dio.dart' show CancelToken, DioError, FormData, Response;
+export 'package:dio/dio.dart';
 export 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
 export 'package:flutter_icons/flutter_icons.dart';
 export 'package:flutter_svg/flutter_svg.dart';

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -25,6 +24,10 @@ class DataUtils {
       blowfish: blowfish,
     );
     try {
+      if (!await UserAPI.webVpnLogin(username, password)) {
+        showToast('登录失败');
+        return false;
+      }
       final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
       currentUser = currentUser.copyWith(
         sid: loginData['sid'] as String,
@@ -73,11 +76,15 @@ class DataUtils {
   static void logout() {
     UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
-    NetUtils.post<void>(API.logout).whenComplete(() {
+    Future.wait(<Future<void>>[
+      NetUtils.post<void>(API.logout),
+      UserAPI.webVpnLogout(),
+    ]).whenComplete(() {
       NetUtils.dio.clear();
       NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
+      NetUtils.webViewCookieManager.deleteAllCookies();
       NetUtils.isOuterNetwork.value = false;
       clearLoginInfo();
     });
@@ -242,15 +249,7 @@ class DataUtils {
         if (dioError.response.statusCode == HttpStatus.movedTemporarily) {
           final List<Cookie> mainSiteCookies = await NetUtils.cookieJar
               .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
-          final List<Cookie> vpnCookies =
-              await NetUtils.cookieJar.loadForRequest(
-            Uri.parse(API.webVpnHost.replaceAll(RegExp(r'http(s)?://'), '')),
-          );
-          final List<Cookie> cookies = <Cookie>[
-            ...mainSiteCookies,
-            ...vpnCookies,
-          ];
-          for (final Cookie cookie in cookies) {
+          for (final Cookie cookie in mainSiteCookies) {
             NetUtils.webViewCookieManager.setCookie(
               url: Uri.parse('${cookie.domain}${cookie.path}'),
               name: cookie.name,

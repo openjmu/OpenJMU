@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart';
 
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
@@ -40,6 +42,8 @@ class UserAPI {
       content: '您正在退出账号，请确认操作',
     );
     if (confirm) {
+      NetUtils.dio.clear();
+      NetUtils.tokenDio.clear();
       Instances.eventBus.fire(LogoutEvent());
     }
   }
@@ -309,4 +313,130 @@ class UserAPI {
       }
     }
   }
+
+  static Future<bool> webVpnLogin(String username, String password) async {
+    try {
+      final Response<String> r = await NetUtils.tokenDio.get(API.webVpnHost);
+      if (r.data.contains('退出登录') && !r.data.contains('登录 Login')) {
+        return true;
+      }
+      final dom.Document document = parse(r.data);
+      final dom.Element tokenElement = document.querySelector(
+        'input[name="authenticity_token"]',
+      );
+      final String token = tokenElement.attributes['value'];
+      await HiveFieldUtils.setWebVpnToken(token);
+
+      final Response<String> loginRes = await NetUtils.tokenDio.post<String>(
+        '${API.webVpnHost}/users/sign_in',
+        queryParameters: <String, String>{
+          'utf8': '✓',
+          'authenticity_token': token,
+          'user[login]': username,
+          'user[password]': password,
+          'user[dymatice_code]': 'unknown',
+          'user[otp_with_capcha]': 'false',
+          'commit': '登录 Login',
+        },
+        options: Options(contentType: 'application/x-www-form-urlencoded'),
+      );
+      await _setVPNsValues(loginRes);
+      return true;
+    } on DioError catch (dioError) {
+      if (dioError.response.statusCode == HttpStatus.found) {
+        return webVpnUpdate();
+      } else {
+        LogUtils.e('Failed to login WebVPN: $dioError');
+        await _clearVPNsValues();
+        return false;
+      }
+    } catch (e) {
+      LogUtils.e('Error when login to WebVPN: $e');
+      await _clearVPNsValues();
+      return false;
+    }
+  }
+
+  static Future<bool> webVpnUpdate() async {
+    try {
+      final Response<String> res = await NetUtils.tokenDio.get<String>(
+        '${API.webVpnHost}/vpn_key/update',
+        options: Options(contentType: 'application/x-www-form-urlencoded'),
+      );
+      await _setVPNsValues(res);
+      return true;
+    } on DioError catch (dioError) {
+      if (dioError.response.statusCode == HttpStatus.found) {
+        await _setVPNsValues(dioError.response);
+        return true;
+      } else {
+        await _clearVPNsValues();
+        LogUtils.e('Failed to login WebVPN: $dioError');
+        return false;
+      }
+    } catch (e) {
+      await _clearVPNsValues();
+      LogUtils.e('Error when login to WebVPN: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> webVpnLogout() async {
+    try {
+      await NetUtils.tokenDio.post<String>(
+        '${API.webVpnHost}/users/sign_out',
+        queryParameters: <String, String>{
+          '_method': 'delete',
+          'authenticity_token': HiveFieldUtils.getWebVpnToken(),
+        },
+        options: Options(
+          contentType: 'application/x-www-form-urlencoded',
+          headers: <String, String>{
+            'Host': 'webvpn.jmu.edu.cn',
+            'Origin': 'https://webvpn.jmu.edu.cn',
+            'Referer': 'https://webvpn.jmu.edu.cn/',
+          },
+        ),
+      );
+      await _clearVPNsValues();
+      return true;
+    } catch (e) {
+      await _clearVPNsValues();
+      LogUtils.e('Error when logout from WebVPN: $e');
+      return false;
+    }
+  }
+
+  static Future<void> _setVPNsValues(Response<dynamic> res) async {
+    final List<Cookie> cookies = <Cookie>[
+      ...res.headers['set-cookie']
+          .map((String s) => Cookie.fromSetCookieValue(s))
+          .toList(),
+      Cookie('SERVERID', 'Server1'),
+    ];
+    await Future.wait(<Future<void>>[
+      NetUtils.updateDomainsCookies(
+        <String>['https://webvpn.jmu.edu.cn/'],
+        cookies,
+      ),
+      for (final Cookie cookie in cookies)
+        NetUtils.webViewCookieManager.setCookie(
+          url: Uri.parse('http://webvpn.jmu.edu.cn/'),
+          name: cookie.name,
+          value: cookie.value,
+          domain: 'webvpn.jmu.edu.cn',
+          isSecure: cookie.secure,
+        ),
+      for (final Cookie cookie in cookies)
+        NetUtils.webViewCookieManager.setCookie(
+          url: Uri.parse('https://webvpn.jmu.edu.cn/'),
+          name: cookie.name,
+          value: cookie.value,
+          domain: 'webvpn.jmu.edu.cn',
+          isSecure: cookie.secure,
+        ),
+    ]);
+  }
+
+  static Future<void> _clearVPNsValues() => HiveFieldUtils.setWebVpnToken(null);
 }

@@ -171,7 +171,8 @@ class CoursesProvider extends ChangeNotifier {
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
     } on DioError catch (dioError) {
       if (!isOuterNetwork &&
-          dioError.response?.statusCode == HttpStatus.forbidden) {
+          (dioError.response?.statusCode == HttpStatus.forbidden ||
+              dioError.type == DioErrorType.connectTimeout)) {
         updateCourses(isOuterNetwork: true);
       } else {
         _showError = true;

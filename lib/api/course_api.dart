@@ -46,16 +46,6 @@ class CourseAPI {
     final String url = isOuterNetwork
         ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
         : API.courseScheduleClassRemark;
-    final List<Cookie> cookies = NetUtils.convertWebViewCookies(
-      await NetUtils.webViewCookieManager.getCookies(url: Uri.parse(url)),
-    );
-    await NetUtils.updateDomainsCookies(
-      <String>[
-        API.replaceWithWebVPN(API.courseScheduleClassRemark),
-        API.courseScheduleClassRemark,
-      ],
-      cookies,
-    );
     return NetUtils.get(
       url,
       queryParameters: <String, dynamic>{'sid': currentUser.sid},

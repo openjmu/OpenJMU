@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_list/extended_list.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:dio/dio.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';

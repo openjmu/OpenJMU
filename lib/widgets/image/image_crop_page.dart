@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart' hide MultipartFile;
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:path/path.dart' as path;

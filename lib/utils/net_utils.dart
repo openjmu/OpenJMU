@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
@@ -32,7 +31,6 @@ class NetUtils {
 
   static PersistCookieJar cookieJar;
   static PersistCookieJar tokenCookieJar;
-  static PersistCookieJar webViewCookieJar;
   static CookieManager cookieManager;
   static CookieManager tokenCookieManager;
   static final web_view.CookieManager webViewCookieManager =
@@ -160,44 +158,8 @@ class NetUtils {
     tokenCookieJar = PersistCookieJar(
       storage: FileStorage('${_d.path}/token_cookie_jar'),
     );
-    webViewCookieJar = PersistCookieJar(
-      storage: FileStorage('${_d.path}/web_view_cookie_jar'),
-    );
     cookieManager = CookieManager(cookieJar);
     tokenCookieManager = CookieManager(tokenCookieJar);
-  }
-
-  /// Recover cookies from persist storage.
-  static void initPersistWebViewCookies() {
-    for (final MapEntry<String,
-            Map<String, Map<String, SerializableCookie>>> domainMap
-        in webViewCookieJar.domainCookies.entries) {
-      final String domain = domainMap.key;
-      for (final MapEntry<String, Map<String, SerializableCookie>> pathMap
-          in domainMap.value.entries) {
-        final String path = pathMap.key;
-        for (final MapEntry<String, SerializableCookie> _sCookie
-            in pathMap.value.entries) {
-          final Cookie cookie = _sCookie.value.cookie;
-          webViewCookieManager.setCookie(
-            url: Uri.parse('http://$domain'),
-            name: cookie.name,
-            value: cookie.value,
-            domain: domain,
-            path: path,
-            isHttpOnly: cookie.httpOnly,
-          );
-          webViewCookieManager.setCookie(
-            url: Uri.parse('https://$domain'),
-            name: cookie.name,
-            value: cookie.value,
-            domain: domain,
-            path: path,
-            isHttpOnly: cookie.httpOnly,
-          );
-        }
-      }
-    }
   }
 
   static List<Cookie> convertWebViewCookies(List<web_view.Cookie> cookies) {
@@ -390,10 +352,8 @@ class NetUtils {
         <Future<void>>[
           cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
           tokenCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
-          webViewCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
           cookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
           tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
-          webViewCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
         ],
       );
     }

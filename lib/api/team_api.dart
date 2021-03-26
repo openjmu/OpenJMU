@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
