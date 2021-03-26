@@ -120,9 +120,9 @@ class MainPage extends StatefulWidget {
                   onTap: () {
                     ConfirmationDialog.show(
                       c,
-                      title: '校园网未连接',
-                      content: '由于校外网络限制，部分页面可能无法获取最新数据，'
-                          '请连接校园网后重试。',
+                      title: 'WebVPN 已连接',
+                      content: '由于校外网络限制，部分页面将通过 WebVPN 获取数据，'
+                          '但仍有部分页面可能无法获取最新数据，请连接校园网后重试。',
                       showConfirm: true,
                       showCancel: false,
                     );
@@ -145,7 +145,7 @@ class MainPage extends StatefulWidget {
                         ),
                         Gap(6.w),
                         Text(
-                          '校园网未连接',
+                          'WebVPN 已连接',
                           style: TextStyle(height: 1.45, fontSize: 16.sp),
                         ),
                       ],
