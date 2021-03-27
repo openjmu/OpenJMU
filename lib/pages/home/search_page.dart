@@ -87,22 +87,23 @@ class SearchPageState extends State<SearchPage>
 
   Future<void> getPosts(String searchQuery) async {
     bool loadMore = false;
-    if (postList != null && postList.isNotEmpty) {
+    if (postList?.isNotEmpty == true) {
       loadMore = true;
     }
     await PostAPI.getPostList(
       'search',
       isMore: loadMore,
-      lastValue: loadMore ? postList.last.id : 0,
+      lastValue: postList?.last?.id ?? 0,
       additionAttrs: <String, dynamic>{'words': searchQuery},
     ).then((Response<Map<String, dynamic>> response) {
       final List<dynamic> _ps = response.data['topics'] as List<dynamic>;
       if (_ps.isEmpty) {
         _canLoadMore.value = false;
+        return;
       }
+      postList ??= <Post>[];
       for (final dynamic post in _ps) {
         final Post p = Post.fromJson(post['topic'] as Map<String, dynamic>);
-        postList ??= <Post>[];
         postList.add(p);
       }
     }).catchError((dynamic e) {
@@ -114,18 +115,18 @@ class SearchPageState extends State<SearchPage>
     final String query = filteredSearchQuery(content);
     if (query?.isNotEmpty ?? false) {
       _focusNode.unfocus();
-      _loading.value = true;
       if (!isMore) {
         _loaded.value = false;
+        _loading.value = true;
         _canLoadMore.value = true;
         userList?.clear();
         postList = null;
       }
       Future.wait<void>(<Future<void>>[
-        getUsers(content),
+        if (!isMore) getUsers(content),
         getPosts(content),
       ]).then((dynamic _) {
-        _loaded.value = !_loaded.value;
+        _loaded.value = true;
         _loading.value = false;
       });
     } else {
@@ -330,7 +331,9 @@ class SearchPageState extends State<SearchPage>
           );
         } else if (index == postList.length + 1) {
           if (_canLoadMore.value) {
-            search(context, _controller.text, isMore: true);
+            Future<void>.delayed(Duration.zero, () {
+              search(context, _controller.text, isMore: true);
+            });
           }
           return PostCard(postList[index - 2]);
         } else if (index == postList.length + 2) {
