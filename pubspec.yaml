@@ -18,17 +18,17 @@ dependencies:
   badges: ^2.0.0-nullsafety.1
   connectivity: ^3.0.3
   cookie_jar: ^3.0.0-beta2
-  dartx: ^0.7.0
+  dartx: ^0.7.1
   device_info: ^2.0.0
   dio: ^4.0.0-prev3
   dio_cookie_manager: ^2.0.0-prev1
   equatable: ^2.0.0
   event_bus: ^2.0.0
-  extended_image: ^3.0.0
+  extended_image: ^4.0.0
   extended_list: ^3.0.0
   extended_tabs: ^2.0.0
   extended_nested_scroll_view: ^3.0.0
-  extended_text: ^5.0.3
+  extended_text: ^5.0.5
   extended_text_field: ^6.0.1
   ff_annotation_route_library: ^2.0.1
   flutter_displaymode: 0.2.0-nullsafety.0
@@ -44,7 +44,7 @@ dependencies:
   image: ^3.0.2
   image_editor: ^1.0.0
   isolate: ^2.0.2
-  like_button: ^2.0.1
+  like_button: ^2.0.2
   loading_more_list: ^4.0.0
   oktoast: ^3.0.0
   open_file: ^3.1.0
@@ -57,11 +57,11 @@ dependencies:
     git:
       url: https://github.com/CaiJingLong/r_scan.git
       ref: d2f1849f365a1d716d0ade34cfc401f1d6b3d56d
-  url_launcher: ^6.0.2
-  uuid: ^3.0.1
+  url_launcher: ^6.0.3
+  uuid: ^3.0.2
   vibration: ^1.7.4-nullsafety.0
-  video_player: ^2.0.1
-  wechat_assets_picker: ^5.0.3
+  video_player: ^2.1.0
+  wechat_assets_picker: ^5.0.5
   wechat_camera_picker: ^2.1.0
 
 dev_dependencies:

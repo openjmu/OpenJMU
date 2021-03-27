@@ -6,17 +6,23 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
+
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
 
 class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
-  ExtendedTypedNetworkImageProvider(String url) : super(url);
+  ExtendedTypedNetworkImageProvider(String url)
+      : super(url, cacheRawData: true);
+
   ImageFileType _imageType;
+
   ImageFileType get imageType => _imageType ?? _getType(rawImageData);
 
   @override
   Future<ui.Codec> instantiateImageCodec(
-      Uint8List data, DecoderCallback decode) async {
+    Uint8List data,
+    DecoderCallback decode,
+  ) async {
     _imageType = _getType(data);
     return super.instantiateImageCodec(data, decode);
   }

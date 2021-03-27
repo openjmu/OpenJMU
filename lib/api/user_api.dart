@@ -63,6 +63,7 @@ class UserAPI {
       '&size=f${size ?? 152}',
       cache: true,
       cacheKey: '${uid ?? currentUser.uid}_${t ?? avatarLastModified}',
+      cacheRawData: true,
     );
   }
 

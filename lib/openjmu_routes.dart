@@ -226,7 +226,7 @@ class Routes {
   ///
   /// [constructors] :
   ///
-  /// SplashPage : [Key key, int initAction]
+  /// SplashPage : [Key key]
   static const _OpenjmuSplash openjmuSplash = _OpenjmuSplash();
 
   /// '小组动态详情页'
@@ -486,9 +486,8 @@ class _OpenjmuSplash {
 
   String get name => 'openjmu://splash';
 
-  Map<String, dynamic> d({Key key, int initAction}) => <String, dynamic>{
+  Map<String, dynamic> d({Key key}) => <String, dynamic>{
         'key': key,
-        'initAction': initAction,
       };
 
   @override

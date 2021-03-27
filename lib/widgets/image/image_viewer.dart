@@ -203,6 +203,7 @@ class ImageViewerState extends State<ImageViewer>
       child: ExtendedImage.network(
         widget.pics[index].imageUrl,
         fit: BoxFit.contain,
+        cacheRawData: true,
         colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
         mode: ExtendedImageMode.gesture,
         onDoubleTap: updateAnimation,
