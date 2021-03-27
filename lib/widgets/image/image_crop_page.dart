@@ -129,6 +129,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       _controller.changeState('success', title: '头像更新成功');
       _cropping = false;
       UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;
+      Instances.eventBus.fire(UserAvatarUpdateEvent());
       Future<void>.delayed(2200.milliseconds, () {
         Navigator.of(context).pop(true);
       });

@@ -62,7 +62,7 @@ class UserAPI {
       '&_t=${t ?? avatarLastModified}'
       '&size=f${size ?? 152}',
       cache: true,
-      retries: 1,
+      cacheKey: '${uid ?? currentUser.uid}_${t ?? avatarLastModified}',
     );
   }
 

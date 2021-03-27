@@ -35,7 +35,8 @@ class UserAvatar extends StatefulWidget {
 }
 
 class _UserAvatarState extends State<UserAvatar> {
-  ExtendedNetworkImageProvider provider;
+  ExtendedNetworkImageProvider get provider =>
+      UserAPI.getAvatarProvider(uid: _uid);
 
   String get _uid => widget.uid ?? currentUser.uid;
 
@@ -44,9 +45,11 @@ class _UserAvatarState extends State<UserAvatar> {
   @override
   void initState() {
     super.initState();
-    provider = UserAPI.getAvatarProvider(
-      uid: _uid,
-    );
+    Instances.eventBus.on<UserAvatarUpdateEvent>().listen((_) {
+      if (mounted && _uid == currentUser.uid) {
+        setState(() {});
+      }
+    });
   }
 
   void jump(BuildContext context) {

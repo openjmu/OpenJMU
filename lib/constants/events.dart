@@ -155,6 +155,8 @@ class UserFollowEvent {
   final String uid;
 }
 
+class UserAvatarUpdateEvent {}
+
 class ScrollToTopEvent {
   const ScrollToTopEvent({this.tabIndex, this.type});
 
