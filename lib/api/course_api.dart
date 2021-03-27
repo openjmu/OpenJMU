@@ -59,7 +59,7 @@ class CourseAPI {
     return '$hour:$minute';
   }
 
-  static Future<Response<Map<String, dynamic>>> setCustomCourse(
+  static Future<Response<String>> setCustomCourse(
     Map<String, dynamic> course,
   ) async =>
       NetUtils.post(

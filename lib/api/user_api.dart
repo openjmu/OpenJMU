@@ -381,32 +381,6 @@ class UserAPI {
     }
   }
 
-  static Future<bool> webVpnLogout() async {
-    try {
-      await NetUtils.tokenDio.post<String>(
-        '${API.webVpnHost}/users/sign_out',
-        queryParameters: <String, String>{
-          '_method': 'delete',
-          'authenticity_token': HiveFieldUtils.getWebVpnToken(),
-        },
-        options: Options(
-          contentType: 'application/x-www-form-urlencoded',
-          headers: <String, String>{
-            'Host': 'webvpn.jmu.edu.cn',
-            'Origin': 'https://webvpn.jmu.edu.cn',
-            'Referer': 'https://webvpn.jmu.edu.cn/',
-          },
-        ),
-      );
-      await _clearVPNsValues();
-      return true;
-    } catch (e) {
-      await _clearVPNsValues();
-      LogUtils.e('Error when logout from WebVPN: $e');
-      return false;
-    }
-  }
-
   static Future<void> _setVPNsValues(Response<dynamic> res) async {
     final List<Cookie> cookies = <Cookie>[
       ...res.headers['set-cookie']
@@ -419,14 +393,6 @@ class UserAPI {
         <String>['https://webvpn.jmu.edu.cn/'],
         cookies,
       ),
-      for (final Cookie cookie in cookies)
-        NetUtils.webViewCookieManager.setCookie(
-          url: Uri.parse('http://webvpn.jmu.edu.cn/'),
-          name: cookie.name,
-          value: cookie.value,
-          domain: 'webvpn.jmu.edu.cn',
-          isSecure: cookie.secure,
-        ),
       for (final Cookie cookie in cookies)
         NetUtils.webViewCookieManager.setCookie(
           url: Uri.parse('https://webvpn.jmu.edu.cn/'),

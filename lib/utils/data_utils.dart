@@ -76,10 +76,7 @@ class DataUtils {
   static void logout() {
     UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
-    Future.wait(<Future<void>>[
-      NetUtils.post<void>(API.logout),
-      UserAPI.webVpnLogout(),
-    ]).whenComplete(() {
+    NetUtils.post<void>(API.logout).whenComplete(() {
       NetUtils.dio.clear();
       NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();

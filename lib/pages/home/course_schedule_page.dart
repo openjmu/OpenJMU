@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:animations/animations.dart';
@@ -1047,8 +1048,8 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
       deleting = true;
     });
     final Course _course = widget.course;
-    Future.wait<Response<Map<String, dynamic>>>(
-      <Future<Response<Map<String, dynamic>>>>[
+    Future.wait<Response<String>>(
+      <Future<Response<String>>>[
         CourseAPI.setCustomCourse(<String, dynamic>{
           'content': Uri.encodeComponent(''),
           'couDayTime': _course.day,
@@ -1062,10 +1063,12 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
           }),
       ],
       eagerError: true,
-    ).then((List<Response<Map<String, dynamic>>> responses) {
+    ).then((List<Response<String>> responses) {
       bool isOk = true;
-      for (final Response<Map<String, dynamic>> response in responses) {
-        if (!(response.data['isOk'] as bool)) {
+      for (final Response<String> response in responses) {
+        final Map<String, dynamic> res =
+            jsonDecode(response.data) as Map<String, dynamic>;
+        if (!(res['isOk'] as bool)) {
           isOk = false;
           break;
         }
@@ -1253,7 +1256,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     if (mounted) {
       setState(() {});
     }
-    Future<Response<Map<String, dynamic>>> editFuture;
+    Future<Response<String>> editFuture;
 
     if (widget.course?.shouldUseRaw ?? false) {
       editFuture = CourseAPI.setCustomCourse(<String, dynamic>{
@@ -1268,12 +1271,14 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
         'coudeTime': widget.course?.time ?? widget.coordinate[1],
       });
     }
-    editFuture.then((Response<Map<String, dynamic>> response) {
+    editFuture.then((Response<String> response) {
+      final Map<String, dynamic> res =
+          jsonDecode(response.data) as Map<String, dynamic>;
       loading = false;
       if (mounted) {
         setState(() {});
       }
-      if (response.data['isOk'] as bool) {
+      if (res['isOk'] as bool) {
         navigatorState.popUntil((_) => _.isFirst);
       }
       Instances.eventBus.fire(CourseScheduleRefreshEvent());
