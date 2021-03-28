@@ -13,7 +13,6 @@ export 'dart:io' show Cookie;
 export 'package:dartx/dartx.dart';
 export 'package:dio/dio.dart';
 export 'package:ff_annotation_route_library/ff_annotation_route_library.dart';
-export 'package:flutter_icons/flutter_icons.dart';
 export 'package:flutter_svg/flutter_svg.dart';
 export 'package:hive/hive.dart' show Box, HiveType, HiveField;
 export 'package:intl/intl.dart' show DateFormat;

@@ -17,11 +17,11 @@ dependencies:
   animations: ^2.0.0
   badges: ^2.0.0-nullsafety.1
   connectivity: ^3.0.3
-  cookie_jar: ^3.0.0-beta2
+  cookie_jar: ^3.0.0
   dartx: ^0.7.1
   device_info: ^2.0.0
-  dio: ^4.0.0-prev3
-  dio_cookie_manager: ^2.0.0-prev1
+  dio: ^4.0.0
+  dio_cookie_manager: ^2.0.0
   equatable: ^2.0.0
   event_bus: ^2.0.0
   extended_image: ^4.0.0
@@ -32,11 +32,16 @@ dependencies:
   extended_text_field: ^6.0.1
   ff_annotation_route_library: ^2.0.1
   flutter_displaymode: 0.2.0-nullsafety.0
-  flutter_icons: ^1.1.0
-  flutter_inappwebview: ^5.1.0+4
+  flutter_inappwebview: ^5.3.0
   flutter_local_notifications: ^5.0.0
-  flutter_native_image: ^0.0.5+3
-  flutter_screenutil: 2.3.1
+  flutter_native_image:
+    git:
+      url: https://github.com/AlexV525/flutter_native_image.git
+      ref: e80174ceff91c8c5e5a0826f24f143ab2ce3ae24
+  flutter_screenutil:
+    git:
+      url: https://github.com/Alexv525/flutter_screenutil.git
+      ref: c04266e796820f5bde6aca1c48f9409a4b5ce61d
   flutter_svg: ^0.21.0-nullsafety.0
   hive: ^2.0.0
   hive_flutter: ^1.0.0
@@ -55,14 +60,14 @@ dependencies:
   qr_flutter: ^4.0.0
   r_scan:
     git:
-      url: https://github.com/CaiJingLong/r_scan.git
-      ref: d2f1849f365a1d716d0ade34cfc401f1d6b3d56d
+      url: https://github.com/AlexV525/r_scan.git
+      ref: b311b82c097ccecc1724bdeb4053899c5aa03488
   url_launcher: ^6.0.3
   uuid: ^3.0.2
   vibration: ^1.7.4-nullsafety.0
   video_player: ^2.1.0
-  wechat_assets_picker: ^5.0.5
-  wechat_camera_picker: ^2.1.0
+  wechat_assets_picker: ^5.1.0
+  wechat_camera_picker: ^2.1.1
 
 dev_dependencies:
   build_runner: ^1.11.5
