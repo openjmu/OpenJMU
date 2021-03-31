@@ -126,6 +126,7 @@ class ScoresProvider extends ChangeNotifier {
     if (!loading) {
       loading = true;
     }
+    _scoreData = '';
     try {
       _socket?.add(jsonEncode(<String, dynamic>{
         'uid': currentUser.uid,
@@ -174,6 +175,7 @@ class ScoresProvider extends ChangeNotifier {
           _scores = scoreList;
         }
       }
+      _scoreData = '';
       updateScoreCache();
       if (_loadError) {
         _loadError = false;
@@ -186,7 +188,6 @@ class ScoresProvider extends ChangeNotifier {
       LogUtils.d(
         'Scores decoded successfully with ${_scores?.length ?? 0} scores.',
       );
-      _scoreData = '';
     } catch (e) {
       LogUtils.e('Decode scores response error: $e');
     }
