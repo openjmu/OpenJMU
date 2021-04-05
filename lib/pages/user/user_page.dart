@@ -220,19 +220,12 @@ class UserPageState extends State<UserPage>
           userAvatar,
           Gap(16.w),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Flexible(child: usernameWidget),
-                    Gap(8.w),
-                    sexualWidget,
-                    levelWidget,
-                  ],
-                ),
-                signatureWidget(context),
+                Flexible(child: usernameWidget),
+                Gap(8.w),
+                sexualWidget,
+                levelWidget,
               ],
             ),
           ),
@@ -452,38 +445,39 @@ class UserPageState extends State<UserPage>
           );
         }
       },
-      child: ValueListenableBuilder<UserInfo>(
-        valueListenable: user,
-        builder: (_, UserInfo value, __) => Row(
-          children: <Widget>[
-            if (isCurrentUser)
-              Padding(
-                padding: EdgeInsets.only(right: 3.w),
-                child: SvgPicture.asset(
-                  R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
-                  color: context.textTheme.caption.color,
-                  width: 20.w,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: ValueListenableBuilder<UserInfo>(
+          valueListenable: user,
+          builder: (_, UserInfo value, __) => Row(
+            children: <Widget>[
+              if (isCurrentUser)
+                Padding(
+                  padding: EdgeInsets.only(right: 3.w),
+                  child: SvgPicture.asset(
+                    R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
+                    color: context.textTheme.caption.color,
+                    width: 20.w,
+                  ),
+                ),
+              Expanded(
+                child: ExtendedText(
+                  () {
+                    if (value == null) {
+                      return '';
+                    } else {
+                      return value.signature ?? '这个人很懒，什么都没写';
+                    }
+                  }(),
+                  style: context.textTheme.caption.copyWith(
+                    fontSize: 18.sp,
+                  ),
+                  textAlign: TextAlign.start,
+                  specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
                 ),
               ),
-            Expanded(
-              child: ExtendedText(
-                () {
-                  if (value == null) {
-                    return '';
-                  } else {
-                    return value.signature ?? '这个人很懒，什么都没写';
-                  }
-                }(),
-                style: context.textTheme.caption.copyWith(
-                  fontSize: 18.sp,
-                ),
-                textAlign: TextAlign.start,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -620,6 +614,8 @@ class UserPageState extends State<UserPage>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   _userInfo(context),
+                  VGap(6.w),
+                  signatureWidget(context),
                   VGap(16.w),
                   tagsWidget,
                   if (isCurrentUser) userTabBar,
