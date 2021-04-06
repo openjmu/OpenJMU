@@ -108,14 +108,12 @@ class _AppWebViewState extends State<AppWebView>
   @override
   void initState() {
     super.initState();
-
     url = (widget.url ?? url).trim();
     title.value = (widget.app?.name ?? widget.title ?? title.value).trim();
-
     if (url.startsWith(API.labsHost) && currentIsDark) {
       url += '&night=1';
     }
-
+    _handleWebVPNUrl();
     _webView = newWebView;
 
     Instances.eventBus
@@ -133,6 +131,17 @@ class _AppWebViewState extends State<AppWebView>
     progressController.close();
     _progressCancelTimer?.cancel();
     super.dispose();
+  }
+
+  /// If users are visiting web apps from outer network, try to replace the url
+  /// with the WebVPN version.
+  void _handleWebVPNUrl() {
+    if (widget.app != null &&
+        widget.app.name != 'WEBVPN' &&
+        widget.app.code != '10086' && // Skip WebVPN itself.
+        NetUtils.isOuterNetwork.value) {
+      url = API.replaceWithWebVPN(url);
+    }
   }
 
   void cancelProgress([Duration duration = const Duration(seconds: 1)]) {

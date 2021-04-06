@@ -61,6 +61,7 @@ class API {
   static const String upApiHost = 'https://upapi.jmu.edu.cn';
   static const String jwglHost = 'http://jwgls.jmu.edu.cn';
   static const String labsHost = 'http://labs.jmu.edu.cn';
+  static const String ssoHost = 'http://sso.jmu.edu.cn';
   static const String webVpnHost = 'https://webvpn.jmu.edu.cn';
   static const String pushHost = 'http://push.openjmu.xyz:8787';
 
@@ -318,12 +319,20 @@ class API {
   /// 例如：http://labs.jmu.edu.cn
   /// 结果：https://labs-jmu-edu-cn.webvpn.jmu.edu.cn
   static String replaceWithWebVPN(String url) {
+    assert(url.startsWith(RegExp(r'http|https')));
     LogUtils.d('Replacing url: $url');
-    final Uri previousUri = Uri.parse(url);
-    final String concatHost = previousUri.host.replaceAll('.', '-');
-    final String joinedHost = 'https://$concatHost.'
-        '${API.webVpnHost.replaceAll('https://', '')}';
-    final String replacedUrl = url.replaceAll(API.labsHost, joinedHost);
+    final Uri uri = Uri.parse(url);
+    String newHost = uri.host.replaceAll('.', '-');
+    if (uri.port != 0 && uri.port != 80) {
+      newHost += '-${uri.port}';
+    }
+    String replacedUrl = 'https://$newHost.webvpn.jmu.edu.cn';
+    if (uri.path.isNotEmpty) {
+      replacedUrl += uri.path;
+    }
+    if (uri.query.isNotEmpty) {
+      replacedUrl += '?${uri.query}';
+    }
     LogUtils.d('Replaced with: $replacedUrl');
     return replacedUrl;
   }

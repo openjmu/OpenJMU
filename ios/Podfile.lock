@@ -31,7 +31,7 @@ PODS:
     - Flutter
   - photo_manager (0.0.1):
     - Flutter
-  - r_scan (0.0.1):
+  - r_scan (0.1.0):
     - Flutter
     - ZXingObjCCopy (~> 3.6.5)
   - Reachability (3.2)
@@ -46,23 +46,23 @@ PODS:
   - ZXingObjCCopy/All (3.6.5)
 
 DEPENDENCIES:
-  - camera (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/camera-0.8.0//ios/camera.podspec`)
+  - camera (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/camera-0.8.1//ios/camera.podspec`)
   - connectivity (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/connectivity-3.0.3//ios/connectivity.podspec`)
   - device_info (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/device_info-2.0.0//ios/device_info.podspec`)
   - Flutter (from `Flutter`)
-  - "flutter_inappwebview (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-5.1.0+4//ios/flutter_inappwebview.podspec`)"
+  - flutter_inappwebview (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-5.3.0//ios/flutter_inappwebview.podspec`)
   - flutter_local_notifications (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-5.0.0//ios/flutter_local_notifications.podspec`)
-  - "flutter_native_image (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec`)"
+  - flutter_native_image (from `/Users/alex/.pub-cache/git/flutter_native_image-e80174ceff91c8c5e5a0826f24f143ab2ce3ae24//ios/flutter_native_image.podspec`)
   - image_editor (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/image_editor-1.0.0//ios/image_editor.podspec`)
   - open_file (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.1.0//ios/open_file.podspec`)
   - package_info (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/package_info-2.0.0//ios/package_info.podspec`)
   - path_provider (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/path_provider-2.0.1//ios/path_provider.podspec`)
   - permission_handler (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-6.1.1//ios/permission_handler.podspec`)
-  - photo_manager (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.0.1//ios/photo_manager.podspec`)
-  - r_scan (from `/Users/alex/.pub-cache/git/r_scan-d2f1849f365a1d716d0ade34cfc401f1d6b3d56d//ios/r_scan.podspec`)
-  - url_launcher (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-6.0.2//ios/url_launcher.podspec`)
+  - photo_manager (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.0.6//ios/photo_manager.podspec`)
+  - r_scan (from `/Users/alex/.pub-cache/git/r_scan-b311b82c097ccecc1724bdeb4053899c5aa03488//ios/r_scan.podspec`)
+  - url_launcher (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-6.0.3//ios/url_launcher.podspec`)
   - vibration (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/vibration-1.7.4-nullsafety.0//ios/vibration.podspec`)
-  - video_player (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/video_player-2.0.2//ios/video_player.podspec`)
+  - video_player (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/video_player-2.1.0//ios/video_player.podspec`)
 
 SPEC REPOS:
   https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
@@ -72,7 +72,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   camera:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/camera-0.8.0//ios/camera.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/camera-0.8.1//ios/camera.podspec"
   connectivity:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/connectivity-3.0.3//ios/connectivity.podspec"
   device_info:
@@ -80,11 +80,11 @@ EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_inappwebview:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-5.1.0+4//ios/flutter_inappwebview.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-5.3.0//ios/flutter_inappwebview.podspec"
   flutter_local_notifications:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-5.0.0//ios/flutter_local_notifications.podspec"
   flutter_native_image:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_native_image-0.0.5+3//ios/flutter_native_image.podspec"
+    :path: "/Users/alex/.pub-cache/git/flutter_native_image-e80174ceff91c8c5e5a0826f24f143ab2ce3ae24//ios/flutter_native_image.podspec"
   image_editor:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/image_editor-1.0.0//ios/image_editor.podspec"
   open_file:
@@ -96,15 +96,15 @@ EXTERNAL SOURCES:
   permission_handler:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-6.1.1//ios/permission_handler.podspec"
   photo_manager:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.0.1//ios/photo_manager.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.0.6//ios/photo_manager.podspec"
   r_scan:
-    :path: "/Users/alex/.pub-cache/git/r_scan-d2f1849f365a1d716d0ade34cfc401f1d6b3d56d//ios/r_scan.podspec"
+    :path: "/Users/alex/.pub-cache/git/r_scan-b311b82c097ccecc1724bdeb4053899c5aa03488//ios/r_scan.podspec"
   url_launcher:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-6.0.2//ios/url_launcher.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-6.0.3//ios/url_launcher.podspec"
   vibration:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/vibration-1.7.4-nullsafety.0//ios/vibration.podspec"
   video_player:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/video_player-2.0.2//ios/video_player.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/video_player-2.1.0//ios/video_player.podspec"
 
 SPEC CHECKSUMS:
   camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
@@ -121,7 +121,7 @@ SPEC CHECKSUMS:
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
-  r_scan: 73b806baa9094d33c2c3067f78fb76e350d57a93
+  r_scan: 035ea6995ad1f36e874763fb02c657370052921a
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   vibration: 1ec279c4a1a7a646627b54039d812334b3f1114a
