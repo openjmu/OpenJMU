@@ -167,7 +167,7 @@ class NetUtils {
       return const <Cookie>[];
     }
     final List<Cookie> replacedCookies = cookies.map((web_view.Cookie cookie) {
-      return Cookie(cookie.name, cookie.value?.toString())
+      return Cookie(cookie.name, Uri.encodeComponent(cookie.value.toString()))
         ..domain = cookie.domain
         ..httpOnly = cookie.isHttpOnly ?? false
         ..secure = cookie.isSecure ?? false
