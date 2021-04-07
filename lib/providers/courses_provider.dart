@@ -146,15 +146,39 @@ class CoursesProvider extends ChangeNotifier {
       duration: 300.milliseconds,
     );
     try {
-      final List<Response<String>> responses =
-          await Future.wait<Response<String>>(
-        <Future<Response<String>>>[
-          CourseAPI.getCourse(isOuterNetwork: isOuterNetwork),
-          CourseAPI.getRemark(isOuterNetwork: isOuterNetwork),
-        ],
-      );
-      await courseResponseHandler(responses[0]);
-      await remarkResponseHandler(responses[1]);
+      if (NetUtils.shouldUseWebVPN) {
+        final List<Response<Map<String, dynamic>>> responses =
+            await Future.wait<Response<Map<String, dynamic>>>(
+          <Future<Response<Map<String, dynamic>>>>[
+            CourseAPI.getCourseWithVPN(),
+            CourseAPI.getRemarkWithVPN(),
+          ],
+        );
+        await Future.wait(
+          <Future<void>>[
+            courseResponseHandler(responses[0].data),
+            remarkResponseHandler(responses[1].data),
+          ],
+        );
+      } else {
+        final List<Response<String>> responses =
+            await Future.wait<Response<String>>(
+          <Future<Response<String>>>[
+            CourseAPI.getCourse(),
+            CourseAPI.getRemark(),
+          ],
+        );
+        await Future.wait(
+          <Future<void>>[
+            courseResponseHandler(
+              jsonDecode(responses[0].data) as Map<String, dynamic>,
+            ),
+            remarkResponseHandler(
+              jsonDecode(responses[1].data) as Map<String, dynamic>,
+            ),
+          ],
+        );
+      }
       if (!_firstLoaded) {
         if (dateProvider.currentWeek != null) {
           _firstLoaded = true;
@@ -169,17 +193,6 @@ class CoursesProvider extends ChangeNotifier {
 
       // ignore: invalid_use_of_protected_member
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
-    } on DioError catch (dioError) {
-      if (!isOuterNetwork &&
-          (dioError.response?.statusCode == HttpStatus.forbidden ||
-              dioError.type == DioErrorType.connectTimeout)) {
-        updateCourses(isOuterNetwork: true);
-      } else {
-        _showError = true;
-        _firstLoaded = true;
-        _isOuterError = true;
-        notifyListeners();
-      }
     } catch (e) {
       _showError = !_hasCourses; // 有课则不显示错误
       if (isOuterNetwork && e is FormatException) {
@@ -196,9 +209,7 @@ class CoursesProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> courseResponseHandler(Response<String> response) async {
-    final Map<String, dynamic> data =
-        jsonDecode(response.data) as Map<String, dynamic>;
+  Future<void> courseResponseHandler(Map<String, dynamic> data) async {
     final List<dynamic> _courseList = data['courses'] as List<dynamic>;
     final List<dynamic> _customCourseList = data['othCase'] as List<dynamic>;
     Map<int, Map<int, dynamic>> _s;
@@ -220,9 +231,7 @@ class CoursesProvider extends ChangeNotifier {
     await _courseBox.put(currentUser.uid, Map<int, Map<int, dynamic>>.from(_s));
   }
 
-  Future<void> remarkResponseHandler(Response<String> response) async {
-    final Map<String, dynamic> data =
-        jsonDecode(response.data) as Map<String, dynamic>;
+  Future<void> remarkResponseHandler(Map<String, dynamic> data) async {
     String _r;
     if (data != null) {
       _r = data['classScheduleRemark'] as String;

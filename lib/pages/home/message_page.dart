@@ -51,7 +51,7 @@ class MessagePage extends StatelessWidget {
       child: Row(
         children: <Widget>[
           MainPage.selfPageOpener,
-          MainPage.outerNetworkIndicator(),
+          MainPage.outerNetworkIndicator(context),
           const Spacer(),
           if (context.watch<MessagesProvider>().unreadCount > 0)
             _readAllButton(context),

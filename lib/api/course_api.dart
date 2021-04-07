@@ -18,36 +18,30 @@ class CourseAPI {
 
   static Set<CourseColor> coursesUniqueColor = <CourseColor>{};
 
-  static Future<Response<String>> getCourse({
-    bool isOuterNetwork = false,
-  }) async {
-    final String url = isOuterNetwork
-        ? API.replaceWithWebVPN(API.courseScheduleCourses)
-        : API.courseScheduleCourses;
-    final List<Cookie> cookies = NetUtils.convertWebViewCookies(
-      await NetUtils.webViewCookieManager.getCookies(url: Uri.parse(url)),
-    );
-    await NetUtils.updateDomainsCookies(
-      <String>[
-        API.replaceWithWebVPN(API.courseScheduleCourses),
-        API.courseScheduleCourses,
-      ],
-      cookies,
-    );
+  static Future<Response<String>> getCourse() async {
     return NetUtils.get(
-      url,
+      API.courseScheduleCourses,
       queryParameters: <String, dynamic>{'sid': currentUser.sid},
     );
   }
 
-  static Future<Response<String>> getRemark({
-    bool isOuterNetwork = false,
-  }) async {
-    final String url = isOuterNetwork
-        ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
-        : API.courseScheduleClassRemark;
+  static Future<Response<Map<String, dynamic>>> getCourseWithVPN() async {
     return NetUtils.get(
-      url,
+      API.replaceWithWebVPN(API.courseScheduleCourses),
+      queryParameters: <String, dynamic>{'sid': currentUser.sid},
+    );
+  }
+
+  static Future<Response<String>> getRemark() async {
+    return NetUtils.get(
+      API.courseScheduleClassRemark,
+      queryParameters: <String, dynamic>{'sid': currentUser.sid},
+    );
+  }
+
+  static Future<Response<Map<String, dynamic>>> getRemarkWithVPN() async {
+    return NetUtils.get(
+      API.replaceWithWebVPN(API.courseScheduleClassRemark),
       queryParameters: <String, dynamic>{'sid': currentUser.sid},
     );
   }

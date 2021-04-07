@@ -63,6 +63,7 @@ class API {
   static const String labsHost = 'http://labs.jmu.edu.cn';
   static const String ssoHost = 'http://sso.jmu.edu.cn';
   static const String webVpnHost = 'https://webvpn.jmu.edu.cn';
+  static const String classKitHost = 'https://classkit.jmu.edu.cn';
   static const String pushHost = 'http://push.openjmu.xyz:8787';
 
   static List<String> get ndHosts {

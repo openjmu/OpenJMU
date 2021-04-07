@@ -108,53 +108,48 @@ class MainPage extends StatefulWidget {
     );
   }
 
-  static Widget outerNetworkIndicator() {
-    return ValueListenableBuilder<bool>(
-      valueListenable: NetUtils.isOuterNetwork,
-      builder: (BuildContext c, bool value, Widget w) {
-        final bool isDark = c.theme.brightness == Brightness.dark;
-        return AnimatedSwitcher(
-          duration: kThemeChangeDuration,
-          child: value
-              ? Tapper(
-                  onTap: () {
-                    ConfirmationDialog.show(
-                      c,
-                      title: 'WebVPN 已连接',
-                      content: '由于校外网络限制，部分页面将通过 WebVPN 获取数据，'
-                          '但仍有部分页面可能无法获取最新数据，请连接校园网后重试。',
-                      showConfirm: true,
-                      showCancel: false,
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.w),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Gap(8.w),
-                        Container(
-                          width: 14.w,
-                          height: 14.w,
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? defaultThemeGroup.darkThemeColor
-                                : defaultThemeGroup.lightThemeColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        Gap(6.w),
-                        Text(
-                          'WebVPN 已连接',
-                          style: TextStyle(height: 1.45, fontSize: 16.sp),
-                        ),
-                      ],
+  static Widget outerNetworkIndicator(BuildContext context) {
+    final bool isDark = context.theme.brightness == Brightness.dark;
+    return AnimatedSwitcher(
+      duration: kThemeChangeDuration,
+      child: NetUtils.shouldUseWebVPN
+          ? Tapper(
+              onTap: () {
+                ConfirmationDialog.show(
+                  context,
+                  title: 'WebVPN 已连接',
+                  content: '由于校外网络限制，部分页面将通过 WebVPN 获取数据，'
+                      '但仍有部分页面可能无法获取最新数据，请连接校园网后重试。',
+                  showConfirm: true,
+                  showCancel: false,
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.w),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Gap(8.w),
+                    Container(
+                      width: 14.w,
+                      height: 14.w,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? defaultThemeGroup.darkThemeColor
+                            : defaultThemeGroup.lightThemeColor,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        );
-      },
+                    Gap(6.w),
+                    Text(
+                      'WebVPN 已连接',
+                      style: TextStyle(height: 1.45, fontSize: 16.sp),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 

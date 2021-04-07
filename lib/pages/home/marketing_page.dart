@@ -53,7 +53,7 @@ class _MarketingPageState extends State<MarketingPage> {
           child: Row(
             children: <Widget>[
               MainPage.selfPageOpener,
-              MainPage.outerNetworkIndicator(),
+              MainPage.outerNetworkIndicator(context),
             ],
           ),
         ),

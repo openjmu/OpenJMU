@@ -58,7 +58,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
         child: Row(
           children: <Widget>[
             MainPage.selfPageOpener,
-            MainPage.outerNetworkIndicator(),
+            MainPage.outerNetworkIndicator(context),
           ],
         ),
       ),

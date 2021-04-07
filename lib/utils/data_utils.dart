@@ -82,7 +82,6 @@ class DataUtils {
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
       NetUtils.webViewCookieManager.deleteAllCookies();
-      NetUtils.isOuterNetwork.value = false;
       clearLoginInfo();
     });
     showToast('退出登录成功');

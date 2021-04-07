@@ -139,7 +139,7 @@ class _AppWebViewState extends State<AppWebView>
     if (widget.app != null &&
         widget.app.name != 'WEBVPN' &&
         widget.app.code != '10086' && // Skip WebVPN itself.
-        NetUtils.isOuterNetwork.value) {
+        NetUtils.shouldUseWebVPN) {
       url = API.replaceWithWebVPN(url);
     }
   }

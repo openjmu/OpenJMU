@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -20,14 +20,11 @@ class NetUtils {
 
   static const bool shouldLogRequest = false;
 
-  static final Dio dio = Dio(
-    BaseOptions(connectTimeout: 15000, followRedirects: true),
-  );
-  static final Dio tokenDio = Dio(
-    BaseOptions(connectTimeout: 15000, followRedirects: true),
-  );
+  static final Dio dio = Dio(_options);
+  static final Dio tokenDio = Dio(_options);
 
   static Future<Directory> get _tempDir => getTemporaryDirectory();
+  static bool shouldUseWebVPN = false;
 
   static PersistCookieJar cookieJar;
   static PersistCookieJar tokenCookieJar;
@@ -35,10 +32,6 @@ class NetUtils {
   static CookieManager tokenCookieManager;
   static final web_view.CookieManager webViewCookieManager =
       web_view.CookieManager.instance();
-
-  static final ValueNotifier<bool> isOuterNetwork = ValueNotifier<bool>(false);
-  static final ValueNotifier<Set<Uri>> outerFailedUris =
-      ValueNotifier<Set<Uri>>(<Uri>{});
 
   /// Method to update ticket.
   static Future<void> updateTicket() async {
@@ -62,82 +55,20 @@ class NetUtils {
     await initCookieManagement();
 
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
-      if (_isProxyEnabled) {
-        client.findProxy = (_) => _proxyDestination;
-      }
-      client.badCertificateCallback = (_, __, ___) => true;
-    };
+        _clientCreate;
+
+    dio.interceptors..add(cookieManager)..add(_interceptor);
+
+    (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = _clientCreate;
+    tokenDio.interceptors..add(tokenCookieManager)..add(_interceptor);
 
     if (Constants.isDebug && shouldLogRequest) {
       dio.interceptors.add(LoggingInterceptor());
       tokenDio.interceptors.add(LoggingInterceptor());
     }
 
-    dio.interceptors
-      ..add(cookieManager)
-      ..add(
-        InterceptorsWrapper(
-          onResponse: (
-            Response<dynamic> r,
-            ResponseInterceptorHandler handler,
-          ) {
-            if (outerFailedUris.value.contains(r.realUri)) {
-              outerFailedUris.value = Set<Uri>.from(
-                outerFailedUris.value..remove(r.realUri),
-              );
-              if (outerFailedUris.value.isEmpty && isOuterNetwork.value) {
-                isOuterNetwork.value = false;
-              }
-            }
-            handler.next(r);
-          },
-          onError: (
-            DioError e,
-            ErrorInterceptorHandler handler,
-          ) {
-            if (e.response?.isRedirect == true ||
-                e.response?.statusCode == HttpStatus.movedPermanently ||
-                e.response?.statusCode == HttpStatus.movedTemporarily ||
-                e.response?.statusCode == HttpStatus.seeOther ||
-                e.response?.statusCode == HttpStatus.temporaryRedirect) {
-              handler.next(e);
-              return;
-            }
-            if (e.response?.statusCode == 401) {
-              updateTicket();
-            }
-            final Uri _uri = e.requestOptions.uri;
-            if (_uri.toString().contains('jmu.edu.cn') == true &&
-                (e.response?.statusCode == null ||
-                    e.response?.statusCode == HttpStatus.forbidden) &&
-                !isOuterNetwork.value) {
-              outerFailedUris.value = Set<Uri>.from(
-                outerFailedUris.value..add(_uri),
-              );
-              if (!isOuterNetwork.value) {
-                isOuterNetwork.value = true;
-              }
-            }
-            LogUtils.e(
-              'Error when requesting $_uri '
-              '${e.response?.statusCode}'
-              ': ${e.response?.data}',
-              withStackTrace: false,
-            );
-            handler.reject(e);
-          },
-        ),
-      );
-
-    (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (HttpClient client) {
-      if (_isProxyEnabled) {
-        client.findProxy = (_) => _proxyDestination;
-      }
-      client.badCertificateCallback = (_, __, ___) => true;
-    };
-    tokenDio.interceptors.add(tokenCookieManager);
+    await testClassKit();
   }
 
   static Future<void> initCookieManagement() async {
@@ -357,5 +288,104 @@ class NetUtils {
         ],
       );
     }
+  }
+
+  /// 通过测试「课堂助理」应用，判断是否需要使用 WebVPN。
+  static Future<void> testClassKit() async {
+    try {
+      await tokenDio.get<String>(
+        API.classKitHost,
+        options: Options(
+          contentType: 'text/html;charset=utf-8',
+        ),
+      );
+      shouldUseWebVPN = false;
+    } on DioError catch (dioError) {
+      if (dioError.response?.statusCode == HttpStatus.forbidden) {
+        shouldUseWebVPN = true;
+        return;
+      }
+      shouldUseWebVPN = false;
+    } catch (e) {
+      LogUtils.e('Error when testing classKit: $e');
+      shouldUseWebVPN = false;
+    }
+  }
+
+  static BaseOptions get _options {
+    return BaseOptions(
+      connectTimeout: 10000,
+      sendTimeout: 10000,
+      receiveTimeout: 10000,
+      receiveDataWhenStatusError: true,
+      followRedirects: true,
+    );
+  }
+
+  static dynamic Function(HttpClient client) get _clientCreate {
+    return (HttpClient client) {
+      if (_isProxyEnabled) {
+        client.findProxy = (_) => _proxyDestination;
+      }
+      client.badCertificateCallback = (_, __, ___) => true;
+    };
+  }
+
+  static InterceptorsWrapper get _interceptor {
+    return InterceptorsWrapper(
+      onResponse: (
+        Response<dynamic> r,
+        ResponseInterceptorHandler handler,
+      ) {
+        dynamic _resolvedData;
+        if (r.statusCode == HttpStatus.noContent) {
+          const Map<String, dynamic> _data = null;
+          _resolvedData = _data;
+          r.data = _data;
+          handler.resolve(r);
+          return;
+        }
+        final dynamic data = r.data;
+        if (data is String) {
+          try {
+            // If we do want a JSON all the time, DO try to decode the data.
+            _resolvedData = jsonDecode(data) as Map<String, dynamic>;
+          } catch (e) {
+            _resolvedData = data;
+          }
+        } else {
+          _resolvedData = data;
+        }
+        r.data = _resolvedData;
+        handler.next(r);
+      },
+      onError: (
+        DioError e,
+        ErrorInterceptorHandler handler,
+      ) {
+        if (e.response?.isRedirect == true ||
+            e.response?.statusCode == HttpStatus.movedPermanently ||
+            e.response?.statusCode == HttpStatus.movedTemporarily ||
+            e.response?.statusCode == HttpStatus.seeOther ||
+            e.response?.statusCode == HttpStatus.temporaryRedirect) {
+          handler.next(e);
+          return;
+        }
+        if (e.response?.statusCode == 401) {
+          LogUtils.e(
+            'Session is outdated, calling update...',
+            withStackTrace: false,
+          );
+          updateTicket();
+        }
+        LogUtils.e(
+          'Error when requesting ${e.requestOptions.uri} '
+          '${e.response?.statusCode}'
+          ': ${e.response?.data}',
+          withStackTrace: false,
+        );
+        handler.reject(e);
+      },
+    );
   }
 }

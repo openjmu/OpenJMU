@@ -50,7 +50,7 @@ class _PostSquarePageState extends State<PostSquarePage> {
           child: Row(
             children: <Widget>[
               MainPage.selfPageOpener,
-              MainPage.outerNetworkIndicator(),
+              MainPage.outerNetworkIndicator(context),
             ],
           ),
         ),
