@@ -169,7 +169,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   /// Set default display mode to compatible with higher refresh rate on
   /// supported devices.
   /// 在支持的手机上尝试以更高的刷新率显示
-  Future<void> updateRefreshRate() async {
+  void updateRefreshRate() {
     if (Platform.isAndroid) {
       FlutterDisplayMode.setHighRefreshRate();
     }
