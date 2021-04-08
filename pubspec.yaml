@@ -9,11 +9,6 @@ environment:
   flutter: ">=1.22.6"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-
   animations: ^2.0.0
   badges: ^2.0.0-nullsafety.1
   connectivity: ^3.0.3
@@ -26,14 +21,18 @@ dependencies:
   event_bus: ^2.0.0
   extended_image: ^4.0.0
   extended_list: ^3.0.0
-  extended_tabs: ^2.0.0
   extended_nested_scroll_view: ^3.0.0
+  extended_tabs: ^2.0.0
   extended_text: ^5.0.5
   extended_text_field: ^6.0.1
   ff_annotation_route_library: ^2.0.1
+  flutter:
+    sdk: flutter
   flutter_displaymode: 0.3.1-nullsafety.0
   flutter_inappwebview: ^5.3.0
   flutter_local_notifications: ^5.0.0
+  flutter_localizations:
+    sdk: flutter
   flutter_native_image:
     git:
       url: https://github.com/AlexV525/flutter_native_image.git
