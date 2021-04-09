@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+flutter --version
+
 # Define current time
 curtime=$(date +%Y-%m-%d\ %H-%M-%S)
 
