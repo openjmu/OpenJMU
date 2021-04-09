@@ -146,39 +146,23 @@ class CoursesProvider extends ChangeNotifier {
       duration: 300.milliseconds,
     );
     try {
-      if (NetUtils.shouldUseWebVPN) {
-        final List<Response<Map<String, dynamic>>> responses =
-            await Future.wait<Response<Map<String, dynamic>>>(
-          <Future<Response<Map<String, dynamic>>>>[
-            CourseAPI.getCourseWithVPN(),
-            CourseAPI.getRemarkWithVPN(),
-          ],
-        );
-        await Future.wait(
-          <Future<void>>[
-            courseResponseHandler(responses[0].data),
-            remarkResponseHandler(responses[1].data),
-          ],
-        );
-      } else {
-        final List<Response<String>> responses =
-            await Future.wait<Response<String>>(
-          <Future<Response<String>>>[
-            CourseAPI.getCourse(),
-            CourseAPI.getRemark(),
-          ],
-        );
-        await Future.wait(
-          <Future<void>>[
-            courseResponseHandler(
-              jsonDecode(responses[0].data) as Map<String, dynamic>,
-            ),
-            remarkResponseHandler(
-              jsonDecode(responses[1].data) as Map<String, dynamic>,
-            ),
-          ],
-        );
-      }
+      final List<Response<String>> responses =
+          await Future.wait<Response<String>>(
+        <Future<Response<String>>>[
+          CourseAPI.getCourse(useVPN: NetUtils.shouldUseWebVPN),
+          CourseAPI.getRemark(useVPN: NetUtils.shouldUseWebVPN),
+        ],
+      );
+      await Future.wait(
+        <Future<void>>[
+          courseResponseHandler(
+            jsonDecode(responses[0].data) as Map<String, dynamic>,
+          ),
+          remarkResponseHandler(
+            jsonDecode(responses[1].data) as Map<String, dynamic>,
+          ),
+        ],
+      );
       if (!_firstLoaded) {
         if (dateProvider.currentWeek != null) {
           _firstLoaded = true;

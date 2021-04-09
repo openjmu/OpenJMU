@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
@@ -333,32 +332,6 @@ class NetUtils {
 
   static InterceptorsWrapper get _interceptor {
     return InterceptorsWrapper(
-      onResponse: (
-        Response<dynamic> r,
-        ResponseInterceptorHandler handler,
-      ) {
-        dynamic _resolvedData;
-        if (r.statusCode == HttpStatus.noContent) {
-          const Map<String, dynamic> _data = null;
-          _resolvedData = _data;
-          r.data = _data;
-          handler.resolve(r);
-          return;
-        }
-        final dynamic data = r.data;
-        if (data is String) {
-          try {
-            // If we do want a JSON all the time, DO try to decode the data.
-            _resolvedData = jsonDecode(data) as Map<String, dynamic>;
-          } catch (e) {
-            _resolvedData = data;
-          }
-        } else {
-          _resolvedData = data;
-        }
-        r.data = _resolvedData;
-        handler.next(r);
-      },
       onError: (
         DioError e,
         ErrorInterceptorHandler handler,
