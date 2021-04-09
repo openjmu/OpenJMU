@@ -295,12 +295,14 @@ class TeamPraiseAPI {
           'post_type': 2,
           'post_id': id,
         },
+        headers: Constants.teamHeader,
       ).catchError((dynamic e) {
         LogUtils.e('${e?.response['msg']}');
       });
     } else {
       return NetUtils.delete<Map<String, dynamic>>(
         '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
+        headers: Constants.teamHeader,
       ).catchError((dynamic e) {
         LogUtils.e('${e?.response['msg']}');
       });
