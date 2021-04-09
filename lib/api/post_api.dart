@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:path/path.dart' as path;
 
 class PostAPI {
   const PostAPI._();
@@ -184,21 +185,20 @@ class PostAPI {
   /// Create post publish request.
   /// 创建发布动态的请求
   static Future<Response<Map<String, dynamic>>> publishPost(
-      Map<String, dynamic> content,) async {
-    return await NetUtils.post(
-      API.postContent,
-      data: content,
-    );
+    Map<String, dynamic> content,
+  ) {
+    return NetUtils.post(API.postContent, data: content);
   }
 
   /// Create [FormData] for post's image upload.
   /// 创建用于发布动态上传的图片的 [FormData]
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
-    final Uint8List data = await asset.originBytes;
+    final Uint8List data = await compressEntity(asset);
+    final String filename = path.basename((await asset.file).path);
     return FormData.fromMap(<String, dynamic>{
       'image': MultipartFile.fromBytes(
         data,
-        filename: asset.title ?? '$currentTimeStamp.jpg',
+        filename: filename ?? '$currentTimeStamp.jpg',
       ),
       'image_type': 0,
     });
