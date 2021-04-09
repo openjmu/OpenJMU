@@ -251,11 +251,12 @@ class TeamCommentPreviewCard extends StatelessWidget {
             Routes.openjmuImageViewer.name,
             arguments: Routes.openjmuImageViewer.d(
               index: index,
-              pics: post.pics.map<ImageBean>((dynamic _) {
+              pics: post.pics.map<ImageBean>((Map<dynamic, dynamic> data) {
+                final int id = data['fid'].toString().toInt();
                 return ImageBean(
-                  id: imageId,
-                  imageUrl: imageUrl,
-                  imageThumbUrl: imageUrl,
+                  id: id,
+                  imageUrl: API.teamFile(fid: id),
+                  imageThumbUrl: API.teamFile(fid: id),
                   postId: post.tid,
                 );
               }).toList(),
@@ -289,9 +290,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
       );
     }
     _image = Padding(
-      padding: EdgeInsets.only(
-        top: 6.h,
-      ),
+      padding: EdgeInsets.only(top: 6.h),
       child: _image,
     );
     return _image;
