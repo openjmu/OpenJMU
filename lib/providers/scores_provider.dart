@@ -7,6 +7,7 @@ part of 'providers.dart';
 class ScoresProvider extends ChangeNotifier {
   final Box<Map<dynamic, dynamic>> _scoreBox = HiveBoxes.scoresBox;
 
+  final List<int> _rawData = <int>[];
   Socket _socket;
   String _scoreData = '';
 
@@ -126,6 +127,7 @@ class ScoresProvider extends ChangeNotifier {
     if (!loading) {
       loading = true;
     }
+    _rawData.clear();
     _scoreData = '';
     try {
       _socket?.add(jsonEncode(<String, dynamic>{
@@ -147,16 +149,13 @@ class ScoresProvider extends ChangeNotifier {
 
   Future<void> onReceive(List<int> data) async {
     try {
-      final String value = utf8.decode(data);
+      _rawData.addAll(data);
+      final String value = utf8.decode(_rawData);
       _scoreData += value;
       if (_scoreData.endsWith(']}}')) {
         tryDecodeScores();
       }
-    } catch (e) {
-      LogUtils.e('Error when decoding score raw data: $e');
-      await destroySocket();
-      initScore();
-    }
+    } catch (_) {}
   }
 
   void tryDecodeScores() {
@@ -175,6 +174,7 @@ class ScoresProvider extends ChangeNotifier {
           _scores = scoreList;
         }
       }
+      _rawData.clear();
       _scoreData = '';
       updateScoreCache();
       if (_loadError) {
@@ -220,6 +220,7 @@ class ScoresProvider extends ChangeNotifier {
     _loadError = false;
     _terms = null;
     _selectedTerm = null;
+    _rawData.clear();
     _scores = null;
     _scoreData = '';
   }
