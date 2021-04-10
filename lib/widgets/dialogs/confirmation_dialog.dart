@@ -95,21 +95,14 @@ class ConfirmationDialog extends StatelessWidget {
   Widget titleWidget(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
-      child: Row(
-        mainAxisAlignment:
-            centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title.notBreak,
-            style: TextStyle(
-              height: 1.2,
-              fontSize: 22.sp,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      child: Text(
+        title.notBreak,
+        style: TextStyle(
+          height: 1.2,
+          fontSize: 22.sp,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }

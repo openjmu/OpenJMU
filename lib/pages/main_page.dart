@@ -293,6 +293,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 title: announcement['title'] as String,
                 content: announcement['content'] as String,
                 showCancel: false,
+                showConfirm: true,
               );
             },
             child: Container(
