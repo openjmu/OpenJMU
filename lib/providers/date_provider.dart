@@ -55,6 +55,7 @@ class DateProvider extends ChangeNotifier {
     final DateTime _dateInCache = HiveBoxes.startWeekBox.get('startDate');
     if (_dateInCache != null) {
       _startDate = _dateInCache;
+      _handleCurrentWeek();
     }
     await getCurrentWeek();
   }
@@ -62,6 +63,20 @@ class DateProvider extends ChangeNotifier {
   Future<void> updateStartDate(DateTime date) async {
     _startDate = date;
     await HiveBoxes.startWeekBox.put('startDate', date);
+  }
+
+  void _handleCurrentWeek() {
+    final int _d = _startDate.difference(now).inDays;
+    if (_difference != _d) {
+      _difference = _d;
+    }
+
+    final int _w = -((_difference - 1) / 7).floor();
+    if (_currentWeek != _w) {
+      _currentWeek = _w;
+      notifyListeners();
+      Instances.eventBus.fire(CurrentWeekUpdatedEvent());
+    }
   }
 
   Future<void> getCurrentWeek() async {
@@ -86,17 +101,7 @@ class DateProvider extends ChangeNotifier {
         }
       }
 
-      final int _d = _startDate.difference(now).inDays;
-      if (_difference != _d) {
-        _difference = _d;
-      }
-
-      final int _w = -((_difference - 1) / 7).floor();
-      if (_currentWeek != _w) {
-        _currentWeek = _w;
-        notifyListeners();
-        Instances.eventBus.fire(CurrentWeekUpdatedEvent());
-      }
+      _handleCurrentWeek();
       _fetchCurrentWeekTimer?.cancel();
     } catch (e) {
       LogUtils.e('Failed when fetching current week: $e');
