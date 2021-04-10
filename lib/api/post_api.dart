@@ -214,7 +214,7 @@ class PostAPI {
       API.postUploadImage,
       data: formData,
       cancelToken: cancelToken,
-      options: Options(sendTimeout: 60000),
+      options: Options(receiveTimeout: 60000, sendTimeout: 60000),
     );
   }
 }
