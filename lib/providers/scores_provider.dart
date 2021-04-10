@@ -190,6 +190,10 @@ class ScoresProvider extends ChangeNotifier {
       );
     } catch (e) {
       LogUtils.e('Decode scores response error: $e');
+      _socket?.destroy();
+      _rawData.clear();
+      _scoreData = '';
+      initSocket();
     }
   }
 
