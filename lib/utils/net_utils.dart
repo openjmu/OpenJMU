@@ -113,6 +113,7 @@ class NetUtils {
     String url, {
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> data,
+    CancelToken cancelToken,
     Options options,
   }) async {
     final Response<dynamic> res = await dio.head<dynamic>(
@@ -143,11 +144,14 @@ class NetUtils {
     String url, {
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> headers,
+    CancelToken cancelToken,
+    Options options,
   }) =>
       dio.get<T>(
         url,
         queryParameters: queryParameters,
-        options: Options(
+        cancelToken: cancelToken,
+        options: (options ?? Options()).copyWith(
           headers: headers ?? _buildPostHeaders(currentUser.sid),
           responseType: ResponseType.bytes,
         ),
@@ -158,14 +162,15 @@ class NetUtils {
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> headers,
     CancelToken cancelToken,
+    Options options,
   }) =>
       dio.get<T>(
         url,
         queryParameters: queryParameters,
-        options: Options(
+        cancelToken: cancelToken,
+        options: (options ?? Options()).copyWith(
           headers: headers ?? _buildPostHeaders(currentUser.sid),
         ),
-        cancelToken: cancelToken,
       );
 
   static Future<Response<T>> post<T>(
@@ -174,12 +179,13 @@ class NetUtils {
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> headers,
     CancelToken cancelToken,
+    Options options,
   }) async =>
       await dio.post<T>(
         url,
         queryParameters: queryParameters,
         data: data,
-        options: Options(
+        options: (options ?? Options()).copyWith(
           headers: headers ?? _buildPostHeaders(currentUser.sid),
         ),
         cancelToken: cancelToken,
@@ -191,15 +197,16 @@ class NetUtils {
     Map<String, dynamic> data,
     Map<String, dynamic> headers,
     CancelToken cancelToken,
+    Options options,
   }) =>
       dio.delete<T>(
         url,
         data: data,
         queryParameters: queryParameters,
-        options: Options(
+        cancelToken: cancelToken,
+        options: (options ?? Options()).copyWith(
           headers: headers ?? _buildPostHeaders(currentUser.sid),
         ),
-        cancelToken: cancelToken,
       );
 
   /// For download progress, here we don't simply use the [dio.download],
@@ -212,6 +219,8 @@ class NetUtils {
     String filename, {
     Map<String, dynamic> data,
     Map<String, dynamic> headers,
+    CancelToken cancelToken,
+    Options options,
   }) async {
     String path;
     if (await checkPermissions(<Permission>[Permission.storage])) {
@@ -223,7 +232,8 @@ class NetUtils {
           url,
           path,
           data: data,
-          options: Options(
+          cancelToken: cancelToken,
+          options: (options ?? Options()).copyWith(
             headers: headers ?? _buildPostHeaders(currentUser.sid),
           ),
         );

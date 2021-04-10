@@ -229,6 +229,7 @@ class TeamPostAPI {
       data: formData,
       cancelToken: cancelToken,
       headers: Constants.teamHeader,
+      options: Options(sendTimeout: 60000),
     );
   }
 }

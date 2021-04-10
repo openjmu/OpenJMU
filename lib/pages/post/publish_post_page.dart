@@ -322,7 +322,7 @@ class _PublishPostPageState extends State<PublishPostPage>
 
       LogUtils.e('Error when trying upload images: $e');
       if (e is DioError) {
-        LogUtils.e('${e.response.data}');
+        LogUtils.e('${e.response?.data}');
       }
       LogUtils.e('Images requests will be all cancelled.');
     }
