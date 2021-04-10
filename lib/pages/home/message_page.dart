@@ -1,3 +1,4 @@
+import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -230,9 +231,11 @@ class _AnnouncementItemWidget extends StatelessWidget {
               ),
             ),
             VGap(12.w),
-            Text(
+            ExtendedText(
               item['content'] as String,
               style: const TextStyle(height: 1.4),
+              specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+              onSpecialTextTap: specialTextTapRecognizer,
             ),
           ],
         ),
