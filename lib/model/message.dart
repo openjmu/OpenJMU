@@ -13,7 +13,7 @@ part of 'models.dart';
 /// [ackId] ACK ID
 /// [content] 内容
 @HiveType(typeId: HiveAdapterTypeIds.message)
-class Message with HiveObject {
+class Message extends HiveObject {
   Message({
     this.type,
     this.senderUid,

@@ -9,7 +9,7 @@ part of 'models.dart';
 /// [appId] 应用id, [permissionCode] 权限code, [messageId] 消息id,
 /// [messageType] 消息类型, [sendTime] 发送时间, [read] 是否已读,
 @HiveType(typeId: HiveAdapterTypeIds.appMessage)
-class AppMessage with HiveObject {
+class AppMessage extends HiveObject {
   AppMessage({
     this.appId,
     this.permissionCode,
