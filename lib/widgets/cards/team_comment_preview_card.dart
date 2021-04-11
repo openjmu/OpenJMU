@@ -207,71 +207,74 @@ class TeamCommentPreviewCard extends StatelessWidget {
   }
 
   Widget _images(BuildContext context, TeamPost post) {
-    final List<Widget> imagesWidget = <Widget>[];
-    for (int index = 0; index < post.pics.length; index++) {
-      final int imageId = post.pics[index]['fid'].toString().toInt();
-      final String imageUrl = API.teamFile(fid: imageId);
-      Widget _exImage = ExtendedImage.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        cache: true,
-        color: currentIsDark ? Colors.black.withAlpha(50) : null,
-        colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.w),
-                  color: context.theme.dividerColor,
-                ),
-              );
-              break;
-            case LoadState.completed:
-              final ImageInfo info = state.extendedImageInfo;
-              if (info != null) {
-                loader = ScaledImage(
-                  image: info.image,
-                  length: post.pics.length,
-                  num200: 200.sp,
-                  num400: 400.sp,
+    final List<Widget> imagesWidget = List<Widget>.generate(
+      post.pics.length,
+      (int index) {
+        final Map<dynamic, dynamic> data = post.pics[index];
+        final int imageId = data['fid'].toString().toInt();
+        final String imageUrl = API.teamFile(fid: imageId);
+        Widget _exImage = ExtendedImage.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          cache: true,
+          color: currentIsDark ? Colors.black.withAlpha(50) : null,
+          colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
+          loadStateChanged: (ExtendedImageState state) {
+            Widget loader;
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                loader = DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.w),
+                    color: context.theme.dividerColor,
+                  ),
                 );
-              }
-              break;
-            case LoadState.failed:
-              break;
-          }
-          return loader;
-        },
-      );
-      _exImage = Tapper(
-        onTap: () {
-          navigatorState.pushNamed(
-            Routes.openjmuImageViewer.name,
-            arguments: Routes.openjmuImageViewer.d(
-              index: index,
-              pics: post.pics.map<ImageBean>((Map<dynamic, dynamic> data) {
-                final int id = data['fid'].toString().toInt();
-                return ImageBean(
-                  id: id,
-                  imageUrl: API.teamFile(fid: id),
-                  imageThumbUrl: API.teamFile(fid: id),
-                  postId: post.tid,
-                );
-              }).toList(),
-            ),
-          );
-        },
-        child: _exImage,
-      );
-      _exImage = Hero(
-        tag: 'team-comment-preview-image-${post.tid}-$imageId',
-        child: _exImage,
-        placeholderBuilder: (_, __, Widget child) => child,
-      );
-      imagesWidget.add(_exImage);
-    }
+                break;
+              case LoadState.completed:
+                final ImageInfo info = state.extendedImageInfo;
+                if (info != null) {
+                  loader = ScaledImage(
+                    image: info.image,
+                    length: post.pics.length,
+                    num200: 200.sp,
+                    num400: 400.sp,
+                  );
+                }
+                break;
+              case LoadState.failed:
+                break;
+            }
+            return loader;
+          },
+        );
+        _exImage = Tapper(
+          onTap: () {
+            navigatorState.pushNamed(
+              Routes.openjmuImageViewer.name,
+              arguments: Routes.openjmuImageViewer.d(
+                index: index,
+                pics: post.pics.map<ImageBean>((Map<dynamic, dynamic> data) {
+                  final int id = data['fid'].toString().toInt();
+                  return ImageBean(
+                    id: id,
+                    imageUrl: API.teamFile(fid: id),
+                    imageThumbUrl: API.teamFile(fid: id),
+                    postId: post.tid,
+                  );
+                }).toList(),
+              ),
+            );
+          },
+          child: _exImage,
+        );
+        _exImage = Hero(
+          tag: 'team-comment-preview-image-${post.tid}-$imageId',
+          child: _exImage,
+          placeholderBuilder: (_, __, Widget child) => child,
+        );
+        return _exImage;
+      },
+    );
     Widget _image;
     if (post.pics.length == 1) {
       _image = Align(

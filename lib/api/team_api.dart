@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -204,8 +205,9 @@ class TeamPostAPI {
   /// Create [FormData] for post's image upload.
   /// 创建用于发布动态上传的图片的 [FormData]
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
-    final Uint8List imageData = await asset.originBytes;
-    final String name = asset.title ?? '$currentTimeStamp.jpg';
+    final Uint8List imageData = await compressEntity(asset);
+    final String filename = path.basename((await asset.file).path);
+    final String name = filename ?? '$currentTimeStamp.jpg';
     final FormData formData = FormData.fromMap(<String, dynamic>{
       'file': MultipartFile.fromBytes(imageData, filename: name),
       'type': 3,
