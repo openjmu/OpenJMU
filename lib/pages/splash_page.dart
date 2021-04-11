@@ -122,7 +122,7 @@ class SplashState extends State<SplashPage> {
             } else if (HiveFieldUtils.getFirstOpen() != true) {
               child = const TutorialPage();
             } else {
-              child = const MainPage();
+              child = MainPage();
             }
             return FadeTransition(opacity: animation, child: child);
           },

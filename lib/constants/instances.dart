@@ -6,6 +6,7 @@ import 'package:event_bus/event_bus.dart';
 
 import '../pages/home/course_schedule_page.dart';
 import '../pages/home/school_work_page.dart';
+import '../pages/main_page.dart';
 import 'constants.dart';
 
 NavigatorState get navigatorState => Instances.navigatorKey.currentState;
@@ -54,8 +55,8 @@ class Instances {
   static ConnectivityResult connectivityResult;
 
   static GlobalKey appRepaintBoundaryKey = GlobalKey();
-  static GlobalKey<ScaffoldState> mainPageScaffoldKey =
-      GlobalKey<ScaffoldState>();
+  static GlobalKey<MainPageState> mainPageStateKey =
+      GlobalKey<MainPageState>();
   static final GlobalKey<SchoolWorkPageState> schoolWorkPageStateKey =
       GlobalKey<SchoolWorkPageState>();
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =

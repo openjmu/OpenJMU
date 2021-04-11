@@ -427,46 +427,49 @@ class SelfPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: Screens.width * 0.8,
-      color: context.theme.canvasColor,
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 160.w + Screens.topSafeHeight,
-            child: ColoredBox(color: currentThemeColor),
-          ),
-          Positioned.fill(
-            top: Screens.topSafeHeight,
-            child: Column(
-              children: <Widget>[
-                userInfoWidget,
-                commonApps(context),
-                contentWrapper(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: ListView.separated(
-                          padding: EdgeInsets.symmetric(vertical: 12.w),
-                          separatorBuilder: (_, __) => VGap(24.h),
-                          itemCount: settingsSection.length,
-                          itemBuilder: (BuildContext _, int index) =>
-                              settingItem(context, index),
-                        ),
-                      ),
-                      currentDay(context),
-                    ],
-                  ),
-                ),
-              ],
+    return Material(
+      type: MaterialType.transparency,
+      child: Container(
+        width: Screens.width * 0.8,
+        color: context.theme.canvasColor,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 160.w + Screens.topSafeHeight,
+              child: ColoredBox(color: currentThemeColor),
             ),
-          ),
-        ],
+            Positioned.fill(
+              top: Screens.topSafeHeight,
+              child: Column(
+                children: <Widget>[
+                  userInfoWidget,
+                  commonApps(context),
+                  contentWrapper(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: ListView.separated(
+                            padding: EdgeInsets.symmetric(vertical: 12.w),
+                            separatorBuilder: (_, __) => VGap(24.h),
+                            itemCount: settingsSection.length,
+                            itemBuilder: (BuildContext _, int index) =>
+                                settingItem(context, index),
+                          ),
+                        ),
+                        currentDay(context),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@
 /// [Date] 2019-03-22 12:43
 ///
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -14,7 +15,7 @@ import 'package:openjmu/pages/home/self_page.dart';
 
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
-  const MainPage({Key key}) : super(key: key);
+  MainPage({Key key}) : super(key: key ?? Instances.mainPageStateKey);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
@@ -23,7 +24,14 @@ class MainPage extends StatefulWidget {
   /// 首页顶栏左上角打开个人页的封装部件
   static Widget get selfPageOpener {
     return Tapper(
-      onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
+      onTap: () {
+        Instances.mainPageStateKey.currentState.selfPageController
+            .animateToPage(
+          1,
+          duration: kTabScrollDuration,
+          curve: Curves.easeOutQuart,
+        );
+      },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -223,6 +231,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// 是否展示公告
   final ValueNotifier<bool> showAnnouncement = ValueNotifier<bool>(true);
 
+  /// 控制侧边栏的控制器
+  final PageController selfPageController = PageController();
+
   /// Index for pages.
   /// 当前页面索引
   int _currentIndex;
@@ -365,35 +376,55 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
-      onWillPop: () async {
-        if (Instances.mainPageScaffoldKey.currentState.isDrawerOpen) {
-          Instances.mainPageScaffoldKey.currentState.openEndDrawer();
-          return false;
-        } else {
-          return doubleBackExit();
-        }
-      },
-      child: Scaffold(
-        key: Instances.mainPageScaffoldKey,
-        body: Stack(
-          children: <Widget>[
-            IndexedStack(
-              children: <Widget>[
-                const PostSquarePage(),
-                const MarketingPage(),
-                SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
-                const MessagePage(),
-              ],
-              index: _currentIndex,
+      onWillPop: doubleBackExit,
+      child: ListView(
+        controller: selfPageController,
+        physics: const _CustomScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        reverse: true,
+        children: <Widget>[
+          SizedBox.fromSize(
+            size: Size(Screens.width, Screens.height),
+            child: Scaffold(
+              body: Stack(
+                children: <Widget>[
+                  IndexedStack(
+                    children: <Widget>[
+                      const PostSquarePage(),
+                      const MarketingPage(),
+                      SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
+                      const MessagePage(),
+                    ],
+                    index: _currentIndex,
+                  ),
+                  announcementWidget(context),
+                ],
+              ),
+              // drawer: SelfPage(),
+              // drawerEdgeDragWidth: Screens.width * 0.3,
+              bottomNavigationBar: bottomNavigationBar(context),
+              resizeToAvoidBottomInset: false,
             ),
-            announcementWidget(context),
-          ],
-        ),
-        drawer: SelfPage(),
-        drawerEdgeDragWidth: Screens.width * 0.0666,
-        bottomNavigationBar: bottomNavigationBar(context),
-        resizeToAvoidBottomInset: false,
+          ),
+          SelfPage(),
+        ],
       ),
     );
   }
+}
+
+class _CustomScrollPhysics extends PageScrollPhysics {
+  const _CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
+
+  @override
+  _CustomScrollPhysics applyTo(ScrollPhysics ancestor) {
+    return _CustomScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(
+        mass: 1.0,
+        stiffness: 500.0,
+        ratio: 0.5,
+      );
 }
