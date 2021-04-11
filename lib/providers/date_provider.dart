@@ -38,19 +38,6 @@ class DateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  DateTime _now;
-
-  DateTime get now => _now;
-
-  set now(DateTime value) {
-    assert(value != null);
-    if (value == _now) {
-      return;
-    }
-    _now = value;
-    notifyListeners();
-  }
-
   Future<void> initCurrentWeek() async {
     final DateTime _dateInCache = HiveBoxes.startWeekBox.get('startDate');
     if (_dateInCache != null) {
@@ -66,7 +53,7 @@ class DateProvider extends ChangeNotifier {
   }
 
   void _handleCurrentWeek() {
-    final int _d = _startDate.difference(now).inDays;
+    final int _d = _startDate.difference(currentTime).inDays;
     if (_difference != _d) {
       _difference = _d;
     }
@@ -80,7 +67,6 @@ class DateProvider extends ChangeNotifier {
   }
 
   Future<void> getCurrentWeek() async {
-    now = DateTime.now();
     final Box<DateTime> box = HiveBoxes.startWeekBox;
     try {
       DateTime _day;
