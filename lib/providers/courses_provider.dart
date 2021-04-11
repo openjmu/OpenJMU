@@ -155,7 +155,7 @@ class CoursesProvider extends ChangeNotifier {
       );
       final Map<String, dynamic> courseData =
           jsonDecode(responses[0].data) as Map<String, dynamic>;
-      if (courseData['courses'] == <dynamic>[] &&
+      if ((courseData['courses'] as List<dynamic>).isEmpty &&
           courseData['othCase'] == null) {
         LogUtils.w('Courses may return invalid value, retry...');
         updateCourses();

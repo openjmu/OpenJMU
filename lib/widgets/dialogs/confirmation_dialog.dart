@@ -170,6 +170,7 @@ class ConfirmationDialog extends StatelessWidget {
                     top: Radius.circular(13.w),
                   ),
                   child: Container(
+                    width: double.maxFinite,
                     padding: EdgeInsets.only(top: 30.w),
                     color: context.theme.colorScheme.surface,
                     child: Column(
