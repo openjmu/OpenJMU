@@ -379,7 +379,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       onWillPop: doubleBackExit,
       child: ListView(
         controller: selfPageController,
-        physics: const _CustomScrollPhysics(),
+        physics: const _CustomScrollPhysics(parent: ClampingScrollPhysics()),
         scrollDirection: Axis.horizontal,
         reverse: true,
         children: <Widget>[
