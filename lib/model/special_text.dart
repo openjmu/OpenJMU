@@ -242,7 +242,7 @@ class EmoticonText extends SpecialText {
     if (emojis.containsText(key)) {
       final double size =
           30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
-      final Emoji emoji = emojis.fromText(key);
+      final EmojiModel emoji = emojis.fromText(key);
 
       return ImageSpan(
         AssetImage(emoji.path),

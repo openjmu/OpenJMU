@@ -23,8 +23,10 @@ class DataUtils {
       password: password,
       blowfish: blowfish,
     );
+    await HiveBoxes.upBox.clear();
+    await HiveBoxes.upBox.add(UPModel(username, password));
     try {
-      if (!await UserAPI.webVpnLogin(username, password)) {
+      if (!await UserAPI.webVpnLogin()) {
         showToast('登录失败');
         return false;
       }
@@ -120,8 +122,14 @@ class DataUtils {
               .cast<Map<dynamic, dynamic>>(),
         );
       }
-      Instances.eventBus.fire(TicketGotEvent(isWizard));
-      initializeWebViewCookie();
+      final bool isWebVPNLogin = await UserAPI.webVpnLogin();
+      if (isWebVPNLogin) {
+        Instances.eventBus.fire(TicketGotEvent(isWizard));
+        initializeWebViewCookie();
+      } else {
+        LogUtils.e('Failed to login with WebVPN.');
+        Instances.eventBus.fire(TicketFailedEvent());
+      }
     } catch (e) {
       LogUtils.e('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());

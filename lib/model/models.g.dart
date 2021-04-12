@@ -8,13 +8,13 @@ part of 'models.dart';
 
 class AppMessageAdapter extends TypeAdapter<AppMessage> {
   @override
-  final typeId = 0;
+  final int typeId = 0;
 
   @override
   AppMessage read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AppMessage(
       appId: fields[0] as int,
@@ -49,17 +49,27 @@ class AppMessageAdapter extends TypeAdapter<AppMessage> {
       ..writeByte(7)
       ..write(obj.read);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppMessageAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class ChangeLogAdapter extends TypeAdapter<ChangeLog> {
   @override
-  final typeId = 5;
+  final int typeId = 5;
 
   @override
   ChangeLog read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ChangeLog(
       version: fields[0] as String,
@@ -82,17 +92,27 @@ class ChangeLogAdapter extends TypeAdapter<ChangeLog> {
       ..writeByte(3)
       ..write(obj.sections);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChangeLogAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class CourseAdapter extends TypeAdapter<Course> {
   @override
-  final typeId = 2;
+  final int typeId = 2;
 
   @override
   Course read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Course(
       isCustom: fields[0] as bool,
@@ -145,17 +165,66 @@ class CourseAdapter extends TypeAdapter<Course> {
       ..writeByte(13)
       ..write(obj.rawTime);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CourseAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class EmojiModelAdapter extends TypeAdapter<EmojiModel> {
+  @override
+  final int typeId = 6;
+
+  @override
+  EmojiModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return EmojiModel(
+      name: fields[0] as String,
+      filename: fields[1] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, EmojiModel obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.filename)
+      ..writeByte(2)
+      ..write(obj._text);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EmojiModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class MessageAdapter extends TypeAdapter<Message> {
   @override
-  final typeId = 1;
+  final int typeId = 1;
 
   @override
   Message read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Message(
       type: fields[0] as int,
@@ -187,17 +256,27 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..writeByte(6)
       ..write(obj.read);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MessageAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class ScoreAdapter extends TypeAdapter<Score> {
   @override
-  final typeId = 3;
+  final int typeId = 3;
 
   @override
   Score read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Score(
       code: fields[0] as String,
@@ -226,17 +305,64 @@ class ScoreAdapter extends TypeAdapter<Score> {
       ..writeByte(5)
       ..write(obj.creditHour);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ScoreAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class UPModelAdapter extends TypeAdapter<UPModel> {
+  @override
+  final int typeId = 7;
+
+  @override
+  UPModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return UPModel(
+      fields[0] as String,
+      fields[1] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, UPModel obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.u)
+      ..writeByte(1)
+      ..write(obj.p);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UPModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class WebAppAdapter extends TypeAdapter<WebApp> {
   @override
-  final typeId = 4;
+  final int typeId = 4;
 
   @override
   WebApp read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return WebApp(
       appId: fields[0] as int,
@@ -265,34 +391,14 @@ class WebAppAdapter extends TypeAdapter<WebApp> {
       ..writeByte(5)
       ..write(obj.menuType);
   }
-}
-
-class EmojiAdapter extends TypeAdapter<Emoji> {
-  @override
-  final typeId = 6;
 
   @override
-  Emoji read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Emoji(
-      name: fields[0] as String,
-      filename: fields[1] as String,
-      text: fields[2] as String,
-    );
-  }
+  int get hashCode => typeId.hashCode;
 
   @override
-  void write(BinaryWriter writer, Emoji obj) {
-    writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.filename)
-      ..writeByte(2)
-      ..write(obj.text);
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WebAppAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

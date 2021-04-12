@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -13,9 +14,9 @@ export 'package:openjmu/model/special_text.dart';
 
 part 'models.g.dart';
 
-part 'backpack_item.dart';
-
 part 'app_message.dart';
+
+part 'backpack_item.dart';
 
 part 'blacklist_user.dart';
 
@@ -26,6 +27,8 @@ part 'cloud_settings.dart';
 part 'comment.dart';
 
 part 'course.dart';
+
+part 'emoji_model.dart';
 
 part 'image_bean.dart';
 
@@ -58,6 +61,8 @@ part 'team_praise.dart';
 part 'team_reply.dart';
 
 part 'theme_group.dart';
+
+part 'up_model.dart';
 
 part 'user.dart';
 

@@ -315,26 +315,42 @@ class UserAPI {
     }
   }
 
-  static Future<bool> webVpnLogin(String username, String password) async {
+  static Future<String> webVpnIsLogin() async {
     try {
-      final Response<String> r = await NetUtils.tokenDio.get(API.webVpnHost);
-      if (r.data.contains('退出登录') && !r.data.contains('登录 Login')) {
+      final Response<String> _res = await NetUtils.tokenDio.get(API.webVpnHost);
+      final String r = _res.data;
+      // 解析返回内容。如果包含「退出登录」，同时不包含「登录 Login」，即为已登录。
+      if (r.contains('退出登录') && !r.contains('登录 Login')) {
+        return null;
+      }
+      return r;
+    } catch (e) {
+      LogUtils.e('Error when testing WebVPN login status: $e');
+      return '';
+    }
+  }
+
+  static Future<bool> webVpnLogin() async {
+    try {
+      final String r = await webVpnIsLogin();
+      if (r == null) {
         return true;
       }
-      final dom.Document document = parse(r.data);
+      final dom.Document document = parse(r);
       final dom.Element tokenElement = document.querySelector(
         'input[name="authenticity_token"]',
       );
       final String token = tokenElement.attributes['value'];
       await HiveFieldUtils.setWebVpnToken(token);
 
+      final UPModel upModel = HiveBoxes.upBox.getAt(0);
       final Response<String> loginRes = await NetUtils.tokenDio.post<String>(
         '${API.webVpnHost}/users/sign_in',
         queryParameters: <String, String>{
           'utf8': '✓',
           'authenticity_token': token,
-          'user[login]': username,
-          'user[password]': password,
+          'user[login]': upModel.u,
+          'user[password]': upModel.p,
           'user[dymatice_code]': 'unknown',
           'user[otp_with_capcha]': 'false',
           'commit': '登录 Login',

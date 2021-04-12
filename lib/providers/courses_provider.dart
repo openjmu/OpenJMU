@@ -5,8 +5,8 @@
 part of 'providers.dart';
 
 class CoursesProvider extends ChangeNotifier {
-  final Box<Map<dynamic, dynamic>> _courseBox = HiveBoxes.coursesBox;
-  final Box<String> _courseRemarkBox = HiveBoxes.courseRemarkBox;
+  Box<Map<dynamic, dynamic>> get _courseBox => HiveBoxes.coursesBox;
+  Box<String> get _courseRemarkBox => HiveBoxes.courseRemarkBox;
 
   final int maxCoursesPerDay = 12;
 

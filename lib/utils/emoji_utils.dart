@@ -1,49 +1,8 @@
-import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:equatable/equatable.dart';
 
 import 'package:openjmu/constants/constants.dart';
-
-@immutable
-@HiveType(typeId: HiveAdapterTypeIds.emoji)
-class Emoji extends Equatable {
-  const Emoji({
-    @required this.name,
-    @required this.filename,
-    String text,
-  }) : _text = text ?? name;
-
-  static const String dir = 'assets/emoji';
-
-  @HiveField(0)
-  final String name;
-  @HiveField(1)
-  final String filename;
-  @HiveField(2)
-  final String _text;
-
-  String get text => _text;
-
-  String get wrappedText => '[$_text]';
-
-  String get path => '$dir/$filename.png';
-
-  @override
-  List<Object> get props => <Object>[name, _text, filename];
-
-  @override
-  String toString() => const JsonEncoder.withIndent('  ').convert(toJson());
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'name': name,
-      'text': _text,
-      'filename': filename,
-    };
-  }
-}
 
 class EmojiPad extends StatefulWidget {
   const EmojiPad({
@@ -66,23 +25,23 @@ class EmojiPad extends StatefulWidget {
 }
 
 class _EmojiPadState extends State<EmojiPad> {
-  List<Emoji> recentEmojis;
+  List<EmojiModel> recentEmojis;
 
   void fetchRecentEmojis() {
-    final List<Emoji> _emojis =
-        HiveBoxes.emojisBox.get(currentUser.uid)?.cast<Emoji>();
+    final List<EmojiModel> _emojis =
+        HiveBoxes.emojisBox.get(currentUser.uid)?.cast<EmojiModel>();
     if (_emojis?.isNotEmpty == true) {
       recentEmojis = _emojis;
     } else {
-      final List<Emoji> _sublist = emojis.sublist(0, 7);
+      final List<EmojiModel> _sublist = emojis.sublist(0, 7);
       recentEmojis = _sublist;
       HiveBoxes.emojisBox.put(currentUser.uid, _sublist);
     }
   }
 
-  void addRecentEmoji(Emoji emoji) {
-    final List<Emoji> _emojis = List<Emoji>.of(
-      HiveBoxes.emojisBox.get(currentUser.uid)?.cast<Emoji>(),
+  void addRecentEmojiModel(EmojiModel emoji) {
+    final List<EmojiModel> _emojis = List<EmojiModel>.of(
+      HiveBoxes.emojisBox.get(currentUser.uid)?.cast<EmojiModel>(),
     );
     if (_emojis.contains(emoji)) {
       _emojis.remove(emoji);
@@ -93,11 +52,15 @@ class _EmojiPadState extends State<EmojiPad> {
     HiveBoxes.emojisBox.put(currentUser.uid, _emojis);
   }
 
-  Widget _itemBuilder(BuildContext context, int index, {Iterable<Emoji> list}) {
-    final Emoji emoji = (list ?? emojis).elementAt(index);
+  Widget _itemBuilder(
+    BuildContext context,
+    int index, {
+    Iterable<EmojiModel> list,
+  }) {
+    final EmojiModel emoji = (list ?? emojis).elementAt(index);
     return Tapper(
       onTap: () {
-        addRecentEmoji(emoji);
+        addRecentEmojiModel(emoji);
         InputUtils.insertText(
           text: emoji.wrappedText,
           controller: widget.controller,
@@ -199,135 +162,136 @@ class _EmojiPadState extends State<EmojiPad> {
   }
 }
 
-const List<Emoji> emojis = <Emoji>[
-  Emoji(name: 'doge', filename: 'doge'),
-  Emoji(name: '滑稽', filename: 'huaji'),
-  Emoji(name: '666', filename: '666'),
-  Emoji(name: '暗中观察', filename: 'anzhongguancha'),
-  Emoji(name: '沧桑', filename: 'cangsang'),
-  Emoji(name: '打脸', filename: 'dalian'),
-  Emoji(name: '机智', filename: 'jizhi'),
-  Emoji(name: '防疫', filename: 'fangyi'),
-  Emoji(name: '笑哭', filename: 'xiaoku'),
-  Emoji(name: '捂脸', filename: 'wulian'),
-  Emoji(name: '苦涩', filename: 'kuse'),
-  Emoji(name: '摸鱼', filename: 'moyu'),
-  Emoji(name: '柠檬', filename: 'ningmeng'),
-  Emoji(name: '压岁钱', filename: 'yasuiqian'),
-  Emoji(name: '福字', filename: 'fuzi'),
-  Emoji(name: '灯笼', filename: 'denglong'),
-  Emoji(name: '烟火', filename: 'yanhuo'),
-  Emoji(name: '鞭炮', filename: 'bianpao'),
-  Emoji(name: '微笑', text: '微笑2', filename: 'weixiao2'),
-  Emoji(name: '撇嘴', text: '撇嘴1', filename: 'piezui1'),
-  Emoji(name: '色', text: '色4', filename: 'se4'),
-  Emoji(name: '发呆', text: '发呆2', filename: 'fadai2'),
-  Emoji(name: '得意', text: '得意1', filename: 'deyi1'),
-  Emoji(name: '流泪', text: '流泪2', filename: 'liulei2'),
-  Emoji(name: '害羞', text: '害羞5', filename: 'haixiu5'),
-  Emoji(name: '闭嘴', text: '闭嘴1', filename: 'bizui1'),
-  Emoji(name: '睡', filename: 'shui'),
-  Emoji(name: '大哭', text: '大哭7', filename: 'daku7'),
-  Emoji(name: '尴尬', text: '尴尬1', filename: 'ganga1'),
-  Emoji(name: '发怒', filename: 'fanu'),
-  Emoji(name: '调皮', text: '调皮1', filename: 'tiaopi1'),
-  Emoji(name: '呲牙', filename: 'ciya'),
-  Emoji(name: '惊讶', text: '惊讶4', filename: 'jingya4'),
-  Emoji(name: '难过', filename: 'nanguo'),
-  Emoji(name: '酷', filename: 'ku'),
-  Emoji(name: '冷汗', filename: 'lenghan'),
-  Emoji(name: '抓狂', filename: 'zhuakuang'),
-  Emoji(name: '吐', filename: 'tu'),
-  Emoji(name: '偷笑', text: '偷笑2', filename: 'touxiao2'),
-  Emoji(name: '可爱', text: '可爱1', filename: 'keai1'),
-  Emoji(name: '白眼', text: '白眼1', filename: 'baiyan1'),
-  Emoji(name: '傲慢', filename: 'aoman'),
-  Emoji(name: '饥饿', text: '饥饿2', filename: 'jie2'),
-  Emoji(name: '困', filename: 'kun'),
-  Emoji(name: '惊恐', text: '惊恐1', filename: 'jingkong1'),
-  Emoji(name: '流汗', text: '流汗2', filename: 'liuhan2'),
-  Emoji(name: '憨笑', filename: 'hanxiao'),
-  Emoji(name: '大兵', filename: 'dabing'),
-  Emoji(name: '奋斗', text: '奋斗1', filename: 'fendou1'),
-  Emoji(name: '咒骂', filename: 'zhouma'),
-  Emoji(name: '疑问', text: '疑问2', filename: 'yiwen2'),
-  Emoji(name: '嘘', filename: 'xu'),
-  Emoji(name: '晕', text: '晕3', filename: 'yun3'),
-  Emoji(name: '折磨', text: '折磨1', filename: 'zhemo1'),
-  Emoji(name: '衰', text: '衰1', filename: 'shuai1'),
-  Emoji(name: '骷髅', filename: 'kulou'),
-  Emoji(name: '敲打', filename: 'qiaoda'),
-  Emoji(name: '再见', filename: 'zaijian'),
-  Emoji(name: '擦汗', filename: 'cahan'),
-  Emoji(name: '抠鼻', filename: 'koubi'),
-  Emoji(name: '鼓掌', text: '鼓掌1', filename: 'guzhang1'),
-  Emoji(name: '糗大了', filename: 'qiudale'),
-  Emoji(name: '坏笑', text: '坏笑1', filename: 'huaixiao1'),
-  Emoji(name: '左哼哼', filename: 'zuohengheng'),
-  Emoji(name: '右哼哼', filename: 'youhengheng'),
-  Emoji(name: '哈欠', filename: 'haqian'),
-  Emoji(name: '鄙视', text: '鄙视2', filename: 'bishi2'),
-  Emoji(name: '委屈', text: '委屈1', filename: 'weiqu1'),
-  Emoji(name: '快哭了', filename: 'kuaikule'),
-  Emoji(name: '阴险', filename: 'yinxian'),
-  Emoji(name: '亲亲', filename: 'qinqin'),
-  Emoji(name: '吓', filename: 'xia'),
-  Emoji(name: '可怜', text: '可怜2', filename: 'kelian2'),
-  Emoji(name: '菜刀', filename: 'caidao'),
-  Emoji(name: '西瓜', filename: 'xigua'),
-  Emoji(name: '啤酒', filename: 'pijiu'),
-  Emoji(name: '篮球', filename: 'lanqiu'),
-  Emoji(name: '乒乓', filename: 'pingpang'),
-  Emoji(name: '咖啡', filename: 'kafei'),
-  Emoji(name: '饭', filename: 'fan'),
-  Emoji(name: '猪头', filename: 'zhutou'),
-  Emoji(name: '玫瑰', filename: 'meigui'),
-  Emoji(name: '凋谢', filename: 'diaoxie'),
-  Emoji(name: '示爱', filename: 'shiai'),
-  Emoji(name: '爱心', filename: 'aixin'),
-  Emoji(name: '心碎', filename: 'xinsui'),
-  Emoji(name: '蛋糕', filename: 'dangao'),
-  Emoji(name: '闪电', filename: 'shandian'),
-  Emoji(name: '炸弹', filename: 'zhadan'),
-  Emoji(name: '刀', filename: 'dao'),
-  Emoji(name: '足球', filename: 'zuqiu'),
-  Emoji(name: '瓢虫', filename: 'piaochong'),
-  Emoji(name: '便便', filename: 'bianbian'),
-  Emoji(name: '月亮', filename: 'yueliang'),
-  Emoji(name: '太阳', filename: 'taiyang'),
-  Emoji(name: '礼物', filename: 'liwu'),
-  Emoji(name: '拥抱', filename: 'yongbao'),
-  Emoji(name: '强', filename: 'qiang'),
-  Emoji(name: '弱', filename: 'ruo'),
-  Emoji(name: '握手', filename: 'woshou'),
-  Emoji(name: '胜利', filename: 'shengli'),
-  Emoji(name: '抱拳', filename: 'baoquan'),
-  Emoji(name: '勾引', filename: 'gouyin'),
-  Emoji(name: '拳头', filename: 'quantou'),
-  Emoji(name: '差劲', filename: 'chajin'),
-  Emoji(name: '爱你', filename: 'aini'),
-  Emoji(name: 'NO', filename: 'NO'),
-  Emoji(name: 'OK', filename: 'OK'),
-  Emoji(name: '爱情', filename: 'aiqing'),
-  Emoji(name: '飞吻', text: '飞吻1', filename: 'feiwen1'),
-  Emoji(name: '跳跳', filename: 'tiaotiao'),
-  Emoji(name: '发抖', filename: 'fadou'),
-  Emoji(name: '怄火', filename: 'ouhuo'),
-  Emoji(name: '转圈', filename: 'zhuanquan'),
-  Emoji(name: '磕头', filename: 'ketou'),
-  Emoji(name: '回头', filename: 'huitou'),
-  Emoji(name: '跳绳', filename: 'tiaosheng'),
-  Emoji(name: '挥手', filename: 'zaijian'),
-  Emoji(name: '激动', text: '激动3', filename: 'jidong3'),
-  Emoji(name: '街舞', filename: 'jiewu'),
-  Emoji(name: '献吻', filename: 'xianwen'),
-  Emoji(name: '左太极', filename: 'zuotaiji'),
-  Emoji(name: '右太极', filename: 'youtaiji'),
+const List<EmojiModel> emojis = <EmojiModel>[
+  EmojiModel(name: 'doge', filename: 'doge'),
+  EmojiModel(name: '滑稽', filename: 'huaji'),
+  EmojiModel(name: '666', filename: '666'),
+  EmojiModel(name: '暗中观察', filename: 'anzhongguancha'),
+  EmojiModel(name: '沧桑', filename: 'cangsang'),
+  EmojiModel(name: '打脸', filename: 'dalian'),
+  EmojiModel(name: '机智', filename: 'jizhi'),
+  EmojiModel(name: '防疫', filename: 'fangyi'),
+  EmojiModel(name: '笑哭', filename: 'xiaoku'),
+  EmojiModel(name: '捂脸', filename: 'wulian'),
+  EmojiModel(name: '苦涩', filename: 'kuse'),
+  EmojiModel(name: '摸鱼', filename: 'moyu'),
+  EmojiModel(name: '柠檬', filename: 'ningmeng'),
+  EmojiModel(name: '压岁钱', filename: 'yasuiqian'),
+  EmojiModel(name: '福字', filename: 'fuzi'),
+  EmojiModel(name: '灯笼', filename: 'denglong'),
+  EmojiModel(name: '烟火', filename: 'yanhuo'),
+  EmojiModel(name: '鞭炮', filename: 'bianpao'),
+  EmojiModel(name: '微笑', text: '微笑2', filename: 'weixiao2'),
+  EmojiModel(name: '撇嘴', text: '撇嘴1', filename: 'piezui1'),
+  EmojiModel(name: '色', text: '色4', filename: 'se4'),
+  EmojiModel(name: '发呆', text: '发呆2', filename: 'fadai2'),
+  EmojiModel(name: '得意', text: '得意1', filename: 'deyi1'),
+  EmojiModel(name: '流泪', text: '流泪2', filename: 'liulei2'),
+  EmojiModel(name: '害羞', text: '害羞5', filename: 'haixiu5'),
+  EmojiModel(name: '闭嘴', text: '闭嘴1', filename: 'bizui1'),
+  EmojiModel(name: '睡', filename: 'shui'),
+  EmojiModel(name: '大哭', text: '大哭7', filename: 'daku7'),
+  EmojiModel(name: '尴尬', text: '尴尬1', filename: 'ganga1'),
+  EmojiModel(name: '发怒', filename: 'fanu'),
+  EmojiModel(name: '调皮', text: '调皮1', filename: 'tiaopi1'),
+  EmojiModel(name: '呲牙', filename: 'ciya'),
+  EmojiModel(name: '惊讶', text: '惊讶4', filename: 'jingya4'),
+  EmojiModel(name: '难过', filename: 'nanguo'),
+  EmojiModel(name: '酷', filename: 'ku'),
+  EmojiModel(name: '冷汗', filename: 'lenghan'),
+  EmojiModel(name: '抓狂', filename: 'zhuakuang'),
+  EmojiModel(name: '吐', filename: 'tu'),
+  EmojiModel(name: '偷笑', text: '偷笑2', filename: 'touxiao2'),
+  EmojiModel(name: '可爱', text: '可爱1', filename: 'keai1'),
+  EmojiModel(name: '白眼', text: '白眼1', filename: 'baiyan1'),
+  EmojiModel(name: '傲慢', filename: 'aoman'),
+  EmojiModel(name: '饥饿', text: '饥饿2', filename: 'jie2'),
+  EmojiModel(name: '困', filename: 'kun'),
+  EmojiModel(name: '惊恐', text: '惊恐1', filename: 'jingkong1'),
+  EmojiModel(name: '流汗', text: '流汗2', filename: 'liuhan2'),
+  EmojiModel(name: '憨笑', filename: 'hanxiao'),
+  EmojiModel(name: '大兵', filename: 'dabing'),
+  EmojiModel(name: '奋斗', text: '奋斗1', filename: 'fendou1'),
+  EmojiModel(name: '咒骂', filename: 'zhouma'),
+  EmojiModel(name: '疑问', text: '疑问2', filename: 'yiwen2'),
+  EmojiModel(name: '嘘', filename: 'xu'),
+  EmojiModel(name: '晕', text: '晕3', filename: 'yun3'),
+  EmojiModel(name: '折磨', text: '折磨1', filename: 'zhemo1'),
+  EmojiModel(name: '衰', text: '衰1', filename: 'shuai1'),
+  EmojiModel(name: '骷髅', filename: 'kulou'),
+  EmojiModel(name: '敲打', filename: 'qiaoda'),
+  EmojiModel(name: '再见', filename: 'zaijian'),
+  EmojiModel(name: '擦汗', filename: 'cahan'),
+  EmojiModel(name: '抠鼻', filename: 'koubi'),
+  EmojiModel(name: '鼓掌', text: '鼓掌1', filename: 'guzhang1'),
+  EmojiModel(name: '糗大了', filename: 'qiudale'),
+  EmojiModel(name: '坏笑', text: '坏笑1', filename: 'huaixiao1'),
+  EmojiModel(name: '左哼哼', filename: 'zuohengheng'),
+  EmojiModel(name: '右哼哼', filename: 'youhengheng'),
+  EmojiModel(name: '哈欠', filename: 'haqian'),
+  EmojiModel(name: '鄙视', text: '鄙视2', filename: 'bishi2'),
+  EmojiModel(name: '委屈', text: '委屈1', filename: 'weiqu1'),
+  EmojiModel(name: '快哭了', filename: 'kuaikule'),
+  EmojiModel(name: '阴险', filename: 'yinxian'),
+  EmojiModel(name: '亲亲', filename: 'qinqin'),
+  EmojiModel(name: '吓', filename: 'xia'),
+  EmojiModel(name: '可怜', text: '可怜2', filename: 'kelian2'),
+  EmojiModel(name: '菜刀', filename: 'caidao'),
+  EmojiModel(name: '西瓜', filename: 'xigua'),
+  EmojiModel(name: '啤酒', filename: 'pijiu'),
+  EmojiModel(name: '篮球', filename: 'lanqiu'),
+  EmojiModel(name: '乒乓', filename: 'pingpang'),
+  EmojiModel(name: '咖啡', filename: 'kafei'),
+  EmojiModel(name: '饭', filename: 'fan'),
+  EmojiModel(name: '猪头', filename: 'zhutou'),
+  EmojiModel(name: '玫瑰', filename: 'meigui'),
+  EmojiModel(name: '凋谢', filename: 'diaoxie'),
+  EmojiModel(name: '示爱', filename: 'shiai'),
+  EmojiModel(name: '爱心', filename: 'aixin'),
+  EmojiModel(name: '心碎', filename: 'xinsui'),
+  EmojiModel(name: '蛋糕', filename: 'dangao'),
+  EmojiModel(name: '闪电', filename: 'shandian'),
+  EmojiModel(name: '炸弹', filename: 'zhadan'),
+  EmojiModel(name: '刀', filename: 'dao'),
+  EmojiModel(name: '足球', filename: 'zuqiu'),
+  EmojiModel(name: '瓢虫', filename: 'piaochong'),
+  EmojiModel(name: '便便', filename: 'bianbian'),
+  EmojiModel(name: '月亮', filename: 'yueliang'),
+  EmojiModel(name: '太阳', filename: 'taiyang'),
+  EmojiModel(name: '礼物', filename: 'liwu'),
+  EmojiModel(name: '拥抱', filename: 'yongbao'),
+  EmojiModel(name: '强', filename: 'qiang'),
+  EmojiModel(name: '弱', filename: 'ruo'),
+  EmojiModel(name: '握手', filename: 'woshou'),
+  EmojiModel(name: '胜利', filename: 'shengli'),
+  EmojiModel(name: '抱拳', filename: 'baoquan'),
+  EmojiModel(name: '勾引', filename: 'gouyin'),
+  EmojiModel(name: '拳头', filename: 'quantou'),
+  EmojiModel(name: '差劲', filename: 'chajin'),
+  EmojiModel(name: '爱你', filename: 'aini'),
+  EmojiModel(name: 'NO', filename: 'NO'),
+  EmojiModel(name: 'OK', filename: 'OK'),
+  EmojiModel(name: '爱情', filename: 'aiqing'),
+  EmojiModel(name: '飞吻', text: '飞吻1', filename: 'feiwen1'),
+  EmojiModel(name: '跳跳', filename: 'tiaotiao'),
+  EmojiModel(name: '发抖', filename: 'fadou'),
+  EmojiModel(name: '怄火', filename: 'ouhuo'),
+  EmojiModel(name: '转圈', filename: 'zhuanquan'),
+  EmojiModel(name: '磕头', filename: 'ketou'),
+  EmojiModel(name: '回头', filename: 'huitou'),
+  EmojiModel(name: '跳绳', filename: 'tiaosheng'),
+  EmojiModel(name: '挥手', filename: 'zaijian'),
+  EmojiModel(name: '激动', text: '激动3', filename: 'jidong3'),
+  EmojiModel(name: '街舞', filename: 'jiewu'),
+  EmojiModel(name: '献吻', filename: 'xianwen'),
+  EmojiModel(name: '左太极', filename: 'zuotaiji'),
+  EmojiModel(name: '右太极', filename: 'youtaiji'),
 ];
 
-extension EmojiListExtension on List<Emoji> {
-  Emoji fromText(String text) =>
-      where((Emoji e) => e.wrappedText == text).first;
+extension EmojiListExtension on List<EmojiModel> {
+  EmojiModel fromText(String text) =>
+      where((EmojiModel e) => e.wrappedText == text).first;
 
-  bool containsText(String text) => any((Emoji e) => e.wrappedText == text);
+  bool containsText(String text) =>
+      any((EmojiModel e) => e.wrappedText == text);
 }
