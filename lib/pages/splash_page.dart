@@ -84,7 +84,8 @@ class SplashState extends State<SplashPage> {
     super.dispose();
   }
 
-  void checkOnline() {
+  Future<void> checkOnline() async {
+    await NetUtils.testClassKit();
     if (!isInLoginProcess) {
       if (Instances.connectivityResult != null &&
           Instances.connectivityResult != ConnectivityResult.none) {

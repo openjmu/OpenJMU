@@ -66,8 +66,6 @@ class NetUtils {
       dio.interceptors.add(LoggingInterceptor());
       tokenDio.interceptors.add(LoggingInterceptor());
     }
-
-    await testClassKit();
   }
 
   static Future<void> initCookieManagement() async {
