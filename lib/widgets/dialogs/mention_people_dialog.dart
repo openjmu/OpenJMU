@@ -86,7 +86,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                 vertical: 15.w,
               ),
               isDense: true,
-              hintText: ' 请输入名字进行搜索',
+              hintText: ' 输入姓名/学号/工号进行搜索',
             ),
             textInputAction: TextInputAction.search,
             style: context.textTheme.bodyText2.copyWith(
