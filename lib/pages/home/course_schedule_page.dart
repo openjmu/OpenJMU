@@ -1326,7 +1326,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                 enabled: !loading,
                 style: TextStyle(
                   color:
-                      currentIsDark && hasCourse ? Colors.black : Colors.white,
+                      currentIsDark && !hasCourse ? Colors.white : Colors.black,
                   fontSize: 26.sp,
                   height: 1.5,
                   textBaseline: TextBaseline.alphabetic,
@@ -1364,7 +1364,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       child: IconButton(
         icon: Icon(
           Icons.close,
-          color: currentIsDark && hasCourse ? Colors.black : Colors.white,
+          color: currentIsDark && !hasCourse ? Colors.white : Colors.black,
         ),
         onPressed: Navigator.of(context).pop,
       ),
@@ -1373,46 +1373,33 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
 
   Widget updateButton(BuildContext context) {
     final Color buttonColor =
-        currentIsDark && hasCourse ? Colors.black : Colors.white;
+        currentIsDark && !hasCourse ? Colors.white : Colors.black;
     return Theme(
       data: context.theme.copyWith(
         splashFactory: InkSplash.splashFactory,
       ),
       child: Positioned(
-        bottom: 8.h,
+        bottom: 8.w,
         left: Screens.width / 7,
         right: Screens.width / 7,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            MaterialButton(
-              padding: EdgeInsets.zero,
-              minWidth: 48.w,
-              height: 48.h,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Screens.width / 2),
-              ),
+        child: ValueListenableBuilder<String>(
+          valueListenable: content,
+          builder: (_, String value, __) => Tapper(
+            onTap: value == widget.course?.name || loading ? null : editCourse,
+            child: SizedBox.fromSize(
+              size: Size.square(48.w),
               child: loading
                   ? const Center(
-                      child: LoadMoreSpinningIcon(
-                        isRefreshing: true,
-                        size: 30,
-                      ),
+                      child: LoadMoreSpinningIcon(isRefreshing: true, size: 30),
                     )
-                  : ValueListenableBuilder<String>(
-                      valueListenable: content,
-                      builder: (_, String value, __) => Icon(
-                        Icons.check,
-                        color: value == widget.course?.name
-                            ? buttonColor.withOpacity(0.15)
-                            : buttonColor,
-                      ),
+                  : Icon(
+                      Icons.check,
+                      color: value == widget.course?.name
+                          ? buttonColor.withOpacity(0.15)
+                          : buttonColor,
                     ),
-              onPressed: content.value == widget.course?.name || loading
-                  ? null
-                  : editCourse,
             ),
-          ],
+          ),
         ),
       ),
     );
