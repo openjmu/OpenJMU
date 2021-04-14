@@ -299,12 +299,11 @@ class NetUtils {
 
   /// 通过测试「课堂助理」应用，判断是否需要使用 WebVPN。
   static Future<void> testClassKit() async {
+    dio.lock();
     try {
       await tokenDio.get<String>(
         API.classKitHost,
-        options: Options(
-          contentType: 'text/html;charset=utf-8',
-        ),
+        options: Options(contentType: 'text/html;charset=utf-8'),
       );
       shouldUseWebVPN = false;
     } on DioError catch (dioError) {
@@ -316,6 +315,8 @@ class NetUtils {
     } catch (e) {
       LogUtils.e('Error when testing classKit: $e');
       shouldUseWebVPN = false;
+    } finally {
+      dio.unlock();
     }
   }
 
