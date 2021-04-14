@@ -27,7 +27,7 @@ class DataUtils {
     await HiveBoxes.upBox.add(UPModel(username, password));
     try {
       if (!await UserAPI.webVpnLogin()) {
-        showToast('登录失败');
+        showToast('登录失败 (0 WV)');
         return false;
       }
       final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
@@ -68,9 +68,13 @@ class DataUtils {
       Instances.eventBus.fire(TicketGotEvent(isWizard));
       initializeWebViewCookie();
       return true;
+    } on DioError catch (dioError) {
+      LogUtils.e('Error when login: $dioError');
+      showToast('登录失败 (0 ${dioError.response?.data}');
+      return false;
     } catch (e) {
       LogUtils.e('Failed when login: $e');
-      showToast('登录失败');
+      showToast('登录失败 (-1 DU)');
       return false;
     }
   }

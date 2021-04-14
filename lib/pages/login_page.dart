@@ -176,7 +176,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       }
     } catch (e) {
       LogUtils.e('Failed when login: $e');
-      showCenterErrorToast('登录失败');
+      showToast('登录失败 (-1 LP)');
       _isLogin.value = false;
     }
   }
