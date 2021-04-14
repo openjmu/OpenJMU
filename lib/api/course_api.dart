@@ -18,18 +18,18 @@ class CourseAPI {
 
   static Set<CourseColor> coursesUniqueColor = <CourseColor>{};
 
-  static Future<Response<String>> getCourse({bool useVPN = false}) async {
+  static Future<Response<String>> getCourse() async {
     return NetUtils.get(
-      useVPN
+      NetUtils.shouldUseWebVPN
           ? API.replaceWithWebVPN(API.courseScheduleCourses)
           : API.courseScheduleCourses,
       queryParameters: <String, dynamic>{'sid': currentUser.sid},
     );
   }
 
-  static Future<Response<String>> getRemark({bool useVPN = false}) async {
+  static Future<Response<String>> getRemark() async {
     return NetUtils.get(
-      useVPN
+      NetUtils.shouldUseWebVPN
           ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
           : API.courseScheduleClassRemark,
       queryParameters: <String, dynamic>{'sid': currentUser.sid},
@@ -47,7 +47,10 @@ class CourseAPI {
     Map<String, dynamic> course,
   ) async =>
       NetUtils.post(
-        '${API.courseScheduleCustom}?sid=${UserAPI.currentUser.sid}',
+        NetUtils.shouldUseWebVPN
+            ? API.replaceWithWebVPN(API.courseScheduleCustom)
+            : API.courseScheduleCustom,
+        queryParameters: <String, dynamic>{'sid': currentUser.sid},
         data: course,
       );
 

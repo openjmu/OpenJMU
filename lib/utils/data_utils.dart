@@ -285,5 +285,6 @@ class DataUtils {
   }
 
   /// 是否登录
-  static bool isLogin() => _settingsBox.get(spIsLogin) as bool ?? false;
+  static bool isLogin() =>
+      _settingsBox.get(spIsLogin) == true && HiveBoxes.upBox.isNotEmpty;
 }

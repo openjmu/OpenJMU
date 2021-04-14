@@ -6,6 +6,7 @@ part of 'providers.dart';
 
 class CoursesProvider extends ChangeNotifier {
   Box<Map<dynamic, dynamic>> get _courseBox => HiveBoxes.coursesBox;
+
   Box<String> get _courseRemarkBox => HiveBoxes.courseRemarkBox;
 
   final int maxCoursesPerDay = 12;
@@ -149,8 +150,8 @@ class CoursesProvider extends ChangeNotifier {
       final List<Response<String>> responses =
           await Future.wait<Response<String>>(
         <Future<Response<String>>>[
-          CourseAPI.getCourse(useVPN: NetUtils.shouldUseWebVPN),
-          CourseAPI.getRemark(useVPN: NetUtils.shouldUseWebVPN),
+          CourseAPI.getCourse(),
+          CourseAPI.getRemark(),
         ],
       );
       final Map<String, dynamic> courseData =
