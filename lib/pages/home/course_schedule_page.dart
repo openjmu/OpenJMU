@@ -772,17 +772,18 @@ class CourseWidget extends StatelessWidget {
                           showCoursesDetail(context);
                         }
                       },
-                      onLongPress: courseList.isEmpty
-                          ? () {
-                              showModal<void>(
-                                context: context,
-                                builder: (_) => CourseEditDialog(
-                                  course: null,
-                                  coordinate: coordinate,
-                                ),
-                              );
-                            }
-                          : null,
+                      onLongPress: () {
+                        final Iterable<Course> cs = courseList.where(
+                          (Course c) => c.isCustom,
+                        );
+                        showModal<void>(
+                          context: context,
+                          builder: (_) => CourseEditDialog(
+                            course: cs.isNotEmpty ? cs.first : null,
+                            coordinate: coordinate,
+                          ),
+                        );
+                      },
                       child: Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
@@ -843,12 +844,20 @@ class _CourseListDialogState extends State<_CourseListDialog> {
       physics: const BouncingScrollPhysics(),
       itemCount: widget.courseList.length,
       itemBuilder: (BuildContext context, int index) {
+        final Course course = widget.courseList[index];
+        if (course.isCustom) {
+          return _CustomCourseDetailDialog(
+            course: course,
+            coordinate: widget.coordinate,
+            currentWeek: widget.currentWeek,
+          );
+        }
         return Tapper(
           onTap: Navigator.of(context).maybePop,
           child: Center(
             child: IgnorePointer(
               child: _CourseDetailDialog(
-                course: widget.courseList[index],
+                course: course,
                 currentWeek: widget.currentWeek,
                 isDialog: false,
               ),
@@ -1239,16 +1248,18 @@ class CourseEditDialog extends StatefulWidget {
 
 class _CourseEditDialogState extends State<CourseEditDialog> {
   final double darkModeOpacity = 0.85;
+  final ValueNotifier<String> content = ValueNotifier<String>(null);
 
   TextEditingController _controller;
-  String content;
   bool loading = false;
+
+  bool get hasCourse => widget.course != null;
 
   @override
   void initState() {
     super.initState();
-    content = widget.course?.name;
-    _controller = TextEditingController(text: content);
+    content.value = widget.course?.name;
+    _controller = TextEditingController(text: content.value);
   }
 
   void editCourse() {
@@ -1258,15 +1269,15 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     }
     Future<Response<String>> editFuture;
 
-    if (widget.course?.shouldUseRaw ?? false) {
+    if (widget.course?.shouldUseRaw == true) {
       editFuture = CourseAPI.setCustomCourse(<String, dynamic>{
-        'content': Uri.encodeComponent(content),
+        'content': Uri.encodeComponent(content.value),
         'couDayTime': widget.course?.rawDay ?? widget.coordinate[0],
         'coudeTime': widget.course?.rawTime ?? widget.coordinate[1],
       });
     } else {
       editFuture = CourseAPI.setCustomCourse(<String, dynamic>{
-        'content': Uri.encodeComponent(content),
+        'content': Uri.encodeComponent(content.value),
         'couDayTime': widget.course?.day ?? widget.coordinate[0],
         'coudeTime': widget.course?.time ?? widget.coordinate[1],
       });
@@ -1292,108 +1303,120 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     });
   }
 
-  Widget get courseEditField => Container(
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18.w),
-          color: widget.course != null
-              ? widget.course.color
-                  .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
-              : context.theme.dividerColor,
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 30.h),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: Screens.width / 2),
-              child: ScrollConfiguration(
-                behavior: const NoGlowScrollBehavior(),
-                child: TextField(
-                  controller: _controller,
-                  autofocus: true,
-                  enabled: !loading,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 26.sp,
+  Widget get courseEditField {
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18.w),
+        color: hasCourse
+            ? widget.course.color
+                .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
+            : context.theme.dividerColor,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 30.h),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: Screens.width / 2),
+            child: ScrollConfiguration(
+              behavior: const NoGlowScrollBehavior(),
+              child: TextField(
+                controller: _controller,
+                autofocus: true,
+                enabled: !loading,
+                style: TextStyle(
+                  color:
+                      currentIsDark && hasCourse ? Colors.black : Colors.white,
+                  fontSize: 26.sp,
+                  height: 1.5,
+                  textBaseline: TextBaseline.alphabetic,
+                ),
+                textAlign: TextAlign.center,
+                cursorColor: currentThemeColor,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '自定义内容',
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 24.sp,
                     height: 1.5,
                     textBaseline: TextBaseline.alphabetic,
                   ),
-                  textAlign: TextAlign.center,
-                  cursorColor: currentThemeColor,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '自定义内容',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 24.sp,
-                      height: 1.5,
-                      textBaseline: TextBaseline.alphabetic,
-                    ),
-                  ),
-                  maxLines: null,
-                  maxLength: 30,
-                  buildCounter: emptyCounterBuilder,
-                  onChanged: (String value) {
-                    content = value;
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  },
                 ),
+                maxLines: null,
+                maxLength: 30,
+                buildCounter: emptyCounterBuilder,
+                onChanged: (String value) {
+                  content.value = value;
+                },
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget closeButton(BuildContext context) => Positioned(
-        top: 0.0,
-        right: 0.0,
-        child: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
-          onPressed: Navigator.of(context).pop,
+  Widget closeButton(BuildContext context) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: IconButton(
+        icon: Icon(
+          Icons.close,
+          color: currentIsDark && hasCourse ? Colors.black : Colors.white,
         ),
-      );
+        onPressed: Navigator.of(context).pop,
+      ),
+    );
+  }
 
-  Widget updateButton(BuildContext context) => Theme(
-        data: context.theme.copyWith(
-          splashFactory: InkSplash.splashFactory,
-        ),
-        child: Positioned(
-          bottom: 8.h,
-          left: Screens.width / 7,
-          right: Screens.width / 7,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              MaterialButton(
-                padding: EdgeInsets.zero,
-                minWidth: 48.w,
-                height: 48.h,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(Screens.width / 2),
-                ),
-                child: loading
-                    ? const Center(
-                        child: LoadMoreSpinningIcon(
-                          isRefreshing: true,
-                          size: 30,
-                        ),
-                      )
-                    : Icon(
-                        Icons.check,
-                        color: content == widget.course?.name
-                            ? Colors.black.withOpacity(0.15)
-                            : Colors.black,
-                      ),
-                onPressed: content == widget.course?.name || loading
-                    ? null
-                    : editCourse,
+  Widget updateButton(BuildContext context) {
+    final Color buttonColor =
+        currentIsDark && hasCourse ? Colors.black : Colors.white;
+    return Theme(
+      data: context.theme.copyWith(
+        splashFactory: InkSplash.splashFactory,
+      ),
+      child: Positioned(
+        bottom: 8.h,
+        left: Screens.width / 7,
+        right: Screens.width / 7,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            MaterialButton(
+              padding: EdgeInsets.zero,
+              minWidth: 48.w,
+              height: 48.h,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Screens.width / 2),
               ),
-            ],
-          ),
+              child: loading
+                  ? const Center(
+                      child: LoadMoreSpinningIcon(
+                        isRefreshing: true,
+                        size: 30,
+                      ),
+                    )
+                  : ValueListenableBuilder<String>(
+                      valueListenable: content,
+                      builder: (_, String value, __) => Icon(
+                        Icons.check,
+                        color: value == widget.course?.name
+                            ? buttonColor.withOpacity(0.15)
+                            : buttonColor,
+                      ),
+                    ),
+              onPressed: content.value == widget.course?.name || loading
+                  ? null
+                  : editCourse,
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
