@@ -118,46 +118,53 @@ class MainPage extends StatefulWidget {
 
   static Widget outerNetworkIndicator(BuildContext context) {
     final bool isDark = context.theme.brightness == Brightness.dark;
-    return AnimatedSwitcher(
-      duration: kThemeChangeDuration,
-      child: NetUtils.shouldUseWebVPN
-          ? Tapper(
-              onTap: () {
-                ConfirmationDialog.show(
-                  context,
-                  title: 'WebVPN 已连接',
-                  content: '由于校外网络限制，部分页面将通过 WebVPN 获取数据，'
-                      '但仍有部分页面可能无法获取最新数据，请连接校园网后重试。',
-                  showConfirm: true,
-                  showCancel: false,
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.w),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Gap(8.w),
-                    Container(
-                      width: 14.w,
-                      height: 14.w,
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? defaultThemeGroup.darkThemeColor
-                            : defaultThemeGroup.lightThemeColor,
-                        shape: BoxShape.circle,
-                      ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: NetUtils.webVpnNotifier,
+      builder: (_, bool value, __) {
+        Widget child = const SizedBox.shrink();
+        if (value) {
+          child = Tapper(
+            onTap: () {
+              ConfirmationDialog.show(
+                context,
+                title: 'WebVPN 已连接',
+                content: '由于校外网络限制，部分页面将通过 WebVPN 获取数据，'
+                    '但仍有部分页面可能无法获取最新数据，请连接校园网后重试。',
+                showConfirm: true,
+                showCancel: false,
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Gap(8.w),
+                  Container(
+                    width: 14.w,
+                    height: 14.w,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? defaultThemeGroup.darkThemeColor
+                          : defaultThemeGroup.lightThemeColor,
+                      shape: BoxShape.circle,
                     ),
-                    Gap(6.w),
-                    Text(
-                      'WebVPN 已连接',
-                      style: TextStyle(height: 1.45, fontSize: 16.sp),
-                    ),
-                  ],
-                ),
+                  ),
+                  Gap(6.w),
+                  Text(
+                    'WebVPN 已连接',
+                    style: TextStyle(height: 1.45, fontSize: 16.sp),
+                  ),
+                ],
               ),
-            )
-          : const SizedBox.shrink(),
+            ),
+          );
+        }
+        return AnimatedSwitcher(
+          duration: kThemeChangeDuration,
+          child: child,
+        );
+      },
     );
   }
 

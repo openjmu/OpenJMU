@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -23,7 +24,10 @@ class NetUtils {
   static final Dio tokenDio = Dio(_options);
 
   static Future<Directory> get _tempDir => getTemporaryDirectory();
-  static bool shouldUseWebVPN = false;
+  static final ValueNotifier<bool> webVpnNotifier =
+      ValueNotifier<bool>(false);
+
+  static bool get shouldUseWebVPN => webVpnNotifier.value;
 
   static PersistCookieJar cookieJar;
   static PersistCookieJar tokenCookieJar;
@@ -305,16 +309,16 @@ class NetUtils {
         API.classKitHost,
         options: Options(contentType: 'text/html;charset=utf-8'),
       );
-      shouldUseWebVPN = false;
+      webVpnNotifier.value = false;
     } on DioError catch (dioError) {
       if (dioError.response?.statusCode == HttpStatus.forbidden) {
-        shouldUseWebVPN = true;
+        webVpnNotifier.value = true;
         return;
       }
-      shouldUseWebVPN = false;
+      webVpnNotifier.value = false;
     } catch (e) {
       LogUtils.e('Error when testing classKit: $e');
-      shouldUseWebVPN = false;
+      webVpnNotifier.value = false;
     } finally {
       dio.unlock();
     }
