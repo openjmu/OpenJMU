@@ -167,7 +167,7 @@ class HiveBoxes {
           coursesBox.clear(),
           courseRemarkBox.clear(),
           emojisBox.clear(),
-          personalMessagesBox.clear(),
+          // personalMessagesBox.clear(),
           reportRecordBox.clear(),
           scoresBox.clear(),
           webAppsBox.clear(),
