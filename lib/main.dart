@@ -96,6 +96,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         if (UserAPI.backpackItemTypes.isEmpty) {
           UserAPI.getBackpackItemType();
         }
+        UserAPI.initializeBlacklist();
         initPushService();
       })
       ..on<LogoutEvent>().listen((LogoutEvent event) {

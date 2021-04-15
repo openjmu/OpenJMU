@@ -198,7 +198,8 @@ class MainPage extends StatefulWidget {
   }
 }
 
-class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
+class MainPageState extends State<MainPage>
+    with AutomaticKeepAliveClientMixin, RouteAware {
   /// Titles for bottom navigation.
   /// 底部导航的各项标题
   static const List<String> pagesTitle = <String>['广场', '集市', '课业', '消息'];
@@ -272,6 +273,30 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         }
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Instances.routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void dispose() {
+    selfPageController.dispose();
+    showAnnouncement.dispose();
+    Instances.routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    context.read<NotificationProvider>().stopNotification();
+  }
+
+  @override
+  void didPopNext() {
+    context.read<NotificationProvider>().initNotification();
   }
 
   /// Method to update index.

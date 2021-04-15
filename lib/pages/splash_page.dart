@@ -119,6 +119,8 @@ class SplashState extends State<SplashPage> {
             Widget child;
             if (!isUserLogin || forceToLogin) {
               child = const LoginPage();
+              NetUtils.cookieJar.deleteAll();
+              NetUtils.tokenCookieJar.deleteAll();
               NetUtils.webViewCookieManager.deleteAllCookies();
             } else if (HiveFieldUtils.getFirstOpen() != true) {
               child = const TutorialPage();
