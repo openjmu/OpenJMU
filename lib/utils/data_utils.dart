@@ -297,7 +297,7 @@ class DataUtils {
         name: cookie.name,
         value: cookie.value,
         domain: _domain ?? cookie.domain,
-        path: cookie.path,
+        path: cookie.path ?? '/',
         expiresDate: cookie.expires?.millisecondsSinceEpoch,
         isSecure: cookie.secure,
         maxAge: cookie.maxAge,
