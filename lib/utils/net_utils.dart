@@ -24,8 +24,7 @@ class NetUtils {
   static final Dio tokenDio = Dio(_options);
 
   static Future<Directory> get _tempDir => getTemporaryDirectory();
-  static final ValueNotifier<bool> webVpnNotifier =
-      ValueNotifier<bool>(false);
+  static final ValueNotifier<bool> webVpnNotifier = ValueNotifier<bool>(false);
 
   static bool get shouldUseWebVPN => webVpnNotifier.value;
 
@@ -282,20 +281,14 @@ class NetUtils {
     final List<Cookie> _cookies =
         cookies ?? _buildPHPSESSIDCookies(currentUser.sid);
     for (final String url in urls) {
-      final String httpUrl = url.replaceAll(
-        RegExp(r'http(s)?://'),
-        'http://',
-      );
-      final String httpsUrl = url.replaceAll(
-        RegExp(r'http(s)?://'),
-        'https://',
-      );
+      String _url = url;
+      if (!_url.endsWith('/')) {
+        _url += '/';
+      }
       await Future.wait<void>(
         <Future<void>>[
-          cookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
-          tokenCookieJar.saveFromResponse(Uri.parse('$httpUrl/'), _cookies),
-          cookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
-          tokenCookieJar.saveFromResponse(Uri.parse('$httpsUrl/'), _cookies),
+          cookieJar.saveFromResponse(Uri.parse(_url), _cookies),
+          tokenCookieJar.saveFromResponse(Uri.parse(_url), _cookies),
         ],
       );
     }

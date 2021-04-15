@@ -29,7 +29,10 @@ class _ScorePageState extends State<ScorePage>
     } else {
       url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${currentUser.sid}';
     }
-    API.launchWeb(url: url, title: '教学评测');
+    API.launchWeb(
+      url: NetUtils.shouldUseWebVPN ? API.replaceWithWebVPN(url) : url,
+      title: '教学评测',
+    );
   }
 
   Widget get errorWidget {

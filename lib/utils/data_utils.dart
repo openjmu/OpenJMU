@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_inappwebview/flutter_inappwebview.dart'
+    show HTTPCookieSameSitePolicy;
 import 'package:uuid/uuid.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -60,13 +62,13 @@ class DataUtils {
         isWizard = await checkWizard();
       }
       await saveLoginInfo(userInfo);
+      await initializeWebViewCookie();
       UserAPI.setBlacklist(
         ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
             .cast<Map<dynamic, dynamic>>(),
       );
       showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
-      initializeWebViewCookie();
       return true;
     } on DioError catch (dioError) {
       LogUtils.e('Error when login: $dioError');
@@ -128,8 +130,8 @@ class DataUtils {
       }
       final bool isWebVPNLogin = await UserAPI.webVpnLogin();
       if (isWebVPNLogin) {
+        await initializeWebViewCookie();
         Instances.eventBus.fire(TicketGotEvent(isWizard));
-        initializeWebViewCookie();
       } else {
         LogUtils.e('Failed to login with WebVPN.');
         Instances.eventBus.fire(TicketFailedEvent());
@@ -248,8 +250,13 @@ class DataUtils {
   static Future<bool> initializeWebViewCookie() async {
     final String url =
         'http://sso.jmu.edu.cn/imapps/2190?sid=${currentUser.sid}';
+    final String replacedUrl =
+        NetUtils.shouldUseWebVPN ? API.replaceWithWebVPN(url) : url;
     try {
-      await NetUtils.head(url, options: Options(followRedirects: false));
+      await NetUtils.head(
+        replacedUrl,
+        options: Options(followRedirects: false),
+      );
       LogUtils.d('Cookie response didn\'t return 302.');
       return false;
     } on DioError catch (dioError) {
@@ -258,15 +265,20 @@ class DataUtils {
           final List<Cookie> mainSiteCookies = await NetUtils.cookieJar
               .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
           for (final Cookie cookie in mainSiteCookies) {
-            NetUtils.webViewCookieManager.setCookie(
-              url: Uri.parse('${cookie.domain}${cookie.path}'),
+            String _domain;
+            if (cookie.domain == '.jmu.edu.cn') {
+              _domain = 'https://www${cookie.domain}';
+            }
+            await NetUtils.webViewCookieManager.setCookie(
+              url: Uri.parse('${_domain ?? cookie.domain}${cookie.path}'),
               name: cookie.name,
               value: cookie.value,
-              domain: cookie.domain,
+              domain: _domain ?? cookie.domain,
               path: cookie.path,
               expiresDate: cookie.expires?.millisecondsSinceEpoch,
               isSecure: cookie.secure,
               maxAge: cookie.maxAge,
+              sameSite: HTTPCookieSameSitePolicy.LAX,
             );
           }
           LogUtils.d('Successfully initialize WebView\'s Cookie.');

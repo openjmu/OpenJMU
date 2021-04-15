@@ -175,6 +175,9 @@ class HiveBoxes {
           settingsBox.clear(),
           firstOpenBox.clear(),
           startWeekBox.clear(),
+          NetUtils.cookieJar.deleteAll(),
+          NetUtils.tokenCookieJar.deleteAll(),
+          NetUtils.webViewCookieManager.deleteAllCookies(),
         ]);
         LogUtils.d('Boxes cleared.');
         if (kReleaseMode) {

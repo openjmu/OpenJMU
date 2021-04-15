@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart'
+    show HTTPCookieSameSitePolicy;
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 
@@ -361,7 +363,7 @@ class UserAPI {
       return true;
     } on DioError catch (dioError) {
       if (dioError.response.statusCode == HttpStatus.found) {
-        return webVpnUpdate();
+        return await webVpnUpdate();
       } else {
         LogUtils.e('Failed to login WebVPN: $dioError');
         await _clearVPNsValues();
@@ -417,6 +419,7 @@ class UserAPI {
           value: cookie.value,
           domain: 'webvpn.jmu.edu.cn',
           isSecure: cookie.secure,
+          sameSite: HTTPCookieSameSitePolicy.LAX,
         ),
     ]);
   }
