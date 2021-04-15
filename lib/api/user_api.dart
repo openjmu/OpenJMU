@@ -237,11 +237,12 @@ class UserAPI {
   static final Set<BlacklistUser> blacklist = <BlacklistUser>{};
 
   static Future<Response<Map<String, dynamic>>> getBlacklist({
-    int pos,
-    int size,
+    int pos = 0,
+    int size = 20,
   }) {
-    return NetUtils.get<Map<String, dynamic>>(
-      API.blacklist(pos: pos, size: size),
+    return NetUtils.tokenDio.get(
+      API.blacklist,
+      queryParameters: <String, dynamic>{'pos': pos, 'size': size},
     );
   }
 
@@ -305,7 +306,10 @@ class UserAPI {
     });
   }
 
-  static void setBlacklist(List<dynamic> list) {
+  static Future<void> initializeBlacklist() async {
+    final Response<Map<String, dynamic>> res = await UserAPI.getBlacklist();
+    final Map<String, dynamic> data = res.data;
+    final List<dynamic> list = data['users'] as List<dynamic>;
     if (list.isNotEmpty) {
       for (final Map<dynamic, dynamic> person
           in list.cast<Map<dynamic, dynamic>>()) {

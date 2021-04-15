@@ -120,9 +120,7 @@ class API {
   static const String searchUser = '$oa99Host/v2/api/search/users'; // 搜索用户
 
   /// 黑名单
-  static String blacklist({int pos = 0, int size = 20}) {
-    return '$oa99Host/v2/friend/api/blacklist/list?pos=$pos&size=$size';
-  }
+  static const String blacklist = '$oa99Host/v2/friend/api/blacklist/list';
 
   static const String addToBlacklist =
       '$oa99Host/v2/friend/api/blacklist/new'; // 添加至黑名单

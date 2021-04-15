@@ -63,10 +63,6 @@ class DataUtils {
       }
       await saveLoginInfo(userInfo);
       await initializeWebViewCookie();
-      UserAPI.setBlacklist(
-        ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
-            .cast<Map<dynamic, dynamic>>(),
-      );
       showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
@@ -123,10 +119,7 @@ class DataUtils {
       isWizard = true;
 //      if (!currentUser.isTeacher) isWizard = await checkWizard();
       if (currentUser.sid != null) {
-        UserAPI.setBlacklist(
-          ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
-              .cast<Map<dynamic, dynamic>>(),
-        );
+        UserAPI.initializeBlacklist();
       }
       final bool isWebVPNLogin = await UserAPI.webVpnLogin();
       if (isWebVPNLogin) {
