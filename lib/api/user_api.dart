@@ -409,16 +409,47 @@ class UserAPI {
     ];
     await Future.wait(<Future<void>>[
       NetUtils.updateDomainsCookies(
-        <String>['https://webvpn.jmu.edu.cn/'],
+        <String>[
+          'http://www.jmu.edu.cn/',
+          'https://www.jmu.edu.cn/',
+          'https://webvpn.jmu.edu.cn/',
+        ],
         cookies,
       ),
+      for (final Cookie cookie in cookies)
+        NetUtils.webViewCookieManager.setCookie(
+          url: Uri.parse('http://www.jmu.edu.cn/'),
+          name: cookie.name,
+          value: cookie.value,
+          domain: 'webvpn.jmu.edu.cn',
+          isSecure: false,
+          sameSite: HTTPCookieSameSitePolicy.LAX,
+        ),
+      for (final Cookie cookie in cookies)
+        NetUtils.webViewCookieManager.setCookie(
+          url: Uri.parse('https://www.jmu.edu.cn/'),
+          name: cookie.name,
+          value: cookie.value,
+          domain: 'webvpn.jmu.edu.cn',
+          isSecure: false,
+          sameSite: HTTPCookieSameSitePolicy.LAX,
+        ),
+      for (final Cookie cookie in cookies)
+        NetUtils.webViewCookieManager.setCookie(
+          url: Uri.parse('http://webvpn.jmu.edu.cn/'),
+          name: cookie.name,
+          value: cookie.value,
+          domain: 'webvpn.jmu.edu.cn',
+          isSecure: false,
+          sameSite: HTTPCookieSameSitePolicy.LAX,
+        ),
       for (final Cookie cookie in cookies)
         NetUtils.webViewCookieManager.setCookie(
           url: Uri.parse('https://webvpn.jmu.edu.cn/'),
           name: cookie.name,
           value: cookie.value,
           domain: 'webvpn.jmu.edu.cn',
-          isSecure: cookie.secure,
+          isSecure: false,
           sameSite: HTTPCookieSameSitePolicy.LAX,
         ),
     ]);

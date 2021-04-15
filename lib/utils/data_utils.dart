@@ -255,31 +255,24 @@ class DataUtils {
     try {
       await NetUtils.head(
         replacedUrl,
-        options: Options(followRedirects: false),
+        options: Options(
+          followRedirects: false,
+          receiveTimeout: 10000,
+          sendTimeout: 10000,
+        ),
       );
       LogUtils.d('Cookie response didn\'t return 302.');
       return false;
     } on DioError catch (dioError) {
       try {
         if (dioError.response.statusCode == HttpStatus.movedTemporarily) {
-          final List<Cookie> mainSiteCookies = await NetUtils.cookieJar
-              .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
-          for (final Cookie cookie in mainSiteCookies) {
-            String _domain;
-            if (cookie.domain == '.jmu.edu.cn') {
-              _domain = 'https://www${cookie.domain}';
-            }
-            await NetUtils.webViewCookieManager.setCookie(
-              url: Uri.parse('${_domain ?? cookie.domain}${cookie.path}'),
-              name: cookie.name,
-              value: cookie.value,
-              domain: _domain ?? cookie.domain,
-              path: cookie.path,
-              expiresDate: cookie.expires?.millisecondsSinceEpoch,
-              isSecure: cookie.secure,
-              maxAge: cookie.maxAge,
-              sameSite: HTTPCookieSameSitePolicy.LAX,
-            );
+          for (final Cookie cookie in await NetUtils.cookieJar
+              .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'))) {
+            await _setWebViewCookie(cookie);
+          }
+          for (final Cookie cookie in await NetUtils.tokenCookieJar
+              .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'))) {
+            await _setWebViewCookie(cookie);
           }
           LogUtils.d('Successfully initialize WebView\'s Cookie.');
           return true;
@@ -296,6 +289,29 @@ class DataUtils {
       }
     } catch (e) {
       LogUtils.e('Error when handling cookie response: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> _setWebViewCookie(Cookie cookie) async {
+    try {
+      String _domain;
+      if (cookie.domain == '.jmu.edu.cn') {
+        _domain = 'www${cookie.domain}';
+      }
+      await NetUtils.webViewCookieManager.setCookie(
+        url: Uri.parse('${_domain ?? cookie.domain}${cookie.path}'),
+        name: cookie.name,
+        value: cookie.value,
+        domain: _domain ?? cookie.domain,
+        path: cookie.path,
+        expiresDate: cookie.expires?.millisecondsSinceEpoch,
+        isSecure: cookie.secure,
+        maxAge: cookie.maxAge,
+        sameSite: HTTPCookieSameSitePolicy.LAX,
+      );
+      return true;
+    } catch (e) {
       return false;
     }
   }
