@@ -11,6 +11,9 @@ class ScoresProvider extends ChangeNotifier {
   Socket _socket;
   String _scoreData = '';
 
+  final int _maximumRetries = 3;
+  int _retries = 0;
+
   bool _loaded = false;
 
   bool get loaded => _loaded;
@@ -98,10 +101,11 @@ class ScoresProvider extends ChangeNotifier {
       _terms =
           (data['terms'] as List<dynamic>).reversed.toList().cast<String>();
       _scores = (data['scores'] as List<dynamic>).cast<Score>();
+      _loading = false;
       _loaded = true;
     }
     if (await initSocket()) {
-      requestScore();
+      requestScore(isInit: true);
     }
   }
 
@@ -123,8 +127,8 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> requestScore() async {
-    if (!loading) {
+  Future<void> requestScore({bool isInit = false}) async {
+    if (!isInit && !loading) {
       loading = true;
     }
     _rawData.clear();
@@ -137,7 +141,8 @@ class ScoresProvider extends ChangeNotifier {
       }).toUtf8());
     } catch (e) {
       if (e.toString().contains('StreamSink is closed')) {
-        if (await initSocket()) {
+        if (_retries < _maximumRetries && await initSocket()) {
+          _retries++;
           requestScore();
         }
       } else {
@@ -190,10 +195,13 @@ class ScoresProvider extends ChangeNotifier {
       );
     } catch (e) {
       LogUtils.e('Decode scores response error: $e');
-      _socket?.destroy();
-      _rawData.clear();
-      _scoreData = '';
-      initSocket();
+      if (_retries < _maximumRetries) {
+        _retries++;
+        _socket?.destroy();
+        _rawData.clear();
+        _scoreData = '';
+        initSocket();
+      }
     }
   }
 
@@ -219,6 +227,7 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   void unloadScore() {
+    _retries = 0;
     _loaded = false;
     _loading = true;
     _loadError = false;
