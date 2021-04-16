@@ -87,13 +87,13 @@ Future<Uint8List> compressEntity(
   const int limitation = 5242880; // 5M
   Uint8List data;
   if (entity.width > 0 && entity.height > 0) {
-    if (entity.width >= 4000 || entity.height >= 4000) {
+    if (entity.width >= 4000 || entity.height >= 5000) {
       data = await entity.thumbDataWithSize(
         entity.width ~/ 3,
         entity.height ~/ 3,
         quality: quality,
       );
-    } else if (entity.width >= 2000 || entity.height >= 2000) {
+    } else if (entity.width >= 2500 || entity.height >= 3500) {
       data = await entity.thumbDataWithSize(
         entity.width ~/ 2,
         entity.height ~/ 2,
