@@ -81,10 +81,14 @@ Future<ByteData> obtainScreenshotData(GlobalKey key) async {
 ///
 /// 最低质量为 4
 Future<Uint8List> compressEntity(
-  AssetEntity entity, {
+  AssetEntity entity,
+  String extension, {
   int quality = 99,
 }) async {
   const int limitation = 5242880; // 5M
+  if (extension == 'gif') {
+    return await entity.originBytes;
+  }
   Uint8List data;
   if (entity.width > 0 && entity.height > 0) {
     if (entity.width >= 4000 || entity.height >= 5000) {
@@ -110,7 +114,7 @@ Future<Uint8List> compressEntity(
     data = await entity.thumbData;
   }
   if (data.lengthInBytes >= limitation && quality > 5) {
-    return await compressEntity(entity, quality: quality - 5);
+    return await compressEntity(entity, extension, quality: quality - 5);
   }
   return data;
 }
