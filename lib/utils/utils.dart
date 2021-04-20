@@ -79,6 +79,7 @@ Future<ByteData> obtainScreenshotData(GlobalKey key) async {
 
 /// 将图片数据递归压缩至符合条件为止
 ///
+/// GIF 动图不压缩
 /// 最低质量为 4
 Future<Uint8List> compressEntity(
   AssetEntity entity,
@@ -86,7 +87,7 @@ Future<Uint8List> compressEntity(
   int quality = 99,
 }) async {
   const int limitation = 5242880; // 5M
-  if (extension == 'gif') {
+  if (extension.contains('gif')) {
     return await entity.originBytes;
   }
   Uint8List data;
