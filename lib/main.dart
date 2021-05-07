@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart' hide SizeExtension;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -70,7 +69,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     LogUtils.d('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
-    updateRefreshRate();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Connectivity().checkConnectivity().then(connectivityHandler);
@@ -164,15 +162,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     }
     if (mounted) {
       setState(() {});
-    }
-  }
-
-  /// Set default display mode to compatible with higher refresh rate on
-  /// supported devices.
-  /// 在支持的手机上尝试以更高的刷新率显示
-  void updateRefreshRate() {
-    if (Platform.isAndroid) {
-      FlutterDisplayMode.setHighRefreshRate();
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:device_info/device_info.dart';
@@ -68,5 +69,15 @@ class DeviceUtils {
       }
     }
     LogUtils.d('deviceUuid: $deviceUuid');
+  }
+
+  /// Set default display mode to compatible with the highest refresh rate on
+  /// supported devices.
+  /// 在支持的手机上尝试以最高的刷新率显示
+  static void setHighestRefreshRate() {
+    if (Platform.isAndroid &&
+        (deviceInfo as AndroidDeviceInfo).version.sdkInt >= 23) {
+      FlutterDisplayMode.setHighRefreshRate();
+    }
   }
 }

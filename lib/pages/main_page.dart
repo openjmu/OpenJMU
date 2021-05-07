@@ -256,6 +256,7 @@ class MainPageState extends State<MainPage>
   @override
   void initState() {
     super.initState();
+    DeviceUtils.setHighestRefreshRate();
     LogUtils.d('CurrentUser ${UserAPI.currentUser}');
 
     /// Initialize current page index.
