@@ -4,6 +4,10 @@
 ///
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:extended_text_field/extended_text_field.dart'
+    show handleSpecialTextSpanDelete;
+
+import '../model/special_text.dart';
 
 class InputUtils {
   const InputUtils._();
@@ -56,6 +60,50 @@ class InputUtils {
     }
     return controller.text.length;
   }
+
+  static void backspace(TextEditingController controller) {
+    final String text = controller.text;
+    final TextSelection textSelection = controller.selection;
+    final int selectionLength = textSelection.end - textSelection.start;
+    // The cursor is at the beginning.
+    if (textSelection.start == 0) {
+      return;
+    }
+    // There is a selection.
+    if (selectionLength > 0) {
+      final String newText = text.replaceRange(
+        textSelection.start,
+        textSelection.end,
+        '',
+      );
+      controller.value = TextEditingValue(
+        text: newText,
+        selection: textSelection.copyWith(
+          baseOffset: textSelection.start,
+          extentOffset: textSelection.start,
+        ),
+      );
+      return;
+    }
+    // Delete the previous character.
+    final TextEditingValue _value = controller.value;
+    final int previousCodeUnit = text.codeUnitAt(textSelection.start - 1);
+    final int offset = _isUtf16Surrogate(previousCodeUnit) ? 2 : 1;
+    final int newStart = textSelection.start - offset;
+    final int newEnd = textSelection.start;
+    final String newText = text.replaceRange(newStart, newEnd, '');
+    TextEditingValue value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newStart),
+    );
+    final TextSpan oldTextSpan = StackSpecialTextFieldSpanBuilder().build(
+      _value.text,
+    );
+    value = handleSpecialTextSpanDelete(value, _value, oldTextSpan, null);
+    controller.value = value;
+  }
+
+  static bool _isUtf16Surrogate(int value) => value & 0xF800 == 0xD800;
 
   /// Method for showing keyboard.
   /// 显示键盘方法
