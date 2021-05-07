@@ -20,6 +20,8 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/scan_qr_code_page.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
 
+import 'image_hero.dart';
+
 @FFRoute(
   name: 'openjmu://image-viewer',
   routeName: '图片浏览',
@@ -216,21 +218,10 @@ class ImageViewerState extends State<ImageViewer>
             }
             tag += '${widget.pics[index].id}';
 
-            return Hero(
+            return ImageHero(
               tag: tag,
               child: result,
-              flightShuttleBuilder: (
-                _,
-                __,
-                HeroFlightDirection flightDirection,
-                BuildContext fromHeroContext,
-                BuildContext toHeroContext,
-              ) {
-                final Hero hero = (flightDirection == HeroFlightDirection.pop
-                    ? fromHeroContext.widget
-                    : toHeroContext.widget) as Hero;
-                return hero.child;
-              },
+              slidePageKey: slidePageKey,
             );
           } else {
             return result;
