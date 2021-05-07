@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class EmojiPad extends StatefulWidget {
@@ -16,7 +15,7 @@ class EmojiPad extends StatefulWidget {
   final double height;
   final TextEditingController controller;
 
-  static double get padDefaultHeight => Screens.width / padGridCount * 5;
+  static double get padDefaultHeight => Screens.width / padGridCount * 4;
 
   static int get padGridCount => 7;
 
@@ -33,7 +32,10 @@ class _EmojiPadState extends State<EmojiPad> {
     if (_emojis?.isNotEmpty == true) {
       recentEmojis = _emojis;
     } else {
-      final List<EmojiModel> _sublist = emojis.sublist(0, 7);
+      final List<EmojiModel> _sublist = emojis.sublist(
+        0,
+        EmojiPad.padGridCount,
+      );
       recentEmojis = _sublist;
       HiveBoxes.emojisBox.put(currentUser.uid, _sublist);
     }
@@ -78,6 +80,55 @@ class _EmojiPadState extends State<EmojiPad> {
     );
   }
 
+  Widget _aboutItem(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 24.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '表情来自',
+              style: context.textTheme.caption.copyWith(
+                fontSize: 18.sp,
+                height: 1.2,
+              ),
+            ),
+            Gap(8.w),
+            SvgPicture.asset(
+              R.ASSETS_ICONS_JIMOJITAG_SVG,
+              color: context.textTheme.caption.color,
+              height: 16.sp,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _deleteButton(BuildContext context) {
+    final double offset =
+        context.mediaQuery.size.width / EmojiPad.padGridCount / 4.2;
+    return Positioned(
+      bottom: context.bottomPadding + 12.w,
+      right: offset,
+      width: context.mediaQuery.size.width / EmojiPad.padGridCount * 1.55,
+      height: context.mediaQuery.size.width / EmojiPad.padGridCount / 1.45,
+      child: Tapper(
+        onTap: () => InputUtils.backspace(widget.controller),
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1.w, color: context.theme.dividerColor),
+            borderRadius: BorderRadius.circular(15.w),
+            color: context.surfaceColor,
+          ),
+          child: Icon(Icons.backspace_outlined, size: 32.w),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     fetchRecentEmojis();
@@ -88,74 +139,77 @@ class _EmojiPadState extends State<EmojiPad> {
         border: Border(top: dividerBS(context)),
         color: context.theme.canvasColor,
       ),
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.w),
-              child: Text(
-                '最近使用',
-                style: context.textTheme.caption.copyWith(fontSize: 19.sp),
-              ),
-            ),
-          ),
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext c, int i) => _itemBuilder(
-                c,
-                i,
-                list: recentEmojis.reversed,
-              ),
-              childCount: 7,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 1.25,
-              crossAxisCount: EmojiPad.padGridCount,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              alignment: AlignmentDirectional.centerStart,
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.w),
-              child: Text(
-                '全部表情',
-                style: context.textTheme.caption.copyWith(fontSize: 19.sp),
-              ),
-            ),
-          ),
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              _itemBuilder,
-              childCount: emojis.length,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 1.25,
-              crossAxisCount: EmojiPad.padGridCount,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '表情来自',
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 15.w,
+                  ),
+                  child: Text(
+                    '最近使用',
                     style: context.textTheme.caption.copyWith(
-                      fontSize: 18.sp,
-                      height: 1.2,
+                      fontSize: 19.sp,
                     ),
                   ),
-                  Gap(8.w),
-                  SvgPicture.asset(
-                    R.ASSETS_ICONS_JIMOJITAG_SVG,
-                    color: context.textTheme.caption.color,
-                    height: 16.sp,
-                  ),
-                ],
+                ),
               ),
-            ),
+              SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext c, int i) => _itemBuilder(
+                    c,
+                    i,
+                    list: recentEmojis.reversed,
+                  ),
+                  childCount: EmojiPad.padGridCount,
+                ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 1.25,
+                  crossAxisCount: EmojiPad.padGridCount,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  alignment: AlignmentDirectional.centerStart,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 15.w,
+                  ),
+                  child: Text(
+                    '全部表情',
+                    style: context.textTheme.caption.copyWith(
+                      fontSize: 19.sp,
+                    ),
+                  ),
+                ),
+              ),
+              SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  _itemBuilder,
+                  childCount: emojis.length,
+                ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 1.25,
+                  crossAxisCount: EmojiPad.padGridCount,
+                ),
+              ),
+              _aboutItem(context),
+            ],
           ),
+          if (widget.controller != null)
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: widget.controller,
+              builder: (_, TextEditingValue value, __) {
+                if (value.text.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+                return _deleteButton(context);
+              },
+            )
         ],
       ),
     );
