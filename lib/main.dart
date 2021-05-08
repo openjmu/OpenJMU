@@ -140,6 +140,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     LogUtils.d('AppLifecycleState change to: ${state.toString()}');
     if (state == AppLifecycleState.resumed &&
         Instances.appLifeCycleState != AppLifecycleState.resumed) {
+      Future<void>.delayed(
+        const Duration(seconds: 1),
+        DeviceUtils.setHighestRefreshRate,
+      );
       currentContext.read<NotificationProvider>().initNotification();
     } else {
       currentContext.read<NotificationProvider>().stopNotification();
