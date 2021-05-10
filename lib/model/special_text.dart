@@ -228,13 +228,11 @@ class EmoticonText extends SpecialText {
   EmoticonText(
     TextStyle textStyle, {
     this.start = 0,
-    this.type,
   }) : super(startKey, endKey, textStyle);
 
   static const String startKey = '[';
   static const String endKey = ']';
   final int start;
-  final BuilderType type;
 
   @override
   InlineSpan finishText() {
@@ -444,7 +442,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     } else if (isStart(flag, PoundText.flag)) {
       return PoundText(textStyle, onTap, type: BuilderType.extendedText);
     } else if (isStart(flag, EmoticonText.startKey)) {
-      return EmoticonText(textStyle, type: BuilderType.extendedText);
+      return EmoticonText(textStyle);
     } else if (isStart(flag, LinkText.startKey)) {
       return LinkText(textStyle, onTap);
     } else if (isStart(flag, LinkOldText.startKey)) {
@@ -483,11 +481,7 @@ class StackSpecialTextFieldSpanBuilder extends StackSpecialTextSpanBuilder {
         type: BuilderType.extendedTextField,
       );
     } else if (isStart(flag, EmoticonText.startKey)) {
-      return EmoticonText(
-        textStyle,
-        start: index,
-        type: BuilderType.extendedTextField,
-      );
+      return EmoticonText(textStyle, start: index);
     }
     return null;
   }
