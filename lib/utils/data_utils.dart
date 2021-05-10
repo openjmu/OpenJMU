@@ -28,9 +28,10 @@ class DataUtils {
     await HiveBoxes.upBox.clear();
     await HiveBoxes.upBox.add(UPModel(username, password));
     try {
-      if (!await UserAPI.webVpnLogin()) {
-        showToast('登录失败 (0 WV)');
-        return false;
+      final String webVpnFailedReason = await UserAPI.webVpnLogin();
+      if (webVpnFailedReason != null) {
+        showToast('校内网络通道连接失败 (0 WV $webVpnFailedReason)');
+        NetUtils.webVpnNotifier.value = false;
       }
       final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
       currentUser = currentUser.copyWith(
@@ -121,14 +122,14 @@ class DataUtils {
       if (currentUser.sid != null) {
         UserAPI.initializeBlacklist();
       }
-      final bool isWebVPNLogin = await UserAPI.webVpnLogin();
-      if (isWebVPNLogin) {
+      final String isWebVPNLogin = await UserAPI.webVpnLogin();
+      if (isWebVPNLogin == null) {
         await initializeWebViewCookie();
-        Instances.eventBus.fire(TicketGotEvent(isWizard));
       } else {
+        NetUtils.webVpnNotifier.value = false;
         LogUtils.e('Failed to login with WebVPN.');
-        Instances.eventBus.fire(TicketFailedEvent());
       }
+      Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {
       LogUtils.e('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());

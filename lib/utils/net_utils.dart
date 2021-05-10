@@ -319,7 +319,7 @@ class NetUtils {
 
   static BaseOptions get _options {
     return BaseOptions(
-      connectTimeout: 30000,
+      connectTimeout: 20000,
       sendTimeout: 10000,
       receiveTimeout: 10000,
       receiveDataWhenStatusError: true,

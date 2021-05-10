@@ -52,14 +52,14 @@ DEPENDENCIES:
   - device_info (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/device_info-2.0.0//ios/device_info.podspec`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-5.3.2//ios/flutter_inappwebview.podspec`)
-  - "flutter_local_notifications (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-5.0.0+1//ios/flutter_local_notifications.podspec`)"
+  - "flutter_local_notifications (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-5.0.0+4//ios/flutter_local_notifications.podspec`)"
   - flutter_native_image (from `/Users/alex/.pub-cache/git/flutter_native_image-e80174ceff91c8c5e5a0826f24f143ab2ce3ae24//ios/flutter_native_image.podspec`)
   - image_editor (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/image_editor-1.0.0//ios/image_editor.podspec`)
-  - open_file (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.1.0//ios/open_file.podspec`)
+  - open_file (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.2.1//ios/open_file.podspec`)
   - package_info (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/package_info-2.0.0//ios/package_info.podspec`)
   - path_provider (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/path_provider-2.0.1//ios/path_provider.podspec`)
-  - permission_handler (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-6.1.3//ios/permission_handler.podspec`)
-  - photo_manager (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.1.3//ios/photo_manager.podspec`)
+  - permission_handler (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-7.1.0//ios/permission_handler.podspec`)
+  - photo_manager (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.1.5//ios/photo_manager.podspec`)
   - r_scan (from `/Users/alex/.pub-cache/git/r_scan-b311b82c097ccecc1724bdeb4053899c5aa03488//ios/r_scan.podspec`)
   - url_launcher (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-6.0.3//ios/url_launcher.podspec`)
   - vibration (from `/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/vibration-1.7.4-nullsafety.0//ios/vibration.podspec`)
@@ -83,21 +83,21 @@ EXTERNAL SOURCES:
   flutter_inappwebview:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_inappwebview-5.3.2//ios/flutter_inappwebview.podspec"
   flutter_local_notifications:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-5.0.0+1//ios/flutter_local_notifications.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/flutter_local_notifications-5.0.0+4//ios/flutter_local_notifications.podspec"
   flutter_native_image:
     :path: "/Users/alex/.pub-cache/git/flutter_native_image-e80174ceff91c8c5e5a0826f24f143ab2ce3ae24//ios/flutter_native_image.podspec"
   image_editor:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/image_editor-1.0.0//ios/image_editor.podspec"
   open_file:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.1.0//ios/open_file.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/open_file-3.2.1//ios/open_file.podspec"
   package_info:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/package_info-2.0.0//ios/package_info.podspec"
   path_provider:
     :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/path_provider-2.0.1//ios/path_provider.podspec"
   permission_handler:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-6.1.3//ios/permission_handler.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-7.1.0//ios/permission_handler.podspec"
   photo_manager:
-    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.1.3//ios/photo_manager.podspec"
+    :path: "/Users/alex/.pub-cache/hosted/pub.flutter-io.cn/photo_manager-1.1.5//ios/photo_manager.podspec"
   r_scan:
     :path: "/Users/alex/.pub-cache/git/r_scan-b311b82c097ccecc1724bdeb4053899c5aa03488//ios/r_scan.podspec"
   url_launcher:

@@ -336,11 +336,12 @@ class UserAPI {
     }
   }
 
-  static Future<bool> webVpnLogin() async {
+  /// Return `null` if succeed, and failed reason if failed.
+  static Future<String> webVpnLogin() async {
     try {
       final String r = await webVpnIsLogin();
       if (r == null) {
-        return true;
+        return null;
       }
       final dom.Document document = parse(r);
       final dom.Element tokenElement = document.querySelector(
@@ -364,43 +365,43 @@ class UserAPI {
         options: Options(contentType: 'application/x-www-form-urlencoded'),
       );
       await _setVPNsValues(loginRes);
-      return true;
+      return null;
     } on DioError catch (dioError) {
       if (dioError.response.statusCode == HttpStatus.found) {
         return await webVpnUpdate();
       } else {
         LogUtils.e('Failed to login WebVPN: $dioError');
         await _clearVPNsValues();
-        return false;
+        return dioError.toString();
       }
     } catch (e) {
       LogUtils.e('Error when login to WebVPN: $e');
       await _clearVPNsValues();
-      return false;
+      return e.toString();
     }
   }
 
-  static Future<bool> webVpnUpdate() async {
+  static Future<String> webVpnUpdate() async {
     try {
       final Response<String> res = await NetUtils.tokenDio.get<String>(
         '${API.webVpnHost}/vpn_key/update',
         options: Options(contentType: 'application/x-www-form-urlencoded'),
       );
       await _setVPNsValues(res);
-      return true;
+      return null;
     } on DioError catch (dioError) {
       if (dioError.response.statusCode == HttpStatus.found) {
         await _setVPNsValues(dioError.response);
-        return true;
+        return null;
       } else {
         await _clearVPNsValues();
         LogUtils.e('Failed to login WebVPN: $dioError');
-        return false;
+        return dioError.toString();
       }
     } catch (e) {
       await _clearVPNsValues();
       LogUtils.e('Error when login to WebVPN: $e');
-      return false;
+      return e.toString();
     }
   }
 
