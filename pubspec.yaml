@@ -1,7 +1,7 @@
 name: openjmu
 description: A JMU Flutter application.
 homepage: https://github.com/openjmu/OpenJMU
-version: 1.2.2+255
+version: 1.2.2+256
 publish_to: 'none'
 
 environment:
@@ -23,7 +23,7 @@ dependencies:
   extended_list: ^3.0.0
   extended_nested_scroll_view: ^3.0.0
   extended_tabs: ^2.1.0
-  extended_text: ^6.0.5
+  extended_text: ^6.0.6
   extended_text_field: ^7.0.1
   ff_annotation_route_library: ^2.0.1
   flutter:
