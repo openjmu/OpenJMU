@@ -60,7 +60,7 @@ dependencies:
   r_scan:
     git:
       url: https://github.com/AlexV525/r_scan.git
-      ref: b311b82c097ccecc1724bdeb4053899c5aa03488
+      ref: 5cd2f74e
   url_launcher: ^6.0.3
   uuid: ^3.0.4
   vibration: ^1.7.4-nullsafety.0
