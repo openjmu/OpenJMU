@@ -46,8 +46,11 @@ class HiveFieldUtils {
   static bool getBrightnessPlatform() {
     bool value = false;
     if (DeviceUtils.deviceInfo is IosDeviceInfo) {
-      final double version =
-          (DeviceUtils.deviceInfo as IosDeviceInfo).systemVersion.toDouble();
+      final double version = (DeviceUtils.deviceInfo as IosDeviceInfo)
+          .systemVersion
+          .split('.')
+          .first
+          .toDouble();
       if (version >= 13.0) {
         value = true;
       }
@@ -156,5 +159,4 @@ class HiveFieldUtils {
   /// 写入 WebVPN Token
   static Future<void> setWebVpnToken(String value) =>
       _box?.put(webVpnToken, value);
-
 }
