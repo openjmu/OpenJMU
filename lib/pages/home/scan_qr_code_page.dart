@@ -30,7 +30,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// 相机控制器
   RScanCameraController _controller;
 
-  /// Get first camera from list. Return `null` if there're none.
+  /// Get first camera from list. Return `null` if there are none.
   /// 获取第一个相机实例，如果没有则返回 `null`。
   RScanCameraDescription get firstCameraDescription =>
       rScanCameras.isNotEmpty ? rScanCameras.first : null;
@@ -291,10 +291,10 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     switch (_effectiveScaleType) {
       case _PreviewScaleType.width:
         _width = Screens.width;
-        _height = Screens.width / _controller.value.aspectRatio;
+        _height = Screens.width * _controller.value.aspectRatio;
         break;
       case _PreviewScaleType.height:
-        _width = Screens.height * _controller.value.aspectRatio;
+        _width = Screens.height / _controller.value.aspectRatio;
         _height = Screens.height;
         break;
       default:
