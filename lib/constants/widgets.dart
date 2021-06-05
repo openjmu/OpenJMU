@@ -344,7 +344,7 @@ TextOverflowWidget get contentOverflowWidget {
       style: TextStyle(
         color: currentThemeColor,
         fontSize: 19.sp,
-        height: 1.0,
+        height: 1.27,
       ),
     ),
   );

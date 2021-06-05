@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class DeviceUtils {
