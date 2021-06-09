@@ -238,7 +238,9 @@ class _ScorePageState extends State<ScorePage>
                   ),
                   evaluateTips(context),
                 ],
-              ),
+              )
+            else
+              errorWidget,
             if (provider.loaded && provider.loading) refreshIndicator(context),
           ],
         );
