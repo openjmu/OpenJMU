@@ -69,7 +69,7 @@ class DataUtils {
       return true;
     } on DioError catch (dioError) {
       LogUtils.e('Error when login: $dioError');
-      showToast('登录失败 (0 ${dioError.response?.data}');
+      showToast('登录失败 (0 ${dioError.response?.data ?? dioError})');
       return false;
     } catch (e) {
       LogUtils.e('Failed when login: $e');
