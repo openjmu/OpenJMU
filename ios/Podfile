@@ -83,6 +83,7 @@ post_install do |installer|
         '$(inherited)',
         'PERMISSION_BLUETOOTH=0',
         'PERMISSION_CONTACTS=0',
+        'PERMISSION_EVENTS=0',
         'PERMISSION_LOCATION=0',
         'PERMISSION_MEDIA_LIBRARY=0',
         'PERMISSION_MICROPHONE=0',
