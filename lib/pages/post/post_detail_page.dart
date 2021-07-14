@@ -503,7 +503,6 @@ class PostDetailPageState extends State<PostDetailPage>
                     ),
                   ],
                   body: ExtendedTabBarView(
-                    cacheExtent: 3,
                     controller: _tabController,
                     children: <Widget>[
                       ex.NestedScrollViewInnerScrollPositionKeyWidget(
