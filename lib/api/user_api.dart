@@ -347,6 +347,9 @@ class UserAPI {
       final dom.Element tokenElement = document.querySelector(
         'input[name="authenticity_token"]',
       );
+      if (tokenElement?.attributes == null) {
+        return null;
+      }
       final String token = tokenElement?.attributes['value'];
       if (token != null) {
         return null;
