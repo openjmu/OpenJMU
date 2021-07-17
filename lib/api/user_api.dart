@@ -347,7 +347,10 @@ class UserAPI {
       final dom.Element tokenElement = document.querySelector(
         'input[name="authenticity_token"]',
       );
-      final String token = tokenElement.attributes['value'];
+      final String token = tokenElement?.attributes['value'];
+      if (token != null) {
+        return null;
+      }
       await HiveFieldUtils.setWebVpnToken(token);
 
       final UPModel upModel = HiveBoxes.upBox.getAt(0);
