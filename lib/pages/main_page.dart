@@ -12,6 +12,7 @@ import 'package:openjmu/pages/home/message_page.dart';
 import 'package:openjmu/pages/home/post_square_page.dart';
 import 'package:openjmu/pages/home/school_work_page.dart';
 import 'package:openjmu/pages/home/self_page.dart';
+import 'package:openjmu/widgets/lazy_indexed_stack.dart';
 
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
@@ -421,7 +422,7 @@ class MainPageState extends State<MainPage>
             child: Scaffold(
               body: Stack(
                 children: <Widget>[
-                  IndexedStack(
+                  LazyIndexedStack(
                     children: <Widget>[
                       const PostSquarePage(),
                       const MarketingPage(),
