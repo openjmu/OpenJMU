@@ -189,6 +189,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   }
 
   void initPushService() {
+    // Init this service only on iOS.
+    if (!Platform.isIOS) {
+      return;
+    }
     try {
       final Map<String, dynamic> data = <String, dynamic>{
         'token': DeviceUtils.devicePushToken,
