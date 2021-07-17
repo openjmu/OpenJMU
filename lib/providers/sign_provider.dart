@@ -52,6 +52,10 @@ class SignProvider extends ChangeNotifier {
           ((await SignAPI.getSignList()).data['signdata']?.length ?? 0) as int;
       _hasSigned = signed;
       _signedCount = count;
+      // Automatically run sign request if the user is not signed.
+      if (!_hasSigned) {
+        requestSign();
+      }
     } catch (e) {
       LogUtils.e('Failed when fetching sign status: $e');
     } finally {
