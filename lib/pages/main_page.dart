@@ -411,7 +411,7 @@ class MainPageState extends State<MainPage>
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: ListView(
+      child: PageView(
         controller: selfPageController,
         physics: const _CustomScrollPhysics(parent: ClampingScrollPhysics()),
         scrollDirection: Axis.horizontal,
