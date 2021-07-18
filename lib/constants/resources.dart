@@ -575,9 +575,6 @@ class R {
   static const String ASSETS_ICONS_USER_SAVE_CODE_SVG =
       'assets/icons/user/save-code.svg';
 
-  static const String ASSETS_LOGIN_BACKGROUND_VIDEO_MP4 =
-      'assets/login-background-video.mp4';
-
   static const String ASSETS_PLACEHOLDERS_AVATAR_SVG =
       'assets/placeholders/avatar.svg';
 

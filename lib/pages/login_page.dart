@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:video_player/video_player.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -58,14 +57,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// 键盘是否出现
   final ValueNotifier<bool> _keyboardAppeared = ValueNotifier<bool>(false);
 
-  /// 是否处于预览页面
-  final ValueNotifier<bool> _isPreview = ValueNotifier<bool>(true);
-
-  /// 背景视频的控制器
-  final VideoPlayerController videoController = VideoPlayerController.asset(
-    R.ASSETS_LOGIN_BACKGROUND_VIDEO_MP4,
-  );
-
   @override
   void initState() {
     super.initState();
@@ -77,8 +68,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     // 绑定输入部件的监听
     _usernameController.addListener(usernameListener);
     _passwordController.addListener(passwordListener);
-
-    initializeVideo();
   }
 
   @override
@@ -101,24 +90,13 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     _isLogin?.dispose();
     _isObscure?.dispose();
     _keyboardAppeared?.dispose();
-    _isPreview?.dispose();
-    videoController
-      ..setLooping(false)
-      ..pause()
-      ..dispose();
     super.dispose();
-  }
-
-  @override
-  void didPopNext() {
-    videoController.play();
   }
 
   @override
   void didPushNext() {
     // 跳转至其他页面时，取消输入框聚焦
     dismissFocusNodes();
-    videoController.pause();
   }
 
   /// Listener for username text field.
@@ -140,16 +118,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     validateForm();
   }
 
-  /// 初始化视频控制器及配置
-  Future<void> initializeVideo() async {
-    await Future.wait(<Future<void>>[
-      videoController.setLooping(true),
-      videoController.setVolume(0.0),
-      videoController.initialize(),
-    ]);
-    videoController.play();
-  }
-
   /// Function called after login button pressed.
   /// 登录按钮的回调
   Future<void> loginButtonPressed(BuildContext context) async {
@@ -163,8 +131,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         _password.value,
       );
       if (result) {
-        await videoController.setLooping(false);
-        await videoController.pause();
         navigatorState.pushNamedAndRemoveUntil(
           HiveFieldUtils.getFirstOpen() != true
               ? Routes.openjmuTutorialPage.name
@@ -237,32 +203,12 @@ class LoginPageState extends State<LoginPage> with RouteAware {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  /// Video player for the background video.
-  /// 背景视频播放器
-  Widget videoWidget(BuildContext context) {
-    return Positioned.fill(child: VideoPlayer(videoController));
-  }
-
-  /// Filter for the video player.
-  /// 视频播放的滤镜
-  Widget videoFilter(BuildContext context) {
-    return Positioned.fill(
-      child: ValueListenableBuilder<bool>(
-        valueListenable: _isPreview,
-        builder: (_, bool value, __) => AnimatedContainer(
-          duration: animateDuration * 5,
-          color: value ? Colors.black45 : context.theme.colorScheme.surface,
-        ),
-      ),
-    );
-  }
-
   /// Logo on top.
   /// 顶部Logo
   Widget get topLogo {
     return SvgPicture.asset(
       R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
-      color: _isPreview.value ? Colors.white : defaultLightColor,
+      color: defaultLightColor,
       height: 20.w,
     );
   }
@@ -275,7 +221,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
       child: Text(
         '欢迎使用',
         style: TextStyle(
-          color: _isPreview.value ? Colors.white : null,
           fontSize: 40.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -409,10 +354,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
               },
           ),
         ],
-        style: TextStyle(
-          color: _isPreview.value ? Colors.white : null,
-          fontSize: 18.sp,
-        ),
+        style: TextStyle(fontSize: 18.sp),
       ),
       maxLines: 1,
       overflow: TextOverflow.fade,
@@ -422,18 +364,15 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Agreement widget.
   /// 用户协议部件。包含复选框和提示。
   Widget get agreementWidget {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isPreview,
-      builder: (_, bool value, __) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 20.w),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (!value) agreementCheckbox,
-            if (!value) Gap(16.w),
-            agreementTip,
-          ],
-        ),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 20.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          agreementCheckbox,
+          Gap(16.w),
+          agreementTip,
+        ],
       ),
     );
   }
@@ -441,102 +380,95 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Wrapper for content part.
   /// 内容块包装
   Widget contentWrapper(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isPreview,
-      builder: (_, bool value, __) => Tapper(
-        onTap: dismissFocusNodes,
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(30.w),
-            child: SizedBox.expand(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[topLogo, statusButton(context)],
+    return Tapper(
+      onTap: dismissFocusNodes,
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(30.w),
+          child: SizedBox.expand(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[topLogo, statusButton(context)],
+                ),
+                welcomeTip,
+                const Spacer(),
+                Expanded(
+                  flex: 30,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: _keyboardAppeared,
+                    builder: (_, bool isAppear, __) {
+                      return AnimatedAlign(
+                        duration: animateDuration,
+                        curve: Curves.easeInOut,
+                        alignment:
+                            isAppear ? Alignment.topCenter : Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            announcementWidget,
+                            usernameField,
+                            passwordField,
+                            agreementWidget,
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                  welcomeTip,
-                  const Spacer(),
-                  if (!value)
-                    Expanded(
-                      flex: 30,
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: _keyboardAppeared,
-                        builder: (_, bool isAppear, __) {
-                          return AnimatedAlign(
-                            duration: animateDuration,
-                            curve: Curves.easeInOut,
-                            alignment: isAppear
-                                ? Alignment.topCenter
-                                : Alignment.center,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                announcementWidget,
-                                usernameField,
-                                passwordField,
-                                agreementWidget,
-                              ],
+                ),
+                const Spacer(flex: 8),
+                DefaultTextStyle.merge(
+                  style: context.textTheme.bodyText2.copyWith(
+                    fontSize: 17.w,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: Tapper(
+                            onTap: () => API.launchWeb(
+                              url: 'http://myid.jmu.edu.cn'
+                                  '/ids/EmployeeNoQuery.aspx',
+                              title: '集大通行证 - 工号查询',
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  if (!value) const Spacer(flex: 8),
-                  if (value) agreementWidget,
-                  if (!value)
-                    DefaultTextStyle.merge(
-                      style: context.textTheme.bodyText2.copyWith(
-                        fontSize: 17.w,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional.centerEnd,
-                              child: Tapper(
-                                onTap: () => API.launchWeb(
-                                  url: 'http://myid.jmu.edu.cn'
-                                      '/ids/EmployeeNoQuery.aspx',
-                                  title: '集大通行证 - 工号查询',
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-                                    vertical: 4.w,
-                                  ),
-                                  child: const Text('学工号查询'),
-                                ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.w,
                               ),
+                              child: const Text('学工号查询'),
                             ),
                           ),
-                          Container(
-                            width: 1.w,
-                            height: 28.w,
-                            color: context.textTheme.bodyText2.color,
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional.centerStart,
-                              child: Tapper(
-                                onTap: forgotPassword,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-                                    vertical: 4.w,
-                                  ),
-                                  child: const Text('忘记密码'),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  SizedBox(height: 100.w),
-                ],
-              ),
+                      Container(
+                        width: 1.w,
+                        height: 28.w,
+                        color: context.textTheme.bodyText2.color,
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Tapper(
+                            onTap: forgotPassword,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.w,
+                              ),
+                              child: const Text('忘记密码'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 100.w),
+              ],
             ),
           ),
         ),
@@ -574,64 +506,54 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// 登录按钮
   Widget loginButton(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: _isPreview,
-      builder: (_, bool isPreview, __) => ValueListenableBuilder<bool>(
-        valueListenable: _loginButtonEnabled,
-        builder: (_, bool isEnabled, Widget child) => Positioned.fill(
-          top: null,
-          bottom: Screens.bottomSafeHeight,
-          child: Tapper(
-            onTap: () {
-              if (isPreview) {
-                _isPreview.value = false;
-                Future<void>.delayed(animateDuration * 5, () {
-                  videoController.pause();
-                });
-              }
-              if (isEnabled) {
-                loginButtonPressed(context);
-              }
-            },
-            child: AnimatedContainer(
-              duration: animateDuration,
-              height: 72.w,
-              margin: EdgeInsets.all(30.w),
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(13.w),
-                color:
-                    isPreview || isEnabled ? defaultLightColor : Colors.black54,
-              ),
-              child: child,
+      valueListenable: _loginButtonEnabled,
+      builder: (_, bool isEnabled, Widget child) => Positioned.fill(
+        top: null,
+        bottom: Screens.bottomSafeHeight,
+        child: Tapper(
+          onTap: () {
+            if (isEnabled) {
+              loginButtonPressed(context);
+            }
+          },
+          child: AnimatedContainer(
+            duration: animateDuration,
+            height: 72.w,
+            margin: EdgeInsets.all(30.w),
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13.w),
+              color: isEnabled ? defaultLightColor : Colors.black54,
             ),
+            child: child,
           ),
         ),
-        child: Center(
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _isLogin,
-            builder: (_, bool isLogin, __) {
-              Widget _child;
-              if (isLogin) {
-                _child = const LoadMoreSpinningIcon(
-                  isRefreshing: true,
+      ),
+      child: Center(
+        child: ValueListenableBuilder<bool>(
+          valueListenable: _isLogin,
+          builder: (_, bool isLogin, __) {
+            Widget _child;
+            if (isLogin) {
+              _child = const LoadMoreSpinningIcon(
+                isRefreshing: true,
+                color: Colors.white,
+                size: 32,
+              );
+            } else {
+              _child = Text(
+                '登录',
+                style: TextStyle(
                   color: Colors.white,
-                  size: 32,
-                );
-              } else {
-                _child = Text(
-                  '登录',
-                  style: TextStyle(
-                    color: Colors.white,
-                    height: 1.2,
-                    letterSpacing: 1.sp,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              }
-              return AnimatedSwitcher(duration: animateDuration, child: _child);
-            },
-          ),
+                  height: 1.2,
+                  letterSpacing: 1.sp,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            }
+            return AnimatedSwitcher(duration: animateDuration, child: _child);
+          },
         ),
       ),
     );
@@ -640,24 +562,19 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     setAlignment(context);
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isPreview,
-      builder: (_, bool v, Widget c) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: v || context.brightness == Brightness.dark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
-        child: c,
-      ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: context.brightness == Brightness.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: WillPopScope(
         onWillPop: doubleBackExit,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          backgroundColor: context.surfaceColor,
           body: DefaultTextStyle.merge(
             style: TextStyle(fontSize: 18.sp),
             child: Stack(
               children: <Widget>[
-                videoWidget(context),
-                videoFilter(context),
                 contentWrapper(context),
                 loginButton(context),
               ],
