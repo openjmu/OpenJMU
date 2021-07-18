@@ -26,7 +26,7 @@ class MainPage extends StatefulWidget {
   static Widget get selfPageOpener {
     return Tapper(
       onTap: () {
-        Instances.mainPageStateKey.currentState.selfPageController
+        Instances.mainPageStateKey.currentState._selfPageController
             .animateToPage(
           1,
           duration: kTabScrollDuration,
@@ -238,10 +238,13 @@ class MainPageState extends State<MainPage>
       );
 
   /// 是否展示公告
-  final ValueNotifier<bool> showAnnouncement = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _showAnnouncement = ValueNotifier<bool>(true);
 
   /// 控制侧边栏的控制器
-  final PageController selfPageController = PageController();
+  final PageController _selfPageController = PageController();
+
+  /// 当前左右滑动的页数
+  final ValueNotifier<double> _currentPage = ValueNotifier<double>(0);
 
   /// Index for pages.
   /// 当前页面索引
@@ -249,7 +252,7 @@ class MainPageState extends State<MainPage>
 
   /// Icon size for bottom navigation bar's item.
   /// 底部导航的图标大小
-  double get bottomBarIconSize => bottomBarHeight / 2.25;
+  double get _bottomBarIconSize => bottomBarHeight / 2.25;
 
   @override
   bool get wantKeepAlive => true;
@@ -270,10 +273,15 @@ class MainPageState extends State<MainPage>
     /// 进入首屏10秒后，公告默认消失
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Future<void>.delayed(10.seconds, () {
-        if (mounted && showAnnouncement.value) {
-          showAnnouncement.value = false;
+        if (mounted && _showAnnouncement.value) {
+          _showAnnouncement.value = false;
         }
       });
+    });
+    _selfPageController.addListener(() {
+      if (_selfPageController.hasClients) {
+        _currentPage.value = _selfPageController.page;
+      }
     });
   }
 
@@ -285,8 +293,9 @@ class MainPageState extends State<MainPage>
 
   @override
   void dispose() {
-    selfPageController.dispose();
-    showAnnouncement.dispose();
+    _currentPage.dispose();
+    _selfPageController.dispose();
+    _showAnnouncement.dispose();
     Instances.routeObserver.unsubscribe(this);
     super.dispose();
   }
@@ -310,6 +319,14 @@ class MainPageState extends State<MainPage>
     setState(() => _currentIndex = index);
   }
 
+  void _scrollBackToMainPage() {
+    _selfPageController.animateToPage(
+      0,
+      duration: kTabScrollDuration,
+      curve: Curves.ease,
+    );
+  }
+
   /// Announcement widget.
   /// 公告组件
   Widget announcementWidget(BuildContext context) {
@@ -319,7 +336,7 @@ class MainPageState extends State<MainPage>
       return const SizedBox.shrink();
     }
     return ValueListenableBuilder<bool>(
-      valueListenable: showAnnouncement,
+      valueListenable: _showAnnouncement,
       builder: (_, bool isShowing, __) {
         final Map<String, dynamic> announcement = context
             .read<SettingsProvider>()
@@ -365,8 +382,8 @@ class MainPageState extends State<MainPage>
                   ),
                   Tapper(
                     onTap: () {
-                      if (showAnnouncement.value) {
-                        showAnnouncement.value = false;
+                      if (_showAnnouncement.value) {
+                        _showAnnouncement.value = false;
                       }
                     },
                     child: Icon(
@@ -391,7 +408,7 @@ class MainPageState extends State<MainPage>
       index: _currentIndex,
       color: context.iconTheme.color,
       height: bottomBarHeight,
-      iconSize: bottomBarIconSize,
+      iconSize: _bottomBarIconSize,
       selectedColor: context.themeColor,
       itemFontSize: 16.sp,
       onTabSelected: _selectedTab,
@@ -411,33 +428,41 @@ class MainPageState extends State<MainPage>
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: PageView(
-        controller: selfPageController,
+      child: ListView(
+        controller: _selfPageController,
         physics: const _CustomScrollPhysics(parent: ClampingScrollPhysics()),
         scrollDirection: Axis.horizontal,
         reverse: true,
         children: <Widget>[
-          SizedBox.fromSize(
-            size: Size(Screens.width, Screens.height),
-            child: Scaffold(
-              body: Stack(
-                children: <Widget>[
-                  LazyIndexedStack(
-                    children: <Widget>[
-                      const PostSquarePage(),
-                      const MarketingPage(),
-                      SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
-                      const MessagePage(),
-                    ],
-                    index: _currentIndex,
-                  ),
-                  announcementWidget(context),
-                ],
+          ValueListenableBuilder<double>(
+            valueListenable: _currentPage,
+            builder: (_, double page, Widget child) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: page > 0 ? _scrollBackToMainPage : null,
+              child: IgnorePointer(ignoring: page > 0, child: child),
+            ),
+            child: SizedBox.fromSize(
+              size: Size(Screens.width, Screens.height),
+              child: Scaffold(
+                body: Stack(
+                  children: <Widget>[
+                    LazyIndexedStack(
+                      children: <Widget>[
+                        const PostSquarePage(),
+                        const MarketingPage(),
+                        SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
+                        const MessagePage(),
+                      ],
+                      index: _currentIndex,
+                    ),
+                    announcementWidget(context),
+                  ],
+                ),
+                // drawer: SelfPage(),
+                // drawerEdgeDragWidth: Screens.width * 0.3,
+                bottomNavigationBar: bottomNavigationBar(context),
+                resizeToAvoidBottomInset: false,
               ),
-              // drawer: SelfPage(),
-              // drawerEdgeDragWidth: Screens.width * 0.3,
-              bottomNavigationBar: bottomNavigationBar(context),
-              resizeToAvoidBottomInset: false,
             ),
           ),
           SelfPage(),
