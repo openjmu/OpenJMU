@@ -80,7 +80,7 @@ class CourseAPI {
   }
 
   static bool inCurrentWeek(Course course, {int currentWeek}) {
-    if (course.isCustom) {
+    if (course?.isCustom ?? true) {
       return true;
     }
     final DateProvider provider = currentContext.read<DateProvider>();

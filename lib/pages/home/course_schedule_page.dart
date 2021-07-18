@@ -778,9 +778,11 @@ class CourseWidget extends StatelessWidget {
                         );
                         showModal<void>(
                           context: context,
-                          builder: (_) => CourseEditDialog(
+                          builder: (_) => _CustomCourseDetailDialog(
                             course: cs.isNotEmpty ? cs.first : null,
                             coordinate: coordinate,
+                            currentWeek: currentWeek,
+                            isEditing: true,
                           ),
                         );
                       },
@@ -899,8 +901,9 @@ class _CourseColorIndicator extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: maxBorderRadius,
-          color: CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) ||
-                  isOutOfTerm
+          color: course != null &&
+                  (isOutOfTerm ||
+                      CourseAPI.inCurrentWeek(course, currentWeek: currentWeek))
               ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
               : Colors.grey,
         ),
@@ -1032,13 +1035,15 @@ class _CustomCourseDetailDialog extends StatefulWidget {
     @required this.course,
     @required this.currentWeek,
     @required this.coordinate,
-  })  : assert(course != null),
-        assert(currentWeek != null),
+    this.isEditing = false,
+  })  : assert(currentWeek != null),
+        assert(isEditing != null),
         super(key: key);
 
   final Course course;
   final int currentWeek;
   final List<int> coordinate;
+  final bool isEditing;
 
   @override
   _CustomCourseDetailDialogState createState() =>
@@ -1046,33 +1051,96 @@ class _CustomCourseDetailDialog extends StatefulWidget {
 }
 
 class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
+  TextEditingController _controller;
   bool deleting = false;
+  bool saving = false;
 
   Course get course => widget.course;
 
   int get currentWeek => widget.currentWeek;
 
-  void deleteCourse() {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEditing) {
+      _controller = TextEditingController(text: widget.course?.name);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  Future<void> saveCourse() async {
+    final String content = _controller.text.trim();
+    if (saving || content.isBlank || content == widget.course?.name) {
+      return;
+    }
+    saving = true;
+    if (mounted) {
+      setState(() {});
+    }
+    Future<Response<String>> editFuture;
+
+    if (widget.course?.shouldUseRaw == true) {
+      editFuture = CourseAPI.setCustomCourse(<String, dynamic>{
+        'content': Uri.encodeComponent(content),
+        'couDayTime': widget.course?.rawDay ?? widget.coordinate[0],
+        'coudeTime': widget.course?.rawTime ?? widget.coordinate[1],
+      });
+    } else {
+      editFuture = CourseAPI.setCustomCourse(<String, dynamic>{
+        'content': Uri.encodeComponent(content),
+        'couDayTime': widget.course?.day ?? widget.coordinate[0],
+        'coudeTime': widget.course?.time ?? widget.coordinate[1],
+      });
+    }
+    editFuture.then((Response<String> response) {
+      final Map<String, dynamic> res =
+          jsonDecode(response.data) as Map<String, dynamic>;
+      saving = false;
+      if (mounted) {
+        setState(() {});
+      }
+      if (res['isOk'] as bool) {
+        navigatorState.popUntil((_) => _.isFirst);
+      }
+      Instances.eventBus.fire(CourseScheduleRefreshEvent());
+    }).catchError((dynamic e) {
+      LogUtils.e('Failed when editing custom course: $e');
+      showCenterErrorToast('编辑自定义课程失败');
+      saving = false;
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  Future<void> deleteCourse() async {
     setState(() {
       deleting = true;
     });
     final Course _course = widget.course;
-    Future.wait<Response<String>>(
-      <Future<Response<String>>>[
-        CourseAPI.setCustomCourse(<String, dynamic>{
-          'content': Uri.encodeComponent(''),
-          'couDayTime': _course.day,
-          'coudeTime': _course.time,
-        }),
-        if (_course.shouldUseRaw)
+    try {
+      final List<Response<String>> responses =
+          await Future.wait<Response<String>>(
+        <Future<Response<String>>>[
           CourseAPI.setCustomCourse(<String, dynamic>{
             'content': Uri.encodeComponent(''),
-            'couDayTime': _course.rawDay,
-            'coudeTime': _course.rawTime,
+            'couDayTime': _course.day,
+            'coudeTime': _course.time,
           }),
-      ],
-      eagerError: true,
-    ).then((List<Response<String>> responses) {
+          if (_course.shouldUseRaw)
+            CourseAPI.setCustomCourse(<String, dynamic>{
+              'content': Uri.encodeComponent(''),
+              'couDayTime': _course.rawDay,
+              'coudeTime': _course.rawTime,
+            }),
+        ],
+        eagerError: true,
+      );
       bool isOk = true;
       for (final Response<String> response in responses) {
         final Map<String, dynamic> res =
@@ -1086,15 +1154,15 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
         navigatorState.popUntil((_) => _.isFirst);
         Instances.eventBus.fire(CourseScheduleRefreshEvent());
       }
-    }).catchError((dynamic e) {
+    } catch (e) {
       showToast('删除课程失败');
       LogUtils.e('Failed in deleting custom course: $e');
-    }).whenComplete(() {
+    } finally {
       deleting = false;
       if (mounted) {
         setState(() {});
       }
-    });
+    }
   }
 
   Widget closeButton(BuildContext context) {
@@ -1107,57 +1175,82 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
     );
   }
 
-  Widget get editButton {
-    return MaterialButton(
-      elevation: 0.0,
-      highlightElevation: 0.0,
-      focusElevation: 0.0,
-      hoverElevation: 0.0,
-      disabledElevation: 0.0,
-      padding: EdgeInsets.zero,
-      minWidth: double.maxFinite,
-      height: 64.w,
-      color: Colors.grey[500],
-      child: Text(
-        '编辑',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w600,
-        ),
+  Widget saveButton(BuildContext context) {
+    return GestureDetector(
+      onTap: saveCourse,
+      child: ValueListenableBuilder<TextEditingValue>(
+        valueListenable: _controller,
+        builder: (_, TextEditingValue value, __) {
+          final bool canSave = value.text.isNotBlank &&
+              value.text != (widget.course?.name ?? '');
+          return Container(
+            alignment: Alignment.center,
+            color: canSave ? defaultLightColor : Colors.grey,
+            height: 64.w,
+            child: saving
+                ? SizedBox.fromSize(
+                    size: Size.square(28.w),
+                    child: const PlatformProgressIndicator(color: Colors.white),
+                  )
+                : Text(
+                    '确定',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+          );
+        },
       ),
-      onPressed: () {
-        showModal<void>(
-          context: context,
-          builder: (_) => CourseEditDialog(
-            course: course,
-            coordinate: widget.coordinate,
-          ),
-        );
-      },
     );
   }
 
-  Widget get deleteButton {
-    return MaterialButton(
-      elevation: 0.0,
-      highlightElevation: 0.0,
-      focusElevation: 0.0,
-      hoverElevation: 0.0,
-      disabledElevation: 0.0,
-      padding: EdgeInsets.zero,
-      minWidth: double.maxFinite,
-      height: 64.w,
-      color: defaultLightColor,
-      child: Text(
-        '删除',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w600,
+  Widget editButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showModal<void>(
+          context: context,
+          builder: (_) => _CustomCourseDetailDialog(
+            course: course,
+            coordinate: widget.coordinate,
+            currentWeek: widget.currentWeek,
+            isEditing: true,
+          ),
+        );
+      },
+      child: Container(
+        alignment: Alignment.center,
+        color: Colors.grey,
+        height: 64.w,
+        child: Text(
+          '编辑',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
-      onPressed: deleteCourse,
+    );
+  }
+
+  Widget deleteButton(BuildContext context) {
+    return GestureDetector(
+      onTap: deleteCourse,
+      child: Container(
+        alignment: Alignment.center,
+        color: defaultLightColor,
+        height: 64.w,
+        child: Text(
+          '删除',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 
@@ -1174,60 +1267,99 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Center(
+  Widget _text(BuildContext context) {
+    Widget _child;
+    if (widget.isEditing) {
+      _child = TextField(
+        autofocus: true,
+        controller: _controller,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 3.h),
+          isDense: true,
+          hintText: '自定义内容',
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 24.sp,
+            height: 1.3,
+            textBaseline: TextBaseline.alphabetic,
+          ),
+        ),
+        maxLines: null,
+        style: context.textTheme.bodyText2?.copyWith(
+          height: 1.3,
+          fontSize: 22.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+    } else {
+      _child = Text(
+        course.name,
+        style: TextStyle(
+          fontSize: 22.sp,
+          fontWeight: FontWeight.bold,
+          height: 1.5,
+        ),
+      );
+    }
+    return Container(
+      padding: EdgeInsetsDirectional.only(start: 24.w),
+      alignment: AlignmentDirectional.centerStart,
+      child: _child,
+    );
+  }
+
+  Widget _wrapper(List<Widget> children) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10.w),
           child: SizedBox(
             width: _dialogWidth,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  color: context.theme.colorScheme.surface,
-                  padding: EdgeInsets.all(30.w),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      header(context),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 16.w),
-                        child: Stack(
-                          children: <Widget>[
-                            _CourseColorIndicator(
-                              course: course,
-                              currentWeek: currentWeek,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 24.w),
-                              child: Align(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: Text(
-                                  course.name,
-                                  style: TextStyle(
-                                    fontSize: 22.sp,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                editButton,
-                deleteButton,
-              ],
+              children: children,
             ),
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _wrapper(
+      <Widget>[
+        Container(
+          color: context.theme.colorScheme.surface,
+          padding: EdgeInsets.all(30.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              header(context),
+              Padding(
+                padding: EdgeInsets.only(bottom: 16.w),
+                child: Stack(
+                  children: <Widget>[
+                    _CourseColorIndicator(
+                      course: course,
+                      currentWeek: currentWeek,
+                    ),
+                    _text(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (widget.isEditing)
+          saveButton(context)
+        else ...<Widget>[
+          editButton(context),
+          deleteButton(context),
+        ],
+      ],
     );
   }
 }
