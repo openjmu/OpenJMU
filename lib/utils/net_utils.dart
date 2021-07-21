@@ -85,9 +85,11 @@ class NetUtils {
     }
     cookieJar = PersistCookieJar(
       storage: FileStorage('${_d.path}/cookie_jar'),
+      ignoreExpires: true,
     );
     tokenCookieJar = PersistCookieJar(
       storage: FileStorage('${_d.path}/token_cookie_jar'),
+      ignoreExpires: true,
     );
     cookieManager = CookieManager(cookieJar);
     tokenCookieManager = CookieManager(tokenCookieJar);
@@ -324,6 +326,7 @@ class NetUtils {
       receiveTimeout: 10000,
       receiveDataWhenStatusError: true,
       followRedirects: true,
+      maxRedirects: 100,
     );
   }
 

@@ -48,9 +48,14 @@ class API {
   /// 服务状态
   static const String statusWebsite = 'https://status.openjmu.xyz/';
 
+  /// 推送服务
+  static const String pushHost = 'http://push.openjmu.xyz:8787';
+
   /// Hosts.
   /// 域名
   static const String openjmuHost = 'openjmu.jmu.edu.cn';
+  static const String wwwHost = 'https://www.jmu.edu.cn';
+  static const String wwwHostInsecure = 'http://www.jmu.edu.cn';
   static const String wbHost = 'https://wb.jmu.edu.cn';
   static const String wpHost = 'https://wp.jmu.edu.cn';
   static const String forum99Host = 'https://forum99.jmu.edu.cn';
@@ -61,10 +66,13 @@ class API {
   static const String upApiHost = 'https://upapi.jmu.edu.cn';
   static const String jwglHost = 'http://jwgls.jmu.edu.cn';
   static const String labsHost = 'http://labs.jmu.edu.cn';
-  static const String ssoHost = 'http://sso.jmu.edu.cn';
+  static const String ssoHost = 'https://sso.jmu.edu.cn';
+  static const String ssoHostInsecure = 'http://sso.jmu.edu.cn';
   static const String webVpnHost = 'https://webvpn.jmu.edu.cn';
+  static const String webVpnHostInsecure = 'http://webvpn.jmu.edu.cn';
   static const String classKitHost = 'https://classkit.jmu.edu.cn';
-  static const String pushHost = 'http://push.openjmu.xyz:8787';
+  static const String casHost = 'https://cas.paas.jmu.edu.cn';
+  static const String casWebVPNHost = 'https://cas-paas-443.webvpn.jmu.edu.cn';
 
   static List<String> get ndHosts {
     return <String>[
@@ -90,6 +98,10 @@ class API {
   static const String logout = '$oap99Host/passport/logout'; // 注销
   static const String loginTicket =
       '$oa99Host/v2/passport/api/user/loginticket1'; // 更新session
+  static const String casLogin = '$casHost/cas/login'; // 登录 CAS
+  static const String webVpnLogin = '$casWebVPNHost/cas/login'
+      '?service=https%3A%2F%2Fwebvpn.jmu.edu.cn'
+      '%2Fusers%2Fauth%2Fcas%2Fcallback%3Furl'; // 由 CAS 登录 WebVPN
 
   /// 文件相关
   static const String showFile = '$file99Host/show/file/fid/';

@@ -31,11 +31,6 @@ class HiveFieldUtils {
   static const String deviceUuid = 'device_uuid';
   static const String devicePushToken = 'device_push_token';
 
-  static const String webVpnKey = 'webvpn_key';
-  static const String webVpnSession = 'webvpn_session';
-  static const String webVpnToken = 'webvpn_token';
-  static const String webVpnUsername = 'webvpn_username';
-
   /// 获取设置的主题色
   static int getColorThemeIndex() => _box?.get(colorThemeIndex) as int ?? 0;
 
@@ -152,11 +147,4 @@ class HiveFieldUtils {
     DeviceUtils.deviceUuid = value;
     return _box?.put(deviceUuid, value);
   }
-
-  /// 获取 WebVPN Token
-  static String getWebVpnToken() => _box?.get(webVpnToken) as String;
-
-  /// 写入 WebVPN Token
-  static Future<void> setWebVpnToken(String value) =>
-      _box?.put(webVpnToken, value);
 }

@@ -28,9 +28,9 @@ class DataUtils {
     await HiveBoxes.upBox.clear();
     await HiveBoxes.upBox.add(UPModel(username, password));
     try {
-      final String webVpnFailedReason = await UserAPI.webVpnLogin();
-      if (webVpnFailedReason != null) {
-        showToast('校内网络通道连接失败 (0 WV $webVpnFailedReason)');
+      final bool isCasLogon = await UserAPI.loginToCasAndVpn();
+      if (!isCasLogon) {
+        showToast('校内网络通道连接失败 (0)');
         NetUtils.webVpnNotifier.value = false;
       }
       final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
@@ -122,8 +122,8 @@ class DataUtils {
       if (currentUser.sid != null) {
         UserAPI.initializeBlacklist();
       }
-      final String isWebVPNLogin = await UserAPI.webVpnLogin();
-      if (isWebVPNLogin == null) {
+      final bool isCasLogin = await UserAPI.loginToCasAndVpn();
+      if (isCasLogin) {
         await initializeWebViewCookie();
       } else {
         NetUtils.webVpnNotifier.value = false;
@@ -243,7 +243,7 @@ class DataUtils {
   /// 启动时通过 Session 初始化 WebView 的 Cookie
   static Future<bool> initializeWebViewCookie() async {
     final String url =
-        'http://sso.jmu.edu.cn/imapps/2190?sid=${currentUser.sid}';
+        '${API.ssoHostInsecure}/imapps/2190?sid=${currentUser.sid}';
     final String replacedUrl =
         NetUtils.shouldUseWebVPN ? API.replaceWithWebVPN(url) : url;
     try {

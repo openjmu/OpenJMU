@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     show HTTPCookieSameSitePolicy;
-import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart';
 
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
@@ -321,115 +319,150 @@ class UserAPI {
     }
   }
 
-  static Future<String> webVpnIsLogin() async {
-    try {
-      final Response<String> _res = await NetUtils.tokenDio.get(API.webVpnHost);
-      final String r = _res.data;
-      // 解析返回内容。如果包含「退出登录」，同时不包含「登录 Login」，即为已登录。
-      if (r.contains('退出登录') && !r.contains('登录 Login')) {
-        return null;
-      }
-      return r;
-    } catch (e) {
-      LogUtils.e('Error when testing WebVPN login status: $e');
-      return '';
+  static Future<bool> loginToCasAndVpn() async {
+    Future<void> _setCookies(List<String> urls, List<String> cookies) async {
+      final List<Cookie> _cookies =
+          cookies.map((String e) => Cookie.fromSetCookieValue(e)).toList();
+      await NetUtils.updateDomainsCookies(urls, _cookies);
     }
-  }
 
-  /// Return `null` if succeed, and failed reason if failed.
-  static Future<String> webVpnLogin() async {
+    Future<bool> isWebVpnLogin() async {
+      try {
+        await NetUtils.tokenDio.get<void>(
+          API.webVpnLogin,
+          options: Options(followRedirects: false),
+        );
+        return false;
+      } on DioError catch (dioError) {
+        if (dioError.response?.statusCode == HttpStatus.found) {
+          if (dioError.response.headers
+              .value('location')
+              .startsWith('https://webvpn-jmu-edu-cn-s')) {
+            return true;
+          }
+          LogUtils.d('WebVPN redirects to the sign in page...');
+          return false;
+        }
+        return false;
+      } catch (e) {
+        LogUtils.d('Error when checking WebVPN login status: $e');
+        return false;
+      }
+    }
+
+    // 先判断是否已登录，如果正常则无需继续后续流程。
+    if (await isWebVpnLogin()) {
+      return true;
+    }
+
+    final UPModel up = HiveBoxes.upBox.getAt(0);
+    if (up == null) {
+      return false;
+    }
+
+    // 访问门户，得到 Session。
+    await NetUtils.tokenDio.get<dynamic>(API.webVpnLogin);
     try {
-      final String r = await webVpnIsLogin();
-      if (r == null) {
-        return null;
-      }
-      final dom.Document document = parse(r);
-      final dom.Element tokenElement = document.querySelector(
-        'input[name="authenticity_token"]',
-      );
-      if (tokenElement?.attributes == null) {
-        return null;
-      }
-      final String token = tokenElement?.attributes['value'];
-      if (token != null) {
-        return null;
-      }
-      await HiveFieldUtils.setWebVpnToken(token);
-
-      final UPModel upModel = HiveBoxes.upBox.getAt(0);
-      final Response<String> loginRes = await NetUtils.tokenDio.post<String>(
-        '${API.webVpnHost}/users/sign_in',
-        queryParameters: <String, String>{
-          'utf8': '✓',
-          'authenticity_token': token,
-          'user[login]': upModel.u,
-          'user[password]': upModel.p,
-          'user[dymatice_code]': 'unknown',
-          'user[otp_with_capcha]': 'false',
-          'commit': '登录 Login',
+      // 构造登录请求。
+      await NetUtils.tokenDio.post<dynamic>(
+        API.webVpnLogin,
+        data: <String, dynamic>{
+          'username': up.u,
+          'password': up.p,
+          'execution': 'e1s1',
+          '_eventId': 'submit',
         },
-        options: Options(contentType: 'application/x-www-form-urlencoded'),
+        options: Options(
+          contentType: 'application/x-www-form-urlencoded',
+          headers: <String, dynamic>{
+            'origin': API.casWebVPNHost,
+            'referer': API.webVpnLogin,
+          },
+          followRedirects: false, // 禁止重定向，拦截 Set-Cookies。
+        ),
       );
-      await _setVPNsValues(loginRes);
-      return null;
+      return false;
     } on DioError catch (dioError) {
-      if (dioError.response.statusCode == HttpStatus.found) {
-        return await webVpnUpdate();
-      } else {
-        LogUtils.e('Failed to login WebVPN: $dioError');
-        await _clearVPNsValues();
-        return dioError.toString();
+      if (dioError.type == DioErrorType.response &&
+          dioError.response?.statusCode == HttpStatus.found) {
+        final Response<dynamic> _r = dioError.response;
+        final String location = _r.headers.value('location');
+        final List<String> _casCookies = _r.headers['set-cookie'];
+        if (location == null || _casCookies == null) {
+          return false;
+        }
+        // 重定向后，为 CAS 设置 TGC Cookie，并且获得 WebVPN 登录的 ticket。
+        await _setCookies(<String>[API.casWebVPNHost], _casCookies);
+        try {
+          await NetUtils.tokenDio.get<dynamic>(
+            location,
+            options: Options(followRedirects: false),
+          );
+          return false;
+        } on DioError catch (dioError) {
+          if (dioError.type == DioErrorType.response &&
+              dioError.response?.statusCode == HttpStatus.found) {
+            final Response<dynamic> _r = dioError.response;
+            final String location = _r.headers.value('location');
+            final List<String> _ticketCookies = _r.headers['set-cookie'];
+            if (location == null || _ticketCookies == null) {
+              return false;
+            }
+            // 重定向后，为 WebVPN 设置 _astraeus_session Cookie。
+            await _setCookies(<String>[API.webVpnHost], _ticketCookies);
+            try {
+              await NetUtils.tokenDio.get<dynamic>(
+                location,
+                options: Options(followRedirects: false),
+              );
+              return false;
+            } on DioError catch (dioError) {
+              if (dioError.type == DioErrorType.response &&
+                  dioError.response?.statusCode == HttpStatus.found) {
+                final Response<dynamic> _r = dioError.response;
+                final String location = _r.headers.value('location');
+                final List<String> setCookies = _r.headers['set-cookie'];
+                if (location == null || setCookies == null) {
+                  return false;
+                }
+                // 最终为全站设置所有的身份。
+                await _setHostsCookies(
+                  <String>[..._casCookies, ..._ticketCookies, ...setCookies],
+                );
+                return true;
+              }
+              return false;
+            } catch (e) {
+              return false;
+            }
+          }
+          return false;
+        } catch (e) {
+          return false;
+        }
       }
+      return false;
     } catch (e) {
-      LogUtils.e('Error when login to WebVPN: $e');
-      await _clearVPNsValues();
-      return e.toString();
+      return false;
     }
   }
 
-  static Future<String> webVpnUpdate() async {
-    try {
-      final Response<String> res = await NetUtils.tokenDio.get<String>(
-        '${API.webVpnHost}/vpn_key/update',
-        options: Options(contentType: 'application/x-www-form-urlencoded'),
-      );
-      await _setVPNsValues(res);
-      return null;
-    } on DioError catch (dioError) {
-      if (dioError.response.statusCode == HttpStatus.found) {
-        await _setVPNsValues(dioError.response);
-        return null;
-      } else {
-        await _clearVPNsValues();
-        LogUtils.e('Failed to login WebVPN: $dioError');
-        return dioError.toString();
-      }
-    } catch (e) {
-      await _clearVPNsValues();
-      LogUtils.e('Error when login to WebVPN: $e');
-      return e.toString();
-    }
-  }
-
-  static Future<void> _setVPNsValues(Response<dynamic> res) async {
-    final List<Cookie> cookies = <Cookie>[
-      ...res.headers['set-cookie']
-          .map((String s) => Cookie.fromSetCookieValue(s))
-          .toList(),
-      Cookie('SERVERID', 'Server1'),
-    ];
+  static Future<void> _setHostsCookies(List<String> values) async {
+    final List<Cookie> cookies =
+        values.map((String e) => Cookie.fromSetCookieValue(e)).toList();
     await Future.wait(<Future<void>>[
       NetUtils.updateDomainsCookies(
         <String>[
-          'http://www.jmu.edu.cn/',
-          'https://www.jmu.edu.cn/',
-          'https://webvpn.jmu.edu.cn/',
+          API.wwwHost,
+          API.wwwHostInsecure,
+          API.webVpnHost,
+          API.webVpnHostInsecure,
         ],
         cookies,
       ),
       for (final Cookie cookie in cookies)
         NetUtils.webViewCookieManager.setCookie(
-          url: Uri.parse('http://www.jmu.edu.cn/'),
+          url: Uri.parse(API.wwwHost),
           name: cookie.name,
           value: cookie.value,
           domain: 'webvpn.jmu.edu.cn',
@@ -439,7 +472,7 @@ class UserAPI {
         ),
       for (final Cookie cookie in cookies)
         NetUtils.webViewCookieManager.setCookie(
-          url: Uri.parse('https://www.jmu.edu.cn/'),
+          url: Uri.parse(API.wwwHostInsecure),
           name: cookie.name,
           value: cookie.value,
           domain: 'webvpn.jmu.edu.cn',
@@ -449,7 +482,7 @@ class UserAPI {
         ),
       for (final Cookie cookie in cookies)
         NetUtils.webViewCookieManager.setCookie(
-          url: Uri.parse('http://webvpn.jmu.edu.cn/'),
+          url: Uri.parse(API.webVpnHostInsecure),
           name: cookie.name,
           value: cookie.value,
           domain: 'webvpn.jmu.edu.cn',
@@ -459,7 +492,7 @@ class UserAPI {
         ),
       for (final Cookie cookie in cookies)
         NetUtils.webViewCookieManager.setCookie(
-          url: Uri.parse('https://webvpn.jmu.edu.cn/'),
+          url: Uri.parse(API.webVpnHost),
           name: cookie.name,
           value: cookie.value,
           domain: 'webvpn.jmu.edu.cn',
@@ -469,6 +502,4 @@ class UserAPI {
         ),
     ]);
   }
-
-  static Future<void> _clearVPNsValues() => HiveFieldUtils.setWebVpnToken(null);
 }
