@@ -113,8 +113,7 @@ class SplashState extends State<SplashPage> {
     try {
       navigatorState.pushAndRemoveUntil<void>(
         PageRouteBuilder<void>(
-          transitionDuration:
-              !isUserLogin || forceToLogin ? 1.seconds : 500.milliseconds,
+          transitionDuration: 500.milliseconds,
           pageBuilder: (_, Animation<double> animation, __) {
             Widget child;
             if (!isUserLogin || forceToLogin) {
