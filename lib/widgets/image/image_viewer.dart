@@ -175,7 +175,7 @@ class ImageViewerState extends State<ImageViewer>
     double opacity = 0.0;
     opacity = offset.distance /
         (Offset(pageSize.width, pageSize.height).distance / 2.0);
-    backgroundOpacityStreamController.add(1.0 - opacity);
+    backgroundOpacityStreamController.add(1.0 - opacity.clamp(0, 1));
     return Colors.black.withOpacity(
       math.min(1.0, math.max(1.0 - opacity, 0.0)),
     );
@@ -296,13 +296,12 @@ class ImageViewerState extends State<ImageViewer>
                   child: StreamBuilder<double>(
                     initialData: 1.0,
                     stream: backgroundOpacityStreamController.stream,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<double> data) {
+                    builder: (BuildContext c, AsyncSnapshot<double> data) {
                       return Opacity(
                         opacity: popping ? 0.0 : data.data,
                         child: _ViewAppBar(
                           post: widget.post,
-                          onMoreClicked: () => _imageExtraActions(context),
+                          onMoreClicked: () => _imageExtraActions(c),
                         ),
                       );
                     },
