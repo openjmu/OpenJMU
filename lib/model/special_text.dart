@@ -25,33 +25,30 @@ class LinkText extends SpecialText {
 
   @override
   InlineSpan finishText() {
-    return ExtendedWidgetSpan(
-      alignment: ui.PlaceholderAlignment.middle,
-      child: GestureDetector(
-        onTap: () {
-          final Map<String, dynamic> data = <String, dynamic>{
-            'content': toString(),
-          };
-          if (onTap != null) {
-            onTap(data);
-          }
-        },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.launch,
-              color: Colors.blue,
-              size: textStyle.fontSize,
-            ),
-            Text(
-              ' 网页链接 ',
-              style: textStyle?.copyWith(color: Colors.blue, height: 1.24),
-            )
-          ],
+    return TextSpan(
+      children: <InlineSpan>[
+        WidgetSpan(
+          alignment: ui.PlaceholderAlignment.middle,
+          child: Icon(
+            Icons.launch,
+            color: Colors.blue,
+            size: textStyle.fontSize,
+          ),
         ),
-      ),
+        TextSpan(
+          text: ' 网页链接 ',
+          style: textStyle?.copyWith(color: Colors.blue, height: 1.24),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              final Map<String, dynamic> data = <String, dynamic>{
+                'content': toString(),
+              };
+              if (onTap != null) {
+                onTap(data);
+              }
+            },
+        ),
+      ],
     );
   }
 }
@@ -164,23 +161,22 @@ class MentionText extends SpecialText {
           ),
         ),
       );
-    } else {
-      final int uid = getUidFromContent(mentionOriginalText);
-      return TextSpan(
-        text: mentionText,
-        style: textStyle?.copyWith(color: Colors.blueAccent),
-        recognizer: TapGestureRecognizer()
-          ..onTap = () {
-            final Map<String, dynamic> data = <String, dynamic>{
-              'content': mentionText,
-              'uid': uid
-            };
-            if (onTap != null) {
-              onTap(data);
-            }
-          },
-      );
     }
+    final int uid = getUidFromContent(mentionOriginalText);
+    return TextSpan(
+      text: mentionText,
+      style: textStyle?.copyWith(color: Colors.blueAccent),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': mentionText,
+            'uid': uid
+          };
+          if (onTap != null) {
+            onTap(data);
+          }
+        },
+    );
   }
 }
 
