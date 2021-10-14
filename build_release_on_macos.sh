@@ -27,7 +27,7 @@ cd ..
 flutter build ios --release
 cd build/ios/iphoneos/Runner.app/Frameworks
 cd App.framework
-xcrun bitcode_strip -r app -o app
+xcrun bitcode_strip -r App -o App
 cd ..
 cd Flutter.framework
 xcrun bitcode_strip -r Flutter -o Flutter
