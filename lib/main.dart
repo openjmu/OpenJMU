@@ -15,38 +15,46 @@ import 'pages/no_network_page.dart';
 import 'pages/no_route_page.dart';
 import 'pages/splash_page.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  runZonedGuarded<void>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  // In order to compare the default avatar locally, here I decide to compare
-  // the data of the avatar with a local one.
-  rootBundle.load(R.ASSETS_AVATAR_PLACEHOLDER_152_PNG).then((ByteData bd) {
-    Instances.defaultAvatarData = bd.buffer.asUint8List().toString();
-  });
+      // In order to compare the default avatar locally, here I decide to compare
+      // the data of the avatar with a local one.
+      rootBundle.load(R.ASSETS_AVATAR_PLACEHOLDER_152_PNG).then((ByteData bd) {
+        Instances.defaultAvatarData = bd.buffer.asUint8List().toString();
+      });
 
-  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+      await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Colors.transparent,
-  ));
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+      ));
 
-  await Hive.initFlutter();
-  await HiveBoxes.openBoxes();
-  await Future.wait(
-    <Future<void>>[
-      DeviceUtils.initDeviceInfo(),
-      PackageUtils.initPackageInfo(),
-      NetUtils.initConfig(),
-    ],
-    eagerError: true,
+      await Hive.initFlutter();
+      await HiveBoxes.openBoxes();
+      await Future.wait(
+        <Future<void>>[
+          DeviceUtils.initDeviceInfo(),
+          PackageUtils.initPackageInfo(),
+          NetUtils.initConfig(),
+        ],
+        eagerError: true,
+      );
+      NotificationUtils.initSettings();
+      _customizeErrorWidget();
+
+      runApp(OpenJMUApp());
+    },
+    (Object e, StackTrace s) => LogUtils.e(
+      'Caught unhandled exception: $e',
+      stackTrace: s,
+    ),
   );
-  NotificationUtils.initSettings();
-  _customizeErrorWidget();
-
-  runApp(OpenJMUApp());
 }
 
 class OpenJMUApp extends StatefulWidget {
