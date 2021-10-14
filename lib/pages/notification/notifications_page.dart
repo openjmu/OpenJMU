@@ -8,8 +8,7 @@ import 'dart:math' as math;
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
-    as ex;
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -193,11 +192,6 @@ class NotificationsPageState extends State<NotificationsPage>
     super.dispose();
   }
 
-  /// Build current scroll view key for specific scroll view.
-  Key innerScrollPositionKeyBuilder() {
-    return Key('List-${widget.pageType}-${_tabController.index}');
-  }
-
   Future<void> canAnimate() async {
     if (scrollController.offset < shouldPopOffset) {
       onWillPop();
@@ -365,22 +359,10 @@ class NotificationsPageState extends State<NotificationsPage>
     return ExtendedTabBarView(
       controller: _tabController,
       children: <Widget>[
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.square}-0'),
-          praiseList,
-        ),
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.square}-1'),
-          commentByReply,
-        ),
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.square}-2'),
-          postByMention,
-        ),
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.square}-3'),
-          commentByMention,
-        ),
+        praiseList,
+        commentByReply,
+        postByMention,
+        commentByMention,
       ],
     );
   }
@@ -388,19 +370,10 @@ class NotificationsPageState extends State<NotificationsPage>
   Widget _teamStack(BuildContext context) {
     return ExtendedTabBarView(
       controller: _tabController,
-      children: <Widget>[
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.team}-0'),
-          const TeamPraiseListPage(),
-        ),
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.team}-1'),
-          const TeamReplyListPage(),
-        ),
-        ex.NestedScrollViewInnerScrollPositionKeyWidget(
-          Key('List-${NotificationPageType.team}-2'),
-          const TeamMentionListPage(),
-        ),
+      children: const <Widget>[
+        TeamPraiseListPage(),
+        TeamReplyListPage(),
+        TeamMentionListPage(),
       ],
     );
   }
@@ -447,7 +420,7 @@ class NotificationsPageState extends State<NotificationsPage>
                   Colors.black.withOpacity(backgroundOpacityController.value),
               child: child,
             ),
-            child: ex.NestedScrollView(
+            child: ExtendedNestedScrollView(
               controller: scrollController,
               physics: const BouncingScrollPhysics(),
               headerSliverBuilder: (_, __) => <Widget>[
@@ -459,7 +432,6 @@ class NotificationsPageState extends State<NotificationsPage>
                 ),
               ],
               pinnedHeaderSliverHeightBuilder: () => minimumHeaderHeight,
-              innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,
               body: ClipRRect(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.w),

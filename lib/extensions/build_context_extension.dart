@@ -23,7 +23,7 @@ extension BuildContextExtension on BuildContext {
 
   AppBarTheme get appBarTheme => AppBarTheme.of(this);
 
-  Color get themeColor => theme.accentColor;
+  Color get themeColor => theme.colorScheme.secondary;
 
   ColorScheme get colorScheme => theme.colorScheme;
 

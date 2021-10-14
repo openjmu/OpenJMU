@@ -296,7 +296,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             weekSwitcherAnimationController.value,
           ),
         ).toDouble(),
-        color: context.appBarTheme.color,
+        color: context.appBarTheme.backgroundColor,
         child: TabBar(
           controller: weekTabController,
           isScrollable: true,

@@ -141,7 +141,7 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
     child = ColoredBox(
-      color: backgroundColor ?? context.appBarTheme.color,
+      color: backgroundColor ?? context.appBarTheme.backgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

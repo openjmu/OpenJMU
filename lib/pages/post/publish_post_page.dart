@@ -747,7 +747,7 @@ class _PublishPostPageState extends State<PublishPostPage>
     return WillPopScope(
       onWillPop: isContentEmptyWhenPop,
       child: Scaffold(
-        backgroundColor: context.appBarTheme.color,
+        backgroundColor: context.appBarTheme.backgroundColor,
         resizeToAvoidBottomInset: false,
         body: Column(
           children: <Widget>[

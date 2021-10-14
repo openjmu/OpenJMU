@@ -345,7 +345,7 @@ class _AppWebViewState extends State<AppWebView>
     }
 
     return Container(
-      color: context.appBarTheme.color,
+      color: context.appBarTheme.backgroundColor,
       child: Column(
         children: <Widget>[
           VGap(Screens.topSafeHeight),

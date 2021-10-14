@@ -37,7 +37,7 @@ class NotificationUtils {
         AndroidNotificationDetails(
       'openjmu_message_channel',
       '推送消息',
-      '通知接收到的消息',
+      channelDescription: '通知接收到的消息',
       importance: Importance.high,
       priority: Priority.high,
       color: color,
@@ -75,7 +75,7 @@ class NotificationUtils {
         AndroidNotificationDetails(
       'openjmu_message_channel',
       '推送消息',
-      '通知接收到的消息',
+      channelDescription: '通知接收到的消息',
       category: 'msg',
       color: color,
       importance: Importance.high,

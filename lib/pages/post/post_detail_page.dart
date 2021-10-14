@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
-    as ex;
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
@@ -137,11 +135,6 @@ class PostDetailPageState extends State<PostDetailPage>
           });
         }
       });
-  }
-
-  /// Build current scroll view key for specific scroll view.
-  ValueKey<String> innerScrollPositionKeyBuilder() {
-    return ValueKey<String>('Detail-List-Key-${_tabController.index}');
   }
 
   Widget get postCard {
@@ -487,11 +480,10 @@ class PostDetailPageState extends State<PostDetailPage>
             Expanded(
               child: ScrollConfiguration(
                 behavior: const NoGlowScrollBehavior(),
-                child: ex.NestedScrollView(
+                child: ExtendedNestedScrollView(
                   controller: _scrollController,
                   physics: const ClampingScrollPhysics(),
                   pinnedHeaderSliverHeightBuilder: () => tabHeight,
-                  innerScrollPositionKeyBuilder: innerScrollPositionKeyBuilder,
                   headerSliverBuilder: (_, __) => <Widget>[
                     SliverToBoxAdapter(child: postCard),
                     SliverPersistentHeader(
@@ -505,24 +497,15 @@ class PostDetailPageState extends State<PostDetailPage>
                   body: ExtendedTabBarView(
                     controller: _tabController,
                     children: <Widget>[
-                      ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                        const Key('Detail-List-Key-0'),
-                        ForwardListInPost(
-                          widget.post,
-                          forwardListInPostController,
-                        ),
+                      ForwardListInPost(
+                        widget.post,
+                        forwardListInPostController,
                       ),
-                      ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                        const Key('Detail-List-Key-1'),
-                        CommentListInPost(
-                          widget.post,
-                          commentListInPostController,
-                        ),
+                      CommentListInPost(
+                        widget.post,
+                        commentListInPostController,
                       ),
-                      ex.NestedScrollViewInnerScrollPositionKeyWidget(
-                        const Key('Detail-List-Key-2'),
-                        PraiseListInPost(widget.post),
-                      ),
+                      PraiseListInPost(widget.post),
                     ],
                   ),
                 ),

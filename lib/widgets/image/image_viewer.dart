@@ -64,7 +64,7 @@ class ImageViewerState extends State<ImageViewer>
   Animation<double> _doubleTapAnimation;
   VoidCallback _doubleTapListener;
 
-  PageController _controller;
+  ExtendedPageController _controller;
 
   @override
   void initState() {
@@ -77,7 +77,7 @@ class ImageViewerState extends State<ImageViewer>
     currentIndex = widget.index;
     imagesData = List<Uint8List>.filled(widget.pics.length, null);
 
-    _controller = PageController(initialPage: currentIndex);
+    _controller = ExtendedPageController(initialPage: currentIndex);
 
     _doubleTapAnimationController = AnimationController(
       duration: 200.milliseconds,
@@ -343,7 +343,7 @@ class _ImageList extends StatelessWidget {
     this.pics,
   });
 
-  final PageController controller;
+  final ExtendedPageController controller;
   final StreamController<int> pageStreamController;
   final int index;
   final List<ImageBean> pics;

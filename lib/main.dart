@@ -350,7 +350,7 @@ void _customizeErrorWidget() {
         padding: EdgeInsets.all(30.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13.w),
-          color: currentTheme.accentColor.withOpacity(0.125),
+          color: currentTheme.colorScheme.secondary.withOpacity(0.125),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -394,7 +394,7 @@ void _customizeErrorWidget() {
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(13.w),
-                  color: currentTheme.accentColor,
+                  color: currentTheme.colorScheme.secondary,
                 ),
                 child: Text(
                   '保存当前位置错误截图',

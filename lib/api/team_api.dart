@@ -240,6 +240,8 @@ class TeamPostAPI {
 }
 
 class TeamCommentAPI {
+  const TeamCommentAPI._();
+
   static Future<Response<Map<String, dynamic>>> getCommentInPostList({
     int id,
     int page = 1,
@@ -289,6 +291,8 @@ class TeamCommentAPI {
 }
 
 class TeamPraiseAPI {
+  const TeamPraiseAPI._();
+
   static Future<Response<Map<String, dynamic>>> requestPraise(
     int id,
     bool isPraise,

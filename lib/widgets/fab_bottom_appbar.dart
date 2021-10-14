@@ -175,7 +175,7 @@ class FABBottomAppBar extends StatelessWidget {
       children: <Widget>[
         const LineDivider(),
         BottomAppBar(
-          color: backgroundColor ?? context.appBarTheme.color,
+          color: backgroundColor ?? context.appBarTheme.backgroundColor,
           shape: notchedShape,
           elevation: 0,
           child: Row(

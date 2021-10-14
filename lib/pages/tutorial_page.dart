@@ -91,7 +91,7 @@ class TutorialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.appBarTheme.color,
+      backgroundColor: context.theme.appBarTheme.backgroundColor,
       body: SafeArea(
         child: Column(
           children: <Widget>[

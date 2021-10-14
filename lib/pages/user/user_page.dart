@@ -609,7 +609,7 @@ class UserPageState extends State<UserPage>
         body: Column(
           children: <Widget>[
             ColoredBox(
-              color: context.appBarTheme.color,
+              color: context.appBarTheme.backgroundColor,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

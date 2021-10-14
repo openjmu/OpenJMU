@@ -106,8 +106,6 @@ class ThemesProvider with ChangeNotifier {
       primaryColorBrightness: Brightness.light,
       primaryColorLight: primaryColor,
       primaryColorDark: backgroundColor,
-      accentColor: currentColor,
-      accentColorBrightness: Brightness.light,
       canvasColor: backgroundColor,
       dividerColor: dividerColor,
       scaffoldBackgroundColor: backgroundColor,
@@ -118,11 +116,12 @@ class ThemesProvider with ChangeNotifier {
       toggleableActiveColor: currentColor,
       indicatorColor: currentColor,
       appBarTheme: AppBarTheme(
-        brightness: Brightness.light,
         elevation: 0,
         color: primaryColor,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.light,
+        ),
       ),
-      buttonColor: currentColor,
       iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -185,8 +184,6 @@ class ThemesProvider with ChangeNotifier {
       primaryColorBrightness: Brightness.dark,
       primaryColorLight: backgroundColor,
       primaryColorDark: primaryColor,
-      accentColor: currentColor,
-      accentColorBrightness: Brightness.dark,
       canvasColor: backgroundColor,
       dividerColor: dividerColor,
       scaffoldBackgroundColor: backgroundColor,
@@ -197,11 +194,12 @@ class ThemesProvider with ChangeNotifier {
       toggleableActiveColor: currentColor,
       indicatorColor: currentColor,
       appBarTheme: const AppBarTheme(
-        brightness: Brightness.dark,
         elevation: 0,
         color: Colors.black,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
       ),
-      buttonColor: currentColor,
       iconTheme: IconThemeData(color: iconColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(

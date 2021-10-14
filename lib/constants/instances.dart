@@ -18,7 +18,7 @@ ThemeData get currentTheme => Theme.of(currentContext);
 ThemeGroup get currentThemeGroup =>
     currentContext.read<ThemesProvider>().currentThemeGroup;
 
-Color get currentThemeColor => currentTheme.accentColor;
+Color get currentThemeColor => currentTheme.colorScheme.secondary;
 
 bool get currentIsDark => currentTheme.brightness == Brightness.dark;
 

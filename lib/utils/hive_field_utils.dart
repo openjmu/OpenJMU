@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-13 10:59
 ///
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
