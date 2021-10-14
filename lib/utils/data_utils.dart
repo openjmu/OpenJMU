@@ -122,7 +122,14 @@ class DataUtils {
       if (currentUser.sid != null) {
         UserAPI.initializeBlacklist();
       }
-      final bool isCasLogin = await UserAPI.loginToCasAndVpn();
+      bool isCasLogin;
+      try {
+        final bool _isCasLogin = await UserAPI.loginToCasAndVpn();
+        isCasLogin = _isCasLogin;
+      } catch (e) {
+        LogUtils.e('Error when checking WebVPN login: $e');
+        isCasLogin = false;
+      }
       if (isCasLogin) {
         await initializeWebViewCookie();
       } else {
