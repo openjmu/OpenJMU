@@ -80,12 +80,17 @@ post_install do |installer|
       # Remove unnecessary permissions.
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=0',
         'PERMISSION_BLUETOOTH=0',
+        'PERMISSION_CAMERA=1',
         'PERMISSION_CONTACTS=0',
-        'PERMISSION_EVENTS=0',
+        'PERMISSION_CRITICAL_ALERTS=0',
+        'PERMISSION_EVENTS=1',
         'PERMISSION_LOCATION=0',
         'PERMISSION_MEDIA_LIBRARY=0',
         'PERMISSION_MICROPHONE=0',
+        'PERMISSION_NOTIFICATIONS=1',
+        'PERMISSION_PHOTOS=1',
         'PERMISSION_REMINDERS=0',
         'PERMISSION_SPEECH_RECOGNIZER=0',
         'PERMISSION_SENSORS=0'
