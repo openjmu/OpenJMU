@@ -43,6 +43,7 @@ xcodebuild -workspace ios/Runner.xcworkspace \
 xcodebuild -exportArchive -archivePath build/ios/Runner.xcarchive \
   -exportOptionsPlist ExportOptions.plist \
   -exportPath release/"Runner $curtime" \
+  -allowProvisioningUpdates \
   -quiet
 
 exit 0
