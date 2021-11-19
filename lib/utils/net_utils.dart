@@ -28,7 +28,8 @@ class NetUtils {
   static Future<Directory> get _tempDir => getTemporaryDirectory();
   static final ValueNotifier<bool> webVpnNotifier = ValueNotifier<bool>(false);
 
-  static bool get shouldUseWebVPN => webVpnNotifier.value;
+  // static bool get shouldUseWebVPN => webVpnNotifier.value;
+  static bool get shouldUseWebVPN => false;
 
   static PersistCookieJar cookieJar;
   static PersistCookieJar tokenCookieJar;
