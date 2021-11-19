@@ -341,8 +341,8 @@ FFRouteSettings getRouteSettings({
       );
     default:
       return FFRouteSettings(
-        name: '404',
-        routeName: '404_page',
+        name: FFRoute.notFoundName,
+        routeName: FFRoute.notFoundRouteName,
         widget: notFoundWidget,
       );
   }
