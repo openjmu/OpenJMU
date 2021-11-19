@@ -8,19 +8,13 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 import io.flutter.plugin.common.*
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.PluginRegistry.Registrar
 
 class SchemeLauncherPlugin : FlutterPlugin, MethodCallHandler {
     private var applicationContext: Context? = null
     override fun onAttachedToEngine(binding: FlutterPluginBinding) {
         applicationContext = binding.applicationContext
-        onAttachedToEngine(binding.binaryMessenger, null)
-    }
-
-    private fun onAttachedToEngine(messenger: BinaryMessenger, context: Context?) {
-        val methodChannel = MethodChannel(messenger, channelName)
+        val methodChannel = MethodChannel(binding.binaryMessenger, channelName)
         methodChannel.setMethodCallHandler(this)
-        if (context != null) applicationContext = context
     }
 
     override fun onDetachedFromEngine(binding: FlutterPluginBinding) {
@@ -55,9 +49,5 @@ class SchemeLauncherPlugin : FlutterPlugin, MethodCallHandler {
 
     companion object {
         private const val channelName = "cn.edu.jmu.openjmu/schemeLauncher"
-        fun registerWith(registrar: Registrar) {
-            val instance = SchemeLauncherPlugin()
-            instance.onAttachedToEngine(registrar.messenger(), registrar.context())
-        }
     }
 }

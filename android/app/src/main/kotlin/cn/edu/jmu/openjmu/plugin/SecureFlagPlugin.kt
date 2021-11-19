@@ -8,18 +8,12 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.*
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.PluginRegistry.Registrar
 
 class SecureFlagPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     private var activity: Activity? = null
     override fun onAttachedToEngine(binding: FlutterPluginBinding) {
-        onAttachedToEngine(binding.binaryMessenger, null)
-    }
-
-    private fun onAttachedToEngine(messenger: BinaryMessenger, activity: Activity?) {
-        val methodChannel = MethodChannel(messenger, channelName)
+        val methodChannel = MethodChannel(binding.binaryMessenger, channelName)
         methodChannel.setMethodCallHandler(this)
-        if (activity != null) this.activity = activity
     }
 
     override fun onDetachedFromEngine(binding: FlutterPluginBinding) {
@@ -54,9 +48,5 @@ class SecureFlagPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     companion object {
         private const val channelName = "cn.edu.jmu.openjmu/setFlagSecure"
-        fun registerWith(registrar: Registrar) {
-            val plugin = SecureFlagPlugin()
-            plugin.onAttachedToEngine(registrar.messenger(), registrar.activity())
-        }
     }
 }
