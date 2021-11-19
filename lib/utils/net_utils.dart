@@ -336,12 +336,13 @@ class NetUtils {
     );
   }
 
-  static dynamic Function(HttpClient client) get _clientCreate {
+  static HttpClient Function(HttpClient client) get _clientCreate {
     return (HttpClient client) {
       if (_isProxyEnabled) {
         client.findProxy = (_) => _proxyDestination;
       }
       client.badCertificateCallback = (_, __, ___) => true;
+      return client;
     };
   }
 
