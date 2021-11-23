@@ -31,7 +31,7 @@ class UserAPI {
   static Future<Response<Map<String, dynamic>>> login(
     Map<String, dynamic> params,
   ) {
-    return NetUtils.tokenDio.post(API.login, data: params);
+    return NetUtils.post(API.login, data: params);
   }
 
   static Future<void> logout(BuildContext context) async {
