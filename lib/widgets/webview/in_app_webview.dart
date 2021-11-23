@@ -517,6 +517,11 @@ class _AppWebViewState extends State<AppWebView>
         LogUtils.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
         cancelProgress();
       },
+      onReceivedServerTrustAuthRequest: (_, __) async {
+        return ServerTrustAuthResponse(
+          action: ServerTrustAuthResponseAction.PROCEED,
+        );
+      },
     );
   }
 
