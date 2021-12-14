@@ -2,11 +2,8 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 import 'package:openjmu/constants/constants.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 @FFRoute(
   name: 'openjmu://user-qr-code',

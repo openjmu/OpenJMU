@@ -4,11 +4,9 @@
 ///
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ChatPersonPage extends StatefulWidget {

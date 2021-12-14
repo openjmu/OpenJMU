@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:extended_image/extended_image.dart'
     show ExtendedNetworkImageProvider;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
     show Cookie, CookieManager;
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'package:openjmu/constants/constants.dart';
+import 'package:path_provider/path_provider.dart';
 
 class NetUtils {
   const NetUtils._();

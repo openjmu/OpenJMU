@@ -2,9 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-12 11:35
 ///
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ManuallySetSidDialog extends StatefulWidget {

@@ -3,12 +3,7 @@
 /// [Date] 11/17/20 4:24 PM
 ///
 import 'package:flutter/material.dart';
-import 'package:loading_more_list/loading_more_list.dart';
 import 'package:openjmu/constants/constants.dart';
-import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart'
-    hide CupertinoActivityIndicator;
-
-import 'pull_to_refresh_header.dart';
 
 double get maxDragOffset => 60.h;
 

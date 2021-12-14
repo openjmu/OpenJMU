@@ -2,9 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-24 04:39
 ///
-import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamMentionListPage extends StatefulWidget {

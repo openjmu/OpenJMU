@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://backpack', routeName: '背包页')

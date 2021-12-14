@@ -6,8 +6,8 @@ import 'dart:io';
 
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 import 'package:openjmu/constants/constants.dart';
+import 'package:path/path.dart' as path;
 
 import 'mention_people_dialog.dart';
 

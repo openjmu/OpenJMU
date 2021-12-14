@@ -4,9 +4,8 @@
 ///
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamPraiseListPage extends StatefulWidget {

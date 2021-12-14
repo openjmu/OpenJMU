@@ -4,7 +4,6 @@
 ///
 // ignore_for_file: avoid_renaming_method_parameters
 import 'package:flutter/material.dart';
-import 'package:loading_more_list/loading_more_list.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class LoadingBase extends LoadingMoreBase<Map<String, dynamic>> {

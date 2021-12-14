@@ -1,8 +1,5 @@
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/widgets/messages/app_message_preview_widget.dart';

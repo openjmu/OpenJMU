@@ -2,10 +2,10 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020/3/23 17:53
 ///
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart'
     show handleSpecialTextSpanDelete;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../model/special_text.dart';
 

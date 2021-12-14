@@ -2,8 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2021-05-07 20:11
 ///
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
 
 class ImageHero extends StatefulWidget {
   const ImageHero({

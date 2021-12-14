@@ -4,12 +4,11 @@
 ///
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:extended_text/extended_text.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:openjmu/constants/constants.dart';

@@ -2,9 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020/9/15 12:28
 ///
-import 'package:flutter/cupertino.dart' hide RefreshIndicatorMode;
 import 'package:flutter/material.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class PullToRefreshHeader extends StatelessWidget {

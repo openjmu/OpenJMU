@@ -1,12 +1,10 @@
 import 'dart:io';
 
+// ignore: implementation_imports
+import 'package:extended_image_library/src/_network_image_io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     show HTTPCookieSameSitePolicy;
-
-// ignore: implementation_imports
-import 'package:extended_image_library/src/_network_image_io.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 UserInfo get currentUser => UserAPI.currentUser;

@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/cards/post_card.dart';
 
 @FFRoute(name: 'openjmu://search', routeName: '搜索页')
 class SearchPage extends StatefulWidget {

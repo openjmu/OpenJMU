@@ -1,16 +1,14 @@
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:crypto/crypto.dart';
 import 'package:extended_image/extended_image.dart' hide MultipartFile;
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
-
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_crop_helper.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 @FFRoute(name: 'openjmu://edit-avatar-page', routeName: '修改头像')
 class EditAvatarPage extends StatefulWidget {

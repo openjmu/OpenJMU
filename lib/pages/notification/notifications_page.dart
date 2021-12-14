@@ -6,15 +6,11 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:badges/badges.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:extended_tabs/extended_tabs.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:openjmu/constants/constants.dart';
-@FFArgumentImport()
-import 'package:openjmu/constants/enums.dart';
 import 'package:openjmu/pages/post/team_mention_list_page.dart';
 import 'package:openjmu/pages/post/team_praise_list_page.dart';
 import 'package:openjmu/pages/post/team_reply_list_page.dart';
@@ -50,6 +46,7 @@ class _Field {
   name: 'openjmu://notifications-page',
   routeName: '通知页',
   pageRouteType: PageRouteType.transparent,
+  argumentImports: <String>["import 'package:openjmu/constants/enums.dart';"],
 )
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({

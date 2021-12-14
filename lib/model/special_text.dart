@@ -1,9 +1,8 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
-
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 /// Link text class.

@@ -1,20 +1,15 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:extended_tabs/extended_tabs.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/cards/post_card.dart';
 
 @FFRoute(
   name: 'openjmu://post-detail',
   routeName: '动态详情页',
-  argumentImports: <String>[
-    'import \'package:flutter/widgets.dart\';',
-  ],
+  argumentImports: <String>["import 'package:flutter/widgets.dart';"],
 )
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({

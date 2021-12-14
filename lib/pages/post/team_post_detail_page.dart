@@ -4,13 +4,13 @@
 ///
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_field/extended_text_field.dart';
+import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/cards/team_post_card.dart';
 import 'package:openjmu/widgets/cards/team_comment_preview_card.dart';
+import 'package:openjmu/widgets/cards/team_post_card.dart';
 import 'package:openjmu/widgets/cards/team_post_comment_preview_card.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 

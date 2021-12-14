@@ -5,14 +5,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-// import 'package:flutter/rendering.dart';
-// import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:openjmu/constants/constants.dart';
 import 'package:r_scan/r_scan.dart';
 import 'package:vibration/vibration.dart';
-
-import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://scan-qr-code', routeName: '扫描二维码')
 class ScanQrCodePage extends StatefulWidget {

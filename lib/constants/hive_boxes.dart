@@ -2,11 +2,9 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-12-01 19:34
 ///
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 const String boxPrefix = 'openjmu';

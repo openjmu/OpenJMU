@@ -10,15 +10,12 @@ import 'package:extended_image/extended_image.dart'
 import 'package:extended_image_library/src/_network_image_io.dart';
 
 import 'package:flutter/material.dart' hide Image;
-import 'package:flutter/gestures.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/rendering.dart';
-import 'package:r_scan/r_scan.dart';
-
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/scan_qr_code_page.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
+import 'package:r_scan/r_scan.dart';
 
 import 'image_hero.dart';
 

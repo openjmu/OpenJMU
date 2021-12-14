@@ -5,10 +5,9 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/painting.dart';
-
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
+import 'package:flutter/painting.dart';
 
 class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   ExtendedTypedNetworkImageProvider(String url)

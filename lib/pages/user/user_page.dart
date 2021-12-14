@@ -2,9 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020/7/24 13:40
 ///
-import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/edit_signature_dialog.dart';
 

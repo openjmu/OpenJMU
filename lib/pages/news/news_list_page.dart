@@ -4,10 +4,9 @@
 ///
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_list/extended_list.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NewsListPage extends StatefulWidget {

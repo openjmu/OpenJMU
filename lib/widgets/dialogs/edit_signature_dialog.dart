@@ -2,9 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2/17/21 8:22 PM
 ///
-import 'package:flutter/material.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class EditSignatureDialog extends StatefulWidget {

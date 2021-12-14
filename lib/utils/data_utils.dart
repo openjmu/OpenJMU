@@ -3,9 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     show HTTPCookieSameSitePolicy;
-import 'package:uuid/uuid.dart';
-
 import 'package:openjmu/constants/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class DataUtils {
   const DataUtils._();

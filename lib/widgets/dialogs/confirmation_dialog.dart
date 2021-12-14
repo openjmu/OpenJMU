@@ -2,10 +2,9 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-22 14:47
 ///
-import 'package:flutter/material.dart';
-
-import 'package:openjmu/constants/constants.dart';
 import 'package:extended_text/extended_text.dart';
+import 'package:flutter/material.dart';
+import 'package:openjmu/constants/constants.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   const ConfirmationDialog({

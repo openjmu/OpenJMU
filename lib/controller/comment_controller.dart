@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:extended_text/extended_text.dart';
 import 'package:extended_list/extended_list.dart';
+import 'package:extended_text/extended_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/comment_card.dart';

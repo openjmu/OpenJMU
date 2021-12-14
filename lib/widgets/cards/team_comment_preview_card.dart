@@ -4,12 +4,10 @@
 ///
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
-
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
 

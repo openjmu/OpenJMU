@@ -2,13 +2,11 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-23 18:15
 ///
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart'
     hide ExtendedNetworkImageProvider;
-
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
-
+import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class UserAvatar extends StatefulWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/score_page.dart';
+import 'package:openjmu/pages/main_page.dart';
 
 class SchoolWorkPage extends StatefulWidget {
   const SchoolWorkPage({@required Key key}) : super(key: key);

@@ -4,9 +4,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 import 'package:openjmu/constants/constants.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 export 'channel_utils.dart';
 export 'data_utils.dart';

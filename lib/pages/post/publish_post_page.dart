@@ -6,13 +6,11 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(name: 'openjmu://publish-post', routeName: '发布动态')

@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:core';
 import 'dart:typed_data';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:path/path.dart' as path;
 
 class PostAPI {
