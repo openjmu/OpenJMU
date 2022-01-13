@@ -190,14 +190,6 @@ class _AboutCard extends StatelessWidget {
     return _SettingsCard(
       children: <Widget>[
         logoItemWidget(context),
-        const _SettingItemWidget(
-          item: _SettingItem(
-            name: '服务器状态',
-            description: '可用状态监控',
-            url: API.statusWebsite,
-            urlTitle: 'OpenJMU 状态',
-          ),
-        ),
         _SettingItemWidget(
           item: _SettingItem(
             name: '意见和建议',

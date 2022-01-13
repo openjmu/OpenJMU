@@ -45,12 +45,6 @@ class API {
       '&name=${currentUser.name}'
       '&workId=${currentUser.workId}';
 
-  /// 服务状态
-  static const String statusWebsite = 'https://status.openjmu.xyz/';
-
-  /// 推送服务
-  static const String pushHost = 'http://push.openjmu.xyz:8787';
-
   /// Hosts.
   /// 域名
   static const String openjmuHost = 'openjmu.jmu.edu.cn';
@@ -89,8 +83,6 @@ class API {
       webVpnHost,
     ];
   }
-
-  static const String pushUpload = '$pushHost/push'; // 上传推送信息
 
   /// Authentication.
   /// 认证相关

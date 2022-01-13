@@ -388,9 +388,9 @@ class LoginPageState extends State<LoginPage> with RouteAware {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[topLogo, statusButton(context)],
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: topLogo,
                 ),
                 welcomeTip,
                 const Spacer(),
@@ -469,32 +469,6 @@ class LoginPageState extends State<LoginPage> with RouteAware {
                 SizedBox(height: 100.w),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget statusButton(BuildContext context) {
-    return Tapper(
-      onTap: () => API.launchWeb(
-        url: API.statusWebsite,
-        title: 'OpenJMU 状态',
-      ),
-      child: Container(
-        width: 130.w,
-        height: 64.w,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13.w),
-          color: context.theme.canvasColor,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          '无法登录?',
-          style: TextStyle(
-            fontSize: 20.sp,
-            height: 1.24,
-            fontWeight: FontWeight.w500,
           ),
         ),
       ),

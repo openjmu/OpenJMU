@@ -101,7 +101,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           UserAPI.getBackpackItemType();
         }
         UserAPI.initializeBlacklist();
-        initPushService();
       })
       ..on<LogoutEvent>().listen((LogoutEvent event) {
         navigatorState.pushNamedAndRemoveUntil(
@@ -191,33 +190,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       if (connectivityToastFuture != null) {
         connectivityToastFuture = null;
       }
-    }
-  }
-
-  void initPushService() {
-    // Init this service only on iOS.
-    if (!Platform.isIOS) {
-      return;
-    }
-    try {
-      final Map<String, dynamic> data = <String, dynamic>{
-        'token': DeviceUtils.devicePushToken,
-        'date': DateFormat('yyyy/MM/dd HH:mm:ss', 'en').format(DateTime.now()),
-        'uid': currentUser.uid,
-        'name': currentUser.name ?? currentUser.uid,
-        'workid': currentUser.workId ?? currentUser.uid,
-        'buildnumber': PackageUtils.buildNumber,
-        'uuid': DeviceUtils.deviceUuid,
-        'platform': Platform.isIOS ? 'ios' : 'android',
-      };
-      LogUtils.d('Push data: $data');
-      NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
-        LogUtils.d('Push service info upload success.');
-      }).catchError((dynamic e) {
-        LogUtils.e('Push service upload error: $e', withStackTrace: false);
-      });
-    } catch (e) {
-      LogUtils.e('Push service init error: $e');
     }
   }
 
