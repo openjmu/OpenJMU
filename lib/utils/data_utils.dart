@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart'
-    show HTTPCookieSameSitePolicy;
 import 'package:openjmu/constants/constants.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,11 +24,6 @@ class DataUtils {
     await HiveBoxes.upBox.clear();
     await HiveBoxes.upBox.add(UPModel(username, password));
     try {
-      final bool isCasLogon = await UserAPI.loginToCasAndVpn();
-      if (!isCasLogon) {
-        showToast('校内网络通道连接失败 (0)');
-        NetUtils.webVpnNotifier.value = false;
-      }
       final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
       currentUser = currentUser.copyWith(
         sid: loginData['sid'] as String,
@@ -57,14 +49,9 @@ class DataUtils {
 //        'classId': user['class_id'],
         'gender': user['gender'].toString().toInt(),
       };
-      bool isWizard = true;
-      if (!(userInfo['isTeacher'] as bool)) {
-        isWizard = await checkWizard();
-      }
       await saveLoginInfo(userInfo);
-      await initializeWebViewCookie();
+      Instances.eventBus.fire(const TicketGotEvent());
       showToast('登录成功！');
-      Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
     } on DioError catch (dioError) {
       LogUtils.e('Error when login: $dioError');
@@ -91,15 +78,6 @@ class DataUtils {
     showToast('退出登录成功');
   }
 
-  static Future<bool> checkWizard() async {
-    final Map<String, dynamic> info = (await UserAPI.getStudentInfo()).data;
-    if (info['wizard'].toString() == '1') {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   static String recoverWorkId() => _settingsBox.get(spUserWorkId) as String;
 
   static void recoverLoginInfo() {
@@ -115,27 +93,10 @@ class DataUtils {
       if (!result) {
         throw Error.safeToString('Re-fetch ticket failed.');
       }
-      bool isWizard;
-      isWizard = true;
-//      if (!currentUser.isTeacher) isWizard = await checkWizard();
       if (currentUser.sid != null) {
         UserAPI.initializeBlacklist();
       }
-      bool isCasLogin;
-      try {
-        final bool _isCasLogin = await UserAPI.loginToCasAndVpn();
-        isCasLogin = _isCasLogin;
-      } catch (e) {
-        LogUtils.e('Error when checking WebVPN login: $e');
-        isCasLogin = false;
-      }
-      if (isCasLogin) {
-        await initializeWebViewCookie();
-      } else {
-        NetUtils.webVpnNotifier.value = false;
-        LogUtils.e('Failed to login with WebVPN.');
-      }
-      Instances.eventBus.fire(TicketGotEvent(isWizard));
+      Instances.eventBus.fire(const TicketGotEvent());
     } catch (e) {
       LogUtils.e('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
@@ -243,77 +204,6 @@ class DataUtils {
       ticket: response['sid'] as String,
       uid: _settingsBox.get(spUserUid).toString(),
     );
-  }
-
-  /// Initialize WebView's cookie with 'iPlanetDirectoryPro'.
-  /// 启动时通过 Session 初始化 WebView 的 Cookie
-  static Future<bool> initializeWebViewCookie() async {
-    final String url =
-        '${API.ssoHostInsecure}/imapps/2190?sid=${currentUser.sid}';
-    final String replacedUrl =
-        NetUtils.shouldUseWebVPN ? API.replaceWithWebVPN(url) : url;
-    try {
-      await NetUtils.head(
-        replacedUrl,
-        options: Options(
-          followRedirects: false,
-          receiveTimeout: 10000,
-          sendTimeout: 10000,
-        ),
-      );
-      LogUtils.d('Cookie response didn\'t return 302.');
-      return false;
-    } on DioError catch (dioError) {
-      try {
-        if (dioError.response.statusCode == HttpStatus.movedTemporarily) {
-          for (final Cookie cookie in await NetUtils.cookieJar
-              .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'))) {
-            await _setWebViewCookie(cookie);
-          }
-          for (final Cookie cookie in await NetUtils.tokenCookieJar
-              .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'))) {
-            await _setWebViewCookie(cookie);
-          }
-          LogUtils.d('Successfully initialize WebView\'s Cookie.');
-          return true;
-        } else {
-          LogUtils.e(
-            'Error when initializing WebView\'s Cookie: $dioError',
-            withStackTrace: false,
-          );
-          return false;
-        }
-      } catch (e) {
-        LogUtils.e('Error when handling cookie response: $e');
-        return false;
-      }
-    } catch (e) {
-      LogUtils.e('Error when handling cookie response: $e');
-      return false;
-    }
-  }
-
-  static Future<bool> _setWebViewCookie(Cookie cookie) async {
-    try {
-      String _domain;
-      if (cookie.domain == '.jmu.edu.cn') {
-        _domain = 'www${cookie.domain}';
-      }
-      await NetUtils.webViewCookieManager.setCookie(
-        url: Uri.parse('${_domain ?? cookie.domain}${cookie.path}'),
-        name: cookie.name,
-        value: cookie.value,
-        domain: _domain ?? cookie.domain,
-        path: cookie.path ?? '/',
-        expiresDate: cookie.expires?.millisecondsSinceEpoch,
-        isSecure: cookie.secure,
-        maxAge: cookie.maxAge,
-        sameSite: HTTPCookieSameSitePolicy.LAX,
-      );
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 
   /// 是否登录

@@ -146,7 +146,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             child: Wrap(
               children: List<Widget>.generate(
                 list.length,
-                    (int index) {
+                (int index) {
                   final User _user = users.value[index];
                   return _UserWidget(
                     key: ValueKey<String>('user-${_user.id}'),

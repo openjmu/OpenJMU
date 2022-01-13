@@ -61,11 +61,15 @@ class NetUtils {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         _clientCreate;
 
-    dio.interceptors..add(cookieManager)..add(_interceptor);
+    dio.interceptors
+      ..add(cookieManager)
+      ..add(_interceptor);
 
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = _clientCreate;
-    tokenDio.interceptors..add(tokenCookieManager)..add(_interceptor);
+    tokenDio.interceptors
+      ..add(tokenCookieManager)
+      ..add(_interceptor);
 
     if (Constants.isDebug && shouldLogRequest) {
       dio.interceptors.add(LoggingInterceptor());
@@ -299,29 +303,6 @@ class NetUtils {
           tokenCookieJar.saveFromResponse(Uri.parse(_url), _cookies),
         ],
       );
-    }
-  }
-
-  /// 通过测试「课堂助理」应用，判断是否需要使用 WebVPN。
-  static Future<void> testClassKit() async {
-    dio.lock();
-    try {
-      await tokenDio.get<String>(
-        API.classKitHost,
-        options: Options(contentType: 'text/html;charset=utf-8'),
-      );
-      webVpnNotifier.value = false;
-    } on DioError catch (dioError) {
-      if (dioError.response?.statusCode == HttpStatus.forbidden) {
-        webVpnNotifier.value = true;
-        return;
-      }
-      webVpnNotifier.value = false;
-    } catch (e) {
-      LogUtils.e('Error when testing classKit: $e');
-      webVpnNotifier.value = false;
-    } finally {
-      dio.unlock();
     }
   }
 

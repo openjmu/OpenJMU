@@ -18,7 +18,7 @@ class ConnectivityChangeEvent {
 class LogoutEvent {}
 
 class TicketGotEvent {
-  const TicketGotEvent(this.isWizard);
+  const TicketGotEvent([this.isWizard = true]);
 
   final bool isWizard; // 账号是否已通过新人引导
 }

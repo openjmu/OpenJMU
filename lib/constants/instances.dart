@@ -55,8 +55,7 @@ class Instances {
   static ConnectivityResult connectivityResult;
 
   static GlobalKey appRepaintBoundaryKey = GlobalKey();
-  static GlobalKey<MainPageState> mainPageStateKey =
-      GlobalKey<MainPageState>();
+  static GlobalKey<MainPageState> mainPageStateKey = GlobalKey<MainPageState>();
   static final GlobalKey<SchoolWorkPageState> schoolWorkPageStateKey =
       GlobalKey<SchoolWorkPageState>();
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =

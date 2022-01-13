@@ -97,8 +97,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Future<Map<String, dynamic>> getImageRequest(FormData formData) async {
-    final Response<Map<String, dynamic>> res =
-        await NetUtils.post(
+    final Response<Map<String, dynamic>> res = await NetUtils.post(
       API.postUploadImage,
       data: formData,
     );

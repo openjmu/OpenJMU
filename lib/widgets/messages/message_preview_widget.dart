@@ -107,23 +107,18 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         child: user != null
                             ? Text(
                                 user.name ?? user.uid,
-                                style: context.theme
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                style:
+                                    context.theme.textTheme.bodyText2.copyWith(
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               )
                             : const SizedBox.shrink(),
                       ),
                       Text(
                         ' $formattedTime',
                         style: context.textTheme.bodyText2.copyWith(
-                          color: context.theme
-                              .textTheme
-                              .bodyText2
-                              .color
+                          color: context.theme.textTheme.bodyText2.color
                               .withOpacity(0.5),
                         ),
                       ),
@@ -150,10 +145,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   Text(
                     '${widget.message.content['content']}',
                     style: context.textTheme.bodyText2.copyWith(
-                      color: context.theme
-                          .textTheme
-                          .bodyText2
-                          .color
+                      color: context.theme.textTheme.bodyText2.color
                           .withOpacity(0.5),
                       fontSize: 19.sp,
                     ),

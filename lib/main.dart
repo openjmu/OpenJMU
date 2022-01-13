@@ -175,7 +175,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   }
 
   void connectivityHandler(ConnectivityResult result) {
-    NetUtils.testClassKit();
     checkIfNoConnectivity(result);
     Instances.eventBus.fire(ConnectivityChangeEvent(result));
     Instances.connectivityResult = result;

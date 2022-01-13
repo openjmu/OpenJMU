@@ -48,39 +48,23 @@ class API {
   /// Hosts.
   /// 域名
   static const String openjmuHost = 'openjmu.jmu.edu.cn';
-  static const String wwwHost = 'https://www.jmu.edu.cn';
-  static const String wwwHostInsecure = 'http://www.jmu.edu.cn';
   static const String wbHost = 'https://wb.jmu.edu.cn';
   static const String wpHost = 'https://wp.jmu.edu.cn';
-  static const String forum99Host = 'https://forum99.jmu.edu.cn';
   static const String file99Host = 'https://file99.jmu.edu.cn';
   static const String oa99Host = 'https://oa99.jmu.edu.cn';
   static const String oap99Host = 'https://oap99.jmu.edu.cn';
   static const String middle99Host = 'https://middle99.jmu.edu.cn';
-  static const String upApiHost = 'https://upapi.jmu.edu.cn';
-  static const String jwglHost = 'http://jwgls.jmu.edu.cn';
   static const String labsHost = 'http://labs.jmu.edu.cn';
-  static const String ssoHost = 'https://sso.jmu.edu.cn';
-  static const String ssoHostInsecure = 'http://sso.jmu.edu.cn';
-  static const String webVpnHost = 'https://webvpn.jmu.edu.cn';
-  static const String webVpnHostInsecure = 'http://webvpn.jmu.edu.cn';
-  static const String classKitHost = 'https://classkit.jmu.edu.cn';
-  static const String casHost = 'https://cas.paas.jmu.edu.cn';
-  static const String casWebVPNHost = 'https://cas-paas-443.webvpn.jmu.edu.cn';
 
   static List<String> get ndHosts {
     return <String>[
       wbHost,
       wpHost,
-      forum99Host,
       file99Host,
       oa99Host,
       oap99Host,
       middle99Host,
-      upApiHost,
-      jwglHost,
       labsHost,
-      webVpnHost,
     ];
   }
 
@@ -90,10 +74,6 @@ class API {
   static const String logout = '$oap99Host/passport/logout'; // 注销
   static const String loginTicket =
       '$oa99Host/v2/passport/api/user/loginticket1'; // 更新session
-  static const String casLogin = '$casHost/cas/login'; // 登录 CAS
-  static const String webVpnLogin = '$casWebVPNHost/cas/login'
-      '?service=https%3A%2F%2Fwebvpn.jmu.edu.cn'
-      '%2Fusers%2Fauth%2Fcas%2Fcallback%3Furl'; // 由 CAS 登录 WebVPN
 
   /// 文件相关
   static const String showFile = '$file99Host/show/file/fid/';
@@ -273,13 +253,6 @@ class API {
       '$labsHost/CourseSchedule/GetSemesters';
   static const String courseScheduleCustom =
       '$labsHost/CourseSchedule/StudentCustomSchedule';
-
-  /// 教务相关
-  static const String jwglLogin = '$jwglHost/login.aspx';
-  static const String jwglCheckCode = '$jwglHost/Common/CheckCode.aspx';
-  static const String jwglStudentDefault = '$jwglHost/Student/default.aspx';
-  static const String jwglStudentScoreAll =
-      '$jwglHost/Student/ScoreCourse/ScoreAll.aspx';
 
   /// 礼物相关
   static String get backPackItemType {

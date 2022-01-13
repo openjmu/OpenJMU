@@ -236,9 +236,7 @@ class ConfirmationDialogAction extends StatelessWidget {
       child: Container(
         height: 72.w,
         color: color ??
-            (isDestructiveAction
-                ? context.themeColor
-                : context.surfaceColor),
+            (isDestructiveAction ? context.themeColor : context.surfaceColor),
         child: Semantics(
           button: true,
           child: Container(
