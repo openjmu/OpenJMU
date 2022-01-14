@@ -421,7 +421,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         switch (widget.type) {
           case TeamPostType.post:
             Instances.eventBus.fire(
-              TeamPostDeletedEvent(postId: provider.post.tid),
+              TeamPostDeletedEvent(provider.post.tid),
             );
             break;
           case TeamPostType.comment:

@@ -80,26 +80,30 @@ class Constants {
   static const String postApiSecretIOS = '773958E5CFE0FF8252808C417A8ECCAB';
 
   /// Request header for team.
-  static Map<String, dynamic> get teamHeader => <String, dynamic>{
-        'APIKEY': apiKey,
-        'APPID': 273,
-        'CLIENTTYPE': Platform.operatingSystem,
-        'CLOUDID': cloudId,
-        'CUID': UserAPI.currentUser.uid,
-        'SID': UserAPI.currentUser.sid,
-        'TAGID': 1,
-      };
+  static Map<String, dynamic> get teamHeader {
+    return <String, dynamic>{
+      'APIKEY': apiKey,
+      'APPID': 273,
+      'CLIENTTYPE': Platform.operatingSystem,
+      'CLOUDID': cloudId,
+      'CUID': UserAPI.currentUser.uid,
+      'SID': UserAPI.currentUser.sid,
+      'TAGID': 1,
+    };
+  }
 
-  static Map<String, dynamic> get loginClientInfo => <String, dynamic>{
-        'appid': appId,
-        if (Platform.isIOS) 'packetid': '',
-        'platform': Platform.isIOS ? 40 : 30,
-        'platformver': Platform.isIOS ? '2.3.2' : '2.3.1',
-        'deviceid': DeviceUtils.deviceUuid,
-        'devicetype': deviceType,
-        'systype': '$deviceType OS',
-        'sysver': Platform.isIOS ? '12.2' : '9.0',
-      };
+  static Map<String, dynamic> get loginClientInfo {
+    return <String, dynamic>{
+      'appid': appId,
+      if (Platform.isIOS) 'packetid': '',
+      'platform': Platform.isIOS ? 40 : 30,
+      'platformver': Platform.isIOS ? '2.3.2' : '2.3.1',
+      'deviceid': DeviceUtils.deviceUuid,
+      'devicetype': deviceType,
+      'systype': '$deviceType OS',
+      'sysver': Platform.isIOS ? '12.2' : '9.0',
+    };
+  }
 
   static Map<String, dynamic> loginParams({
     @required String blowfish,
@@ -121,22 +125,31 @@ class Constants {
     };
   }
 
-  static Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
+  static const Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ];
+    GlobalWidgetsLocalizations.delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
 
-  static Iterable<Locale> get supportedLocales => <Locale>[
-        const Locale.fromSubtags(languageCode: 'zh'),
-        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
-        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
-        const Locale.fromSubtags(
-            languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
-        const Locale.fromSubtags(
-            languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
-        const Locale.fromSubtags(
-            languageCode: 'zh', scriptCode: 'Hant', countryCode: 'HK'),
-      ];
+  static const Iterable<Locale> supportedLocales = <Locale>[
+    Locale.fromSubtags(languageCode: 'zh'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+    Locale.fromSubtags(
+      languageCode: 'zh',
+      scriptCode: 'Hans',
+      countryCode: 'CN',
+    ),
+    Locale.fromSubtags(
+      languageCode: 'zh',
+      scriptCode: 'Hant',
+      countryCode: 'TW',
+    ),
+    Locale.fromSubtags(
+      languageCode: 'zh',
+      scriptCode: 'Hant',
+      countryCode: 'HK',
+    ),
+  ];
 }

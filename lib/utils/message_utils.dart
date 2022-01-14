@@ -222,8 +222,11 @@ class MessageUtils {
         sendMultiPortLogin();
         break;
       case 0x9000:
-        sendKeepAlive(null);
-        messageKeepAliveTimer = Timer.periodic(30.seconds, sendKeepAlive);
+        sendKeepAlive();
+        messageKeepAliveTimer = Timer.periodic(
+          30.seconds,
+          (_) => sendKeepAlive(),
+        );
         Future<void>.delayed(5.seconds, () {
           if (messageSocket != null) {
             sendGetOfflineMessage();
@@ -275,7 +278,7 @@ class MessageUtils {
 
   static void sendLogout() => addPackage('WY_LOGOUT');
 
-  static void sendKeepAlive(dynamic _) => addPackage('WY_KEEPALIVE');
+  static void sendKeepAlive() => addPackage('WY_KEEPALIVE');
 
   static void sendGetOfflineMessage() => addPackage('WY_GET_OFFLINEMSG');
 

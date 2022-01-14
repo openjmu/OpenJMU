@@ -28,18 +28,22 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   void delete(BuildContext context) {
-    final TeamPostProvider provider =
-        Provider.of<TeamPostProvider>(context, listen: false);
+    final TeamPostProvider provider = Provider.of<TeamPostProvider>(
+      context,
+      listen: false,
+    );
     final TeamPost post = provider.post;
-    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((dynamic _) {
+    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((_) {
       showToast('删除成功');
-      Instances.eventBus.fire(TeamPostDeletedEvent(postId: post.tid));
+      Instances.eventBus.fire(TeamPostDeletedEvent(post.tid));
     });
   }
 
   void confirmAction(BuildContext context) {
-    final TeamPostProvider provider =
-        Provider.of<TeamPostProvider>(context, listen: false);
+    final TeamPostProvider provider = Provider.of<TeamPostProvider>(
+      context,
+      listen: false,
+    );
     final TeamPost post = provider.post;
     ConfirmationBottomSheet.show(
       context,
@@ -62,8 +66,10 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Future<void> confirmReport(BuildContext context) async {
-    final TeamPostProvider provider =
-        Provider.of<TeamPostProvider>(context, listen: false);
+    final TeamPostProvider provider = Provider.of<TeamPostProvider>(
+      context,
+      listen: false,
+    );
     final TeamPost post = provider.post;
     final bool confirm = await ConfirmationDialog.show(
       context,
@@ -174,17 +180,19 @@ class TeamPostPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget _content(TeamPost post) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        child: ExtendedText(
-          post.content ?? '',
-          style: TextStyle(fontSize: 19.sp),
-          onSpecialTextTap: specialTextTapRecognizer,
-          maxLines: 8,
-          overflowWidget: contentOverflowWidget,
-          specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-        ),
-      );
+  Widget _content(TeamPost post) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      child: ExtendedText(
+        post.content ?? '',
+        style: TextStyle(fontSize: 19.sp),
+        onSpecialTextTap: specialTextTapRecognizer,
+        maxLines: 8,
+        overflowWidget: contentOverflowWidget,
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+      ),
+    );
+  }
 
   Widget _postInfo(BuildContext context, TeamPostProvider provider) {
     return Container(
@@ -226,9 +234,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ),
                 ],
               ),
-              style: context.textTheme.caption.copyWith(
-                fontSize: 17.sp,
-              ),
+              style: context.textTheme.caption.copyWith(fontSize: 17.sp),
               onSpecialTextTap: specialTextTapRecognizer,
               maxLines: 3,
               overflowWidget: const TextOverflowWidget(
@@ -448,8 +454,10 @@ class TeamPostPreviewCard extends StatelessWidget {
     !isLiked ? provider.praised() : provider.unPraised();
     completer.complete(!isLiked);
 
-    TeamPraiseAPI.requestPraise(provider.post.tid, !isLiked)
-        .catchError((dynamic e) {
+    TeamPraiseAPI.requestPraise(
+      provider.post.tid,
+      !isLiked,
+    ).catchError((dynamic e) {
       isLiked ? provider.praised() : provider.unPraised();
       completer.complete(isLiked);
     });

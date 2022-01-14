@@ -1,13 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:openjmu/constants/constants.dart';
-
-/// Event for testing.
-class TestEvent {
-  const TestEvent({this.content});
-
-  final dynamic content;
-}
 
 class ConnectivityChangeEvent {
   const ConnectivityChangeEvent(this.type);
@@ -76,16 +70,14 @@ class PostDeletedEvent {
 }
 
 class TeamPostDeletedEvent {
-  const TeamPostDeletedEvent({
-    this.postId,
-  });
+  const TeamPostDeletedEvent(this.postId);
 
   final int postId;
 }
 
 class TeamCommentDeletedEvent {
   const TeamCommentDeletedEvent({
-    this.postId,
+    @required this.postId,
     this.topPostId,
   });
 

@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class Screens {
@@ -42,22 +41,35 @@ class Screens {
 }
 
 /// Screen capability method.
-double suSetSp(double size, {double scale}) => _sizeCapable(
-      (ScreenUtil().setSp(size) * 2).toDouble(),
-      scale: scale,
-    );
+double suSetSp(double size, {double scale}) {
+  return _sizeCapable(
+    (ScreenUtil().setSp(size) * 2).toDouble(),
+    scale: scale,
+  );
+}
 
-double suSetWidth(double size, {double scale}) =>
-    _sizeCapable((ScreenUtil().setWidth(size) * 2).toDouble(), scale: scale);
+double suSetWidth(double size, {double scale}) {
+  return _sizeCapable(
+    (ScreenUtil().setWidth(size) * 2).toDouble(),
+    scale: scale,
+  );
+}
 
-double suSetHeight(double size, {double scale}) =>
-    _sizeCapable((ScreenUtil().setHeight(size) * 2).toDouble(), scale: scale);
+double suSetHeight(double size, {double scale}) {
+  return _sizeCapable(
+    (ScreenUtil().setHeight(size) * 2).toDouble(),
+    scale: scale,
+  );
+}
 
-double _sizeCapable(num size, {double scale}) => (size *
-        (scale ??
-            Provider.of<SettingsProvider>(currentContext, listen: false)
-                .fontScale))
-    .toDouble();
+double _sizeCapable(num size, {double scale}) {
+  double _scale = scale;
+  _scale ??= Provider.of<SettingsProvider>(
+    currentContext,
+    listen: false,
+  ).fontScale;
+  return (size * _scale).toDouble();
+}
 
 extension SizeExtension on num {
   double get w => _sizeCapable(ScreenUtil().setWidth(this) * 2);
@@ -66,6 +78,7 @@ extension SizeExtension on num {
 
   double get sp => _sizeCapable(ScreenUtil().setSp(this) * 2);
 
-  double get ssp =>
-      _sizeCapable(ScreenUtil().setSp(this, allowFontScalingSelf: true) * 2);
+  double get ssp => _sizeCapable(
+        ScreenUtil().setSp(this, allowFontScalingSelf: true) * 2,
+      );
 }

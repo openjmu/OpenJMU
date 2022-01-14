@@ -81,8 +81,9 @@ class HiveBoxes {
           coursesBox = await Hive.openBox('${boxPrefix}_user_courses');
         }(),
         () async {
-          courseRemarkBox =
-              await Hive.openBox('${boxPrefix}_user_course_remark');
+          courseRemarkBox = await Hive.openBox(
+            '${boxPrefix}_user_course_remark',
+          );
         }(),
         () async {
           startWeekBox = await Hive.openBox('${boxPrefix}_start_week');
@@ -100,8 +101,9 @@ class HiveBoxes {
           reportRecordBox = await Hive.openBox('${boxPrefix}_report_record');
         }(),
         () async {
-          settingsBox =
-              await Hive.openBox<dynamic>('${boxPrefix}_app_settings');
+          settingsBox = await Hive.openBox<dynamic>(
+            '${boxPrefix}_app_settings',
+          );
         }(),
         () async {
           firstOpenBox = await Hive.openBox('${boxPrefix}_first_open');

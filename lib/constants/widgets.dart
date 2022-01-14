@@ -91,9 +91,7 @@ class TransparentRoute extends PageRoute<void> {
 }
 
 /// Max radius for border radius.
-const BorderRadius maxBorderRadius = BorderRadius.all(
-  Radius.circular(999999),
-);
+const BorderRadius maxBorderRadius = BorderRadius.all(Radius.circular(999999));
 
 /// OpenJMU logo.
 class OpenJMULogo extends StatelessWidget {
@@ -125,13 +123,8 @@ class OpenJMULogo extends StatelessWidget {
 
 /// Developer tag.
 class DeveloperTag extends StatelessWidget {
-  const DeveloperTag({
-    Key key,
-    this.padding,
-    this.height = 24,
-  }) : super(key: key);
+  const DeveloperTag({Key key, this.height = 24}) : super(key: key);
 
-  final EdgeInsetsGeometry padding;
   final double height;
 
   @override
@@ -195,19 +188,19 @@ class PlatformProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? CupertinoTheme(
-            data: CupertinoThemeData(
-              brightness: brightness ?? context.brightness,
-            ),
-            child: CupertinoActivityIndicator(radius: radius),
-          )
-        : CircularProgressIndicator(
-            strokeWidth: strokeWidth.w,
-            valueColor:
-                color != null ? AlwaysStoppedAnimation<Color>(color) : null,
-            value: value,
-          );
+    if (Platform.isIOS || Platform.isMacOS) {
+      return CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: brightness ?? context.brightness,
+        ),
+        child: CupertinoActivityIndicator(radius: radius),
+      );
+    }
+    return CircularProgressIndicator(
+      strokeWidth: strokeWidth.w,
+      valueColor: color != null ? AlwaysStoppedAnimation<Color>(color) : null,
+      value: value,
+    );
   }
 }
 

@@ -61,5 +61,5 @@ class Instances {
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =
       GlobalKey<CourseSchedulePageState>();
 
-  static String defaultAvatarData;
+  static String /*!*/ defaultAvatarData;
 }

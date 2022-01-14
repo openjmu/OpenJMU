@@ -1,10 +1,9 @@
+// ignore_for_file: camel_case_types
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
-// ignore_for_file: camel_case_types
 class Messages {
   const Messages._();
 
