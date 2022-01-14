@@ -45,14 +45,15 @@ class CourseAPI {
 
   static Future<Response<String>> setCustomCourse(
     Map<String, dynamic> course,
-  ) async =>
-      NetUtils.post(
-        NetUtils.shouldUseWebVPN
-            ? API.replaceWithWebVPN(API.courseScheduleCustom)
-            : API.courseScheduleCustom,
-        queryParameters: <String, dynamic>{'sid': currentUser.sid},
-        data: course,
-      );
+  ) {
+    return NetUtils.post(
+      NetUtils.shouldUseWebVPN
+          ? API.replaceWithWebVPN(API.courseScheduleCustom)
+          : API.courseScheduleCustom,
+      queryParameters: <String, dynamic>{'sid': currentUser.sid},
+      data: course,
+    );
+  }
 
   static bool inReadyTime(Course course) {
     final double timeNow = _timeToDouble(TimeOfDay.now());
@@ -73,8 +74,10 @@ class CourseAPI {
   }
 
   static bool inCurrentDay(Course course) {
-    final CoursesProvider provider =
-        Provider.of<CoursesProvider>(currentContext, listen: false);
+    final CoursesProvider provider = Provider.of<CoursesProvider>(
+      currentContext,
+      listen: false,
+    );
     final DateTime now = provider.now;
     return course.day == now.weekday;
   }

@@ -48,13 +48,13 @@ class UserAPI {
   static ExtendedNetworkImageProvider getAvatarProvider({
     String uid,
     int t,
-    int size,
+    int size = 512,
   }) {
     return ExtendedNetworkImageProvider(
       '${API.userAvatar}'
       '?uid=${uid ?? currentUser.uid}'
       '&_t=${t ?? avatarLastModified}'
-      '&size=f${size ?? 152}',
+      '&size=f$size',
       cache: true,
       cacheKey: '${uid ?? currentUser.uid}_${t ?? avatarLastModified}',
       cacheRawData: true,
@@ -80,19 +80,15 @@ class UserAPI {
   static Future<dynamic> getUserInfo({String uid}) async {
     if (uid == null) {
       return currentUser;
-    } else {
-      return NetUtils.get<dynamic>(
-        API.userInfo,
-        queryParameters: <String, dynamic>{'uid': uid},
-      );
     }
+    return NetUtils.get<dynamic>(
+      API.userInfo,
+      queryParameters: <String, dynamic>{'uid': uid},
+    );
   }
 
-  static Future<Response<Map<String, dynamic>>> getStudentInfo({
-    String uid,
-  }) async {
-    return NetUtils.get<Map<String, dynamic>>(
-        API.studentInfo(uid: uid ?? currentUser.uid));
+  static Future<Response<Map<String, dynamic>>> getStudentInfo({String uid}) {
+    return NetUtils.get(API.studentInfo(uid: uid ?? currentUser.uid));
   }
 
   static Future<Response<Map<String, dynamic>>> getLevel(String uid) {
@@ -118,18 +114,14 @@ class UserAPI {
     String uid,
     int page,
   ) {
-    return NetUtils.get(
-      '${API.userFans}$uid/page/$page/page_size/20',
-    );
+    return NetUtils.get('${API.userFans}$uid/page/$page/page_size/20');
   }
 
   static Future<Response<Map<String, dynamic>>> getIdolsList(
     String uid,
     int page,
   ) {
-    return NetUtils.get(
-      '${API.userIdols}$uid/page/$page/page_size/20',
-    );
+    return NetUtils.get('${API.userIdols}$uid/page/$page/page_size/20');
   }
 
   static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(
@@ -138,13 +130,14 @@ class UserAPI {
     return NetUtils.get('${API.userFansAndIdols}$uid');
   }
 
-  static Future<Response<Map<String, dynamic>>> getNotifications() async =>
-      NetUtils.get<Map<String, dynamic>>(API.postUnread);
+  static Future<Response<Map<String, dynamic>>> getNotifications() {
+    return NetUtils.get(API.postUnread);
+  }
 
   static Future<bool> follow(String uid) async {
     try {
-      await NetUtils.post<dynamic>('${API.userRequestFollow}$uid');
-      await NetUtils.post<dynamic>(
+      await NetUtils.post<void>('${API.userRequestFollow}$uid');
+      await NetUtils.post<void>(
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid, 'tagid': 0},
       );
@@ -152,7 +145,7 @@ class UserAPI {
       showToast('关注成功');
       return true;
     } catch (e) {
-      LogUtils.e('Failed when folloe: $e');
+      LogUtils.e('Failed when follow $uid: $e');
       showCenterErrorToast('关注失败');
       return false;
     }
@@ -160,10 +153,8 @@ class UserAPI {
 
   static Future<bool> unFollow(String uid, {bool fromBlacklist = false}) async {
     try {
-      await NetUtils.delete<dynamic>(
-        '${API.userRequestFollow}$uid',
-      );
-      await NetUtils.post<dynamic>(
+      await NetUtils.delete<void>('${API.userRequestFollow}$uid');
+      await NetUtils.post<void>(
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid},
       );
@@ -181,9 +172,7 @@ class UserAPI {
     }
   }
 
-  static Future<Response<Map<String, dynamic>>> setSignature(
-    String content,
-  ) async {
+  static Future<Response<Map<String, dynamic>>> setSignature(String content) {
     return NetUtils.post(
       API.userSignature,
       data: <String, dynamic>{'signature': content},
@@ -208,16 +197,16 @@ class UserAPI {
   /// 获取背包物品的类型
   static Future<void> getBackpackItemType() async {
     try {
-      final Map<String, dynamic> types =
-          (await NetUtils.get<Map<String, dynamic>>(
+      final Response<Map<String, dynamic>> response = await NetUtils.get(
         API.backPackItemType,
         headers: <String, dynamic>{'CLOUDID': 'jmu'},
-      ))
-              .data;
+      );
+      final Map<String, dynamic> types = response.data;
       final List<dynamic> items = types['data'] as List<dynamic>;
       for (int i = 0; i < items.length; i++) {
-        final BackpackItemType item =
-            BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
+        final BackpackItemType item = BackpackItemType.fromJson(
+          items[i] as Map<String, dynamic>,
+        );
         backpackItemTypes['${item.type}'] = item;
       }
     } catch (e) {
@@ -303,8 +292,7 @@ class UserAPI {
     final Map<String, dynamic> data = res.data;
     final List<dynamic> list = data['users'] as List<dynamic>;
     if (list.isNotEmpty) {
-      for (final Map<dynamic, dynamic> person
-          in list.cast<Map<dynamic, dynamic>>()) {
+      for (final dynamic person in list) {
         final BlacklistUser user = BlacklistUser.fromJson(
           person as Map<String, dynamic>,
         );

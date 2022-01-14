@@ -62,13 +62,12 @@ class PostAPI {
 
   static Future<Response<Map<String, dynamic>>> getForwardListInPost(
     int postId, {
-    bool isMore,
+    bool isMore = false,
     int lastValue,
   }) async =>
       NetUtils.get(
-        (isMore ?? false)
-            ? '${API.postForwardsList}$postId/id_max/$lastValue'
-            : '${API.postForwardsList}$postId',
+        '${API.postForwardsList}'
+        '${isMore ? '$postId/id_max/$lastValue' : ''}',
       );
 
   static Future<Response<dynamic>> glancePost(int postId) {
@@ -77,18 +76,12 @@ class PostAPI {
       data: <String, dynamic>{
         'tids': <int>[postId]
       },
-    ).catchError((dynamic e) {
-      LogUtils.e('$e');
-      LogUtils.e('${e?.response}');
-    });
+    );
   }
 
-  static Future<Response<Map<String, dynamic>>> deletePost(
-    int postId,
-  ) =>
-      NetUtils.delete(
-        '${API.postContent}/tid/$postId',
-      );
+  static Future<Response<Map<String, dynamic>>> deletePost(int postId) {
+    return NetUtils.delete('${API.postContent}/tid/$postId');
+  }
 
   static Future<Response<Map<String, dynamic>>> postForward(
     String content,
@@ -100,10 +93,7 @@ class PostAPI {
       'root_tid': postId,
       'reply_flag': replyAtTheMeanTime ? 3 : 0,
     };
-    return NetUtils.post(
-      API.postRequestForward,
-      data: data,
-    );
+    return NetUtils.post(API.postRequestForward, data: data);
   }
 
   /// Report content to specific account through message socket.
@@ -119,11 +109,7 @@ class PostAPI {
         '———From OpenJMU———';
     MessageUtils.addPackage(
       'WY_MSG',
-      M_WY_MSG(
-        type: 'MSG_A2A',
-        uid: 145685,
-        message: message,
-      ),
+      M_WY_MSG(type: 'MSG_A2A', uid: 145685, message: message),
     );
   }
 
@@ -141,8 +127,10 @@ class PostAPI {
   /// 大于４天　：　MM-dd
   /// 去年及以前：　yy-MM-dd
   static String postTimeConverter(dynamic time) {
-    assert(time is DateTime || time is String,
-        'time must be DateTime or String type.');
+    assert(
+      time is DateTime || time is String,
+      'time must be DateTime or String type.',
+    );
     final DateTime now = DateTime.now();
     DateTime origin;
     if (time is String) {
@@ -165,19 +153,23 @@ class PostAPI {
     final Duration difference = now.difference(origin);
     if (difference <= 1.minutes) {
       return '刚刚';
-    } else if (difference < 60.minutes) {
-      return '${difference.inMinutes}分钟前';
-    } else if (difference < 24.hours && origin.weekday == now.weekday) {
-      return '${difference.inHours}小时前';
-    } else if (_formatToMonth(now - 1.days) == _formatToMonth(origin)) {
-      return '昨天 ${DateFormat('HH:mm').format(origin)}';
-    } else if (difference <= 3.days) {
-      return '${difference.inDays}天前';
-    } else if (difference > 3.days && now.year == origin.year) {
-      return _formatToMonth(origin);
-    } else {
-      return _formatToYear(origin);
     }
+    if (difference < 60.minutes) {
+      return '${difference.inMinutes}分钟前';
+    }
+    if (difference < 24.hours && origin.weekday == now.weekday) {
+      return '${difference.inHours}小时前';
+    }
+    if (_formatToMonth(now - 1.days) == _formatToMonth(origin)) {
+      return '昨天 ${DateFormat('HH:mm').format(origin)}';
+    }
+    if (difference <= 3.days) {
+      return '${difference.inDays}天前';
+    }
+    if (difference > 3.days && now.year == origin.year) {
+      return _formatToMonth(origin);
+    }
+    return _formatToYear(origin);
   }
 
   /// Create post publish request.

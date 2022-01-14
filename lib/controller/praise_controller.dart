@@ -76,8 +76,8 @@ class _PraiseListState extends State<PraiseList>
       _isLoading = true;
 
       final Map<String, dynamic> result = (await PraiseAPI.getPraiseList(
-        true,
-        _lastValue,
+        isMore: true,
+        lastValue: _lastValue,
       ))
           .data;
 
@@ -121,10 +121,7 @@ class _PraiseListState extends State<PraiseList>
 
       _lastValue = 0;
 
-      final Map<String, dynamic> result = (await PraiseAPI.getPraiseList(
-        false,
-        _lastValue,
-      ))
+      final Map<String, dynamic> result = (await PraiseAPI.getPraiseList())
           .data;
 
       final List<Praise> praiseList = <Praise>[];

@@ -4,11 +4,11 @@ class CommentAPI {
   const CommentAPI._();
 
   static Future<Response<Map<String, dynamic>>> getCommentList(
-    String commentType,
-    bool isMore,
-    int lastValue, {
+    String commentType, {
+    bool isMore = false,
+    int lastValue = 0,
     Map<String, dynamic> additionAttrs,
-  }) async {
+  }) {
     String _commentUrl;
     switch (commentType) {
       case 'reply':
@@ -26,19 +26,19 @@ class CommentAPI {
         }
         break;
     }
-    return NetUtils.get<Map<String, dynamic>>(_commentUrl);
+    return NetUtils.get(_commentUrl);
   }
 
   static Future<Response<Map<String, dynamic>>> getCommentInPostList(
     int id, {
-    bool isMore,
-    int lastValue,
-  }) async =>
-      NetUtils.get(
-        (isMore ?? false)
-            ? '${API.postCommentsList}$id/id_max/$lastValue'
-            : '${API.postCommentsList}$id',
-      );
+    bool isMore = false,
+    int lastValue = 0,
+  }) {
+    return NetUtils.get(
+      '${API.postCommentsList}$id'
+      '${isMore ? '/id_max/$lastValue' : ''}',
+    );
+  }
 
   static Future<Response<Map<String, dynamic>>> postComment(
     String content,
@@ -61,8 +61,11 @@ class CommentAPI {
     return NetUtils.post(url, data: data);
   }
 
-  static Future<void> deleteComment(int postId, int commentId) =>
-      NetUtils.delete<void>('${API.postRequestComment}$postId/rid/$commentId');
+  static Future<void> deleteComment(int postId, int commentId) {
+    return NetUtils.delete<void>(
+      '${API.postRequestComment}$postId/rid/$commentId',
+    );
+  }
 
   static Comment createComment(Map<String, dynamic> itemData) {
     final String _avatar = '${API.userAvatar}'

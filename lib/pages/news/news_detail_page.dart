@@ -38,10 +38,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   }
 
   Future<void> getNewsContent() async {
-    final Map<String, dynamic> data = (await NewsAPI.getNewsContent(
-      newsId: widget.news.id,
-    ))
-        .data;
+    final Map<String, dynamic> data =
+        (await NewsAPI.getNewsContent(widget.news.id)).data;
     pageContent = '<!DOCTYPE html>'
         '<html>'
         '<head>'

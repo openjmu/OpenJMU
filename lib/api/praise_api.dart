@@ -3,42 +3,35 @@ import 'package:openjmu/constants/constants.dart';
 class PraiseAPI {
   const PraiseAPI._();
 
-  static Future<Response<Map<String, dynamic>>> getPraiseList(
-    bool isMore,
-    int lastValue,
-  ) async =>
-      NetUtils.get(
-        (isMore ?? false)
-            ? '${API.praiseList}/id_max/$lastValue'
-            : API.praiseList,
-      );
+  static Future<Response<Map<String, dynamic>>> getPraiseList({
+    bool isMore = false,
+    int lastValue = 0,
+  }) {
+    assert(!isMore || lastValue != null);
+    return NetUtils.get(
+      '${API.praiseList}'
+      '${isMore ? '/id_max/$lastValue' : ''}',
+    );
+  }
 
   static Future<Response<Map<String, dynamic>>> getPraiseInPostList(
     int postId, {
-    bool isMore,
-    int lastValue,
-  }) =>
-      NetUtils.get(
-        (isMore ?? false)
-            ? '${API.postPraisesList}$postId/id_max/$lastValue'
-            : '${API.postPraisesList}$postId',
-      );
+    bool isMore = false,
+    int lastValue = 0,
+  }) {
+    return NetUtils.get(
+      '${API.postPraisesList}$postId${isMore ? '/id_max/$lastValue' : ''}',
+    );
+  }
 
   static Future<Response<Map<String, dynamic>>> requestPraise(
-      int id, bool isPraise) async {
+    int id,
+    bool isPraise,
+  ) async {
     if (isPraise) {
-      return NetUtils.post<Map<String, dynamic>>(
-        '${API.postRequestPraise}$id',
-      ).catchError((dynamic e) {
-        LogUtils.e('${e.response}');
-      });
-    } else {
-      return NetUtils.delete<Map<String, dynamic>>(
-        '${API.postRequestPraise}$id',
-      ).catchError((dynamic e) {
-        LogUtils.e('${e.response}');
-      });
+      return NetUtils.post('${API.postRequestPraise}$id');
     }
+    return NetUtils.delete('${API.postRequestPraise}$id');
   }
 
   static Praise createPraiseInPost(Map<String, dynamic> itemData) {

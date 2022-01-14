@@ -81,7 +81,7 @@ class API {
 
   /// 用户相关
   static const String userInfo = '$oap99Host/user/info'; // 用户信息
-  static String studentInfo({String uid = '0'}) =>
+  static String studentInfo({String/*!*/ uid = '0'}) =>
       '$oa99Host/v2/api/class/studentinfo?uid=$uid'; // 学生信息
   static String userLevel({String uid = '0'}) =>
       '$oa99Host/ajax/score/info?uid=$uid'; // 用户等级
@@ -143,7 +143,7 @@ class API {
   static const String postCommentsList = '$wbHost/reply_api/replylist/tid/';
   static const String postPraisesList = '$wbHost/praise_api/praisors/tid/';
 
-  static String commentImageUrl(int id, String type) =>
+  static String commentImageUrl(int/*!*/ id, String type) =>
       '$wbHost/upload_api/image/unit_id/55/id/$id/type/$type?env=jmu';
 
   /// 小组相关
@@ -165,7 +165,7 @@ class API {
   }
 
   static String teamPostDetail({
-    @required int postId,
+    @required int/*!*/ postId,
     int postType = 2,
   }) {
     return '$middle99Host/mg/api/aid/posts_detail'
@@ -174,11 +174,11 @@ class API {
   }
 
   static String teamPostCommentsList({
-    @required int postId,
+    @required int/*!*/ postId,
     int size = 30,
     int regionType = 128,
     int postType = 7,
-    int page = 1,
+    int/*!*/ page = 1,
   }) {
     return '$middle99Host/mg/api/aid/posts_list'
         '/region_type/$regionType'
@@ -196,7 +196,7 @@ class API {
       '$middle99Host/mg/api/aid/uia_api_posts_del';
 
   static String teamPostDelete({
-    @required int postId,
+    @required int/*!*/ postId,
     @required int postType,
   }) {
     return '$middle99Host/mg/api/aid/posts_delete'
@@ -214,15 +214,15 @@ class API {
   static const String teamNotification =
       '$middle99Host/mg/api/aid/notify_counter';
 
-  static String teamMentionedList({int page = 1, int size = 20}) {
+  static String teamMentionedList({int/*!*/ page = 1, int size = 20}) {
     return '$middle99Host/mg/api/aid/notify_at/page/$page/size/$size';
   }
 
-  static String teamRepliedList({int page = 1, int size = 20}) {
+  static String teamRepliedList({int/*!*/ page = 1, int size = 20}) {
     return '$middle99Host/mg/api/aid/notify_comment/page/$page/size/$size';
   }
 
-  static String teamPraisedList({int page = 1, int size = 20}) {
+  static String teamPraisedList({int/*!*/ page = 1, int size = 20}) {
     return '$middle99Host/mg/api/aid/notify_praise/page/$page/size/$size';
   }
 
@@ -278,7 +278,7 @@ class API {
         '&start=$start';
   }
 
-  static String backPackItemIcon({int itemType = 10000}) {
+  static String backPackItemIcon({int/*!*/ itemType = 10000}) {
     return '$wpHost/itemc/icon?itemtype=$itemType&size=1&icontime=0';
   }
 

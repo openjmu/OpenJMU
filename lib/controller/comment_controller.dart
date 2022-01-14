@@ -94,8 +94,8 @@ class _CommentListState extends State<CommentList>
 
       final Map<String, dynamic> result = (await CommentAPI.getCommentList(
         widget.commentController.commentType,
-        true,
-        _lastValue,
+        isMore: true,
+        lastValue: _lastValue,
         additionAttrs: widget.commentController.additionAttrs,
       ))
           .data;
@@ -144,8 +144,8 @@ class _CommentListState extends State<CommentList>
 
       final Map<String, dynamic> result = (await CommentAPI.getCommentList(
         widget.commentController.commentType,
-        false,
-        _lastValue,
+        isMore: false,
+        lastValue: _lastValue,
         additionAttrs: widget.commentController.additionAttrs,
       ))
           .data;

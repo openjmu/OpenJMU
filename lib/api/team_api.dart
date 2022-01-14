@@ -13,7 +13,7 @@ class TeamPostAPI {
     bool isMore = false,
     String lastTimeStamp,
     Map<String, dynamic> additionAttrs,
-  }) async {
+  }) {
     String _postUrl;
     if (isMore) {
       _postUrl = API.teamPosts(
@@ -23,18 +23,18 @@ class TeamPostAPI {
     } else {
       _postUrl = API.teamPosts(teamId: Constants.marketTeamId);
     }
+    return NetUtils.get(_postUrl, headers: Constants.teamHeader);
+  }
+
+  static Future<Response<Map<String, dynamic>>> getPostDetail({
+    @required int id,
+    int postType = 2,
+  }) {
     return NetUtils.get(
-      _postUrl,
+      API.teamPostDetail(postId: id, postType: postType),
       headers: Constants.teamHeader,
     );
   }
-
-  static Future<Response<Map<String, dynamic>>> getPostDetail(
-          {int id, int postType = 2}) async =>
-      NetUtils.get<Map<String, dynamic>>(
-        API.teamPostDetail(postId: id, postType: postType),
-        headers: Constants.teamHeader,
-      );
 
   static Map<String, dynamic> fileInfo(int fid) {
     return <String, dynamic>{
@@ -56,7 +56,7 @@ class TeamPostAPI {
 
   static Future<Response<Map<String, dynamic>>> publishPost({
     @required String content,
-    List<int> files,
+    List<int> files = const <int>[],
     int postType = 2,
     int regionId = 430,
     int regionType = 8,
@@ -67,23 +67,25 @@ class TeamPostAPI {
         if (postType != 8) 'article': content,
         if (postType == 8) 'content': content,
         if (postType != 8)
-          'file': files?.map((int id) {
-            return <String, dynamic>{
-              'create_time': 0,
-              'desc': '',
-              'ext': '',
-              'fid': id,
-              'grid': 0,
-              'group': '',
-              'height': 0,
-              'length': 0,
-              'name': '',
-              'size': 0,
-              'source': '',
-              'type': '',
-              'width': 0,
-            };
-          })?.toList(),
+          'file': files
+              .map(
+                (int id) => <String, dynamic>{
+                  'create_time': 0,
+                  'desc': '',
+                  'ext': '',
+                  'fid': id,
+                  'grid': 0,
+                  'group': '',
+                  'height': 0,
+                  'length': 0,
+                  'name': '',
+                  'size': 0,
+                  'source': '',
+                  'type': '',
+                  'width': 0,
+                },
+              )
+              .toList(),
         'latitude': 0,
         'longitude': 0,
         'post_type': postType,
@@ -98,11 +100,12 @@ class TeamPostAPI {
   static Future<Response<void>> deletePost({
     @required int postId,
     @required int postType,
-  }) async =>
-      NetUtils.delete<void>(
-        API.teamPostDelete(postId: postId, postType: postType),
-        headers: Constants.teamHeader,
-      );
+  }) {
+    return NetUtils.delete(
+      API.teamPostDelete(postId: postId, postType: postType),
+      headers: Constants.teamHeader,
+    );
+  }
 
   /// Report content to specific account through message socket.
   ///
@@ -117,11 +120,7 @@ class TeamPostAPI {
         '———From OpenJMU———';
     MessageUtils.addPackage(
       'WY_MSG',
-      M_WY_MSG(
-        type: 'MSG_A2A',
-        uid: 145685,
-        message: message,
-      ),
+      M_WY_MSG(type: 'MSG_A2A', uid: 145685, message: message),
     );
   }
 
@@ -186,20 +185,22 @@ class TeamPostAPI {
     return time;
   }
 
-  static Future<Response<Map<String, dynamic>>> getNotifications() async =>
-      NetUtils.get<Map<String, dynamic>>(
-        API.teamNotification,
-        headers: Constants.teamHeader,
-      );
+  static Future<Response<Map<String, dynamic>>> getNotifications() {
+    return NetUtils.get(
+      API.teamNotification,
+      headers: Constants.teamHeader,
+    );
+  }
 
   static Future<Response<Map<String, dynamic>>> getMentionedList({
     int page = 1,
     int size = 20,
-  }) async =>
-      NetUtils.get(
-        API.teamMentionedList(page: page, size: size),
-        headers: Constants.teamHeader,
-      );
+  }) {
+    return NetUtils.get(
+      API.teamMentionedList(page: page, size: size),
+      headers: Constants.teamHeader,
+    );
+  }
 
   /// Create [FormData] for post's image upload.
   /// 创建用于发布动态上传的图片的 [FormData]
@@ -230,10 +231,10 @@ class TeamPostAPI {
   }) {
     return NetUtils.post(
       API.uploadFile,
-      data: formData,
-      cancelToken: cancelToken,
       headers: Constants.teamHeader,
+      data: formData,
       options: Options(sendTimeout: 60000),
+      cancelToken: cancelToken,
     );
   }
 }
@@ -242,51 +243,54 @@ class TeamCommentAPI {
   const TeamCommentAPI._();
 
   static Future<Response<Map<String, dynamic>>> getCommentInPostList({
-    int id,
+    @required int id,
     int page = 1,
     bool isComment = false,
-  }) async =>
-      NetUtils.get(
-        API.teamPostCommentsList(
-          postId: id,
-          page: page,
-          regionType: isComment ? 256 : 128,
-          postType: isComment ? 8 : 7,
-          size: isComment ? 50 : 30,
-        ),
-        headers: Constants.teamHeader,
-      );
+  }) {
+    return NetUtils.get(
+      API.teamPostCommentsList(
+        postId: id,
+        page: page,
+        regionType: isComment ? 256 : 128,
+        postType: isComment ? 8 : 7,
+        size: isComment ? 50 : 30,
+      ),
+      headers: Constants.teamHeader,
+    );
+  }
 
   static Future<Response<Map<String, dynamic>>> publishComment({
     @required String content,
-    List<Map<String, dynamic>> files,
+    List<Map<String, dynamic>> files = const <Map<String, dynamic>>[],
     int postType = 7,
     @required int postId,
     int regionType = 128,
-  }) async =>
-      NetUtils.post(
-        API.teamPostPublish,
-        data: <String, dynamic>{
-          'article': content,
-          'file': files,
-          'latitude': 0,
-          'longitude': 0,
-          'post_type': postType,
-          'region_id': postId,
-          'region_type': regionType,
-          'template': 0
-        },
-        headers: Constants.teamHeader,
-      );
+  }) {
+    return NetUtils.post(
+      API.teamPostPublish,
+      headers: Constants.teamHeader,
+      data: <String, dynamic>{
+        'article': content,
+        'file': files,
+        'latitude': 0,
+        'longitude': 0,
+        'post_type': postType,
+        'region_id': postId,
+        'region_type': regionType,
+        'template': 0
+      },
+    );
+  }
 
   static Future<Response<Map<String, dynamic>>> getReplyList({
     int page = 1,
     int size = 20,
-  }) async =>
-      NetUtils.get(
-        API.teamRepliedList(page: page, size: size),
-        headers: Constants.teamHeader,
-      );
+  }) {
+    return NetUtils.get(
+      API.teamRepliedList(page: page, size: size),
+      headers: Constants.teamHeader,
+    );
+  }
 }
 
 class TeamPraiseAPI {
@@ -299,31 +303,27 @@ class TeamPraiseAPI {
     if (isPraise) {
       return NetUtils.post<Map<String, dynamic>>(
         API.teamPostRequestPraise,
+        headers: Constants.teamHeader,
         data: <String, dynamic>{
           'atype': 'p',
           'post_type': 2,
           'post_id': id,
         },
-        headers: Constants.teamHeader,
-      ).catchError((dynamic e) {
-        LogUtils.e('${e?.response['msg']}');
-      });
-    } else {
-      return NetUtils.delete<Map<String, dynamic>>(
-        '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
-        headers: Constants.teamHeader,
-      ).catchError((dynamic e) {
-        LogUtils.e('${e?.response['msg']}');
-      });
+      );
     }
+    return NetUtils.delete<Map<String, dynamic>>(
+      '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
+      headers: Constants.teamHeader,
+    );
   }
 
   static Future<Response<Map<String, dynamic>>> getPraiseList({
     int page = 1,
     int size = 20,
-  }) async =>
-      NetUtils.get(
-        API.teamPraisedList(page: page, size: size),
-        headers: Constants.teamHeader,
-      );
+  }) {
+    return NetUtils.get(
+      API.teamPraisedList(page: page, size: size),
+      headers: Constants.teamHeader,
+    );
+  }
 }
