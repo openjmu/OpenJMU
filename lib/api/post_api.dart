@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:openjmu/constants/constants.dart';
@@ -11,11 +12,11 @@ class PostAPI {
     String postType, {
     bool isFollowed = false,
     bool isMore = false,
-    int lastValue,
-    Map<String, dynamic> additionAttrs,
+    int? lastValue,
+    Map<String, dynamic>? additionAttrs,
   }) {
     assert(!isMore || lastValue != null);
-    String _postUrl;
+    late final String _postUrl;
     switch (postType) {
       case 'square':
         if (isMore) {
@@ -34,15 +35,16 @@ class PostAPI {
         break;
       case 'user':
         if (isMore) {
-          _postUrl =
-              '${API.postListByUid}${additionAttrs['uid']}/id_max/$lastValue';
+          _postUrl = '${API.postListByUid}'
+              '${additionAttrs!['uid']}/id_max/$lastValue';
         } else {
-          _postUrl = '${API.postListByUid}${additionAttrs['uid']}';
+          _postUrl = '${API.postListByUid}${additionAttrs!['uid']}';
         }
         break;
       case 'search':
-        final String keyword =
-            Uri.encodeQueryComponent(additionAttrs['words'] as String);
+        final String keyword = Uri.encodeQueryComponent(
+          additionAttrs!['words'] as String,
+        );
         if (isMore) {
           _postUrl = '${API.postListByWords}$keyword/id_max/$lastValue';
         } else {
@@ -63,12 +65,13 @@ class PostAPI {
   static Future<Response<Map<String, dynamic>>> getForwardListInPost(
     int postId, {
     bool isMore = false,
-    int lastValue,
-  }) async =>
-      NetUtils.get(
-        '${API.postForwardsList}'
-        '${isMore ? '$postId/id_max/$lastValue' : ''}',
-      );
+    int? lastValue,
+  }) {
+    return NetUtils.get(
+      '${API.postForwardsList}'
+      '${isMore ? '$postId/id_max/$lastValue' : ''}',
+    );
+  }
 
   static Future<Response<dynamic>> glancePost(int postId) {
     return NetUtils.post<dynamic>(
@@ -85,7 +88,7 @@ class PostAPI {
 
   static Future<Response<Map<String, dynamic>>> postForward(
     String content,
-    int postId,
+    int /*!*/ postId,
     bool replyAtTheMeanTime,
   ) async {
     final Map<String, dynamic> data = <String, dynamic>{
@@ -132,15 +135,15 @@ class PostAPI {
       'time must be DateTime or String type.',
     );
     final DateTime now = DateTime.now();
-    DateTime origin;
+    DateTime? origin;
     if (time is String) {
       origin = DateTime.tryParse(time);
     } else if (time is DateTime) {
       origin = time;
-    } else {
-      return null;
     }
-    assert(origin != null, 'time cannot be converted.');
+    if (origin == null) {
+      throw ArgumentError.notNull('origin');
+    }
 
     String _formatToYear(DateTime date) {
       return DateFormat('yyyy-MM-dd').format(date);
@@ -183,16 +186,18 @@ class PostAPI {
   /// Create [FormData] for post's image upload.
   /// 创建用于发布动态上传的图片的 [FormData]
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
-    final String filename = path.basename((await asset.file).path);
-    final Uint8List data = await compressEntity(
+    final File? file = await asset.file;
+    final String filename =
+        file != null ? path.basename(file.path) : '$currentTimeStamp.jpg';
+    final Uint8List? data = await compressEntity(
       asset,
       path.extension(filename),
     );
+    if (data == null) {
+      throw StateError('Error when obtaining image entity.');
+    }
     return FormData.fromMap(<String, dynamic>{
-      'image': MultipartFile.fromBytes(
-        data,
-        filename: filename ?? '$currentTimeStamp.jpg',
-      ),
+      'image': MultipartFile.fromBytes(data, filename: filename),
       'image_type': 0,
     });
   }

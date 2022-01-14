@@ -48,14 +48,15 @@ class Post {
       glances: int.parse(json['glances'].toString()),
       category: json['category'] as String,
       content: (json['article'] ?? json['content']) as String,
-      pics: (json['image'] as List<dynamic>)?.cast<Map<String, dynamic>>(),
+      pics: (json['image'] as List<dynamic>?)?.cast<Map<String, dynamic>>() ??
+          <Map<String, dynamic>>[],
       forwards: json['forwards'].toString().toInt(),
       comments: json['replys'].toString().toInt(),
       rootTopic: json['root_topic'] as Map<String, dynamic>,
       praises: int.parse(json['praises'].toString()),
       isLike: int.parse(json['praised'].toString()) == 1,
       user: PostUser.fromJson(json['user'] as Map<String, dynamic>),
-      shouldFoldRootTopic: json['should_fold_root_topic'] as bool ?? false,
+      shouldFoldRootTopic: json['should_fold_root_topic'] == true,
     );
   }
 

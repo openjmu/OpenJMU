@@ -12,13 +12,13 @@ import 'package:flutter/foundation.dart';
 extension DebounceThrottlingExtension on Function {
   /// 防抖 (debounce)
   VoidCallback debounce([Duration duration = const Duration(seconds: 1)]) {
-    assert(duration != null && duration > Duration.zero);
-    Timer _debounce;
+    assert(duration > Duration.zero);
+    Timer? _debounce;
     return () {
       // 还在时间之内，抛弃上一次
       // 执行最后一次
       if (_debounce?.isActive ?? false) {
-        _debounce.cancel();
+        _debounce?.cancel();
       }
       _debounce = Timer(duration, () {
         this.call();
@@ -28,8 +28,8 @@ extension DebounceThrottlingExtension on Function {
 
   /// 节流 (throttle)
   VoidCallback throttle([Duration duration = const Duration(seconds: 1)]) {
-    assert(duration != null && duration > Duration.zero);
-    Timer _throttle;
+    assert(duration > Duration.zero);
+    Timer? _throttle;
     return () {
       // 执行第一次
       if (_throttle?.isActive ?? false) {
@@ -48,14 +48,13 @@ VoidCallback debounce(
   VoidCallback callback, [
   Duration duration = const Duration(seconds: 1),
 ]) {
-  assert(callback != null);
-  assert(duration != null && duration > Duration.zero);
-  Timer _debounce;
+  assert(duration > Duration.zero);
+  Timer? _debounce;
   return () {
     // 还在时间之内，抛弃上一次
     // 执行最后一次
     if (_debounce?.isActive ?? false) {
-      _debounce.cancel();
+      _debounce?.cancel();
     }
     _debounce = Timer(duration, () {
       callback.call();
@@ -68,9 +67,8 @@ VoidCallback throttle(
   VoidCallback callback, [
   Duration duration = const Duration(seconds: 1),
 ]) {
-  assert(callback != null);
-  assert(duration != null && duration > Duration.zero);
-  Timer _throttle;
+  assert(duration > Duration.zero);
+  Timer? _throttle;
   return () {
     // 执行第一次
     if (_throttle?.isActive ?? false) {

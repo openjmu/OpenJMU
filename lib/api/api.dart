@@ -4,8 +4,6 @@
 ///
 import 'dart:core';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 export 'comment_api.dart';
@@ -81,7 +79,7 @@ class API {
 
   /// 用户相关
   static const String userInfo = '$oap99Host/user/info'; // 用户信息
-  static String studentInfo({String/*!*/ uid = '0'}) =>
+  static String studentInfo({String uid = '0'}) =>
       '$oa99Host/v2/api/class/studentinfo?uid=$uid'; // 学生信息
   static String userLevel({String uid = '0'}) =>
       '$oa99Host/ajax/score/info?uid=$uid'; // 用户等级
@@ -117,7 +115,7 @@ class API {
       '$oap99Host/app/menuicon?size=f128&unitid=55&'; // 获取应用图标
 
   /// 新闻相关
-  static String newsList({int maxTimeStamp, int size = 20}) {
+  static String newsList({int? maxTimeStamp, int size = 20}) {
     return '$middle99Host/mg/api/aid/posts_list/region_type/1'
         '${maxTimeStamp != null ? '/max_ts/$maxTimeStamp' : ''}'
         '/size/$size';
@@ -150,11 +148,11 @@ class API {
   static const String teamInfo = '$middle99Host/mg/api/aid/team_info';
 
   static String teamPosts({
-    @required int teamId,
+    required int teamId,
     int size = 30,
     int regionType = 8,
     int postType = 2,
-    String maxTimeStamp,
+    String? maxTimeStamp,
   }) {
     return '$middle99Host/mg/api/aid/posts_list'
         '/region_type/$regionType'
@@ -165,7 +163,7 @@ class API {
   }
 
   static String teamPostDetail({
-    @required int/*!*/ postId,
+    required int postId,
     int postType = 2,
   }) {
     return '$middle99Host/mg/api/aid/posts_detail'
@@ -174,11 +172,11 @@ class API {
   }
 
   static String teamPostCommentsList({
-    @required int/*!*/ postId,
+    required int postId,
     int size = 30,
     int regionType = 128,
     int postType = 7,
-    int/*!*/ page = 1,
+    int page = 1,
   }) {
     return '$middle99Host/mg/api/aid/posts_list'
         '/region_type/$regionType'
@@ -196,8 +194,8 @@ class API {
       '$middle99Host/mg/api/aid/uia_api_posts_del';
 
   static String teamPostDelete({
-    @required int/*!*/ postId,
-    @required int postType,
+    required int postId,
+    required int postType,
   }) {
     return '$middle99Host/mg/api/aid/posts_delete'
         '/post_type/$postType'
@@ -205,8 +203,8 @@ class API {
   }
 
   static String teamFile({
-    @required int fid,
-    String sid,
+    required int fid,
+    String? sid,
   }) {
     return '$file99Host/show/file/fid/$fid/sid/${sid ?? UserAPI.currentUser.sid}';
   }
@@ -214,15 +212,15 @@ class API {
   static const String teamNotification =
       '$middle99Host/mg/api/aid/notify_counter';
 
-  static String teamMentionedList({int/*!*/ page = 1, int size = 20}) {
+  static String teamMentionedList({int page = 1, int size = 20}) {
     return '$middle99Host/mg/api/aid/notify_at/page/$page/size/$size';
   }
 
-  static String teamRepliedList({int/*!*/ page = 1, int size = 20}) {
+  static String teamRepliedList({int page = 1, int size = 20}) {
     return '$middle99Host/mg/api/aid/notify_comment/page/$page/size/$size';
   }
 
-  static String teamPraisedList({int/*!*/ page = 1, int size = 20}) {
+  static String teamPraisedList({int page = 1, int size = 20}) {
     return '$middle99Host/mg/api/aid/notify_praise/page/$page/size/$size';
   }
 
@@ -314,12 +312,11 @@ class API {
   }
 
   static Future<void> launchWeb({
-    @required String url,
-    String title,
-    WebApp app,
+    required String url,
+    String? title,
+    WebApp? app,
     bool withCookie = true,
   }) async {
-    assert(url != null, 'Url cannot be null when launching url.');
     final SettingsProvider provider = Provider.of<SettingsProvider>(
       currentContext,
       listen: false,
@@ -328,7 +325,7 @@ class API {
     final String uri = '${Uri.parse(url.trim())}';
     if (shouldLaunchFromSystem) {
       LogUtils.d('Launching web: $uri');
-      return launch(
+      await launch(
         uri,
         forceSafariVC: false,
         forceWebView: false,

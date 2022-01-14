@@ -5,7 +5,7 @@ import 'package:openjmu/constants/constants.dart';
 
 UserInfo get currentUser => UserAPI.currentUser;
 
-set currentUser(UserInfo user) {
+set currentUser(UserInfo? user) {
   if (user == null) {
     return;
   }
@@ -16,8 +16,6 @@ class UserAPI {
   const UserAPI._();
 
   static UserInfo currentUser = const UserInfo();
-
-  static List<Cookie> cookiesForJWGL;
 
   static Map<String, BackpackItemType> backpackItemTypes =
       <String, BackpackItemType>{};
@@ -46,8 +44,8 @@ class UserAPI {
   static int avatarLastModified = currentTimeStamp;
 
   static ExtendedNetworkImageProvider getAvatarProvider({
-    String uid,
-    int t,
+    String? uid,
+    int? t,
     int size = 512,
   }) {
     return ExtendedNetworkImageProvider(
@@ -77,7 +75,7 @@ class UserAPI {
     avatarLastModified = currentTimeStamp;
   }
 
-  static Future<dynamic> getUserInfo({String uid}) async {
+  static Future<dynamic> getUserInfo({String? uid}) async {
     if (uid == null) {
       return currentUser;
     }
@@ -87,7 +85,7 @@ class UserAPI {
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getStudentInfo({String uid}) {
+  static Future<Response<Map<String, dynamic>>> getStudentInfo({String? uid}) {
     return NetUtils.get(API.studentInfo(uid: uid ?? currentUser.uid));
   }
 
@@ -111,14 +109,14 @@ class UserAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> getFansList(
-    String uid,
+    String /*!*/ uid,
     int page,
   ) {
     return NetUtils.get('${API.userFans}$uid/page/$page/page_size/20');
   }
 
   static Future<Response<Map<String, dynamic>>> getIdolsList(
-    String uid,
+    String /*!*/ uid,
     int page,
   ) {
     return NetUtils.get('${API.userIdols}$uid/page/$page/page_size/20');
@@ -134,7 +132,7 @@ class UserAPI {
     return NetUtils.get(API.postUnread);
   }
 
-  static Future<bool> follow(String uid) async {
+  static Future<bool> follow(String /*!*/ uid) async {
     try {
       await NetUtils.post<void>('${API.userRequestFollow}$uid');
       await NetUtils.post<void>(
@@ -151,7 +149,8 @@ class UserAPI {
     }
   }
 
-  static Future<bool> unFollow(String uid, {bool fromBlacklist = false}) async {
+  static Future<bool> unFollow(String /*!*/ uid,
+      {bool fromBlacklist = false}) async {
     try {
       await NetUtils.delete<void>('${API.userRequestFollow}$uid');
       await NetUtils.post<void>(
@@ -180,11 +179,11 @@ class UserAPI {
   }
 
   static Future<Map<String, dynamic>> searchUser(String name) async {
-    Map<String, dynamic> users = (await NetUtils.get<Map<String, dynamic>>(
+    final Response<Map<String, dynamic>> res = await NetUtils.get(
       API.searchUser,
       queryParameters: <String, dynamic>{'keyword': name},
-    ))
-        .data;
+    );
+    Map<String, dynamic> users = res.data!;
     if (users['total'] == null) {
       users = <String, dynamic>{
         'total': 1,
@@ -201,7 +200,7 @@ class UserAPI {
         API.backPackItemType,
         headers: <String, dynamic>{'CLOUDID': 'jmu'},
       );
-      final Map<String, dynamic> types = response.data;
+      final Map<String, dynamic> types = response.data!;
       final List<dynamic> items = types['data'] as List<dynamic>;
       for (int i = 0; i < items.length; i++) {
         final BackpackItemType item = BackpackItemType.fromJson(
@@ -289,7 +288,7 @@ class UserAPI {
 
   static Future<void> initializeBlacklist() async {
     final Response<Map<String, dynamic>> res = await UserAPI.getBlacklist();
-    final Map<String, dynamic> data = res.data;
+    final Map<String, dynamic> data = res.data!;
     final List<dynamic> list = data['users'] as List<dynamic>;
     if (list.isNotEmpty) {
       for (final dynamic person in list) {

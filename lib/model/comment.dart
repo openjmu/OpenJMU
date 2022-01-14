@@ -11,10 +11,10 @@ part of 'models.dart';
 @immutable
 class Comment {
   const Comment({
-    this.id,
+    required this.id,
     this.floor,
-    this.fromUserUid,
-    this.fromUserName,
+    required this.fromUserUid,
+    required this.fromUserName,
     this.fromUserAvatar,
     this.content,
     this.commentTime,
@@ -27,24 +27,27 @@ class Comment {
     this.toTopicUid,
     this.toTopicUserName,
     this.toTopicContent,
-    this.post,
-    this.user,
+    required this.post,
+    required this.user,
   });
 
-  final int id, floor;
+  final int id;
+  final int? floor;
   final String fromUserUid;
   final String fromUserName;
   final String fromUserAvatar;
   final String content;
   final String commentTime;
-  final String from;
+  final String? from;
 
   final bool toReplyExist, toTopicExist;
   final int toReplyUid, toTopicUid;
-  final String toReplyUserName, toTopicUserName;
-  final String toReplyContent, toTopicContent;
+  final String? toReplyUserName;
+  final String? toReplyContent;
+  final String? toTopicUserName;
+  final String? toTopicContent;
 
-  final Post post;
+  final Post? post;
   final PostUser user;
 
   Map<String, dynamic> toJson() {

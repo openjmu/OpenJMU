@@ -13,7 +13,7 @@ part of 'models.dart';
 class UserInfo {
   const UserInfo({
     this.sid,
-    this.uid,
+    this.uid = '0',
     this.name,
     this.signature,
     this.ticket,
@@ -43,27 +43,44 @@ class UserInfo {
       isTeacher: (json['isTeacher'] ?? json['type'].toString().toInt()) == 1,
       unitId: (json['unitId'] ?? json['unitid']) as int,
       workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
-      classId: (json['classId'] ?? json['classid'])?.toString()?.toInt(),
+      classId: (json['classId'] ?? json['classid'])?.toString().toInt(),
       gender: json['gender'].toString().toInt(),
       isFollowing: false,
       sysAvatar: json['sysavatar']?.toString() == '1',
     );
   }
 
+  /// For Login Process
+  final String? sid;
+  final String? ticket;
+  final String? blowfish;
+  final bool isTeacher;
+
+  /// Common Object
+  final String uid;
+  final int? unitId;
+  final int? classId;
+  final int? gender;
+  final String? name;
+  final String? signature;
+  final String? workId;
+  final bool isFollowing;
+  final bool sysAvatar;
+
   UserInfo copyWith({
-    String sid,
-    String ticket,
-    String blowfish,
-    bool isTeacher,
-    String uid,
-    int unitId,
-    int classId,
-    int gender,
-    String name,
-    String signature,
-    String workId,
-    bool isFollowing,
-    bool sysAvatar,
+    String? sid,
+    String? ticket,
+    String? blowfish,
+    bool? isTeacher,
+    String? uid,
+    int? unitId,
+    int? classId,
+    int? gender,
+    String? name,
+    String? signature,
+    String? workId,
+    bool? isFollowing,
+    bool? sysAvatar,
   }) {
     return UserInfo(
       sid: sid ?? this.sid,
@@ -82,23 +99,6 @@ class UserInfo {
     );
   }
 
-  /// For Login Process
-  final String sid;
-  final String ticket;
-  final String blowfish;
-  final bool isTeacher;
-
-  /// Common Object
-  final String uid;
-  final int unitId;
-  final int classId;
-  final int gender;
-  final String name;
-  final String signature;
-  final String workId;
-  final bool isFollowing;
-  final bool sysAvatar;
-
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'sid': sid,
@@ -116,7 +116,7 @@ class UserInfo {
       'isPostgraduate': isPostgraduate,
       'isContinuingEducation': isContinuingEducation,
       'isCY': isCY,
-      'sysAvatar': sysAvatar ? 1 : 0,
+      'sysAvatar': sysAvatar == true ? 1 : 0,
     };
   }
 
@@ -129,41 +129,41 @@ class UserInfo {
 
   /// 是否为研究生
   bool get isPostgraduate {
-    if (workId?.length != 12) {
+    final String? _id = workId;
+    if (_id == null || _id.length != 12) {
       return false;
-    } else {
-      final int code = int.tryParse(workId.substring(4, 6));
-      if (code == null) {
-        return false;
-      }
-      return code >= 10 && code <= 19;
     }
+    final int? code = int.tryParse(_id.substring(4, 6));
+    if (code == null) {
+      return false;
+    }
+    return code >= 10 && code <= 19;
   }
 
   /// 是否为继续教育学生
   bool get isContinuingEducation {
-    if (workId?.length != 12) {
+    final String? _id = workId;
+    if (_id == null || _id.length != 12) {
       return false;
-    } else {
-      final int code = int.tryParse(workId.substring(4, 6));
-      if (code == null) {
-        return false;
-      }
-      return code >= 30 && code <= 39;
     }
+    final int? code = int.tryParse(_id.substring(4, 6));
+    if (code == null) {
+      return false;
+    }
+    return code >= 30 && code <= 39;
   }
 
   /// 是否为诚毅学院学生
   bool get isCY {
-    if (workId?.length != 12) {
+    final String? _id = workId;
+    if (_id == null || _id.length != 12) {
       return false;
-    } else {
-      final int code = int.tryParse(workId.substring(4, 6));
-      if (code == null) {
-        return false;
-      }
-      return code >= 41 && code <= 45;
     }
+    final int? code = int.tryParse(_id.substring(4, 6));
+    if (code == null) {
+      return false;
+    }
+    return code >= 41 && code <= 45;
   }
 
   @override

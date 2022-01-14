@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -66,7 +65,7 @@ class PostDeletedEvent {
 
   final int postId;
   final String page;
-  final int index;
+  final int? index;
 }
 
 class TeamPostDeletedEvent {
@@ -77,22 +76,22 @@ class TeamPostDeletedEvent {
 
 class TeamCommentDeletedEvent {
   const TeamCommentDeletedEvent({
-    @required this.postId,
+    required this.postId,
     this.topPostId,
   });
 
   final int postId;
-  final int topPostId;
+  final int? topPostId;
 }
 
 class TeamPostCommentDeletedEvent {
   const TeamPostCommentDeletedEvent({
-    this.commentId,
+    required this.commentId,
     this.topPostId,
   });
 
   final int commentId;
-  final int topPostId;
+  final int? topPostId;
 }
 
 class ForwardInPostUpdatedEvent {
@@ -109,10 +108,10 @@ class CommentInPostUpdatedEvent {
 
 class PraiseInPostUpdatedEvent {
   const PraiseInPostUpdatedEvent({
-    this.postId,
-    this.type,
-    this.count,
-    this.isLike,
+    required this.postId,
+    required this.type,
+    required this.count,
+    required this.isLike,
   });
 
   final int postId, count;
@@ -126,10 +125,10 @@ class FontScaleUpdateEvent {
 
 class HasUpdateEvent {
   const HasUpdateEvent({
-    this.forceUpdate,
-    this.currentVersion,
-    this.currentBuild,
-    this.response,
+    required this.forceUpdate,
+    required this.currentVersion,
+    required this.currentBuild,
+    required this.response,
   });
 
   final bool forceUpdate;
@@ -141,7 +140,10 @@ class HasUpdateEvent {
 class BlacklistUpdateEvent {}
 
 class UserFollowEvent {
-  const UserFollowEvent({this.isFollow, this.uid});
+  const UserFollowEvent({
+    required this.isFollow,
+    required this.uid,
+  });
 
   final bool isFollow;
   final String uid;
@@ -150,7 +152,10 @@ class UserFollowEvent {
 class UserAvatarUpdateEvent {}
 
 class ScrollToTopEvent {
-  const ScrollToTopEvent({this.tabIndex, this.type});
+  const ScrollToTopEvent({
+    required this.tabIndex,
+    required this.type,
+  });
 
   final int tabIndex;
   final String type;
@@ -177,13 +182,13 @@ class CourseScheduleRefreshEvent {}
 class MessageReceivedEvent {
   const MessageReceivedEvent({
     this.isSelf = false,
-    this.type,
-    this.senderUid,
-    this.senderMultiPortId,
-    this.sendTime,
+    required this.type,
+    required this.senderUid,
+    required this.senderMultiPortId,
+    required this.sendTime,
     this.messageId,
     this.ackId,
-    this.content,
+    required this.content,
   });
 
   final bool isSelf;
@@ -191,7 +196,7 @@ class MessageReceivedEvent {
   final String senderUid;
   final String senderMultiPortId;
   final DateTime sendTime;
-  final int messageId;
-  final int ackId;
+  final int? messageId;
+  final int? ackId;
   final Map<String, dynamic> content;
 }

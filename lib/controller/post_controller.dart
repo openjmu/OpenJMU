@@ -9,10 +9,10 @@ import 'package:openjmu/constants/constants.dart';
 
 class PostController {
   PostController({
-    @required this.postType,
-    @required this.isFollowed,
-    @required this.isMore,
-    @required this.lastValue,
+    required this.postType,
+    required this.isFollowed,
+    required this.isMore,
+    required this.lastValue,
     this.additionAttrs,
   });
 
@@ -20,17 +20,19 @@ class PostController {
   final bool isFollowed;
   final bool isMore;
   final int Function(int) lastValue;
-  final Map<String, dynamic> additionAttrs;
+  final Map<String, dynamic>? additionAttrs;
 
-  _PostListState _postListState;
+  _PostListState? _postListState;
 
-  Future<void> reload() => _postListState._refreshData();
+  Future<void> reload() async {
+    await _postListState?._refreshData();
+  }
 }
 
 class PostList extends StatefulWidget {
   const PostList(
     this.postController, {
-    Key key,
+    Key? key,
     this.needRefreshIndicator = true,
   }) : super(key: key);
 
@@ -51,8 +53,6 @@ class _PostListState extends State<PostList>
   bool _isLoading = false;
   bool _canLoadMore = true;
 
-  Widget _itemList;
-
   bool error = false;
 
   List<int> _idList = <int>[];
@@ -71,8 +71,7 @@ class _PostListState extends State<PostList>
         if (mounted &&
             ((event.tabIndex == 0 &&
                     widget.postController.postType == 'square') &&
-                event.type == '广场') &&
-            _scrollController != null) {
+                event.type == '广场')) {
           if (_postList.length > 20) {
             _postList = _postList.sublist(0, 20);
           }
@@ -82,7 +81,7 @@ class _PostListState extends State<PostList>
             duration: kTabScrollDuration,
           );
           Future<void>.delayed(50.milliseconds, () {
-            refreshIndicatorKey.currentState.show();
+            refreshIndicatorKey.currentState?.show();
           });
           Future<void>.delayed(500.milliseconds, () {
             _refreshData(needLoader: true);
@@ -106,8 +105,8 @@ class _PostListState extends State<PostList>
         );
         if ((event.page == widget.postController.postType) &&
             event.index != null) {
-          _idList.removeAt(event.index);
-          _postList.removeAt(event.index);
+          _idList.removeAt(event.index!);
+          _postList.removeAt(event.index!);
         }
         if (mounted) {
           setState(() {});
@@ -121,14 +120,14 @@ class _PostListState extends State<PostList>
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
     }
-    final Map<String, dynamic> result = (await PostAPI.getPostList(
+    final Response<Map<String, dynamic>> r = await PostAPI.getPostList(
       widget.postController.postType,
       isFollowed: widget.postController.isFollowed,
       isMore: true,
       lastValue: _lastValue,
       additionAttrs: widget.postController.additionAttrs,
-    ))
-        .data;
+    );
+    final Map<String, dynamic> result = r.data!;
 
     final List<Post> postList = <Post>[];
     final List<Map<String, dynamic>> _topics =
@@ -170,14 +169,14 @@ class _PostListState extends State<PostList>
     _lastValue = 0;
 
     try {
-      final Map<String, dynamic> result = (await PostAPI.getPostList(
+      final Response<Map<String, dynamic>> r = await PostAPI.getPostList(
         widget.postController.postType,
         isFollowed: widget.postController.isFollowed,
         isMore: false,
         lastValue: _lastValue,
         additionAttrs: widget.postController.additionAttrs,
-      ))
-          .data;
+      );
+      final Map<String, dynamic> result = r.data!;
 
       final List<Post> postList = <Post>[];
       final List<int> idList = <int>[];
@@ -243,7 +242,7 @@ class _PostListState extends State<PostList>
           Text(
             '空空如也，轻触重试',
             style: TextStyle(
-              color: context.textTheme.caption.color,
+              color: context.textTheme.caption?.color,
               fontSize: 22.sp,
             ),
           ),
@@ -267,7 +266,7 @@ class _PostListState extends State<PostList>
           Text(
             '加载失败，轻触重试',
             style: TextStyle(
-              color: context.textTheme.caption.color,
+              color: context.textTheme.caption?.color,
               fontSize: 22.sp,
             ),
           ),
@@ -280,97 +279,91 @@ class _PostListState extends State<PostList>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    Widget _body;
-
-    if (!_isLoading) {
-      _itemList = ExtendedListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 6.w),
-        extendedListDelegate: ExtendedListDelegate(
-          collectGarbage: (List<int> garbage) {
-            for (final int index in garbage) {
-              if (_postList.length >= index + 1 && index < 4) {
-                final Post element = _postList.elementAt(index);
-                final List<Map<String, dynamic>> pics = element.pics;
-                if (pics != null) {
-                  for (final Map<String, dynamic> pic in pics) {
-                    ExtendedNetworkImageProvider(
-                      pic['image_thumb'] as String,
-                    ).evict();
-                    ExtendedNetworkImageProvider(
-                      pic['image_middle'] as String,
-                    ).evict();
-                    ExtendedNetworkImageProvider(
-                      pic['image_original'] as String,
-                    ).evict();
-                  }
-                }
-              }
-            }
-          },
-        ),
-        controller: _scrollController,
-        itemCount: _postList.length + 1,
-        itemBuilder: (BuildContext _, int index) {
-          if (index == _postList.length - 1 && _canLoadMore) {
-            _loadData();
-          }
-          if (index == _postList.length) {
-            return LoadMoreIndicator(canLoadMore: _canLoadMore);
-          } else if (index < _postList.length) {
-            return PostCard(
-              _postList[index],
-              fromPage: widget.postController.postType,
-              index: index,
-              isDetail: false,
-              key: ValueKey<String>('post-key-${_postList[index].id}'),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      );
-      if (_postList.isEmpty) {
-        _body = error ? _errorChild : _emptyChild;
-      } else {
-        _body = _itemList;
-      }
-      _body = DefaultTextStyle.merge(
-        style: context.textTheme.caption.copyWith(
-          fontSize: 20.sp,
-        ),
-        child: _body,
-      );
-
-      if (widget.needRefreshIndicator) {
-        _body = RefreshIndicator(
-          key: refreshIndicatorKey,
-          color: currentThemeColor,
-          onRefresh: _refreshData,
-          child: _body,
-        );
-      }
-      return _body;
-    } else {
+    if (_isLoading) {
       return const Center(
         child: LoadMoreSpinningIcon(isRefreshing: true),
       );
     }
+    Widget _body;
+    final Widget _child = ExtendedListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 6.w),
+      extendedListDelegate: ExtendedListDelegate(
+        collectGarbage: (List<int> garbage) {
+          for (final int index in garbage) {
+            if (_postList.length >= index + 1 && index < 4) {
+              final Post element = _postList.elementAt(index);
+              final List<Map<String, dynamic>> pics = element.pics;
+              for (final Map<String, dynamic> pic in pics) {
+                ExtendedNetworkImageProvider(
+                  pic['image_thumb'] as String,
+                ).evict();
+                ExtendedNetworkImageProvider(
+                  pic['image_middle'] as String,
+                ).evict();
+                ExtendedNetworkImageProvider(
+                  pic['image_original'] as String,
+                ).evict();
+              }
+            }
+          }
+        },
+      ),
+      controller: _scrollController,
+      itemCount: _postList.length + 1,
+      itemBuilder: (BuildContext _, int index) {
+        if (index == _postList.length - 1 && _canLoadMore) {
+          _loadData();
+        }
+        if (index == _postList.length) {
+          return LoadMoreIndicator(canLoadMore: _canLoadMore);
+        } else if (index < _postList.length) {
+          return PostCard(
+            _postList[index],
+            fromPage: widget.postController.postType,
+            index: index,
+            isDetail: false,
+            key: ValueKey<String>('post-key-${_postList[index].id}'),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
+    if (_postList.isEmpty) {
+      _body = error ? _errorChild : _emptyChild;
+    } else {
+      _body = _child;
+    }
+    _body = DefaultTextStyle.merge(
+      style: context.textTheme.caption?.copyWith(
+        fontSize: 20.sp,
+      ),
+      child: _body,
+    );
+
+    if (widget.needRefreshIndicator) {
+      _body = RefreshIndicator(
+        key: refreshIndicatorKey,
+        color: currentThemeColor,
+        onRefresh: _refreshData,
+        child: _body,
+      );
+    }
+    return _body;
   }
 }
 
 class ForwardListInPostController {
-  ForwardListInPostState _forwardInPostListState;
+  ForwardListInPostState? _forwardInPostListState;
 
-  void reload() {
-    _forwardInPostListState?._refreshData();
-  }
+  void reload() => _forwardInPostListState?._refreshData();
 }
 
 class ForwardListInPost extends StatefulWidget {
   const ForwardListInPost(
     this.post,
     this.forwardInPostController, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final Post post;
@@ -388,7 +381,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
   bool canLoadMore = false;
   bool firstLoadComplete = false;
 
-  int lastValue;
+  int lastValue = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -411,20 +404,18 @@ class ForwardListInPostState extends State<ForwardListInPost>
   Future<void> _loadList() async {
     isLoading = true;
     try {
-      final Map<String, dynamic> response = (await PostAPI.getForwardListInPost(
+      final Response<Map<String, dynamic>> r =
+          await PostAPI.getForwardListInPost(
         widget.post.id,
         isMore: true,
         lastValue: lastValue,
-      ))
-          ?.data;
-      final List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(response['topics'] as List<dynamic>);
+      );
+      final Map<String, dynamic> response = r.data!;
+      final List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
+        response['topics'] as List<dynamic>,
+      );
       final int total = response['total'] as int;
-      if (_posts.length + (response['count'] as int) < total) {
-        canLoadMore = true;
-      } else {
-        canLoadMore = false;
-      }
+      canLoadMore = _posts.length + (response['count'] as int) < total;
       for (final Map<String, dynamic> post in list) {
         final BlacklistUser user = BlacklistUser.fromJson(
           <String, dynamic>{
@@ -442,12 +433,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      if (e.response != null) {
-        LogUtils.e('${e.response.data}');
-      } else {
-        LogUtils.e(e.message);
-      }
-      return;
+      LogUtils.e('${e.response?.data ?? e.message}');
     } catch (e) {
       LogUtils.e('Error when loading post list: $e');
     }
@@ -460,14 +446,16 @@ class ForwardListInPostState extends State<ForwardListInPost>
       setState(() {});
     }
     try {
-      final Map<String, dynamic> response =
-          (await PostAPI.getForwardListInPost(widget.post.id))?.data;
-      final List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(response['topics'] as List<dynamic>);
+      final Response<Map<String, dynamic>> r =
+          await PostAPI.getForwardListInPost(
+        widget.post.id,
+      );
+      final Map<String, dynamic> response = r.data!;
+      final List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
+        response['topics'] as List<dynamic>,
+      );
       final int total = response['total'] as int;
-      if (response['count'] as int < total) {
-        canLoadMore = true;
-      }
+      canLoadMore = response['count'] as int < total;
       for (final Map<String, dynamic> post in list) {
         final BlacklistUser user = BlacklistUser.fromJson(
           <String, dynamic>{
@@ -486,12 +474,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      if (e.response != null) {
-        LogUtils.e('${e.response.data}');
-      } else {
-        LogUtils.e(e.message);
-      }
-      return;
+      LogUtils.e('${e.response?.data ?? e.message}');
     } catch (e) {
       LogUtils.e('Error when loading post list: $e');
     }
@@ -500,7 +483,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
   Text getPostNickname(BuildContext context, Post post) {
     return Text(
       post.nickname,
-      style: context.textTheme.bodyText2.copyWith(
+      style: context.textTheme.bodyText2?.copyWith(
         height: 1.2,
         fontSize: 18.sp,
         fontWeight: FontWeight.w600,
@@ -511,7 +494,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
   Text getPostTime(BuildContext context, Post post) {
     return Text(
       PostAPI.postTimeConverter(post.postTime),
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         height: 1.2,
         fontSize: 15.sp,
       ),

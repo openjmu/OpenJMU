@@ -106,12 +106,11 @@ class Constants {
   }
 
   static Map<String, dynamic> loginParams({
-    @required String blowfish,
-    String username,
-    String password,
-    String ticket,
+    required String blowfish,
+    String? username,
+    String? password,
+    String? ticket,
   }) {
-    assert(blowfish != null, 'blowfish cannot be null');
     return <String, dynamic>{
       'appid': appId,
       'blowfish': blowfish,

@@ -12,46 +12,46 @@ const String boxPrefix = 'openjmu';
 class HiveBoxes {
   const HiveBoxes._();
 
-  static Box<UPModel> upBox;
+  static late final Box<UPModel> upBox;
 
   /// 应用消息表
-  static Box<Map<dynamic, dynamic>> appMessagesBox;
+  static late final Box<Map<dynamic, dynamic>> appMessagesBox;
 
   /// 私聊消息表
-  static Box<Map<dynamic, dynamic>> personalMessagesBox;
+  static late final Box<Map<dynamic, dynamic>> personalMessagesBox;
 
   /// 课程缓存表
-  static Box<Map<dynamic, dynamic>> coursesBox;
+  static late final Box<Map<dynamic, dynamic>> coursesBox;
 
   /// 课表备注表
-  static Box<String> courseRemarkBox;
+  static late final Box<String> courseRemarkBox;
 
   /// 学期开始日缓存表
-  static Box<DateTime> startWeekBox;
+  static late final Box<DateTime> startWeekBox;
 
   /// 成绩缓存表
-  static Box<Map<dynamic, dynamic>> scoresBox;
+  static late final Box<Map<dynamic, dynamic>> scoresBox;
 
   /// 应用中心应用缓存表
-  static Box<List<dynamic>> webAppsBox;
+  static late final Box<List<dynamic>> webAppsBox;
 
   /// 最近使用的应用缓存表
-  static Box<List<dynamic>> webAppsCommonBox;
+  static late final Box<List<dynamic>> webAppsCommonBox;
 
   /// 举报去重池
-  static Box<List<dynamic>> reportRecordBox;
+  static late final Box<List<dynamic>> reportRecordBox;
 
   /// 设置表
-  static Box<dynamic> settingsBox;
+  static late final Box<dynamic> settingsBox;
 
   /// 设置表
-  static Box<bool> firstOpenBox;
+  static late final Box<bool> firstOpenBox;
 
   /// 更新日志缓存表
-  static Box<ChangeLog> changelogBox;
+  static late final Box<ChangeLog> changelogBox;
 
   /// 最近表情表
-  static Box<List<dynamic>> emojisBox;
+  static late final Box<List<dynamic>> emojisBox;
 
   static Future<void> openBoxes() async {
     Hive

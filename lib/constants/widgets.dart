@@ -43,31 +43,30 @@ export '../widgets/webview/in_app_webview.dart';
 /// Empty counter builder for [TextField].
 final InputCounterWidgetBuilder emptyCounterBuilder = (
   BuildContext _, {
-  int currentLength,
-  int maxLength,
-  bool isFocused,
+  int? currentLength,
+  int? maxLength,
+  bool? isFocused,
 }) =>
     null;
 
 class TransparentRoute extends PageRoute<void> {
   TransparentRoute({
-    @required this.builder,
+    required this.builder,
     this.duration,
-    RouteSettings settings,
-  })  : assert(builder != null),
-        super(settings: settings, fullscreenDialog: false);
+    RouteSettings? settings,
+  }) : super(settings: settings, fullscreenDialog: false);
 
   final WidgetBuilder builder;
-  final Duration duration;
+  final Duration? duration;
 
   @override
   bool get opaque => false;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   bool get maintainState => true;
@@ -96,34 +95,36 @@ const BorderRadius maxBorderRadius = BorderRadius.all(Radius.circular(999999));
 /// OpenJMU logo.
 class OpenJMULogo extends StatelessWidget {
   const OpenJMULogo({
-    Key key,
+    Key? key,
     this.width = 80.0,
     this.height,
     this.radius = 0.0,
   }) : super(key: key);
 
-  final double width;
-  final double height;
-  final double radius;
+  final double? width;
+  final double? height;
+  final double? radius;
 
   @override
   Widget build(BuildContext context) {
-    return UnconstrainedBox(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius.w),
-        child: Image.asset(
-          R.IMAGES_LOGO_1024_PNG,
-          width: width,
-          height: height,
-        ),
-      ),
+    Widget _child = Image.asset(
+      R.IMAGES_LOGO_1024_PNG,
+      width: width,
+      height: height,
     );
+    if (radius != null) {
+      _child = ClipRRect(
+        borderRadius: BorderRadius.circular(radius!.w),
+        child: _child,
+      );
+    }
+    return UnconstrainedBox(child: _child);
   }
 }
 
 /// Developer tag.
 class DeveloperTag extends StatelessWidget {
-  const DeveloperTag({Key key, this.height = 24}) : super(key: key);
+  const DeveloperTag({Key? key, this.height = 24}) : super(key: key);
 
   final double height;
 
@@ -145,7 +146,7 @@ BorderSide dividerBS(BuildContext c) {
 
 class LineDivider extends StatelessWidget {
   const LineDivider({
-    Key key,
+    Key? key,
     this.thickness = 1,
     this.color,
     this.indent,
@@ -153,9 +154,9 @@ class LineDivider extends StatelessWidget {
   }) : super(key: key);
 
   final double thickness;
-  final Color color;
-  final double indent;
-  final double endIndent;
+  final Color? color;
+  final double? indent;
+  final double? endIndent;
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +173,7 @@ class LineDivider extends StatelessWidget {
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {
   const PlatformProgressIndicator({
-    Key key,
+    Key? key,
     this.strokeWidth = 4.0,
     this.radius = 10.0,
     this.color,
@@ -182,9 +183,9 @@ class PlatformProgressIndicator extends StatelessWidget {
 
   final double strokeWidth;
   final double radius;
-  final Color color;
-  final double value;
-  final Brightness brightness;
+  final Color? color;
+  final double? value;
+  final Brightness? brightness;
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +199,7 @@ class PlatformProgressIndicator extends StatelessWidget {
     }
     return CircularProgressIndicator(
       strokeWidth: strokeWidth.w,
-      valueColor: color != null ? AlwaysStoppedAnimation<Color>(color) : null,
+      valueColor: color != null ? AlwaysStoppedAnimation<Color>(color!) : null,
       value: value,
     );
   }
@@ -206,15 +207,15 @@ class PlatformProgressIndicator extends StatelessWidget {
 
 class LoadMoreSpinningIcon extends StatefulWidget {
   const LoadMoreSpinningIcon({
-    Key key,
-    @required this.isRefreshing,
+    Key? key,
+    required this.isRefreshing,
     this.size,
     this.color,
   }) : super(key: key);
 
   final bool isRefreshing;
-  final double size;
-  final Color color;
+  final double? size;
+  final Color? color;
 
   @override
   _LoadMoreSpinningIconState createState() => _LoadMoreSpinningIconState();
@@ -222,21 +223,20 @@ class LoadMoreSpinningIcon extends StatefulWidget {
 
 class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
     with SingleTickerProviderStateMixin {
-  AnimationController _animation;
+  late final AnimationController _animation = AnimationController(
+    duration: const Duration(milliseconds: 1800),
+    vsync: this,
+  );
 
   @override
   void initState() {
     super.initState();
-    _animation = AnimationController(
-      duration: const Duration(milliseconds: 1800),
-      vsync: this,
-    );
     updateAnimation();
   }
 
   @override
   void dispose() {
-    _animation?.dispose();
+    _animation.dispose();
     super.dispose();
   }
 
@@ -261,7 +261,8 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
       child: SvgPicture.asset(
         R.ASSETS_ICONS_LOAD_MORE_SVG,
         width: (widget.size ?? 60).w,
-        color: widget.color ?? context.textTheme.caption.color.withOpacity(0.5),
+        color:
+            widget.color ?? context.textTheme.caption?.color?.withOpacity(0.5),
       ),
     );
   }
@@ -270,7 +271,7 @@ class _LoadMoreSpinningIconState extends State<LoadMoreSpinningIcon>
 /// Load more indicator.
 class LoadMoreIndicator extends StatefulWidget {
   const LoadMoreIndicator({
-    Key key,
+    Key? key,
     this.canLoadMore = true,
     this.isSliver = false,
     this.showText = true,
@@ -280,7 +281,7 @@ class LoadMoreIndicator extends StatefulWidget {
   final bool canLoadMore;
   final bool isSliver;
   final bool showText;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   @override
   _LoadMoreIndicatorState createState() => _LoadMoreIndicatorState();
@@ -301,7 +302,7 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
               Text(
                 '正在加载',
                 style: TextStyle(
-                  color: context.textTheme.caption.color.withOpacity(0.5),
+                  color: context.textTheme.caption?.color?.withOpacity(0.5),
                   fontSize: 18.sp,
                 ),
               ),
@@ -311,7 +312,7 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
               child: Text(
                 Constants.endLineTag,
                 style: TextStyle(
-                  color: context.textTheme.caption.color,
+                  color: context.textTheme.caption?.color,
                   fontSize: 18.sp,
                 ),
               ),
@@ -351,10 +352,10 @@ TextOverflowWidget get contentOverflowWidget {
 /// When the image matches the condition of long image and gif image, an indicator will be shown.
 class ScaledImage extends StatelessWidget {
   const ScaledImage({
-    @required this.image,
-    @required this.length,
-    @required this.num200,
-    @required this.num400,
+    required this.image,
+    required this.length,
+    required this.num200,
+    required this.num400,
     this.provider,
   });
 
@@ -362,7 +363,7 @@ class ScaledImage extends StatelessWidget {
   final int length;
   final double num200;
   final double num400;
-  final ExtendedTypedNetworkImageProvider provider;
+  final ExtendedTypedNetworkImageProvider? provider;
 
   Widget longImageIndicator(BuildContext context) {
     return Positioned(
@@ -384,7 +385,7 @@ class ScaledImage extends StatelessWidget {
             child: Text(
               '长图',
               style: TextStyle(
-                color: context.iconTheme.color.withOpacity(0.8),
+                color: context.iconTheme.color?.withOpacity(0.8),
                 fontSize: 16.sp,
               ),
             ),
@@ -414,7 +415,7 @@ class ScaledImage extends StatelessWidget {
             child: Text(
               '动图',
               style: TextStyle(
-                color: context.iconTheme.color.withOpacity(0.9),
+                color: context.iconTheme.color?.withOpacity(0.9),
                 fontSize: 16.sp,
               ),
             ),
@@ -427,11 +428,11 @@ class ScaledImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double ratio = image.height / image.width;
-    final ui.Color color = currentIsDark ? Colors.black.withAlpha(50) : null;
-    final ui.BlendMode colorBlendMode =
+    final Color? color = currentIsDark ? Colors.black.withAlpha(50) : null;
+    final BlendMode colorBlendMode =
         currentIsDark ? BlendMode.darken : BlendMode.srcIn;
 
-    Widget imageWidget;
+    Widget? imageWidget;
     if (length == 1) {
       if (ratio >= 4 / 3) {
         imageWidget = ExtendedRawImage(
@@ -474,11 +475,11 @@ class ScaledImage extends StatelessWidget {
     }
     if (ratio >= 3) {
       if (length > 1) {
-        imageWidget = Positioned.fill(child: imageWidget);
+        imageWidget = Positioned.fill(child: imageWidget!);
       }
       imageWidget = Stack(
         children: <Widget>[
-          imageWidget,
+          imageWidget!,
           longImageIndicator(context),
         ],
       );
@@ -506,21 +507,22 @@ class NoSplashFactory extends InteractiveInkFeatureFactory {
 
   @override
   InteractiveInkFeature create({
-    @required MaterialInkController controller,
-    @required RenderBox referenceBox,
-    @required Offset position,
-    @required Color color,
-    @required TextDirection textDirection,
+    required MaterialInkController controller,
+    required RenderBox referenceBox,
+    required Offset position,
+    required Color color,
+    required TextDirection textDirection,
     bool containedInkWell = false,
-    RectCallback rectCallback,
-    BorderRadius borderRadius,
-    ShapeBorder customBorder,
-    double radius,
-    VoidCallback onRemoved,
+    RectCallback? rectCallback,
+    BorderRadius? borderRadius,
+    ShapeBorder? customBorder,
+    double? radius,
+    VoidCallback? onRemoved,
   }) {
     return NoSplash(
       controller: controller,
       referenceBox: referenceBox,
+      color: color,
       onRemoved: onRemoved,
     );
   }
@@ -528,16 +530,15 @@ class NoSplashFactory extends InteractiveInkFeatureFactory {
 
 class NoSplash extends InteractiveInkFeature {
   NoSplash({
-    @required MaterialInkController controller,
-    @required RenderBox referenceBox,
-    VoidCallback onRemoved,
-  })  : assert(controller != null),
-        assert(referenceBox != null),
-        super(
+    required MaterialInkController controller,
+    required RenderBox referenceBox,
+    required Color color,
+    VoidCallback? onRemoved,
+  }) : super(
           controller: controller,
           referenceBox: referenceBox,
+          color: color,
           onRemoved: onRemoved,
-          color: Colors.transparent,
         ) {
     controller.addInkFeature(this);
   }

@@ -7,7 +7,6 @@ class PraiseAPI {
     bool isMore = false,
     int lastValue = 0,
   }) {
-    assert(!isMore || lastValue != null);
     return NetUtils.get(
       '${API.praiseList}'
       '${isMore ? '/id_max/$lastValue' : ''}',
@@ -46,13 +45,8 @@ class PraiseAPI {
       id: itemData['id'] as int,
       uid: itemData['user']['uid'].toString(),
       avatar: _avatar,
-      postId: null,
       praiseTime: _praiseTime,
-      nickname: itemData['user']['nickname']?.toString(),
-      post: null,
-      topicUid: null,
-      topicNickname: null,
-      pics: null,
+      nickname: '${itemData['user']['nickname']}',
       user: PostUser.fromJson(itemData['user'] as Map<String, dynamic>),
     );
     return _praise;
@@ -67,12 +61,12 @@ class PraiseAPI {
       '${itemData['praise_time']}000'.toInt(),
     ).toString().substring(0, 16);
     final Praise _praise = Praise(
-      id: itemData['id'] as int,
+      id: itemData['id'] as int/*!*/,
       uid: itemData['user']['uid'].toString(),
       avatar: _avatar,
       postId: int.parse(itemData['topic']['tid'].toString()),
       praiseTime: _praiseTime,
-      nickname: itemData['user']['nickname']?.toString(),
+      nickname: '${itemData['user']['nickname']}',
       post: itemData['topic'] as Map<String, dynamic>,
       topicUid: int.parse(itemData['topic']['user']['uid'].toString()),
       topicNickname: itemData['topic']['user']['nickname']?.toString(),

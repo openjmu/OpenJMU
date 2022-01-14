@@ -10,32 +10,28 @@ import 'package:openjmu/widgets/cards/comment_card.dart';
 
 class CommentController {
   CommentController({
-    @required this.commentType,
-    @required this.isMore,
-    @required this.lastValue,
+    required this.commentType,
+    required this.isMore,
+    required this.lastValue,
     this.additionAttrs,
   });
 
   final String commentType;
   final bool isMore;
   final int Function(int) lastValue;
-  final Map<String, dynamic> additionAttrs;
+  final Map<String, dynamic>? additionAttrs;
 
-  _CommentListState _commentListState;
+  _CommentListState? _commentListState;
 
-  void reload() {
-    _commentListState._refreshData();
-  }
+  void reload() => _commentListState?._refreshData();
 
-  int getCount() {
-    return _commentListState._commentList.length;
-  }
+  int? getCount() => _commentListState?._commentList.length;
 }
 
 class CommentList extends StatefulWidget {
   const CommentList(
     this.commentController, {
-    Key key,
+    Key? key,
     this.needRefreshIndicator = true,
   }) : super(key: key);
 
@@ -57,32 +53,24 @@ class _CommentListState extends State<CommentList>
   bool _firstLoadComplete = false;
   bool _showLoading = true;
 
-  Widget _itemList;
-
-  Widget _emptyChild;
-  Widget _errorChild;
   bool error = false;
 
-  @override
-  bool get wantKeepAlive => true;
+  late final Widget _emptyChild = const Center(child: Text('无评论信息'));
+  late final Widget _errorChild = Tapper(
+    onTap: () {
+      setState(() {
+        _isLoading = false;
+        _showLoading = true;
+        _refreshData();
+      });
+    },
+    child: const Center(child: Text('加载失败，轻触重试')),
+  );
 
   @override
   void initState() {
     super.initState();
     widget.commentController._commentListState = this;
-
-    _emptyChild = const Center(child: Text('无评论信息'));
-
-    _errorChild = Tapper(
-      onTap: () {
-        setState(() {
-          _isLoading = false;
-          _showLoading = true;
-          _refreshData();
-        });
-      },
-      child: const Center(child: Text('加载失败，轻触重试')),
-    );
 
     _refreshData();
   }
@@ -92,13 +80,13 @@ class _CommentListState extends State<CommentList>
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
 
-      final Map<String, dynamic> result = (await CommentAPI.getCommentList(
+      final Response<Map<String, dynamic>> r = await CommentAPI.getCommentList(
         widget.commentController.commentType,
         isMore: true,
         lastValue: _lastValue,
         additionAttrs: widget.commentController.additionAttrs,
-      ))
-          .data;
+      );
+      final Map<String, dynamic> result = r.data!;
 
       final List<Comment> commentList = <Comment>[];
       final List<dynamic> _topics = result['replylist'] as List<dynamic>;
@@ -114,23 +102,25 @@ class _CommentListState extends State<CommentList>
           },
         );
         if (!UserAPI.blacklist.contains(user)) {
-          commentList.add(CommentAPI.createComment(
-              commentData['reply'] as Map<String, dynamic>));
+          commentList.add(
+            CommentAPI.createComment(
+              commentData['reply'] as Map<String, dynamic>,
+            ),
+          );
           _idList.add(commentData['id'] as int);
         }
       }
       _commentList.addAll(commentList);
 
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = _idList.length < _total && _count != 0;
+      _lastValue = _idList.isEmpty
+          ? 0
+          : widget.commentController.lastValue(_idList.last);
       if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty
-              ? 0
-              : widget.commentController.lastValue(_idList.last);
-        });
+        setState(() {});
       }
     }
   }
@@ -142,13 +132,13 @@ class _CommentListState extends State<CommentList>
 
       _lastValue = 0;
 
-      final Map<String, dynamic> result = (await CommentAPI.getCommentList(
+      final Response<Map<String, dynamic>> r = await CommentAPI.getCommentList(
         widget.commentController.commentType,
         isMore: false,
         lastValue: _lastValue,
         additionAttrs: widget.commentController.additionAttrs,
-      ))
-          .data;
+      );
+      final Map<String, dynamic> result = r.data!;
 
       final List<Comment> commentList = <Comment>[];
       final List<int> idList = <int>[];
@@ -170,87 +160,83 @@ class _CommentListState extends State<CommentList>
               commentData['reply'] as Map<String, dynamic>,
             ),
           );
-          idList.add(commentData['id'] as int);
+          idList.add(commentData['id'] as int /*!*/);
         }
       }
       _commentList.addAll(commentList);
       _idList.addAll(idList);
 
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = _idList.length < _total && _count != 0;
+      _lastValue = _idList.isEmpty
+          ? 0
+          : widget.commentController.lastValue(_idList.last);
       if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty
-              ? 0
-              : widget.commentController.lastValue(_idList.last);
-        });
+        setState(() {});
       }
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @mustCallSuper
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!_showLoading) {
-      Widget _body;
-      if (_firstLoadComplete) {
-        _itemList = ExtendedListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 6.w),
-          extendedListDelegate: const ExtendedListDelegate(),
-          itemCount: _commentList.length + 1,
-          itemBuilder: (BuildContext _, int index) {
-            if (index == _commentList.length - 1) {
-              _loadData();
-            }
-            if (index == _commentList.length) {
-              return LoadMoreIndicator(canLoadMore: _canLoadMore);
-            } else {
-              return CommentCard(_commentList[index]);
-            }
-          },
-        );
-
-        _body = DefaultTextStyle.merge(
-          style: context.textTheme.caption.copyWith(
-            fontSize: 20.sp,
-          ),
-          child: _commentList.isEmpty
-              ? (error ? _errorChild : _emptyChild)
-              : _itemList,
-        );
-        if (widget.needRefreshIndicator) {
-          _body = RefreshIndicator(
-            color: currentThemeColor,
-            onRefresh: _refreshData,
-            child: _body,
-          );
-        }
-      }
-      return _body;
-    } else {
+    if (_showLoading || !_firstLoadComplete) {
       return const Center(
         child: LoadMoreSpinningIcon(isRefreshing: true),
       );
     }
+    final Widget _itemList = ExtendedListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 6.w),
+      extendedListDelegate: const ExtendedListDelegate(),
+      itemCount: _commentList.length + 1,
+      itemBuilder: (BuildContext _, int index) {
+        if (index == _commentList.length - 1) {
+          _loadData();
+        }
+        if (index == _commentList.length) {
+          return LoadMoreIndicator(canLoadMore: _canLoadMore);
+        } else {
+          return CommentCard(_commentList[index]);
+        }
+      },
+    );
+
+    Widget _body = DefaultTextStyle.merge(
+      style: context.textTheme.caption?.copyWith(
+        fontSize: 20.sp,
+      ),
+      child: _commentList.isEmpty
+          ? (error ? _errorChild : _emptyChild)
+          : _itemList,
+    );
+    if (widget.needRefreshIndicator) {
+      _body = RefreshIndicator(
+        color: currentThemeColor,
+        onRefresh: _refreshData,
+        child: _body,
+      );
+    }
+    return _body;
   }
 }
 
 class CommentListInPostController {
-  CommentListInPostState _commentListInPostState;
+  CommentListInPostState? _commentListInPostState;
 
-  void reload() {
-    _commentListInPostState?._refreshData();
-  }
+  void reload() => _commentListInPostState?._refreshData();
 }
 
 class CommentListInPost extends StatefulWidget {
   const CommentListInPost(
     this.post,
     this.commentInPostController, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final Post post;
@@ -268,7 +254,7 @@ class CommentListInPostState extends State<CommentListInPost>
   bool canLoadMore = false;
   bool firstLoadComplete = false;
 
-  int lastValue;
+  int lastValue = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -305,9 +291,9 @@ class CommentListInPostState extends State<CommentListInPost>
         isGlobal: false,
       );
       try {
-        await CommentAPI.deleteComment(comment.post.id, comment.id);
+        await CommentAPI.deleteComment(comment.post!.id, comment.id);
         _loadingDialogController.changeState('success', title: '评论删除成功');
-        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
+        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post!.id));
       } catch (e) {
         LogUtils.e(e.toString());
         _loadingDialogController.changeState('failed', title: '评论删除失败');
@@ -341,9 +327,9 @@ class CommentListInPostState extends State<CommentListInPost>
         ConfirmationBottomSheetAction(
           text: '复制评论',
           onTap: () {
-            Clipboard.setData(ClipboardData(
-              text: replaceMentionTag(comment.content),
-            ));
+            Clipboard.setData(
+              ClipboardData(text: replaceMentionTag(comment.content)),
+            );
             showToast('已复制到剪贴板');
           },
         ),
@@ -354,22 +340,18 @@ class CommentListInPostState extends State<CommentListInPost>
   Future<void> _loadList() async {
     isLoading = true;
     try {
-      final Map<String, dynamic> response =
-          (await CommentAPI.getCommentInPostList(
+      final Response<Map<String, dynamic>> r =
+          await CommentAPI.getCommentInPostList(
         widget.post.id,
         isMore: true,
         lastValue: lastValue,
-      ))
-              ?.data;
+      );
+      final Map<String, dynamic> response = r.data!;
       final List<Map<dynamic, dynamic>> list =
           (response['replylist'] as List<dynamic>)
               .cast<Map<dynamic, dynamic>>();
       final int total = response['total'] as int;
-      if (_comments.length + (response['count'] as int) < total) {
-        canLoadMore = true;
-      } else {
-        canLoadMore = false;
-      }
+      canLoadMore = _comments.length + (response['count'] as int) < total;
 
       for (final Map<dynamic, dynamic> comment in list) {
         final BlacklistUser user = BlacklistUser.fromJson(
@@ -380,8 +362,11 @@ class CommentListInPostState extends State<CommentListInPost>
         );
         if (!UserAPI.blacklist.contains(user)) {
           comment['reply']['post'] = widget.post;
-          _comments.add(CommentAPI.createCommentInPost(
-              comment['reply'] as Map<String, dynamic>));
+          _comments.add(
+            CommentAPI.createCommentInPost(
+              comment['reply'] as Map<String, dynamic>,
+            ),
+          );
         }
       }
 
@@ -391,12 +376,7 @@ class CommentListInPostState extends State<CommentListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      if (e.response != null) {
-        LogUtils.e('${e.response.data}');
-      } else {
-        LogUtils.e(e.message);
-      }
-      return;
+      LogUtils.e('${e.response?.data ?? e.message}');
     }
   }
 
@@ -406,8 +386,11 @@ class CommentListInPostState extends State<CommentListInPost>
     });
     _comments.clear();
     try {
-      final Map<String, dynamic> response =
-          (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
+      final Response<Map<String, dynamic>> r =
+          await CommentAPI.getCommentInPostList(
+        widget.post.id,
+      );
+      final Map<String, dynamic> response = r.data!;
       final List<Map<dynamic, dynamic>> list =
           (response['replylist'] as List<dynamic>)
               .cast<Map<dynamic, dynamic>>();
@@ -425,8 +408,11 @@ class CommentListInPostState extends State<CommentListInPost>
         );
         if (!UserAPI.blacklist.contains(user)) {
           comment['reply']['post'] = widget.post;
-          _comments.add(CommentAPI.createCommentInPost(
-              comment['reply'] as Map<String, dynamic>));
+          _comments.add(
+            CommentAPI.createCommentInPost(
+              comment['reply'] as Map<String, dynamic>,
+            ),
+          );
         }
       }
 
@@ -438,19 +424,14 @@ class CommentListInPostState extends State<CommentListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      if (e.response != null) {
-        LogUtils.e('${e.response.data}');
-      } else {
-        LogUtils.e(e.message);
-      }
-      return;
+      LogUtils.e('${e.response?.data ?? e.message}');
     }
   }
 
   Widget getCommentNickname(BuildContext context, Comment comment) {
     return Text(
       comment.fromUserName,
-      style: context.textTheme.bodyText2.copyWith(
+      style: context.textTheme.bodyText2?.copyWith(
         height: 1.2,
         fontSize: 18.sp,
         fontWeight: FontWeight.w600,
@@ -461,7 +442,7 @@ class CommentListInPostState extends State<CommentListInPost>
   Widget getCommentTime(BuildContext context, Comment comment) {
     return Text(
       PostAPI.postTimeConverter(comment.commentTime),
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         height: 1.2,
         fontSize: 16.sp,
       ),
@@ -470,7 +451,7 @@ class CommentListInPostState extends State<CommentListInPost>
 
   Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
-      content != null ? '$content ' : null,
+      '$content ',
       style: TextStyle(height: 1.2, fontSize: 17.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -559,13 +540,9 @@ class CommentListInPostState extends State<CommentListInPost>
           _loadList();
         }
         if (index == _comments.length) {
-          return LoadMoreIndicator(
-            canLoadMore: canLoadMore && !isLoading,
-          );
-        } else if (index < _comments.length) {
-          if (_comments[index] == null) {
-            return const SizedBox.shrink();
-          }
+          return LoadMoreIndicator(canLoadMore: canLoadMore && !isLoading);
+        }
+        if (index < _comments.length) {
           return _itemBuilder(context, _comments[index]);
         }
         return const SizedBox.shrink();

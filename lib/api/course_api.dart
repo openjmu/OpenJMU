@@ -37,7 +37,7 @@ class CourseAPI {
   }
 
   static String getCourseTime(int courseIndex) {
-    final TimeOfDay time = courseTime[courseIndex][0];
+    final TimeOfDay time = courseTime[courseIndex]![0];
     final String hour = time.hour.toString();
     final String minute = '${time.minute < 10 ? '0' : ''}${time.minute}';
     return '$hour:$minute';
@@ -57,18 +57,18 @@ class CourseAPI {
 
   static bool inReadyTime(Course course) {
     final double timeNow = _timeToDouble(TimeOfDay.now());
-    final List<TimeOfDay> times = courseTime[course.time];
+    final List<TimeOfDay> times = courseTime[course.time]!;
     final double start = _timeToDouble(times[0]);
     return start - timeNow <= 0.5 && start - timeNow > 0;
   }
 
   static bool inCurrentTime(Course course) {
     final double timeNow = _timeToDouble(TimeOfDay.now()) - (1 / 60);
-    final List<TimeOfDay> times = courseTime[course.time];
+    final List<TimeOfDay> times = courseTime[course.time]!;
     final double start = _timeToDouble(times[0]);
     double end = _timeToDouble(times[1]) - (1 / 60);
     if (course.isEleven) {
-      end = _timeToDouble(courseTime['11'][1]);
+      end = _timeToDouble(courseTime[11]![1]);
     }
     return start <= timeNow && end >= timeNow;
   }
@@ -82,13 +82,16 @@ class CourseAPI {
     return course.day == now.weekday;
   }
 
-  static bool inCurrentWeek(Course course, {int currentWeek}) {
-    if (course?.isCustom ?? true) {
+  static bool inCurrentWeek(Course? course, {int? currentWeek}) {
+    if (course == null) {
+      return false;
+    }
+    if (course.isCustom) {
       return true;
     }
     final DateProvider provider = currentContext.read<DateProvider>();
-    final int week = currentWeek ?? provider.currentWeek ?? 0;
-    bool result;
+    final int week = currentWeek ?? provider.currentWeek;
+    bool result = false;
     final bool inRange = week >= course.startWeek && week <= course.endWeek;
     final bool isOddEven = course.oddEven != 0;
     if (isOddEven) {

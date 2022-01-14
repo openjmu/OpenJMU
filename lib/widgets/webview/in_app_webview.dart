@@ -12,8 +12,8 @@ import 'package:openjmu/constants/constants.dart';
 
 class AppWebView extends StatefulWidget {
   const AppWebView({
-    Key key,
-    @required this.url,
+    Key? key,
+    required this.url,
     this.title,
     this.app,
     this.withCookie = true,
@@ -21,17 +21,11 @@ class AppWebView extends StatefulWidget {
     this.withAction = true,
     this.withScaffold = true,
     this.keepAlive = false,
-  })  : assert(url != null),
-        assert(withCookie != null),
-        assert(withAppBar != null),
-        assert(withAction != null),
-        assert(withScaffold != null),
-        assert(keepAlive != null),
-        super(key: key);
+  }) : super(key: key);
 
   final String url;
-  final String title;
-  final WebApp app;
+  final String? title;
+  final WebApp? app;
   final bool withCookie;
   final bool withAppBar;
   final bool withAction;
@@ -44,9 +38,9 @@ class AppWebView extends StatefulWidget {
   );
 
   static Future<void> launch({
-    @required String url,
-    String title,
-    WebApp app,
+    required String url,
+    String? title,
+    WebApp? app,
     bool withCookie = true,
     bool withAppBar = true,
     bool withAction = true,

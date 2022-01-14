@@ -85,14 +85,16 @@ abstract class MessageRequest {
 /// 命令接收内容体抽象类
 /// [responseBody] 接收内容解析方法，重写并调用该方法获得实际内容
 abstract class MessageResponse {
-  Map<String, dynamic> responseBody(List<int> response);
+  Map<String, dynamic>? responseBody(List<int> response);
 }
 
 /// Requests.
 class M_WY_VERIFY_CHECKCODE implements MessageRequest {
   @override
   List<int> requestBody() {
-    final List<int> result = MessageUtils.commonString(UserAPI.currentUser.sid);
+    final List<int> result = MessageUtils.commonString(
+      UserAPI.currentUser.sid!,
+    );
     return result;
   }
 }
@@ -123,7 +125,7 @@ class M_WY_MULTPOINT_LOGIN implements MessageRequest {
 }
 
 class M_WY_OFFLINEMSG_ACK implements MessageRequest {
-  const M_WY_OFFLINEMSG_ACK({this.messageId});
+  const M_WY_OFFLINEMSG_ACK({required this.messageId});
 
   final int messageId;
 
@@ -135,7 +137,7 @@ class M_WY_OFFLINEMSG_ACK implements MessageRequest {
 }
 
 class M_WY_OFFLINEMSG_ACK_ONE implements MessageRequest {
-  const M_WY_OFFLINEMSG_ACK_ONE({this.messageId});
+  const M_WY_OFFLINEMSG_ACK_ONE({required this.messageId});
 
   final int messageId;
 
@@ -148,9 +150,9 @@ class M_WY_OFFLINEMSG_ACK_ONE implements MessageRequest {
 
 class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
   const M_WY_MULTPOINT_MSG_ACK({
-    @required this.ackId,
     this.friendId = 0,
     this.friendMultiPortId = 0,
+    required this.ackId,
   });
 
   final int friendId;
@@ -170,9 +172,9 @@ class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
 
 class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
   const M_WY_MULTPOINT_MSG_ACK_ONE({
-    @required this.ackId,
     this.friendId = 0,
     this.friendMultiPortId = 0,
+    required this.ackId,
   });
 
   final int friendId;
@@ -192,8 +194,8 @@ class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
 
 class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
   const M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED({
-    @required this.ackId,
     this.senderUid = 0,
+    required this.ackId,
   });
 
   final int senderUid;
@@ -211,9 +213,9 @@ class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
 
 class M_WY_MSG implements MessageRequest {
   const M_WY_MSG({
-    @required this.type,
-    @required this.uid,
-    @required this.message,
+    required this.type,
+    required this.uid,
+    required this.message,
   });
 
   final int uid;
@@ -223,7 +225,7 @@ class M_WY_MSG implements MessageRequest {
   @override
   List<int> requestBody() {
     final List<int> result = <int>[
-      ...MessageUtils.commonUint(Messages.PRPL_91U_MSG_TYPE[type], 8),
+      ...MessageUtils.commonUint(Messages.PRPL_91U_MSG_TYPE[type]!, 8),
       ...MessageUtils.commonUint(uid, 64),
       ...MessageUtils.commonString(message),
     ];
@@ -234,7 +236,7 @@ class M_WY_MSG implements MessageRequest {
 /// Responses.
 class R_WY_MSG implements MessageResponse {
   @override
-  Map<String, dynamic> responseBody(List<int> response) {
+  Map<String, dynamic>? responseBody(List<int> response) {
     return null;
   }
 }

@@ -189,12 +189,12 @@ class NetUtils {
   static Future<Response<T>> post<T>(
     String url, {
     dynamic data,
-    Map<String, dynamic> queryParameters,
-    Map<String, dynamic> headers,
-    CancelToken cancelToken,
-    Options options,
-  }) async =>
-      await dio.post<T>(
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    CancelToken? cancelToken,
+    Options? options,
+  }) =>
+      dio.post<T>(
         url,
         queryParameters: queryParameters,
         data: data,

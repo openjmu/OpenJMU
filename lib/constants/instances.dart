@@ -9,7 +9,7 @@ import '../pages/home/school_work_page.dart';
 import '../pages/main_page.dart';
 import 'constants.dart';
 
-NavigatorState get navigatorState => Instances.navigatorKey.currentState;
+NavigatorState get navigatorState => Instances.navigatorKey.currentState!;
 
 BuildContext get currentContext => navigatorState.context;
 
@@ -52,7 +52,7 @@ class Instances {
   static final RouteObserver<Route<dynamic>> routeObserver =
       RouteObserver<Route<dynamic>>();
   static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;
-  static ConnectivityResult connectivityResult;
+  static ConnectivityResult? connectivityResult;
 
   static GlobalKey appRepaintBoundaryKey = GlobalKey();
   static GlobalKey<MainPageState> mainPageStateKey = GlobalKey<MainPageState>();
@@ -61,5 +61,5 @@ class Instances {
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =
       GlobalKey<CourseSchedulePageState>();
 
-  static String /*!*/ defaultAvatarData;
+  static late final String defaultAvatarData;
 }

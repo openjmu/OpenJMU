@@ -11,28 +11,29 @@ part of 'models.dart';
 @immutable
 class Praise {
   const Praise({
-    this.id,
-    this.uid,
-    this.avatar,
+    required this.id,
+    required this.uid,
+    required this.avatar,
     this.postId,
-    this.praiseTime,
-    this.nickname,
+    required this.praiseTime,
+    required this.nickname,
     this.post,
     this.topicUid,
     this.topicNickname,
     this.pics,
-    this.user,
+    required this.user,
   });
 
-  final int id, postId;
+  final int id;
+  final int? postId;
   final String uid;
   final String avatar;
   final String praiseTime;
   final String nickname;
-  final Map<String, dynamic> post;
-  final int topicUid;
-  final String topicNickname;
-  final List<dynamic> pics;
+  final Map<String, dynamic>? post;
+  final int? topicUid;
+  final String? topicNickname;
+  final List<dynamic>? pics;
 
   final PostUser user;
 

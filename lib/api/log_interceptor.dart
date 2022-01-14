@@ -6,17 +6,17 @@ import 'package:dio/dio.dart';
 import 'package:openjmu/utils/utils.dart';
 
 class LoggingInterceptor extends Interceptor {
-  DateTime startTime;
-  DateTime endTime;
-
   static const String HTTP_TAG = 'HTTP - LOG';
+
+  final Map<RequestOptions, DateTime> _startTimeMap =
+      <RequestOptions, DateTime>{};
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) {
-    startTime = DateTime.now();
+    _startTimeMap[options] = DateTime.now();
     LogUtils.d(' ', tag: HTTP_TAG);
     LogUtils.d(
       '------------------- Start -------------------',
@@ -63,7 +63,8 @@ class LoggingInterceptor extends Interceptor {
     Response<dynamic> response,
     ResponseInterceptorHandler handler,
   ) {
-    endTime = DateTime.now();
+    final DateTime startTime = _startTimeMap[response.requestOptions]!;
+    final DateTime endTime = DateTime.now();
     final int duration = endTime.difference(startTime).inMilliseconds;
     LogUtils.d(
       'Response_Code       : ${response.statusCode}',

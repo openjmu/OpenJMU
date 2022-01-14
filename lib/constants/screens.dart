@@ -41,29 +41,29 @@ class Screens {
 }
 
 /// Screen capability method.
-double suSetSp(double size, {double scale}) {
+double suSetSp(double size, {double? scale}) {
   return _sizeCapable(
     (ScreenUtil().setSp(size) * 2).toDouble(),
     scale: scale,
   );
 }
 
-double suSetWidth(double size, {double scale}) {
+double suSetWidth(double size, {double? scale}) {
   return _sizeCapable(
     (ScreenUtil().setWidth(size) * 2).toDouble(),
     scale: scale,
   );
 }
 
-double suSetHeight(double size, {double scale}) {
+double suSetHeight(double size, {double? scale}) {
   return _sizeCapable(
     (ScreenUtil().setHeight(size) * 2).toDouble(),
     scale: scale,
   );
 }
 
-double _sizeCapable(num size, {double scale}) {
-  double _scale = scale;
+double _sizeCapable(num size, {double? scale}) {
+  double? _scale = scale;
   _scale ??= Provider.of<SettingsProvider>(
     currentContext,
     listen: false,

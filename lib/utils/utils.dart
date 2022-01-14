@@ -65,14 +65,17 @@ Future<bool> checkPermissions(List<Permission> permissions) async {
 
 /// Obtain the screenshot data from a [GlobalKey] with [RepaintBoundary].
 Future<ByteData> obtainScreenshotData(GlobalKey key) async {
-  final RenderRepaintBoundary boundary =
-      key.currentContext.findRenderObject() as RenderRepaintBoundary;
-  final ui.Image image = await boundary.toImage(
+  final RenderRepaintBoundary? boundary =
+      key.currentContext?.findRenderObject() as RenderRepaintBoundary;
+  final ui.Image? image = await boundary?.toImage(
     pixelRatio: ui.window.devicePixelRatio,
   );
-  final ByteData byteData = await image.toByteData(
+  final ByteData? byteData = await image?.toByteData(
     format: ui.ImageByteFormat.png,
   );
+  if (byteData == null) {
+    throw StateError('Failed to obtain screenshot.');
+  }
   return byteData;
 }
 
@@ -80,7 +83,7 @@ Future<ByteData> obtainScreenshotData(GlobalKey key) async {
 ///
 /// GIF 动图不压缩
 /// 最低质量为 4
-Future<Uint8List> compressEntity(
+Future<Uint8List?> compressEntity(
   AssetEntity entity,
   String extension, {
   int quality = 99,
@@ -89,7 +92,7 @@ Future<Uint8List> compressEntity(
   if (extension.contains('gif')) {
     return await entity.originBytes;
   }
-  Uint8List data;
+  Uint8List? data;
   if (entity.width > 0 && entity.height > 0) {
     if (entity.width >= 4000 || entity.height >= 5000) {
       data = await entity.thumbDataWithSize(
@@ -112,6 +115,9 @@ Future<Uint8List> compressEntity(
     }
   } else {
     data = await entity.thumbData;
+  }
+  if (data == null) {
+    return null;
   }
   if (data.lengthInBytes >= limitation && quality > 5) {
     return await compressEntity(entity, extension, quality: quality - 5);

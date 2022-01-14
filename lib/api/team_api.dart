@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
-import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:path/path.dart' as path;
 
@@ -11,8 +11,8 @@ class TeamPostAPI {
 
   static Future<Response<Map<String, dynamic>>> getPostList({
     bool isMore = false,
-    String lastTimeStamp,
-    Map<String, dynamic> additionAttrs,
+    String? lastTimeStamp,
+    Map<String, dynamic>? additionAttrs,
   }) {
     String _postUrl;
     if (isMore) {
@@ -27,7 +27,7 @@ class TeamPostAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> getPostDetail({
-    @required int id,
+    required int id,
     int postType = 2,
   }) {
     return NetUtils.get(
@@ -55,7 +55,7 @@ class TeamPostAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> publishPost({
-    @required String content,
+    required String content,
     List<int> files = const <int>[],
     int postType = 2,
     int regionId = 430,
@@ -98,8 +98,8 @@ class TeamPostAPI {
   }
 
   static Future<Response<void>> deletePost({
-    @required int postId,
-    @required int postType,
+    required int postId,
+    required int postType,
   }) {
     return NetUtils.delete(
       API.teamPostDelete(postId: postId, postType: postType),
@@ -139,7 +139,7 @@ class TeamPostAPI {
   /// 去年及以前：　yy-MM-dd
   static String timeConverter(dynamic content) {
     final DateTime now = DateTime.now();
-    DateTime origin;
+    DateTime? origin;
     String time = '';
     if (content is TeamPost) {
       if (content.isReplied) {
@@ -153,9 +153,8 @@ class TeamPostAPI {
     } else if (content is DateTime) {
       origin = content;
     }
-    assert(origin != null, 'time cannot be converted.');
     if (origin == null) {
-      return null;
+      throw ArgumentError.notNull('origin');
     }
 
     String _formatToYear(DateTime date) {
@@ -205,20 +204,24 @@ class TeamPostAPI {
   /// Create [FormData] for post's image upload.
   /// 创建用于发布动态上传的图片的 [FormData]
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
-    final String filename = path.basename((await asset.file).path);
-    final Uint8List imageData = await compressEntity(
+    final File? file = await asset.file;
+    final String filename =
+        file != null ? path.basename(file.path) : '$currentTimeStamp.jpg';
+    final Uint8List? imageData = await compressEntity(
       asset,
       path.extension(filename),
     );
-    final String name = filename ?? '$currentTimeStamp.jpg';
+    if (imageData == null) {
+      throw StateError('Error when obtaining image entity.');
+    }
     final FormData formData = FormData.fromMap(<String, dynamic>{
-      'file': MultipartFile.fromBytes(imageData, filename: name),
+      'file': MultipartFile.fromBytes(imageData, filename: filename),
       'type': 3,
       'sid': UserAPI.currentUser.sid,
       'id': 77,
       'md5': md5.convert(imageData),
       'path': '/${UserAPI.currentUser.uid}',
-      'name': name,
+      'name': filename,
       'set_default': 0,
       'size': imageData.length,
     });
@@ -226,8 +229,8 @@ class TeamPostAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> createPostImageUploadRequest({
-    FormData formData,
-    CancelToken cancelToken,
+    required FormData formData,
+    CancelToken? cancelToken,
   }) {
     return NetUtils.post(
       API.uploadFile,
@@ -243,7 +246,7 @@ class TeamCommentAPI {
   const TeamCommentAPI._();
 
   static Future<Response<Map<String, dynamic>>> getCommentInPostList({
-    @required int id,
+    required int id,
     int page = 1,
     bool isComment = false,
   }) {
@@ -260,10 +263,10 @@ class TeamCommentAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> publishComment({
-    @required String content,
+    required String content,
+    required int postId,
     List<Map<String, dynamic>> files = const <Map<String, dynamic>>[],
     int postType = 7,
-    @required int postId,
     int regionType = 128,
   }) {
     return NetUtils.post(
@@ -297,9 +300,9 @@ class TeamPraiseAPI {
   const TeamPraiseAPI._();
 
   static Future<Response<Map<String, dynamic>>> requestPraise(
-    int id,
+    int /*!*/ id,
     bool isPraise,
-  ) async {
+  ) {
     if (isPraise) {
       return NetUtils.post<Map<String, dynamic>>(
         API.teamPostRequestPraise,

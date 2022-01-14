@@ -13,7 +13,7 @@ class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   ExtendedTypedNetworkImageProvider(String url)
       : super(url, cacheRawData: true);
 
-  ImageFileType _imageType;
+  ImageFileType? _imageType;
 
   ImageFileType get imageType => _imageType ?? _getType(rawImageData);
 
@@ -27,29 +27,20 @@ class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   }
 
   ImageFileType _getType(Uint8List data) {
-    ImageFileType _type;
-    if (data != null) {
-      final int c = data.elementAt(0);
-      switch (c) {
-        case 0xFF:
-          _type = ImageFileType.jpg;
-          break;
-        case 0x89:
-          _type = ImageFileType.png;
-          break;
-        case 0x47:
-          _type = ImageFileType.gif;
-          break;
-        case 0x49:
-        case 0x4D:
-          _type = ImageFileType.tiff;
-          break;
-        default:
-          _type = ImageFileType.other;
-          break;
-      }
+    final int c = data.elementAt(0);
+    switch (c) {
+      case 0xFF:
+        return ImageFileType.jpg;
+      case 0x89:
+        return ImageFileType.png;
+      case 0x47:
+        return ImageFileType.gif;
+      case 0x49:
+      case 0x4D:
+        return ImageFileType.tiff;
+      default:
+        return ImageFileType.other;
     }
-    return _type;
   }
 }
 

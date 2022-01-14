@@ -7,20 +7,20 @@ import 'package:openjmu/widgets/cards/praise_card.dart';
 
 class PraiseController {
   const PraiseController({
-    @required this.isMore,
-    @required this.lastValue,
+    required this.isMore,
+    required this.lastValue,
     this.additionAttrs,
   });
 
   final bool isMore;
   final int Function(int) lastValue;
-  final Map<String, dynamic> additionAttrs;
+  final Map<String, dynamic>? additionAttrs;
 }
 
 class PraiseList extends StatefulWidget {
   const PraiseList(
     this.praiseController, {
-    Key key,
+    Key? key,
     this.needRefreshIndicator = true,
   }) : super(key: key);
 
@@ -39,10 +39,18 @@ class _PraiseListState extends State<PraiseList>
   bool _firstLoadComplete = false;
   bool _showLoading = true;
 
-  Widget _itemList;
+  late final Widget _emptyChild = const Center(child: Text('无点赞信息'));
 
-  Widget _emptyChild;
-  Widget _errorChild;
+  late final Widget _errorChild = Tapper(
+    onTap: () {
+      setState(() {
+        _isLoading = false;
+        _showLoading = true;
+        _refreshData();
+      });
+    },
+    child: const Center(child: Text('加载失败，轻触重试')),
+  );
   bool error = false;
 
   final List<Praise> _praiseList = <Praise>[];
@@ -53,20 +61,6 @@ class _PraiseListState extends State<PraiseList>
   @override
   void initState() {
     super.initState();
-
-    _emptyChild = const Center(child: Text('无点赞信息'));
-
-    _errorChild = Tapper(
-      onTap: () {
-        setState(() {
-          _isLoading = false;
-          _showLoading = true;
-          _refreshData();
-        });
-      },
-      child: const Center(child: Text('加载失败，轻触重试')),
-    );
-
     _refreshData();
   }
 
@@ -75,11 +69,11 @@ class _PraiseListState extends State<PraiseList>
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
 
-      final Map<String, dynamic> result = (await PraiseAPI.getPraiseList(
+      final Response<Map<String, dynamic>> res = await PraiseAPI.getPraiseList(
         isMore: true,
         lastValue: _lastValue,
-      ))
-          .data;
+      );
+      final Map<String, dynamic> result = res.data!;
 
       final List<Praise> praiseList = <Praise>[];
       final List<Map<String, dynamic>> _topics =
@@ -100,16 +94,15 @@ class _PraiseListState extends State<PraiseList>
       }
       _praiseList.addAll(praiseList);
 
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = _praiseList.length < _total && _count != 0;
+      _lastValue = _praiseList.isEmpty
+          ? 0
+          : widget.praiseController.lastValue(_praiseList.last.id);
       if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue = _praiseList.isEmpty
-              ? 0
-              : widget.praiseController.lastValue(_praiseList.last.id);
-        });
+        setState(() {});
       }
     }
   }
@@ -121,8 +114,8 @@ class _PraiseListState extends State<PraiseList>
 
       _lastValue = 0;
 
-      final Map<String, dynamic> result = (await PraiseAPI.getPraiseList())
-          .data;
+      final Response<Map<String, dynamic>> r = await PraiseAPI.getPraiseList();
+      final Map<String, dynamic> result = r.data!;
 
       final List<Praise> praiseList = <Praise>[];
       final List<Map<String, dynamic>> _topics =
@@ -143,16 +136,15 @@ class _PraiseListState extends State<PraiseList>
       }
       _praiseList.addAll(praiseList);
 
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = _praiseList.length < _total && _count != 0;
+      _lastValue = _praiseList.isEmpty
+          ? 0
+          : widget.praiseController.lastValue(_praiseList.last.id);
       if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue = _praiseList.isEmpty
-              ? 0
-              : widget.praiseController.lastValue(_praiseList.last.id);
-        });
+        setState(() {});
       }
     }
   }
@@ -161,56 +153,49 @@ class _PraiseListState extends State<PraiseList>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!_showLoading) {
-      Widget _body;
-      if (_firstLoadComplete) {
-        _itemList = ExtendedListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 6.w),
-          extendedListDelegate: const ExtendedListDelegate(),
-          itemBuilder: (BuildContext context, int index) {
-            if (index == _praiseList.length) {
-              if (_canLoadMore) {
-                _loadData();
-                return const LoadMoreIndicator();
-              }
-              return LoadMoreIndicator(canLoadMore: _canLoadMore);
-            } else {
-              return PraiseCard(_praiseList[index]);
-            }
-          },
-          itemCount: _praiseList.length + 1,
-        );
-
-        _body = DefaultTextStyle.merge(
-          style: context.textTheme.caption.copyWith(
-            fontSize: 20.sp,
-          ),
-          child: _praiseList.isEmpty
-              ? (error ? _errorChild : _emptyChild)
-              : _itemList,
-        );
-        if (widget.needRefreshIndicator) {
-          _body = RefreshIndicator(
-            color: currentThemeColor,
-            onRefresh: _refreshData,
-            child: _body,
-          );
-        }
-      }
-      return _body;
-    } else {
+    if (_showLoading || !_firstLoadComplete) {
       return const Center(
         child: LoadMoreSpinningIcon(isRefreshing: true),
       );
     }
+    Widget _body;
+    final Widget _itemList = ExtendedListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 6.w),
+      extendedListDelegate: const ExtendedListDelegate(),
+      itemBuilder: (BuildContext context, int index) {
+        if (index == _praiseList.length) {
+          if (_canLoadMore) {
+            _loadData();
+            return const LoadMoreIndicator();
+          }
+          return LoadMoreIndicator(canLoadMore: _canLoadMore);
+        } else {
+          return PraiseCard(_praiseList[index]);
+        }
+      },
+      itemCount: _praiseList.length + 1,
+    );
+
+    _body = DefaultTextStyle.merge(
+      style: context.textTheme.caption?.copyWith(
+        fontSize: 20.sp,
+      ),
+      child:
+          _praiseList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
+    );
+    if (widget.needRefreshIndicator) {
+      _body = RefreshIndicator(
+        color: currentThemeColor,
+        onRefresh: _refreshData,
+        child: _body,
+      );
+    }
+    return _body;
   }
 }
 
 class PraiseListInPost extends StatefulWidget {
-  const PraiseListInPost(
-    this.post, {
-    Key key,
-  }) : super(key: key);
+  const PraiseListInPost(this.post, {Key? key}) : super(key: key);
 
   final Post post;
 
@@ -226,10 +211,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
   bool canLoadMore = false;
   bool firstLoadComplete = false;
 
-  int lastValue;
-
-  @override
-  bool get wantKeepAlive => true;
+  int lastValue = 0;
 
   @override
   void initState() {
@@ -246,13 +228,13 @@ class PraiseListInPostState extends State<PraiseListInPost>
   Future<void> _loadList() async {
     isLoading = true;
     try {
-      final Map<String, dynamic> response =
-          (await PraiseAPI.getPraiseInPostList(
+      final Response<Map<String, dynamic>> r =
+          await PraiseAPI.getPraiseInPostList(
         widget.post.id,
         isMore: true,
         lastValue: lastValue,
-      ))
-              ?.data;
+      );
+      final Map<String, dynamic> response = r.data!;
       final List<Map<String, dynamic>> list =
           (response['praisors'] as List<dynamic>).cast<Map<String, dynamic>>();
       final int total = response['total'] as int;
@@ -273,11 +255,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      if (e.response != null) {
-        LogUtils.e(e.response.data);
-      }
-      LogUtils.e(e.message);
-      return;
+      LogUtils.e(e.response?.data ?? e.message);
     } catch (e) {
       LogUtils.e(e);
     }
@@ -289,14 +267,13 @@ class PraiseListInPostState extends State<PraiseListInPost>
     });
     _praises.clear();
     try {
-      final Map<String, dynamic> response =
-          (await PraiseAPI.getPraiseInPostList(widget.post.id))?.data;
+      final Response<Map<String, dynamic>> r =
+          await PraiseAPI.getPraiseInPostList(widget.post.id);
+      final Map<String, dynamic> response = r.data!;
       final List<Map<String, dynamic>> list =
           (response['praisors'] as List<dynamic>).cast<Map<String, dynamic>>();
       final int total = response['total'] as int;
-      if (response['count'] as int < total) {
-        canLoadMore = true;
-      }
+      canLoadMore = response['count'] as int < total;
 
       for (final Map<String, dynamic> praiseData in list) {
         _praises.add(PraiseAPI.createPraiseInPost(praiseData));
@@ -310,11 +287,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      if (e.response != null) {
-        LogUtils.e(e.response.data);
-      }
-      LogUtils.e(e.message);
-      return;
+      LogUtils.e(e.response?.data ?? e.message);
     } catch (e) {
       LogUtils.e(e);
     }
@@ -330,6 +303,9 @@ class PraiseListInPostState extends State<PraiseListInPost>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @mustCallSuper
   @override

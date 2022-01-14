@@ -7,9 +7,9 @@ class CommentAPI {
     String commentType, {
     bool isMore = false,
     int lastValue = 0,
-    Map<String, dynamic> additionAttrs,
+    Map<String, dynamic>? additionAttrs,
   }) {
-    String _commentUrl;
+    late final String _commentUrl;
     switch (commentType) {
       case 'reply':
         if (isMore) {
@@ -44,7 +44,7 @@ class CommentAPI {
     String content,
     int postId,
     bool forwardAtTheMeanTime, {
-    int replyToId,
+    int? replyToId,
   }) async {
     final Map<String, dynamic> data = <String, dynamic>{
       'content': Uri.encodeFull(content),
@@ -82,12 +82,11 @@ class CommentAPI {
     final Map<String, dynamic> topicData =
         itemData['to_topic']['topic'] as Map<String, dynamic>;
     final Comment _comment = Comment(
-      id: itemData['rid']?.toString()?.toIntOrNull(),
-      floor: null,
-      fromUserUid: itemData['user']['uid']?.toString(),
-      fromUserName: itemData['user']['nickname']?.toString(),
+      id: itemData['rid']!.toString().toInt(),
+      fromUserUid: itemData['user']['uid'].toString(),
+      fromUserName: itemData['user']['nickname'].toString(),
       fromUserAvatar: _avatar,
-      content: itemData['content']?.toString(),
+      content: itemData['content'].toString(),
       commentTime: _commentTime,
       from: itemData['from_string']?.toString(),
       toReplyExist: replyExist,
@@ -128,9 +127,9 @@ class CommentAPI {
       id: int.parse(itemData['rid'].toString()),
       floor: null,
       fromUserUid: itemData['user']['uid'].toString(),
-      fromUserName: itemData['user']['nickname']?.toString(),
+      fromUserName: itemData['user']['nickname'].toString(),
       fromUserAvatar: _avatar,
-      content: itemData['content']?.toString(),
+      content: itemData['content'].toString(),
       commentTime: _commentTime,
       from: itemData['from_string']?.toString(),
       toReplyExist: replyExist,
