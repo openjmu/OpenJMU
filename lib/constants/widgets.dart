@@ -11,7 +11,7 @@ import 'package:extended_text/extended_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/constants.dart';
+import '../constants/constants.dart' hide ImageFileType;
 import '../controller/extended_typed_network_image_provider.dart';
 
 export '../widgets/announcement/announcement_widget.dart';

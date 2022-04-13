@@ -36,7 +36,7 @@ import 'widgets/image/image_viewer.dart';
 FFRouteSettings getRouteSettings({
   @required String name,
   Map<String, dynamic> arguments,
-  Widget notFoundWidget,
+  PageBuilder notFoundPageBuilder,
 }) {
   final Map<String, dynamic> safeArguments =
       arguments ?? const <String, dynamic>{};
@@ -45,7 +45,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: AppCenterPage(
+        builder: () => AppCenterPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -56,21 +56,21 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: BackpackPage(),
+        builder: () => BackpackPage(),
         routeName: '背包页',
       );
     case 'openjmu://changelog-page':
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: ChangeLogPage(),
+        builder: () => ChangeLogPage(),
         routeName: '版本履历',
       );
     case 'openjmu://chat-app-message-page':
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: ChatAppMessagePage(
+        builder: () => ChatAppMessagePage(
           app: asT<WebApp>(
             safeArguments['app'],
           ),
@@ -84,7 +84,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: EditAvatarPage(
+        builder: () => EditAvatarPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -95,14 +95,14 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: FontScalePage(),
+        builder: () => FontScalePage(),
         routeName: '更改字号页',
       );
     case 'openjmu://home':
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: MainPage(
+        builder: () => MainPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -113,7 +113,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: ImageViewer(
+        builder: () => ImageViewer(
           index: asT<int>(
             safeArguments['index'],
           ),
@@ -138,7 +138,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: LoginPage(
+        builder: () => LoginPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -149,7 +149,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: NewsDetailPage(
+        builder: () => NewsDetailPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -163,7 +163,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: NotificationsPage(
+        builder: () => NotificationsPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -178,7 +178,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: PostDetailPage(
+        builder: () => PostDetailPage(
           post: asT<Post>(
             safeArguments['post'],
           ),
@@ -199,7 +199,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: PublishPostPage(
+        builder: () => PublishPostPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -210,7 +210,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: PublishTeamPostPage(
+        builder: () => PublishTeamPostPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -221,14 +221,14 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: ScanQrCodePage(),
+        builder: () => ScanQrCodePage(),
         routeName: '扫描二维码',
       );
     case 'openjmu://search':
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: SearchPage(
+        builder: () => SearchPage(
           content: asT<String>(
             safeArguments['content'],
           ),
@@ -239,7 +239,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: SettingsPage(
+        builder: () => SettingsPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -250,7 +250,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: SplashPage(
+        builder: () => SplashPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -261,7 +261,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: TeamPostDetailPage(
+        builder: () => TeamPostDetailPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -289,7 +289,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: TutorialPage(
+        builder: () => TutorialPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -300,7 +300,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: UserListPage(
+        builder: () => UserListPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -317,7 +317,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: UserPage(
+        builder: () => UserPage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -331,7 +331,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: name,
         arguments: arguments,
-        widget: UserQrCodePage(
+        builder: () => UserQrCodePage(
           key: asT<Key>(
             safeArguments['key'],
           ),
@@ -343,7 +343,7 @@ FFRouteSettings getRouteSettings({
       return FFRouteSettings(
         name: FFRoute.notFoundName,
         routeName: FFRoute.notFoundRouteName,
-        widget: notFoundWidget,
+        builder: notFoundPageBuilder ?? () => Container(),
       );
   }
 }

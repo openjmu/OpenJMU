@@ -266,7 +266,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
                     settings: settings,
                     getRouteSettings: getRouteSettings,
-                    notFoundWidget: NoRoutePage(route: settings.name),
+                    notFoundPageBuilder: () => NoRoutePage(
+                      route: settings.name,
+                    ),
                   ),
                   localizationsDelegates: Constants.localizationsDelegates,
                   supportedLocales: Constants.supportedLocales,
@@ -388,7 +390,10 @@ Future<void> _takeAppScreenshot() async {
     final ByteData byteData = await obtainScreenshotData(
       Instances.appRepaintBoundaryKey,
     );
-    await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
+    await PhotoManager.editor.saveImage(
+      byteData.buffer.asUint8List(),
+      title: 'OpenJMU_Screenshot_$currentTimeStamp.png',
+    );
     showToast('截图保存成功');
   } catch (e) {
     LogUtils.e('Error when taking app\'s screenshot: $e');

@@ -205,10 +205,11 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   Future<void> scanFromFile() async {
     final List<AssetEntity> entity = await AssetPicker.pickAssets(
       context,
-      maxAssets: 1,
-      themeColor: currentThemeColor,
-      requestType: RequestType.image,
-      selectedAssets: <AssetEntity>[],
+      pickerConfig: AssetPickerConfig(
+        maxAssets: 1,
+        themeColor: currentThemeColor,
+        requestType: RequestType.image,
+      ),
     );
     if (entity?.isEmpty ?? true) {
       return;

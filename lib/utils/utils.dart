@@ -92,26 +92,23 @@ Future<Uint8List> compressEntity(
   Uint8List data;
   if (entity.width > 0 && entity.height > 0) {
     if (entity.width >= 4000 || entity.height >= 5000) {
-      data = await entity.thumbDataWithSize(
-        entity.width ~/ 3,
-        entity.height ~/ 3,
+      data = await entity.thumbnailDataWithSize(
+        ThumbnailSize(entity.width ~/ 3, entity.height ~/ 3),
         quality: quality,
       );
     } else if (entity.width >= 2500 || entity.height >= 3500) {
-      data = await entity.thumbDataWithSize(
-        entity.width ~/ 2,
-        entity.height ~/ 2,
+      data = await entity.thumbnailDataWithSize(
+        ThumbnailSize(entity.width ~/ 2, entity.height ~/ 2),
         quality: quality,
       );
     } else {
-      data = await entity.thumbDataWithSize(
-        entity.width,
-        entity.height,
+      data = await entity.thumbnailDataWithSize(
+        ThumbnailSize(entity.width, entity.height),
         quality: quality,
       );
     }
   } else {
-    data = await entity.thumbData;
+    data = await entity.thumbnailData;
   }
   if (data.lengthInBytes >= limitation && quality > 5) {
     return await compressEntity(entity, extension, quality: quality - 5);

@@ -205,10 +205,13 @@ class LoginPageState extends State<LoginPage> with RouteAware {
   /// Logo on top.
   /// 顶部Logo
   Widget get topLogo {
-    return SvgPicture.asset(
-      R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
-      color: defaultLightColor,
-      height: 20.w,
+    return Tapper(
+      onLongPress: () => navigatorState.pushNamed(Routes.openjmuSettings.name),
+      child: SvgPicture.asset(
+        R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
+        color: defaultLightColor,
+        height: 20.w,
+      ),
     );
   }
 

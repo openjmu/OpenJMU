@@ -73,10 +73,11 @@ class _PostActionDialogState extends State<PostActionDialog> {
   Future<void> _addImage() async {
     final List<AssetEntity> entity = await AssetPicker.pickAssets(
       context,
-      maxAssets: 1,
-      themeColor: currentThemeColor,
-      requestType: RequestType.image,
-      selectedAssets: <AssetEntity>[],
+      pickerConfig: AssetPickerConfig(
+        maxAssets: 1,
+        themeColor: currentThemeColor,
+        requestType: RequestType.image,
+      ),
     );
     if (entity?.isEmpty ?? true) {
       return;
@@ -439,7 +440,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   child: Image(
                     image: AssetEntityImageProvider(
                       image,
-                      thumbSize: const <int>[84, 84],
+                      thumbnailSize: const ThumbnailSize.square(84),
                     ),
                     fit: BoxFit.cover,
                   ),

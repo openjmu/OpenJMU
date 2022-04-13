@@ -17,6 +17,7 @@ export 'package:intl/intl.dart' show DateFormat;
 export 'package:loading_more_list/loading_more_list.dart';
 export 'package:oktoast/oktoast.dart' hide showToast;
 export 'package:permission_handler/permission_handler.dart' show Permission;
+export 'package:photo_manager/photo_manager.dart';
 export 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart'
     hide CupertinoActivityIndicator;
 export 'package:url_launcher/url_launcher.dart';
@@ -24,6 +25,7 @@ export 'package:wechat_assets_picker/wechat_assets_picker.dart'
     hide ImageFileType;
 export 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+export '../../openjmu_routes.dart';
 export '../api/api.dart';
 export '../extensions/extensions.e.dart';
 export '../model/models.dart';

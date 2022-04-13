@@ -284,28 +284,41 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     unFocusTextField();
     final List<AssetEntity> ar = await AssetPicker.pickAssets(
       context,
-      selectedAssets: selectedAssets.value,
-      themeColor: currentThemeColor,
-      specialItemPosition: SpecialItemPosition.prepend,
-      specialItemBuilder: (_) => Tapper(
-        onTap: () async {
-          final AssetEntity cr = await CameraPicker.pickFromCamera(
-            context,
-            enableRecording: true,
-          );
-          if (cr != null) {
-            Navigator.of(context).pop(
-              <AssetEntity>[...selectedAssets.value, cr],
-            );
+      pickerConfig: AssetPickerConfig(
+        selectedAssets: selectedAssets.value,
+        themeColor: currentThemeColor,
+        specialItemPosition: SpecialItemPosition.prepend,
+        specialItemBuilder: (
+          BuildContext context,
+          AssetPathEntity path,
+          int length,
+        ) {
+          if (path?.isAll == false) {
+            return null;
           }
+          return Tapper(
+            onTap: () async {
+              final AssetEntity cr = await CameraPicker.pickFromCamera(
+                context,
+                pickerConfig: const CameraPickerConfig(
+                  enableRecording: true,
+                ),
+              );
+              if (cr != null) {
+                Navigator.of(context).pop(
+                  <AssetEntity>[...selectedAssets.value, cr],
+                );
+              }
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.photo_camera_rounded, size: 42.w),
+                Text('拍摄照片', style: TextStyle(fontSize: 16.sp)),
+              ],
+            ),
+          );
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.photo_camera_rounded, size: 42.w),
-            Text('拍摄照片', style: TextStyle(fontSize: 16.sp)),
-          ],
-        ),
       ),
     );
     if (ar != null) {
