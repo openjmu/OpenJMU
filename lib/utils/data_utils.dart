@@ -68,8 +68,6 @@ class DataUtils {
     UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
     NetUtils.post<void>(API.logout).whenComplete(() {
-      NetUtils.dio.clear();
-      NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
       NetUtils.webViewCookieManager.deleteAllCookies();

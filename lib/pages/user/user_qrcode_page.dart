@@ -38,7 +38,10 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         return;
       }
       final ByteData byteData = await obtainScreenshotData(previewContainer);
-      await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
+      await PhotoManager.editor.saveImage(
+        byteData.buffer.asUint8List(),
+        title: 'OJ_${currentUser.uid}_QR.jpg',
+      );
       showToast('保存成功');
     } catch (e) {
       showToast('保存失败');

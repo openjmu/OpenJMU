@@ -6,9 +6,10 @@ import 'package:dio/adapter.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:extended_image/extended_image.dart'
     show ExtendedNetworkImageProvider;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
     show Cookie, CookieManager;
+import 'package:flutter_socks_proxy/socks_proxy.dart';
 import 'package:open_file/open_file.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,7 +18,7 @@ class NetUtils {
   const NetUtils._();
 
   static const bool _isProxyEnabled = false;
-  static const String _proxyDestination = 'PROXY 192.168.1.23:8764';
+  static const String _proxyDestination = 'SOCKS5 192.168.0.103:9876';
 
   static const bool shouldLogRequest = false;
 
@@ -39,11 +40,6 @@ class NetUtils {
 
   /// Method to update ticket.
   static Future<void> updateTicket() async {
-    // Lock and clear dio while requesting new ticket.
-    dio
-      ..lock()
-      ..clear();
-
     if (await DataUtils.getTicket()) {
       LogUtils.d(
         'Ticket updated success with new ticket: ${currentUser.sid}',
@@ -51,8 +47,6 @@ class NetUtils {
     } else {
       LogUtils.e('Ticket updated error: ${currentUser.sid}');
     }
-    // Release lock.
-    dio.unlock();
   }
 
   static Future<void> initConfig() async {
@@ -93,11 +87,11 @@ class NetUtils {
     if (!Directory('${_d.path}/web_view_cookie_jar').existsSync()) {
       Directory('${_d.path}/web_view_cookie_jar').createSync();
     }
-    cookieJar = PersistCookieJar(
+    cookieJar = _PersistCookieJar(
       storage: FileStorage('${_d.path}/cookie_jar'),
       ignoreExpires: true,
     );
-    tokenCookieJar = PersistCookieJar(
+    tokenCookieJar = _PersistCookieJar(
       storage: FileStorage('${_d.path}/token_cookie_jar'),
       ignoreExpires: true,
     );
@@ -141,7 +135,7 @@ class NetUtils {
         ?.where((String element) => element.contains('filename'))
         ?.first;
     if (filename != null) {
-      final RegExp filenameReg = RegExp(r'filename=\"(.+)\"');
+      final RegExp filenameReg = RegExp(r'filename="(.+)"');
       filename = filenameReg.allMatches(filename).first.group(1);
       filename = Uri.decodeComponent(filename);
     } else {
@@ -319,7 +313,8 @@ class NetUtils {
 
   static HttpClient Function(HttpClient client) get _clientCreate {
     return (HttpClient client) {
-      if (_isProxyEnabled) {
+      if (!kReleaseMode && _isProxyEnabled) {
+        client = createProxyHttpClient();
         client.findProxy = (_) => _proxyDestination;
       }
       client.badCertificateCallback = (_, __, ___) => true;
@@ -327,8 +322,8 @@ class NetUtils {
     };
   }
 
-  static InterceptorsWrapper get _interceptor {
-    return InterceptorsWrapper(
+  static QueuedInterceptorsWrapper get _interceptor {
+    return QueuedInterceptorsWrapper(
       onError: (
         DioError e,
         ErrorInterceptorHandler handler,
@@ -357,5 +352,24 @@ class NetUtils {
         handler.reject(e);
       },
     );
+  }
+}
+
+class _PersistCookieJar extends PersistCookieJar {
+  _PersistCookieJar({
+    bool persistSession = true,
+    bool ignoreExpires = false,
+    Storage storage,
+  }) : super(
+          persistSession: persistSession,
+          ignoreExpires: ignoreExpires,
+          storage: storage,
+        );
+
+  @override
+  Future<void> deleteAll() async {
+    try {
+      await super.deleteAll();
+    } catch (_) {}
   }
 }

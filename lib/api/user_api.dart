@@ -36,8 +36,6 @@ class UserAPI {
       content: '您正在退出账号，请确认操作',
     );
     if (confirm) {
-      NetUtils.dio.clear();
-      NetUtils.tokenDio.clear();
       Instances.eventBus.fire(LogoutEvent());
     }
   }

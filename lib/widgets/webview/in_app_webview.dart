@@ -217,8 +217,12 @@ class _AppWebViewState extends State<AppWebView>
     );
   }
 
-  Future<void> onDownload(InAppWebViewController controller, Uri url) async {
-    final String _headRes = await NetUtils.head(url.toString());
+  Future<void> onDownload(
+    InAppWebViewController controller,
+    DownloadStartRequest downloadStartRequest,
+  ) async {
+    final uri = downloadStartRequest.url;
+    final String _headRes = await NetUtils.head(uri.toString());
     final bool hasRealName = _headRes != null;
     String filename;
     if (hasRealName) {
@@ -230,7 +234,7 @@ class _AppWebViewState extends State<AppWebView>
       context,
       title: hasRealName ? '文件下载确认' : '未知文件下载确认',
       content: '文件安全性未知，请确认下载\n\n'
-          '${url.host.notBreak}\n想要下载文件'
+          '${uri.host.notBreak}\n想要下载文件'
           '\n${hasRealName ? filename : '\n文件名称未知，将下载为 $filename'}',
       showConfirm: true,
       confirmLabel: '下载',
@@ -493,7 +497,7 @@ class _AppWebViewState extends State<AppWebView>
           '${consoleMessage.message}',
         );
       },
-      onDownloadStart: onDownload,
+      onDownloadStartRequest: onDownload,
       onWebViewCreated: (InAppWebViewController controller) {
         _webViewController = controller;
       },

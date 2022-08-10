@@ -103,7 +103,6 @@ class ThemesProvider with ChangeNotifier {
     return ThemeData.light().copyWith(
       brightness: Brightness.light,
       primaryColor: primaryColor,
-      primaryColorBrightness: Brightness.light,
       primaryColorLight: primaryColor,
       primaryColorDark: backgroundColor,
       canvasColor: backgroundColor,
@@ -135,9 +134,7 @@ class ThemesProvider with ChangeNotifier {
       ),
       colorScheme: ColorScheme(
         primary: currentColor,
-        primaryVariant: currentColor,
         secondary: currentColor,
-        secondaryVariant: currentColor,
         surface: Colors.white,
         background: backgroundColor,
         error: defaultLightColor,
@@ -181,7 +178,6 @@ class ThemesProvider with ChangeNotifier {
     return ThemeData.dark().copyWith(
       brightness: Brightness.dark,
       primaryColor: primaryColor,
-      primaryColorBrightness: Brightness.dark,
       primaryColorLight: backgroundColor,
       primaryColorDark: primaryColor,
       canvasColor: backgroundColor,
@@ -213,9 +209,7 @@ class ThemesProvider with ChangeNotifier {
       ),
       colorScheme: ColorScheme(
         primary: currentColor,
-        primaryVariant: currentColor,
         secondary: currentColor,
-        secondaryVariant: currentColor,
         surface: primaryColor,
         background: backgroundColor,
         error: defaultLightColor,

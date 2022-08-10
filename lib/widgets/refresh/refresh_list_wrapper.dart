@@ -139,7 +139,6 @@ class RefreshListWrapper extends StatelessWidget {
       pullBackCurve: Curves.easeInQuint,
       pullBackDuration: 1.seconds,
       child: LoadingMoreCustomScrollView(
-        rebuildCustomScrollView: true,
         controller: controller,
         slivers: <Widget>[
           PullToRefreshContainer((PullToRefreshScrollNotificationInfo info) {

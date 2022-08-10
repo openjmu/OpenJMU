@@ -10,12 +10,12 @@ import 'package:extended_image_library/src/_network_image_io.dart';
 import 'package:flutter/painting.dart';
 
 class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
-  ExtendedTypedNetworkImageProvider(String url)
-      : super(url, cacheRawData: true);
-
-  ImageFileType _imageType;
+  ExtendedTypedNetworkImageProvider(
+    String url,
+  ) : super(url, cacheRawData: true);
 
   ImageFileType get imageType => _imageType ?? _getType(rawImageData);
+  ImageFileType _imageType;
 
   @override
   Future<ui.Codec> instantiateImageCodec(

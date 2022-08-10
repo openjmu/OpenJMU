@@ -301,28 +301,29 @@ class _ScoresGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Score> scores =
-        context.watch<ScoresProvider>().scoresByTerm(term);
-    return GridView.count(
-      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.w),
-      crossAxisCount: 2,
-      childAspectRatio: 1.5,
-      children: List<Widget>.generate(
-        scores.length,
-        (int i) => Container(
-          margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.w),
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.w),
-            color: context.surfaceColor,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _name(context, scores[i]),
-              _score(context, scores[i]),
-              _timeAndPoint(context, scores[i]),
-            ],
+    return Selector<ScoresProvider, List<Score>>(
+      selector: (_, ScoresProvider p) => p.scoresByTerm(term),
+      builder: (_, List<Score> scores, __) => GridView.count(
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.w),
+        crossAxisCount: 2,
+        childAspectRatio: 1.5,
+        children: List<Widget>.generate(
+          scores.length,
+          (int i) => Container(
+            margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.w),
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.w),
+              color: context.surfaceColor,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _name(context, scores[i]),
+                _score(context, scores[i]),
+                _timeAndPoint(context, scores[i]),
+              ],
+            ),
           ),
         ),
       ),
