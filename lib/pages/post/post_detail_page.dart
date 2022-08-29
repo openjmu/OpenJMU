@@ -209,8 +209,8 @@ class PostDetailPageState extends State<PostDetailPage>
             PostDeletedEvent(widget.post.id, widget.fromPage, widget.index),
           );
         } catch (e) {
-          LogUtils.e(e.toString());
-          LogUtils.e(e.response?.toString());
+          LogUtil.e(e.toString());
+          LogUtil.e(e.response?.toString());
           _ldc.changeState(
             'failed',
             title: '动态删除失败',
@@ -361,7 +361,7 @@ class PostDetailPageState extends State<PostDetailPage>
                       color: context.theme.iconTheme.color,
                       width: iconSize.w,
                     ),
-                    Gap(8.w),
+                    Gap.h(8.w),
                     const Text('转发'),
                   ],
                 ),
@@ -384,7 +384,7 @@ class PostDetailPageState extends State<PostDetailPage>
                       color: context.theme.iconTheme.color,
                       width: iconSize.w,
                     ),
-                    Gap(8.w),
+                    Gap.h(8.w),
                     const Text('评论'),
                   ],
                 ),

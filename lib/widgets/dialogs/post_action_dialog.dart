@@ -13,23 +13,21 @@ import 'mention_people_dialog.dart';
 
 class PostActionDialog extends StatefulWidget {
   const PostActionDialog({
-    Key key,
-    @required this.post,
-    @required this.type,
+    Key? key,
+    required this.post,
+    required this.type,
     this.comment,
-  })  : assert(post != null),
-        assert(type != null),
-        super(key: key);
+  }) : super(key: key);
 
   final Post post;
   final PostActionType type;
-  final Comment comment;
+  final Comment? comment;
 
   static Future<void> show({
-    BuildContext context,
-    Post post,
-    PostActionType type,
-    Comment comment,
+    required BuildContext context,
+    required Post post,
+    required PostActionType type,
+    Comment? comment,
   }) {
     return showDialog(
       context: context,
@@ -54,9 +52,9 @@ class _PostActionDialogState extends State<PostActionDialog> {
   final ValueNotifier<bool> _requesting = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _hasExtraAction = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isEmoticonPadActive = ValueNotifier<bool>(false);
-  final ValueNotifier<AssetEntity> _image = ValueNotifier<AssetEntity>(null);
+  final ValueNotifier<AssetEntity?> _image = ValueNotifier<AssetEntity?>(null);
 
-  Comment get originComment => widget.comment;
+  Comment? get originComment => widget.comment;
 
   PostActionType get actionType => widget.type;
 
@@ -71,22 +69,24 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Future<void> _addImage() async {
-    final List<AssetEntity> entity = await AssetPicker.pickAssets(
+    final List<AssetEntity>? entity = await AssetPicker.pickAssets(
       context,
-      maxAssets: 1,
-      themeColor: currentThemeColor,
-      requestType: RequestType.image,
-      selectedAssets: <AssetEntity>[],
+      pickerConfig: AssetPickerConfig(
+        maxAssets: 1,
+        themeColor: currentThemeColor,
+        requestType: RequestType.image,
+        selectedAssets: <AssetEntity>[],
+      ),
     );
     if (entity?.isEmpty ?? true) {
       return;
     }
 
-    _image.value = entity.first;
+    _image.value = entity!.first;
   }
 
   Future<FormData> createForm(AssetEntity entity) async {
-    final File file = await entity.originFile;
+    final File file = (await entity.originFile)!;
     return FormData.fromMap(<String, dynamic>{
       'image': MultipartFile.fromFileSync(
         file.path,
@@ -101,7 +101,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
       API.postUploadImage,
       data: formData,
     );
-    return res.data;
+    return res.data!;
   }
 
   Future<void> _request(BuildContext context) async {
@@ -117,8 +117,8 @@ class _PostActionDialogState extends State<PostActionDialog> {
     } else {
       content = _tec.text;
       if (originComment != null) {
-        content = '回复:<M ${originComment.fromUserUid}>'
-            '@${originComment.fromUserName}</M> $content';
+        content = '回复:<M ${originComment!.fromUserUid}>'
+            '@${originComment!.fromUserName}</M> $content';
       }
     }
 
@@ -127,8 +127,9 @@ class _PostActionDialogState extends State<PostActionDialog> {
     /// Sending image if it exist.
     if (_image.value != null) {
       try {
-        final Map<String, dynamic> data =
-            await getImageRequest(await createForm(_image.value));
+        final Map<String, dynamic> data = await getImageRequest(
+          await createForm(_image.value!),
+        );
         content += ' |${data['image_id']}| ';
       } catch (e) {
         showCenterErrorToast('图片上传失败');
@@ -166,8 +167,8 @@ class _PostActionDialogState extends State<PostActionDialog> {
       Navigator.of(context).pop();
     } catch (e) {
       _requesting.value = false;
-      LogUtils.e('Post action type: $actionType, failed: $e');
-      if (e is DioError && e.response.statusCode == 404) {
+      LogUtil.e('Post action type: $actionType, failed: $e');
+      if (e is DioError && e.response?.statusCode == 404) {
         showToast('动态已被删除');
         Navigator.of(context).pop();
       } else {
@@ -180,7 +181,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
     showDialog<User>(
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
-    ).then((User user) {
+    ).then((User? user) {
       if (_focusNode.canRequestFocus) {
         _focusNode.requestFocus();
       }
@@ -236,12 +237,12 @@ class _PostActionDialogState extends State<PostActionDialog> {
                     ? SvgPicture.asset(
                         R.ASSETS_ICONS_POST_ACTIONS_SELECTED_SVG,
                         width: 24.w,
-                        color: context.textTheme.bodyText2.color,
+                        color: context.textTheme.bodyText2?.color,
                       )
                     : SvgPicture.asset(
                         R.ASSETS_ICONS_POST_ACTIONS_UN_SELECTED_SVG,
                         width: 24.w,
-                        color: context.textTheme.bodyText2.color,
+                        color: context.textTheme.bodyText2?.color,
                       ),
               ),
             ),
@@ -265,11 +266,11 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   hintText: actionType == PostActionType.forward
                       ? ' 同时评论到动态'
                       : originComment != null
-                          ? ' 同时转发　回复:@${originComment.fromUserName} '
+                          ? ' 同时转发　回复:@${originComment!.fromUserName} '
                           : ' 同时转发到动态',
                 ),
                 enabled: !value,
-                style: context.textTheme.bodyText2.copyWith(
+                style: context.textTheme.bodyText2?.copyWith(
                   height: 1.2,
                   fontSize: 20.sp,
                 ),
@@ -282,10 +283,10 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Widget _publishButton(BuildContext context) {
-    return ValueListenableBuilder2<TextEditingValue, AssetEntity>(
+    return ValueListenableBuilder2<TextEditingValue, AssetEntity?>(
       firstNotifier: _tec,
       secondNotifier: _image,
-      builder: (_, TextEditingValue tv, AssetEntity entity, __) {
+      builder: (_, TextEditingValue tv, AssetEntity? entity, __) {
         final bool canSend = tv.text.isNotEmpty || entity != null;
         return Tapper(
           onTap: canSend ? () => _request(context) : null,
@@ -332,10 +333,10 @@ class _PostActionDialogState extends State<PostActionDialog> {
   /// Button wrapper for the toolbar.
   /// 工具栏按钮封装
   Widget _toolbarButton({
-    String icon,
-    Color iconColor,
-    String text,
-    VoidCallback onTap,
+    required String icon,
+    Color? iconColor,
+    String? text,
+    VoidCallback? onTap,
   }) {
     Widget button = Tapper(
       onTap: onTap,
@@ -355,7 +356,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
               icon,
               width: 20.w,
               height: 20.w,
-              color: iconColor ?? context.textTheme.bodyText2.color,
+              color: iconColor ?? context.textTheme.bodyText2?.color,
             ),
             if (text != null)
               Text(
@@ -412,9 +413,9 @@ class _PostActionDialogState extends State<PostActionDialog> {
   }
 
   Widget _insertedImage(BuildContext context) {
-    return ValueListenableBuilder<AssetEntity>(
+    return ValueListenableBuilder<AssetEntity?>(
       valueListenable: _image,
-      builder: (_, AssetEntity image, __) {
+      builder: (_, AssetEntity? image, __) {
         if (image == null) {
           return const SizedBox.shrink();
         }
@@ -439,7 +440,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   child: Image(
                     image: AssetEntityImageProvider(
                       image,
-                      thumbSize: const <int>[84, 84],
+                      thumbnailSize: const ThumbnailSize.square(84),
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -461,7 +462,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
                       ),
                       child: SvgPicture.asset(
                         R.ASSETS_ICONS_POST_ACTIONS_DELETE_INSERTED_IMAGE_SVG,
-                        color: context.textTheme.bodyText2.color,
+                        color: context.textTheme.bodyText2?.color,
                         width: 10.w,
                         height: 10.w,
                       ),
@@ -497,7 +498,7 @@ class _PostActionDialogState extends State<PostActionDialog> {
                   child: Row(
                     children: <Widget>[
                       Expanded(child: textField(context)),
-                      Gap(16.w),
+                      Gap.h(16.w),
                       _publishButton(context),
                     ],
                   ),

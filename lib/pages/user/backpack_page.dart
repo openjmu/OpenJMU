@@ -27,7 +27,7 @@ class _BackpackPageState extends State<BackpackPage> {
     Future.wait<void>(
       <Future<dynamic>>[getMyItems(), getMyGiftBox()],
     ).catchError((dynamic e) {
-      LogUtils.e('Get backpack item error: $e');
+      LogUtil.e('Get backpack item error: $e');
     }).whenComplete(() {
       isLoading = false;
       if (mounted) {
@@ -60,7 +60,7 @@ class _BackpackPageState extends State<BackpackPage> {
       headers: _header,
     ))
             .data;
-    LogUtils.d(items);
+    LogUtil.d(items);
   }
 
   /// 使用指定物品
@@ -77,12 +77,12 @@ class _BackpackPageState extends State<BackpackPage> {
         headers: _header,
       ))
               .data;
-      LogUtils.d(result);
-      LogUtils.d(result['itemid_num'] as int);
-      LogUtils.d(result['getitems'][0]['count'] as int);
-      LogUtils.d(result['getitems'][0]['itemtype']);
+      LogUtil.d(result);
+      LogUtil.d(result['itemid_num'] as int);
+      LogUtil.d(result['getitems'][0]['count'] as int);
+      LogUtil.d(result['getitems'][0]['itemtype']);
     } catch (e) {
-      LogUtils.e('Use backpack item error: $e');
+      LogUtil.e('Use backpack item error: $e');
     }
   }
 
@@ -114,7 +114,7 @@ class _BackpackPageState extends State<BackpackPage> {
           style: TextStyle(fontSize: 24.sp),
           overflow: TextOverflow.ellipsis,
         ),
-        VGap(12.h),
+        Gap.v(12.h),
         Text(
           myItems[index].description,
           style: context.textTheme.bodyText2.copyWith(

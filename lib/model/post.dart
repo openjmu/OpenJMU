@@ -14,21 +14,21 @@ part of 'models.dart';
 /// [isLike] 当前用户是否已赞, [rootTopic] 原动态
 class Post {
   Post({
-    this.id,
-    this.uid,
-    this.postTime,
-    this.from,
-    this.glances,
-    this.category,
-    this.content,
-    this.pics,
-    this.rootTopic,
-    this.forwards,
-    this.comments,
-    this.praises,
+    this.id = 0,
+    this.uid = '0',
+    required this.postTime,
+    required this.from,
+    this.glances = 0,
+    required this.category,
+    this.content = '',
+    this.pics = const <Map<String, dynamic>>[],
+    required this.rootTopic,
+    this.forwards = 0,
+    this.comments = 0,
+    this.praises = 0,
     this.isLike = false,
-    this.user,
-    this.shouldFoldRootTopic,
+    required this.user,
+    this.shouldFoldRootTopic = false,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -47,7 +47,7 @@ class Post {
       from: json['from_string'] as String,
       glances: int.parse(json['glances'].toString()),
       category: json['category'] as String,
-      content: (json['article'] ?? json['content']) as String,
+      content: (json['article'] ?? json['content'] ?? '').toString(),
       pics: (json['image'] as List<dynamic>?)?.cast<Map<String, dynamic>>() ??
           <Map<String, dynamic>>[],
       forwards: json['forwards'].toString().toInt(),
@@ -68,7 +68,7 @@ class Post {
   final String category;
   final String content;
   final List<Map<String, dynamic>> pics;
-  final Map<String, dynamic> rootTopic;
+  final Map<String, dynamic>? rootTopic;
   final PostUser user;
   int forwards;
   int comments;
@@ -79,14 +79,14 @@ class Post {
   /// when it's been forward to much times.
   final bool shouldFoldRootTopic;
 
-  bool get isShield => content?.trim() == '此微博已经被屏蔽';
+  bool get isShield => content.trim() == '此微博已经被屏蔽';
 
   String get avatar => '${API.userAvatar}'
       '?uid=${user.uid}'
       '&size=f152'
       '&_t=${DateTime.now().millisecondsSinceEpoch}';
 
-  String get nickname => (user.nickname ?? user.uid).toString();
+  String get nickname => user.nickname;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -133,10 +133,10 @@ class Post {
 @immutable
 class PostUser {
   const PostUser({
-    this.uid,
-    this.nickname,
+    required this.uid,
+    required this.nickname,
     this.gender,
-    this.sysAvatar,
+    this.sysAvatar = true,
   });
 
   factory PostUser.fromJson(Map<String, dynamic> json) {
@@ -146,16 +146,16 @@ class PostUser {
       }
     });
     return PostUser(
-      uid: json['uid']?.toString(),
-      nickname: json['nickname'] as String,
-      gender: json['gender']?.toString()?.toIntOrNull(),
+      uid: json['uid'].toString(),
+      nickname: json['nickname'] as String? ?? json['uid'].toString(),
+      gender: json['gender']?.toString().toIntOrNull(),
       sysAvatar: json['sysavatar']?.toString() == '1',
     );
   }
 
   final String uid;
   final String nickname;
-  final int gender;
+  final int? gender;
   final bool sysAvatar;
 
   Map<String, dynamic> toJson() {

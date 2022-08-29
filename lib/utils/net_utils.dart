@@ -30,29 +30,22 @@ class NetUtils {
   // static bool get shouldUseWebVPN => webVpnNotifier.value;
   static bool get shouldUseWebVPN => false;
 
-  static PersistCookieJar cookieJar;
-  static PersistCookieJar tokenCookieJar;
-  static CookieManager cookieManager;
-  static CookieManager tokenCookieManager;
+  static late final PersistCookieJar cookieJar;
+  static late final PersistCookieJar tokenCookieJar;
+  static late final CookieManager cookieManager;
+  static late final CookieManager tokenCookieManager;
   static final web_view.CookieManager webViewCookieManager =
       web_view.CookieManager.instance();
 
   /// Method to update ticket.
   static Future<void> updateTicket() async {
-    // Lock and clear dio while requesting new ticket.
-    dio
-      ..lock()
-      ..clear();
-
     if (await DataUtils.getTicket()) {
-      LogUtils.d(
+      LogUtil.d(
         'Ticket updated success with new ticket: ${currentUser.sid}',
       );
     } else {
-      LogUtils.e('Ticket updated error: ${currentUser.sid}');
+      LogUtil.e('Ticket updated error: ${currentUser.sid}');
     }
-    // Release lock.
-    dio.unlock();
   }
 
   static Future<void> initConfig() async {
@@ -106,7 +99,7 @@ class NetUtils {
   }
 
   static List<Cookie> convertWebViewCookies(List<web_view.Cookie> cookies) {
-    if (cookies?.isNotEmpty != true) {
+    if (cookies.isNotEmpty) {
       return const <Cookie>[];
     }
     final List<Cookie> replacedCookies = cookies.map((web_view.Cookie cookie) {
@@ -124,10 +117,10 @@ class NetUtils {
   /// This request is targeted to get filename directly.
   static Future<String> head(
     String url, {
-    Map<String, dynamic> queryParameters,
-    Map<String, dynamic> data,
-    CancelToken cancelToken,
-    Options options,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? data,
+    CancelToken? cancelToken,
+    Options? options,
   }) async {
     final Response<dynamic> res = await dio.head<dynamic>(
       url,
@@ -135,17 +128,17 @@ class NetUtils {
       queryParameters: queryParameters,
       options: options ?? Options(followRedirects: true),
     );
-    String filename = res.headers
-        ?.value('content-disposition')
+    String? filename = res.headers
+        .value('content-disposition')
         ?.split('; ')
-        ?.where((String element) => element.contains('filename'))
-        ?.first;
+        .where((String element) => element.contains('filename'))
+        .first;
     if (filename != null) {
-      final RegExp filenameReg = RegExp(r'filename=\"(.+)\"');
-      filename = filenameReg.allMatches(filename).first.group(1);
+      final RegExp filenameReg = RegExp(r'filename="(.+)"');
+      filename = filenameReg.allMatches(filename).first.group(1) ?? filename;
       filename = Uri.decodeComponent(filename);
     } else {
-      filename = url.split('/').last.split('?')?.first;
+      filename = url.split('/').last.split('?').first;
     }
     return filename;
   }
@@ -155,34 +148,34 @@ class NetUtils {
   /// For now it provides response for image saving.
   static Future<Response<T>> getBytes<T>(
     String url, {
-    Map<String, dynamic> queryParameters,
-    Map<String, dynamic> headers,
-    CancelToken cancelToken,
-    Options options,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    CancelToken? cancelToken,
+    Options? options,
   }) =>
       dio.get<T>(
         url,
         queryParameters: queryParameters,
         cancelToken: cancelToken,
         options: (options ?? Options()).copyWith(
-          headers: headers ?? _buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid!),
           responseType: ResponseType.bytes,
         ),
       );
 
   static Future<Response<T>> get<T>(
     String url, {
-    Map<String, dynamic> queryParameters,
-    Map<String, dynamic> headers,
-    CancelToken cancelToken,
-    Options options,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    CancelToken? cancelToken,
+    Options? options,
   }) =>
       dio.get<T>(
         url,
         queryParameters: queryParameters,
         cancelToken: cancelToken,
         options: (options ?? Options()).copyWith(
-          headers: headers ?? _buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid!),
         ),
       );
 
@@ -199,18 +192,18 @@ class NetUtils {
         queryParameters: queryParameters,
         data: data,
         options: (options ?? Options()).copyWith(
-          headers: headers ?? _buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid!),
         ),
         cancelToken: cancelToken,
       );
 
   static Future<Response<T>> delete<T>(
     String url, {
-    Map<String, dynamic> queryParameters,
-    Map<String, dynamic> data,
-    Map<String, dynamic> headers,
-    CancelToken cancelToken,
-    Options options,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? headers,
+    CancelToken? cancelToken,
+    Options? options,
   }) =>
       dio.delete<T>(
         url,
@@ -218,7 +211,7 @@ class NetUtils {
         queryParameters: queryParameters,
         cancelToken: cancelToken,
         options: (options ?? Options()).copyWith(
-          headers: headers ?? _buildPostHeaders(currentUser.sid),
+          headers: headers ?? _buildPostHeaders(currentUser.sid!),
         ),
       );
 
@@ -227,19 +220,19 @@ class NetUtils {
   /// * Using [head] to get the 'content-disposition' in headers to determine
   ///   the real file name of the attachment.
   /// * Call [dio.download] to download the file with the real name.
-  static Future<Response<dynamic>> download(
+  static Future<Response<dynamic>?> download(
     String url,
     String filename, {
-    Map<String, dynamic> data,
-    Map<String, dynamic> headers,
-    CancelToken cancelToken,
-    Options options,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? headers,
+    CancelToken? cancelToken,
+    Options? options,
   }) async {
     String path;
     if (await checkPermissions(<Permission>[Permission.storage])) {
       showToast('开始下载 ...');
-      LogUtils.d('File start download: $url');
-      path = '${(await getExternalStorageDirectory()).path}/$filename';
+      LogUtil.d('File start download: $url');
+      path = '${(await getExternalStorageDirectory())!.path}/$filename';
       try {
         final Response<dynamic> response = await dio.download(
           url,
@@ -247,20 +240,20 @@ class NetUtils {
           data: data,
           cancelToken: cancelToken,
           options: (options ?? Options()).copyWith(
-            headers: headers ?? _buildPostHeaders(currentUser.sid),
+            headers: headers ?? _buildPostHeaders(currentUser.sid!),
           ),
         );
-        LogUtils.d('File downloaded: $path');
+        LogUtil.d('File downloaded: $path');
         showToast('下载完成 $path');
         final OpenResult openFileResult = await OpenFile.open(path);
-        LogUtils.d('File open result: ${openFileResult.type}');
+        LogUtil.d('File open result: ${openFileResult.type}');
         return response;
       } catch (e) {
-        LogUtils.e('File download failed: $e');
+        LogUtil.e('File download failed: $e');
         return null;
       }
     } else {
-      LogUtils.e('No permission to download file: $url');
+      LogUtil.e('No permission to download file: $url');
       showToast('未获得存储权限');
       return null;
     }
@@ -281,14 +274,14 @@ class NetUtils {
     return headers;
   }
 
-  static List<Cookie> _buildPHPSESSIDCookies(String sid) => <Cookie>[
+  static List<Cookie> _buildPHPSESSIDCookies(String? sid) => <Cookie>[
         if (sid != null) Cookie('PHPSESSID', sid),
         if (sid != null) Cookie('OAPSID', sid),
       ];
 
   static Future<void> updateDomainsCookies(
     List<String> urls, [
-    List<Cookie> cookies,
+    List<Cookie>? cookies,
   ]) async {
     final List<Cookie> _cookies =
         cookies ?? _buildPHPSESSIDCookies(currentUser.sid);
@@ -327,12 +320,12 @@ class NetUtils {
     };
   }
 
-  static InterceptorsWrapper get _interceptor {
-    return InterceptorsWrapper(
+  static QueuedInterceptorsWrapper get _interceptor {
+    return QueuedInterceptorsWrapper(
       onError: (
         DioError e,
         ErrorInterceptorHandler handler,
-      ) {
+      ) async {
         if (e.response?.isRedirect == true ||
             e.response?.statusCode == HttpStatus.movedPermanently ||
             e.response?.statusCode == HttpStatus.movedTemporarily ||
@@ -342,13 +335,13 @@ class NetUtils {
           return;
         }
         if (e.response?.statusCode == 401) {
-          LogUtils.e(
+          LogUtil.e(
             'Session is outdated, calling update...',
             withStackTrace: false,
           );
-          updateTicket();
+          await updateTicket();
         }
-        LogUtils.e(
+        LogUtil.e(
           'Error when requesting ${e.requestOptions.uri} '
           '${e.response?.statusCode}'
           ': ${e.response?.data}',

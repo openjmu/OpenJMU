@@ -110,7 +110,7 @@ class UserPageState extends State<UserPage>
         eagerError: true,
       );
     } catch (e) {
-      LogUtils.e('Failed in fetching user information: $e');
+      LogUtil.e('Failed in fetching user information: $e');
       return;
     }
   }
@@ -217,12 +217,12 @@ class UserPageState extends State<UserPage>
       child: Row(
         children: <Widget>[
           userAvatar,
-          Gap(16.w),
+          Gap.h(16.w),
           Expanded(
             child: Row(
               children: <Widget>[
                 Flexible(child: usernameWidget),
-                Gap(8.w),
+                Gap.h(8.w),
                 sexualWidget,
                 levelWidget,
               ],
@@ -562,7 +562,7 @@ class UserPageState extends State<UserPage>
             width: 100.w,
             color: context.theme.iconTheme.color,
           ),
-          VGap(20.w),
+          Gap.v(20.w),
           Text(
             '网络净土 一片祥和',
             style: TextStyle(
@@ -613,9 +613,9 @@ class UserPageState extends State<UserPage>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   _userInfo(context),
-                  VGap(6.w),
+                  Gap.v(6.w),
                   signatureWidget(context),
-                  VGap(16.w),
+                  Gap.v(16.w),
                   tagsWidget,
                   if (isCurrentUser) userTabBar,
                 ],

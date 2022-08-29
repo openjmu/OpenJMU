@@ -7,27 +7,21 @@ part of 'providers.dart';
 class WebAppsProvider extends ChangeNotifier {
   final Box<List<dynamic>> _box = HiveBoxes.webAppsBox;
   final Box<List<dynamic>> _commonBox = HiveBoxes.webAppsCommonBox;
-
-  Set<WebApp> _displayedWebApps = <WebApp>{};
-
-  Set<WebApp> _allWebApps = <WebApp>{};
-
-  Set<WebApp> get apps => _displayedWebApps;
-
-  Set<WebApp> get allApps => _allWebApps;
-
-  Map<String, Set<WebApp>> _appCategoriesList;
-
-  Map<String, Set<WebApp>> get appCategoriesList => _appCategoriesList;
-
   final int maxCommonWebApps = 4;
 
-  Set<WebApp> _commonWebApps = <WebApp>{};
+  Set<WebApp> get apps => _displayedWebApps;
+  Set<WebApp> _displayedWebApps = <WebApp>{};
+
+  Set<WebApp> get allApps => _allWebApps;
+  Set<WebApp> _allWebApps = <WebApp>{};
+
+  Map<String, Set<WebApp>> get appCategoriesList => _appCategoriesList;
+  late Map<String, Set<WebApp>> _appCategoriesList;
 
   Set<WebApp> get commonWebApps => _commonWebApps;
+  Set<WebApp> _commonWebApps = <WebApp>{};
 
   set commonWebApps(Set<WebApp> value) {
-    assert(value != null);
     if (value == _commonWebApps) {
       return;
     }
@@ -41,12 +35,10 @@ class WebAppsProvider extends ChangeNotifier {
 
   /// Whether the user is editing common apps.
   /// 用户是否正在编辑常用应用
+  bool get isEditingCommonApps => _isEditingCommonApps;
   bool _isEditingCommonApps = false;
 
-  bool get isEditingCommonApps => _isEditingCommonApps;
-
   set isEditingCommonApps(bool value) {
-    assert(value != null);
     if (value == _isEditingCommonApps) {
       return;
     }
@@ -70,11 +62,11 @@ class WebAppsProvider extends ChangeNotifier {
       _displayedWebApps.clear();
     }
     if (_box.get(currentUser.uid)?.isNotEmpty ?? false) {
-      _allWebApps = _box.get(currentUser.uid).cast<WebApp>().toSet();
+      _allWebApps = _box.get(currentUser.uid)!.cast<WebApp>().toSet();
       recoverApps();
     }
     if (_commonBox.get(currentUser.uid)?.isNotEmpty ?? false) {
-      _commonWebApps = _commonBox.get(currentUser.uid).cast<WebApp>().toSet();
+      _commonWebApps = _commonBox.get(currentUser.uid)!.cast<WebApp>().toSet();
     }
     updateApps();
   }
@@ -87,7 +79,7 @@ class WebAppsProvider extends ChangeNotifier {
     };
 
     for (final WebApp app in _allWebApps) {
-      if (app.name?.isNotEmpty ?? false) {
+      if (app.name.isNotEmpty) {
         if (!appFiltered(app)) {
           _tempSet.add(app);
         }
@@ -95,7 +87,7 @@ class WebAppsProvider extends ChangeNotifier {
             _tempCategoryList.containsKey(app.menuType) &&
             !appFiltered(app) &&
             (app.url?.isNotEmpty ?? false)) {
-          _tempCategoryList[app.menuType].add(app);
+          _tempCategoryList[app.menuType]!.add(app);
         }
       }
     }
@@ -113,7 +105,7 @@ class WebAppsProvider extends ChangeNotifier {
       for (final String key in categories.keys) key: <WebApp>{},
     };
     final List<Map<dynamic, dynamic>> data =
-        (await getAppList()).data.cast<Map<dynamic, dynamic>>();
+        (await getAppList()).data!.cast<Map<dynamic, dynamic>>();
 
     for (int i = 0; i < data.length; i++) {
       final WebApp _app = appWrapper(WebApp.fromJson(
@@ -127,7 +119,7 @@ class WebAppsProvider extends ChangeNotifier {
             _tempCategoryList.containsKey(_app.menuType) &&
             !appFiltered(_app) &&
             (_app.url?.isNotEmpty ?? false)) {
-          _tempCategoryList[_app.menuType].add(_app);
+          _tempCategoryList[_app.menuType]!.add(_app);
         }
         _tempAllSet.add(_app);
       }
@@ -163,7 +155,7 @@ class WebAppsProvider extends ChangeNotifier {
   }
 
   Future<void> saveCommonApps() async {
-    if (_commonBox.keys?.contains(currentUser.uid) ?? false) {
+    if (_commonBox.keys.contains(currentUser.uid)) {
       _commonBox.put(currentUser.uid, <WebApp>[]);
     }
     final List<WebApp> list = List<WebApp>.from(commonWebApps);

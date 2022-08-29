@@ -9,31 +9,29 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ConventionDialog extends StatefulWidget {
-  const ConventionDialog({
-    Key key,
-    this.shouldConfirm = true,
-  })  : assert(shouldConfirm != null),
-        super(key: key);
+  const ConventionDialog({super.key, this.shouldConfirm = true});
 
   final bool shouldConfirm;
 
   static Future<bool> show({
-    BuildContext context,
+    required BuildContext context,
     bool shouldConfirm = true,
-  }) =>
-      showDialog<bool>(
-        context: context,
-        builder: (_) => ConventionDialog(shouldConfirm: shouldConfirm),
-        barrierDismissible: false,
-      );
+  }) async {
+    final bool? result = await showDialog(
+      context: context,
+      builder: (_) => ConventionDialog(shouldConfirm: shouldConfirm),
+      barrierDismissible: false,
+    );
+    return result ?? false;
+  }
 
   @override
   _ConventionDialogState createState() => _ConventionDialogState();
 }
 
 class _ConventionDialogState extends State<ConventionDialog> {
-  Timer countDownTimer;
   final ValueNotifier<int> countDown = ValueNotifier<int>(5);
+  Timer? countDownTimer;
 
   bool get canSend => countDown.value == 0;
 
@@ -66,6 +64,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
 
   Widget get header {
     return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(
@@ -73,11 +72,9 @@ class _ConventionDialogState extends State<ConventionDialog> {
         ),
         color: context.theme.colorScheme.surface,
       ),
-      child: Center(
-        child: Text(
-          shouldConfirm ? '发布前提醒' : '平台公约',
-          style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
-        ),
+      child: Text(
+        shouldConfirm ? '发布前提醒' : '平台公约',
+        style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -274,16 +271,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
     return ValueListenableBuilder<int>(
       valueListenable: countDown,
       builder: (_, int value, __) => ConfirmationDialogAction(
-        child: Text(
-          () {
-            const String s = '发布';
-            if (canSend) {
-              return s;
-            } else {
-              return '$value 秒后可$s';
-            }
-          }(),
-        ),
+        child: Text(canSend ? '发布' : '$value 秒后可发布'),
         isDestructiveAction: true,
         color: !canSend ? context.iconTheme.color : null,
         onPressed: () {

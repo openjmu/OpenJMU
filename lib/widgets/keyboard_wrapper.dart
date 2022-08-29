@@ -10,28 +10,23 @@ import 'package:openjmu/utils/emoji_utils.dart';
 
 class EmojiKeyboardWrapper extends StatefulWidget {
   const EmojiKeyboardWrapper({
-    Key key,
-    @required this.child,
-    @required this.controller,
-    @required this.emoticonPadNotifier,
+    super.key,
+    required this.child,
+    required this.controller,
+    required this.emoticonPadNotifier,
     this.bottomPaddingColor,
-  })  : assert(child != null),
-        assert(controller != null),
-        assert(emoticonPadNotifier != null),
-        super(key: key);
+  }) ;
 
   final Widget child;
   final TextEditingController controller;
   final ValueNotifier<bool> emoticonPadNotifier;
-  final Color bottomPaddingColor;
+  final Color? bottomPaddingColor;
 
   @override
   _EmojiKeyboardWrapperState createState() => _EmojiKeyboardWrapperState();
 }
 
 class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
-  MediaQueryData get _mq => MediaQuery.of(context);
-
   double _keyboardHeight = 0;
 
   Widget _emoticonPad(BuildContext context) {
@@ -47,12 +42,12 @@ class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final double kh = _mq.viewInsets.bottom;
+    final MediaQueryData mq = MediaQuery.of(context);
+    final double kh = mq.viewInsets.bottom;
     if (kh > 0 && kh >= _keyboardHeight) {
       widget.emoticonPadNotifier.value = false;
     }
-    _keyboardHeight = math.max(kh, _keyboardHeight ?? 0);
-
+    _keyboardHeight = math.max(kh, _keyboardHeight);
     return Align(
       alignment: Alignment.bottomCenter,
       child: Material(
@@ -67,7 +62,7 @@ class _EmojiKeyboardWrapperState extends State<EmojiKeyboardWrapper> {
               builder: (_, bool value, __) => Container(
                 height: value
                     ? 0
-                    : math.max(_mq.viewInsets.bottom, _mq.padding.bottom),
+                    : math.max(mq.viewInsets.bottom, mq.padding.bottom),
                 color: widget.bottomPaddingColor ??
                     Theme.of(context).colorScheme.surface,
               ),

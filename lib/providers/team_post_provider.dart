@@ -22,11 +22,11 @@ class TeamPostProvider extends ChangeNotifier {
   void praised() {
     post.praisesCount++;
     post.isLike = true;
-    if (post.praisor != null) {
+    if (post.praisor.isNotEmpty) {
       post.praisor.add(
         PostUser(
           uid: UserAPI.currentUser.uid,
-          nickname: UserAPI.currentUser.name,
+          nickname: UserAPI.currentUser.name ?? UserAPI.currentUser.uid,
           sysAvatar: UserAPI.currentUser.sysAvatar,
         ),
       );
@@ -37,7 +37,7 @@ class TeamPostProvider extends ChangeNotifier {
   void unPraised() {
     post.praisesCount--;
     post.isLike = false;
-    if (post.praisor != null) {
+    if (post.praisor.isNotEmpty) {
       post.praisor.removeWhere(
         (PostUser user) => user.uid == UserAPI.currentUser.uid,
       );

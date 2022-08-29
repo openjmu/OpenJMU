@@ -7,26 +7,26 @@ import 'package:openjmu/constants/constants.dart';
 
 class PullToRefreshHeader extends StatelessWidget {
   const PullToRefreshHeader({
-    Key key,
+    Key? key,
     this.info,
     this.textStyle,
   }) : super(key: key);
 
-  final PullToRefreshScrollNotificationInfo info;
-  final TextStyle textStyle;
+  final PullToRefreshScrollNotificationInfo? info;
+  final TextStyle? textStyle;
 
   static Widget buildRefreshHeader(
     BuildContext context,
-    PullToRefreshScrollNotificationInfo info, {
-    TextStyle textStyle,
+    PullToRefreshScrollNotificationInfo? info, {
+    TextStyle? textStyle,
   }) {
     final double offset = info?.dragOffset ?? 0.0;
-    final RefreshIndicatorMode mode = info?.mode;
+    final RefreshIndicatorMode? mode = info?.mode;
 
     Widget child;
     if (mode == RefreshIndicatorMode.error) {
       child = GestureDetector(
-        onTap: info?.pullToRefreshNotificationState?.show,
+        onTap: info?.pullToRefreshNotificationState.show,
         child: SizedBox(
           height: offset,
           child: const Center(child: Text('点击重试')),
@@ -40,7 +40,7 @@ class PullToRefreshHeader extends StatelessWidget {
       child: DefaultTextStyle(
         style: textStyle ??
             TextStyle(
-              color: context.textTheme.caption.color.withOpacity(0.5),
+              color: context.textTheme.caption?.color?.withOpacity(0.5),
               fontSize: 18.sp,
               height: 1.4,
             ),
@@ -57,7 +57,7 @@ class PullToRefreshHeader extends StatelessWidget {
 
     bool isRefreshingMode = false;
     String text;
-    switch (info.mode) {
+    switch (info!.mode) {
       case RefreshIndicatorMode.snap:
       case RefreshIndicatorMode.refresh:
         isRefreshingMode = true;
@@ -96,7 +96,7 @@ class PullToRefreshHeader extends StatelessWidget {
               size: 32,
             ),
           ),
-          Gap(10.w),
+          Gap.h(10.w),
           Text(text),
         ],
       ),

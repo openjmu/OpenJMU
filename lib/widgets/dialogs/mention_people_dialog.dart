@@ -38,7 +38,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
       users.value = _users;
       isLoading.value = false;
     }).catchError((dynamic e) {
-      LogUtils.e('Failed when request search: $e');
+      LogUtil.e('Failed when request search: $e');
     }).whenComplete(() => isLoading.value == false);
   }
 
@@ -46,7 +46,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
     return Expanded(
       child: Text(
         '提及用户',
-        style: context.textTheme.headline6.copyWith(fontSize: 22.sp),
+        style: context.textTheme.headline6?.copyWith(fontSize: 22.sp),
       ),
     );
   }
@@ -89,7 +89,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
               hintText: ' 输入姓名/学号/工号进行搜索',
             ),
             textInputAction: TextInputAction.search,
-            style: context.textTheme.bodyText2.copyWith(
+            style: context.textTheme.bodyText2?.copyWith(
               height: 1.24,
               fontSize: 20.sp,
             ),
@@ -123,7 +123,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             }
             return SvgPicture.asset(
               R.ASSETS_ICONS_SELF_PAGE_SEARCH_SVG,
-              color: context.textTheme.bodyText2.color,
+              color: context.textTheme.bodyText2?.color,
               width: 28.w,
             );
           },
@@ -189,7 +189,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                   ),
                 ),
               ),
-              Gap(5.w),
+              Gap.h(5.w),
               Expanded(
                 child: Text(
                   user.nickname,
@@ -234,12 +234,12 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                         child: Row(
                           children: <Widget>[
                             searchField,
-                            Gap(16.w),
+                            Gap.h(16.w),
                             searchButton,
                           ],
                         ),
                       ),
-                      VGap(24.w),
+                      Gap.v(24.w),
                     ],
                   ),
                 ),
@@ -255,11 +255,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
 }
 
 class _UserWidget extends StatelessWidget {
-  const _UserWidget({
-    Key key,
-    @required this.user,
-  })  : assert(user != null),
-        super(key: key);
+  const _UserWidget({Key? key, required this.user}) : super(key: key);
 
   final User user;
 
@@ -291,7 +287,7 @@ class _UserWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Gap(5.w),
+              Gap.h(5.w),
               Expanded(
                 child: Text(
                   user.nickname,

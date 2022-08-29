@@ -13,9 +13,9 @@ import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamCommentPreviewCard extends StatelessWidget {
   const TeamCommentPreviewCard({
-    Key key,
-    @required this.topPost,
-    @required this.detailPageState,
+    Key? key,
+    required this.topPost,
+    required this.detailPageState,
   }) : super(key: key);
 
   final TeamPost topPost;
@@ -85,12 +85,12 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   padding: EdgeInsets.only(left: 6.w),
                   child: const DeveloperTag(),
                 ),
-              Gap(6.w),
+              Gap.h(6.w),
               _postTime(context, post),
               if (post.uid == topPost.uid)
                 Text(
                   ' (楼主)',
-                  style: context.textTheme.caption.copyWith(
+                  style: context.textTheme.caption?.copyWith(
                     height: 1.2,
                     fontSize: 17.sp,
                   ),
@@ -105,7 +105,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
       '${post.floor}L · ${TeamPostAPI.timeConverter(post)}',
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         height: 1.2,
         fontSize: 16.sp,
       ),
@@ -156,7 +156,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   ),
                 ],
               ),
-              style: context.textTheme.bodyText2.copyWith(
+              style: context.textTheme.bodyMedium?.copyWith(
                 height: 1.2,
                 fontSize: 17.sp,
               ),
@@ -171,7 +171,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   Widget _replyInfo(BuildContext context, TeamPost post) {
     return Tapper(
       onTap: () {
-        if (post.replyInfo?.isNotEmpty == true) {
+        if (post.replyInfo!.isNotEmpty) {
           FocusManager.instance.primaryFocus?.unfocus();
           final TeamPostProvider provider = TeamPostProvider(post);
           navigatorState.pushNamed(
@@ -193,10 +193,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: List<Widget>.generate(
-            post.replyInfo.length,
+            post.replyInfo!.length,
             (int index) => _replyItem(
               context,
-              post.replyInfo[index].cast<String, dynamic>(),
+              post.replyInfo![index].cast<String, dynamic>(),
             ),
           ),
         ),
@@ -206,9 +206,9 @@ class TeamCommentPreviewCard extends StatelessWidget {
 
   Widget _images(BuildContext context, TeamPost post) {
     final List<Widget> imagesWidget = List<Widget>.generate(
-      post.pics.length,
+      post.pics!.length,
       (int index) {
-        final Map<dynamic, dynamic> data = post.pics[index];
+        final Map<dynamic, dynamic> data = post.pics![index];
         final int imageId = data['fid'].toString().toInt();
         final String imageUrl = API.teamFile(fid: imageId);
         Widget _exImage = ExtendedImage.network(
@@ -218,7 +218,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
           color: currentIsDark ? Colors.black.withAlpha(50) : null,
           colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
           loadStateChanged: (ExtendedImageState state) {
-            Widget loader;
+            Widget? loader;
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
                 loader = DecoratedBox(
@@ -229,11 +229,11 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 );
                 break;
               case LoadState.completed:
-                final ImageInfo info = state.extendedImageInfo;
+                final ImageInfo? info = state.extendedImageInfo;
                 if (info != null) {
                   loader = ScaledImage(
                     image: info.image,
-                    length: post.pics.length,
+                    length: post.pics!.length,
                     num200: 200.sp,
                     num400: 400.sp,
                   );
@@ -251,7 +251,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
               Routes.openjmuImageViewer.name,
               arguments: Routes.openjmuImageViewer.d(
                 index: index,
-                pics: post.pics.map<ImageBean>((Map<dynamic, dynamic> data) {
+                pics: post.pics!.map<ImageBean>((Map<dynamic, dynamic> data) {
                   final int id = data['fid'].toString().toInt();
                   return ImageBean(
                     id: id,
@@ -274,12 +274,12 @@ class TeamCommentPreviewCard extends StatelessWidget {
       },
     );
     Widget _image;
-    if (post.pics.length == 1) {
+    if (post.pics!.length == 1) {
       _image = Align(
         alignment: Alignment.topLeft,
         child: imagesWidget[0],
       );
-    } else if (post.pics.length > 1) {
+    } else {
       _image = GridView.count(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
@@ -315,18 +315,18 @@ class TeamCommentPreviewCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               UserAvatar(uid: post.uid, isSysAvatar: post.userInfo.sysAvatar),
-              Gap(16.w),
+              Gap.h(16.w),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     _header(context, post),
-                    VGap(12.w),
+                    Gap.v(12.w),
                     _content(post),
-                    if (post.pics != null && post.pics.isNotEmpty)
+                    if (post.pics != null && post.pics!.isNotEmpty)
                       _images(context, post),
-                    if (post.replyInfo != null && post.replyInfo.isNotEmpty)
+                    if (post.replyInfo != null && post.replyInfo!.isNotEmpty)
                       _replyInfo(context, post),
                   ],
                 ),

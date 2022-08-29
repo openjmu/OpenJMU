@@ -9,7 +9,7 @@ import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/widgets/cards/team_post_preview_card.dart';
 
 class MarketingPage extends StatefulWidget {
-  const MarketingPage({Key key}) : super(key: key);
+  const MarketingPage({Key? key}) : super(key: key);
 
   @override
   _MarketingPageState createState() => _MarketingPageState();
@@ -59,7 +59,7 @@ class _MarketingPageState extends State<MarketingPage> {
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context, isTeam: true),
-          Gap(16.w),
+          Gap.h(16.w),
           MainPage.publishButton(
             context: context,
             route: Routes.openjmuPublishTeamPost.name,

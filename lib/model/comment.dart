@@ -34,7 +34,7 @@ class Comment {
   final int id;
   final int? floor;
   final String fromUserUid;
-  final String fromUserName;
+  final String? fromUserName;
   final String fromUserAvatar;
   final String content;
   final String commentTime;
@@ -68,7 +68,7 @@ class Comment {
       'toTopicUserName': toTopicUserName,
       'toReplyContent': toReplyContent,
       'toTopicContent': toTopicContent,
-      'post': post.toJson(),
+      'post': post?.toJson(),
       'user': user.toJson(),
     };
   }

@@ -11,10 +11,9 @@ import 'package:openjmu/constants/constants.dart';
 
 class AppMessagePreviewWidget extends StatefulWidget {
   const AppMessagePreviewWidget({
-    Key key,
-    @required this.message,
-  })  : assert(message != null),
-        super(key: key);
+    Key? key,
+    required this.message,
+  }) : super(key: key);
 
   final AppMessage message;
 
@@ -25,8 +24,8 @@ class AppMessagePreviewWidget extends StatefulWidget {
 
 class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     with AutomaticKeepAliveClientMixin {
-  Timer timeUpdateTimer;
-  String formattedTime;
+  Timer? timeUpdateTimer;
+  late String formattedTime;
 
   @override
   bool get wantKeepAlive => true;
@@ -63,11 +62,11 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return Selector<MessagesProvider, Map<int, List<dynamic>>>(
       selector: (_, MessagesProvider provider) => provider.appsMessages,
       builder: (_, Map<int, List<dynamic>> appsMessages, __) {
-        final List<dynamic> messages = appsMessages[widget.message.appId];
+        final List<dynamic> messages = appsMessages[widget.message.appId]!;
         final List<AppMessage> unreadMessages = messages
             .where((dynamic message) => !(message as AppMessage).read)
-            ?.toList()
-            ?.cast<AppMessage>();
+            .toList()
+            .cast<AppMessage>();
         if (unreadMessages.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -122,7 +121,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   Widget _name(BuildContext context, WebApp app) {
     return Text(
       '${app.name ?? app.appId}',
-      style: context.textTheme.bodyText2.copyWith(
+      style: context.textTheme.bodyText2?.copyWith(
         height: 1.2,
         fontSize: 20.sp,
         fontWeight: FontWeight.w500,
@@ -133,7 +132,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   Widget _sendTimeWidget(BuildContext context) {
     return Text(
       ' $formattedTime',
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         height: 1.2,
         fontSize: 18.sp,
       ),
@@ -143,7 +142,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   Widget _shortContent(BuildContext context) {
     return Text(
       widget.message.content ?? '',
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         fontSize: 19.sp,
       ),
       maxLines: 1,
@@ -192,13 +191,13 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            if (app != null) _name(context, app),
-                            if (app != null) Gap(5.w),
+                            _name(context, app),
+                            Gap.h(5.w),
                             _sendTimeWidget(context),
                             const Spacer(),
                           ],
                         ),
-                        VGap(8.w),
+                        Gap.v(8.w),
                         _shortContent(context),
                       ],
                     ),

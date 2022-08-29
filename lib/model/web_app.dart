@@ -12,9 +12,9 @@ part of 'models.dart';
 @HiveType(typeId: HiveAdapterTypeIds.webapp)
 class WebApp {
   const WebApp({
-    this.appId,
+    required this.appId,
     this.sequence,
-    this.code,
+    required this.code,
     this.name,
     this.url,
     this.menuType,
@@ -39,15 +39,15 @@ class WebApp {
   @HiveField(0)
   final int appId;
   @HiveField(1)
-  final int sequence;
+  final int? sequence;
   @HiveField(2)
   final String code;
   @HiveField(3)
-  final String name;
+  final String? name;
   @HiveField(4)
-  final String url;
+  final String? url;
   @HiveField(5)
-  final String menuType;
+  final String? menuType;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -72,11 +72,11 @@ class WebApp {
   /// Using [appId] and [code] to produce an unique id.
   String get uniqueId => '$appId-$code';
 
-  String get replacedUrl {
+  String? get replacedUrl {
     final RegExp sidReg = RegExp(r'{SID}');
     final RegExp uidReg = RegExp(r'{UID}');
-    final String result = url
-        .replaceAllMapped(sidReg, (Match match) => currentUser.sid.toString())
+    final String? result = url
+        ?.replaceAllMapped(sidReg, (Match match) => currentUser.sid.toString())
         .replaceAllMapped(uidReg, (Match match) => currentUser.uid.toString());
     return result;
   }

@@ -8,10 +8,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// [Tapper] 仅仅是为了实现点击时隐藏键盘
+/// [Tapper] 默认实现点击时隐藏键盘，以及以 [HitTestBehavior.opaque] 作为默认行为。
 class Tapper extends StatelessWidget {
   const Tapper({
-    Key key,
+    super.key,
     this.child,
     this.onTapDown,
     this.onTapUp,
@@ -51,59 +51,60 @@ class Tapper extends StatelessWidget {
     this.behavior = HitTestBehavior.opaque,
     this.excludeFromSemantics = false,
     this.dragStartBehavior = DragStartBehavior.start,
-  }) : super(key: key);
+  });
 
-  final Widget child;
-  final GestureTapDownCallback onTapDown;
-  final GestureTapUpCallback onTapUp;
-  final GestureTapCallback onTap;
-  final GestureTapCancelCallback onTapCancel;
-  final GestureTapDownCallback onSecondaryTapDown;
-  final GestureTapUpCallback onSecondaryTapUp;
-  final GestureTapCancelCallback onSecondaryTapCancel;
-  final GestureTapCallback onDoubleTap;
-  final GestureLongPressCallback onLongPress;
-  final GestureLongPressStartCallback onLongPressStart;
-  final GestureLongPressMoveUpdateCallback onLongPressMoveUpdate;
-  final GestureLongPressUpCallback onLongPressUp;
-  final GestureLongPressEndCallback onLongPressEnd;
-  final GestureDragDownCallback onVerticalDragDown;
-  final GestureDragStartCallback onVerticalDragStart;
-  final GestureDragUpdateCallback onVerticalDragUpdate;
-  final GestureDragEndCallback onVerticalDragEnd;
-  final GestureDragCancelCallback onVerticalDragCancel;
-  final GestureDragDownCallback onHorizontalDragDown;
-  final GestureDragStartCallback onHorizontalDragStart;
-  final GestureDragUpdateCallback onHorizontalDragUpdate;
-  final GestureDragEndCallback onHorizontalDragEnd;
-  final GestureDragCancelCallback onHorizontalDragCancel;
-  final GestureDragDownCallback onPanDown;
-  final GestureDragStartCallback onPanStart;
-  final GestureDragUpdateCallback onPanUpdate;
-  final GestureDragEndCallback onPanEnd;
-  final GestureDragCancelCallback onPanCancel;
-  final GestureScaleStartCallback onScaleStart;
-  final GestureScaleUpdateCallback onScaleUpdate;
-  final GestureScaleEndCallback onScaleEnd;
-  final GestureForcePressStartCallback onForcePressStart;
-  final GestureForcePressPeakCallback onForcePressPeak;
-  final GestureForcePressUpdateCallback onForcePressUpdate;
-  final GestureForcePressEndCallback onForcePressEnd;
+  final Widget? child;
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapCallback? onTap;
+  final GestureTapCancelCallback? onTapCancel;
+  final GestureTapDownCallback? onSecondaryTapDown;
+  final GestureTapUpCallback? onSecondaryTapUp;
+  final GestureTapCancelCallback? onSecondaryTapCancel;
+  final GestureTapCallback? onDoubleTap;
+  final GestureLongPressCallback? onLongPress;
+  final GestureLongPressStartCallback? onLongPressStart;
+  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
+  final GestureLongPressUpCallback? onLongPressUp;
+  final GestureLongPressEndCallback? onLongPressEnd;
+  final GestureDragDownCallback? onVerticalDragDown;
+  final GestureDragStartCallback? onVerticalDragStart;
+  final GestureDragUpdateCallback? onVerticalDragUpdate;
+  final GestureDragEndCallback? onVerticalDragEnd;
+  final GestureDragCancelCallback? onVerticalDragCancel;
+  final GestureDragDownCallback? onHorizontalDragDown;
+  final GestureDragStartCallback? onHorizontalDragStart;
+  final GestureDragUpdateCallback? onHorizontalDragUpdate;
+  final GestureDragEndCallback? onHorizontalDragEnd;
+  final GestureDragCancelCallback? onHorizontalDragCancel;
+  final GestureDragDownCallback? onPanDown;
+  final GestureDragStartCallback? onPanStart;
+  final GestureDragUpdateCallback? onPanUpdate;
+  final GestureDragEndCallback? onPanEnd;
+  final GestureDragCancelCallback? onPanCancel;
+  final GestureScaleStartCallback? onScaleStart;
+  final GestureScaleUpdateCallback? onScaleUpdate;
+  final GestureScaleEndCallback? onScaleEnd;
+  final GestureForcePressStartCallback? onForcePressStart;
+  final GestureForcePressPeakCallback? onForcePressPeak;
+  final GestureForcePressUpdateCallback? onForcePressUpdate;
+  final GestureForcePressEndCallback? onForcePressEnd;
   final HitTestBehavior behavior;
   final bool excludeFromSemantics;
   final DragStartBehavior dragStartBehavior;
 
   @override
   Widget build(BuildContext context) {
-    final bool isKeyboardShowing =
-        MediaQueryData.fromWindow(ui.window).viewInsets.bottom > 0;
     return GestureDetector(
       child: child,
       onTapDown: onTapDown,
       onTapUp: onTapUp,
       onTap: () {
-        if (isKeyboardShowing) {
+        if (MediaQueryData.fromWindow(ui.window).viewInsets.bottom > 0) {
           SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+        }
+        if (onTap != null) {
+          Feedback.forTap(context);
         }
         onTap?.call();
       },
@@ -147,15 +148,64 @@ class Tapper extends StatelessWidget {
 }
 
 class TapperWrapper extends StatelessWidget {
-  const TapperWrapper({
-    Key key,
-    @required this.child,
-  }) : super(key: key);
+  const TapperWrapper({super.key, required this.child});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Tapper(child: child);
+  }
+}
+
+/// This wrapper can ensure there will be only one pointer event can be handled.
+class SingleTapWrapper extends StatelessWidget {
+  const SingleTapWrapper({super.key, this.child});
+
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return RawGestureDetector(
+      gestures: <Type, GestureRecognizerFactory>{
+        _SingleTapRecognizer:
+            GestureRecognizerFactoryWithHandlers<_SingleTapRecognizer>(
+          () => _SingleTapRecognizer(),
+          (_SingleTapRecognizer instance) {},
+        ),
+      },
+      child: child,
+    );
+  }
+}
+
+class _SingleTapRecognizer extends OneSequenceGestureRecognizer {
+  @override
+  String get debugDescription => '_SingleTapRecognizer';
+
+  @override
+  void didStopTrackingLastPointer(int pointer) {}
+
+  @override
+  void handleEvent(PointerEvent event) {
+    if (!event.down && event.pointer == _p) {
+      _p = 0;
+    }
+  }
+
+  int _p = 0;
+
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    // First register the current pointer,
+    // in order to handle related events with the recognizer.
+    startTrackingPointer(event.pointer);
+    // Ignore events if another event is already in progress.
+    if (_p == 0) {
+      resolve(GestureDisposition.rejected);
+      _p = event.pointer;
+    } else {
+      resolve(GestureDisposition.accepted);
+    }
   }
 }

@@ -5,12 +5,10 @@
 part of 'providers.dart';
 
 class SignProvider extends ChangeNotifier {
+  bool get isSigning => _isSigning;
   bool _isSigning = false;
 
-  bool get isSigning => _isSigning;
-
   set isSigning(bool value) {
-    assert(value != null);
     if (value == _isSigning) {
       return;
     }
@@ -18,12 +16,10 @@ class SignProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get hasSigned => _hasSigned;
   bool _hasSigned = false;
 
-  bool get hasSigned => _hasSigned;
-
   set hasSigned(bool value) {
-    assert(value != null);
     if (value == _hasSigned) {
       return;
     }
@@ -31,12 +27,10 @@ class SignProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  int get signedCount => _signedCount;
   int _signedCount = 0;
 
-  int get signedCount => _signedCount;
-
   set signedCount(int value) {
-    assert(value != null);
     if (value == _signedCount) {
       return;
     }
@@ -47,9 +41,9 @@ class SignProvider extends ChangeNotifier {
   /// 获取签到状态
   Future<void> getSignStatus() async {
     try {
-      final bool signed = (await SignAPI.getTodayStatus()).data['status'] == 1;
+      final bool signed = (await SignAPI.getTodayStatus()).data!['status'] == 1;
       final int count =
-          ((await SignAPI.getSignList()).data['signdata']?.length ?? 0) as int;
+          ((await SignAPI.getSignList()).data!['signdata']?.length ?? 0) as int;
       _hasSigned = signed;
       _signedCount = count;
       // Automatically run sign request if the user is not signed.
@@ -57,7 +51,7 @@ class SignProvider extends ChangeNotifier {
         requestSign();
       }
     } catch (e) {
-      LogUtils.e('Failed when fetching sign status: $e');
+      LogUtil.e('Failed when fetching sign status: $e');
     } finally {
       notifyListeners();
     }
@@ -72,7 +66,7 @@ class SignProvider extends ChangeNotifier {
       _signedCount++;
       showToast('签到成功');
     } catch (e) {
-      LogUtils.e('Failed when requesting sign: $e');
+      LogUtil.e('Failed when requesting sign: $e');
       showErrorToast('签到失败');
     } finally {
       _isSigning = false;

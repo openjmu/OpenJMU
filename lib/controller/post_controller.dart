@@ -100,7 +100,7 @@ class _PostListState extends State<PostList>
         }
       })
       ..on<PostDeletedEvent>().listen((PostDeletedEvent event) {
-        LogUtils.d(
+        LogUtil.d(
           'PostDeleted: ${event.postId} / ${event.page} / ${event.index}',
         );
         if ((event.page == widget.postController.postType) &&
@@ -218,7 +218,7 @@ class _PostListState extends State<PostList>
           _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
     } catch (e) {
       error = true;
-      LogUtils.e('Failed when refresh post list: $e');
+      LogUtil.e('Failed when refresh post list: $e');
     }
 
     _isLoading = false;
@@ -238,7 +238,7 @@ class _PostListState extends State<PostList>
             width: 50.w,
             color: context.theme.iconTheme.color,
           ),
-          VGap(20.w),
+          Gap.v(20.w),
           Text(
             '空空如也，轻触重试',
             style: TextStyle(
@@ -262,7 +262,7 @@ class _PostListState extends State<PostList>
             width: 50.w,
             color: context.theme.iconTheme.color,
           ),
-          VGap(20.w),
+          Gap.v(20.w),
           Text(
             '加载失败，轻触重试',
             style: TextStyle(
@@ -310,7 +310,7 @@ class _PostListState extends State<PostList>
       ),
       controller: _scrollController,
       itemCount: _postList.length + 1,
-      itemBuilder: (BuildContext _, int index) {
+      itemBuilder: (_, int index) {
         if (index == _postList.length - 1 && _canLoadMore) {
           _loadData();
         }
@@ -433,9 +433,9 @@ class ForwardListInPostState extends State<ForwardListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      LogUtils.e('${e.response?.data ?? e.message}');
+      LogUtil.e('${e.response?.data ?? e.message}');
     } catch (e) {
-      LogUtils.e('Error when loading post list: $e');
+      LogUtil.e('Error when loading post list: $e');
     }
   }
 
@@ -474,9 +474,9 @@ class ForwardListInPostState extends State<ForwardListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      LogUtils.e('${e.response?.data ?? e.message}');
+      LogUtil.e('${e.response?.data ?? e.message}');
     } catch (e) {
-      LogUtils.e('Error when loading post list: $e');
+      LogUtil.e('Error when loading post list: $e');
     }
   }
 
@@ -518,7 +518,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           UserAvatar(uid: post.uid, isSysAvatar: post.user.sysAvatar),
-          Gap(16.w),
+          Gap.h(16.w),
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -532,11 +532,11 @@ class ForwardListInPostState extends State<ForwardListInPost>
                         padding: EdgeInsets.only(left: 6.w),
                         child: const DeveloperTag(),
                       ),
-                    Gap(4.w),
+                    Gap.h(4.w),
                     getPostTime(context, post),
                   ],
                 ),
-                VGap(12.w),
+                Gap.v(12.w),
                 getExtendedText(context, post.content),
               ],
             ),
@@ -563,7 +563,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
       extendedListDelegate: const ExtendedListDelegate(),
       separatorBuilder: (_, __) => const LineDivider(),
       itemCount: _posts.length + 1,
-      itemBuilder: (BuildContext _, int index) {
+      itemBuilder: (_, int index) {
         if (index == _posts.length - 1 && canLoadMore) {
           _loadList();
         }

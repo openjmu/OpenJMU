@@ -7,45 +7,42 @@ import 'package:package_info_plus/package_info_plus.dart';
 class PackageUtils {
   const PackageUtils._();
 
-  static PackageInfo _packageInfo;
+  static late final PackageInfo packageInfo;
+  static late final String currentVersion;
+  static late final int currentBuildNumber;
+  static late String remoteVersion = currentVersion;
+  static late int remoteBuildNumber = currentBuildNumber;
 
-  static PackageInfo get packageInfo => _packageInfo;
+  static String get appName => packageInfo.appName;
 
-  static String get version => _packageInfo.version;
-
-  static int get buildNumber => _packageInfo.buildNumber.toIntOrNull();
-
-  static String get appName => _packageInfo.appName;
-
-  static String get packageName => _packageInfo.packageName;
-
-  static String remoteVersion = version;
-  static int remoteBuildNumber = buildNumber;
+  static String get packageName => packageInfo.packageName;
 
   static Future<void> initPackageInfo() async {
-    _packageInfo = await PackageInfo.fromPlatform();
+    packageInfo = await PackageInfo.fromPlatform();
+    currentVersion = packageInfo.version;
+    currentBuildNumber = int.tryParse(packageInfo.buildNumber) ?? 1;
   }
 
   static void checkUpdate({bool isManually = false}) {
     NetUtils.get<Map<String, dynamic>>(API.checkUpdate).then(
       (Response<Map<String, dynamic>> res) {
-        final Map<String, dynamic> data = res.data;
+        final Map<String, dynamic> data = res.data!;
         updateChangelog(
           (data['changelog'] as List<dynamic>).cast<Map<dynamic, dynamic>>(),
         );
-        final int _currentBuild = buildNumber;
-        final int _remoteBuild = data['buildNumber'].toString().toIntOrNull();
-        final String _currentVersion = version;
+        final int currentBuild = currentBuildNumber;
+        final int remoteBuild = '${data['buildNumber']}'.toIntOrNull() ?? 1;
+        final String _currentVersion = currentVersion;
         final String _remoteVersion = data['version'] as String;
         final bool _forceUpdate = data['forceUpdate'] as bool;
-        LogUtils.d('Build: $_currentVersion+$_currentBuild'
+        LogUtil.d('Build: $_currentVersion+$currentBuild'
             ' | '
-            '$_remoteVersion+$_remoteBuild');
-        if (_currentBuild < _remoteBuild) {
+            '$_remoteVersion+$remoteBuild');
+        if (currentBuild < remoteBuild) {
           Instances.eventBus.fire(HasUpdateEvent(
             forceUpdate: _forceUpdate,
             currentVersion: _currentVersion,
-            currentBuild: _currentBuild,
+            currentBuild: currentBuild,
             response: data,
           ));
         } else {
@@ -54,10 +51,10 @@ class PackageUtils {
           }
         }
         remoteVersion = _remoteVersion;
-        remoteBuildNumber = _remoteBuild;
+        remoteBuildNumber = remoteBuild;
       },
     ).catchError((dynamic e) {
-      LogUtils.e('Failed when checking update: $e');
+      LogUtil.e('Failed when checking update: $e');
       if (!isManually) {
         Future<void>.delayed(30.seconds, checkUpdate);
       }
@@ -66,15 +63,14 @@ class PackageUtils {
 
   static Future<void> tryUpdate() async {
     if (Platform.isIOS) {
-      launch('itms-apps://apps.apple.com/cn/app/openjmu/id1459832676');
+      launchUrlString('itms-apps://apps.apple.com/cn/app/openjmu/id1459832676');
     } else {
-      if (await canLaunch('coolmarket://apk/$packageName')) {
-        launch('coolmarket://apk/$packageName');
+      if (await canLaunchUrlString('coolmarket://apk/$packageName')) {
+        launchUrlString('coolmarket://apk/$packageName');
       } else {
-        launch(
+        launchUrlString(
           'https://www.coolapk.com/apk/$packageName',
-          forceSafariVC: false,
-          forceWebView: false,
+          mode: LaunchMode.externalApplication,
         );
       }
     }
@@ -96,7 +92,7 @@ class PackageUtils {
         .map((Map<dynamic, dynamic> log) =>
             ChangeLog.fromJson(log as Map<String, dynamic>))
         .toList();
-    if (box.values == null) {
+    if (box.values.isEmpty) {
       await box.addAll(logs);
     } else {
       if (box.values.toString() != logs.toString()) {

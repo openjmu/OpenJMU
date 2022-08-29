@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class CommentCard extends StatelessWidget {
-  const CommentCard(
-    this.comment, {
-    Key key,
-  }) : super(key: key);
+  const CommentCard(this.comment, {super.key});
 
   final Comment comment;
 
@@ -27,11 +24,11 @@ class CommentCard extends StatelessWidget {
         isGlobal: false,
       );
       try {
-        await CommentAPI.deleteComment(comment.post.id, comment.id);
+        await CommentAPI.deleteComment(comment.post!.id, comment.id);
         _ldc.changeState('success', title: '评论删除成功');
-        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
+        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post!.id));
       } catch (e) {
-        LogUtils.e(e.toString());
+        LogUtil.e(e.toString());
         _ldc.changeState('failed', title: '评论删除失败');
       }
     }
@@ -43,20 +40,21 @@ class CommentCard extends StatelessWidget {
         context,
         actions: <ConfirmationBottomSheetAction>[
           if (comment.fromUserUid == currentUser.uid ||
-              comment.post.uid == currentUser.uid)
+              comment.post?.uid == currentUser.uid)
             ConfirmationBottomSheetAction(
               text: '删除评论',
               onTap: () => confirmDelete(context),
             ),
-          ConfirmationBottomSheetAction(
-            text: '回复评论',
-            onTap: () => PostActionDialog.show(
-              context: context,
-              post: comment.post,
-              type: PostActionType.reply,
-              comment: comment,
+          if (comment.post != null)
+            ConfirmationBottomSheetAction(
+              text: '回复评论',
+              onTap: () => PostActionDialog.show(
+                context: context,
+                post: comment.post!,
+                type: PostActionType.reply,
+                comment: comment,
+              ),
             ),
-          ),
           ConfirmationBottomSheetAction(
             text: '查看动态',
             onTap: () => navigatorState.pushNamed(
@@ -82,7 +80,7 @@ class CommentCard extends StatelessWidget {
       children: <Widget>[
         Text(
           comment.fromUserName ?? comment.fromUserUid,
-          style: context.textTheme.bodyText2.copyWith(
+          style: context.textTheme.bodyMedium?.copyWith(
             fontSize: 20.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -101,7 +99,7 @@ class CommentCard extends StatelessWidget {
       '${PostAPI.postTimeConverter(comment.commentTime)}  '
       '来自${comment.from}客户端',
       style: TextStyle(
-        color: currentTheme.textTheme.caption.color,
+        color: currentTheme.textTheme.caption?.color,
         fontSize: 16.sp,
       ),
     );
@@ -123,7 +121,7 @@ class CommentCard extends StatelessWidget {
   }
 
   Widget getRootContent(BuildContext context, Comment comment) {
-    final String content = comment.toReplyContent ?? comment.toTopicContent;
+    final String? content = comment.toReplyContent ?? comment.toTopicContent;
     if (content != null && content.isNotEmpty) {
       String topic;
       if (comment.toReplyExist) {
@@ -160,13 +158,13 @@ class CommentCard extends StatelessWidget {
         color: context.theme.canvasColor,
       ),
       child: DefaultTextStyle.merge(
-        style: context.textTheme.caption.copyWith(
+        style: context.textTheme.caption!.copyWith(
           height: 1.2,
           fontSize: 20.sp,
         ),
         child: Text(
           '该条微博已被屏蔽或删除',
-          style: TextStyle(color: context.textTheme.bodyText2.color),
+          style: TextStyle(color: context.textTheme.bodyMedium?.color),
         ),
       ),
     );
@@ -174,12 +172,12 @@ class CommentCard extends StatelessWidget {
 
   Widget getExtendedText(
     BuildContext context,
-    String content, {
+    String? content, {
     bool isRoot = false,
   }) {
     return ExtendedText(
-      content != null ? '$content ' : null,
-      style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
+      content != null ? '$content ' : '',
+      style: context.textTheme.bodyMedium?.copyWith(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       maxLines: 2,
       overflowWidget: contentOverflowWidget,
@@ -216,7 +214,7 @@ class CommentCard extends StatelessWidget {
                     uid: comment.fromUserUid,
                     isSysAvatar: comment.user.sysAvatar,
                   ),
-                  Gap(16.w),
+                  Gap.h(16.w),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

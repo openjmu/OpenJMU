@@ -8,9 +8,9 @@ part of 'models.dart';
 @HiveType(typeId: HiveAdapterTypeIds.emoji)
 class EmojiModel extends Equatable {
   const EmojiModel({
-    @required this.name,
-    @required this.filename,
-    String text,
+    required this.name,
+    required this.filename,
+    String? text,
   }) : _text = text ?? name;
 
   static const String dir = 'assets/emoji';

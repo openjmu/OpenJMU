@@ -3,27 +3,25 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class NoScaleTextWidget extends StatelessWidget {
-  const NoScaleTextWidget({@required this.child});
+  const NoScaleTextWidget({super.key, required this.child});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTextWidget(
-      scale: 1.0,
-      child: child,
-    );
+    return ScaleTextWidget(scale: 1, child: child);
   }
 }
 
 class MaxScaleTextWidget extends StatelessWidget {
   const MaxScaleTextWidget({
+    super.key,
+    required this.child,
     this.max = 1.0,
-    @required this.child,
   });
 
-  final double max;
   final Widget child;
+  final double max;
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +36,18 @@ class MaxScaleTextWidget extends StatelessWidget {
 
 class ScaleTextWidget extends StatelessWidget {
   const ScaleTextWidget({
-    Key key,
-    @required this.scale,
-    @required this.child,
-  }) : super(key: key);
+    super.key,
+    required this.scale,
+    required this.child,
+  });
 
   final double scale;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData data = MediaQuery.of(context);
-    final double scale = this.scale ?? data.textScaleFactor;
     return MediaQuery(
-      data: data.copyWith(textScaleFactor: scale),
+      data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
       child: child,
     );
   }

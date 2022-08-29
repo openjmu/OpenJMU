@@ -16,7 +16,7 @@ import 'package:openjmu/widgets/lazy_indexed_stack.dart';
 
 @FFRoute(name: 'openjmu://home', routeName: '首页')
 class MainPage extends StatefulWidget {
-  MainPage({Key key}) : super(key: key ?? Instances.mainPageStateKey);
+  MainPage({Key? key}) : super(key: key ?? Instances.mainPageStateKey);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
@@ -140,7 +140,7 @@ class MainPage extends StatefulWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Gap(8.w),
+                  Gap.h(8.w),
                   Container(
                     width: 14.w,
                     height: 14.w,
@@ -151,7 +151,7 @@ class MainPage extends StatefulWidget {
                       shape: BoxShape.circle,
                     ),
                   ),
-                  Gap(6.w),
+                  Gap.h(6.w),
                   Text(
                     'WebVPN 已连接',
                     style: TextStyle(height: 1.45, fontSize: 16.sp),
@@ -261,7 +261,7 @@ class MainPageState extends State<MainPage>
   void initState() {
     super.initState();
     DeviceUtils.setHighestRefreshRate();
-    LogUtils.d('CurrentUser ${UserAPI.currentUser}');
+    LogUtil.d('CurrentUser ${UserAPI.currentUser}');
 
     /// Initialize current page index.
     /// 设定初始页面

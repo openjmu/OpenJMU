@@ -195,7 +195,7 @@ class _CommentListState extends State<CommentList>
       padding: EdgeInsets.symmetric(vertical: 6.w),
       extendedListDelegate: const ExtendedListDelegate(),
       itemCount: _commentList.length + 1,
-      itemBuilder: (BuildContext _, int index) {
+      itemBuilder: (_, int index) {
         if (index == _commentList.length - 1) {
           _loadData();
         }
@@ -295,7 +295,7 @@ class CommentListInPostState extends State<CommentListInPost>
         _loadingDialogController.changeState('success', title: '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post!.id));
       } catch (e) {
-        LogUtils.e(e.toString());
+        LogUtil.e(e.toString());
         _loadingDialogController.changeState('failed', title: '评论删除失败');
       }
     }
@@ -376,7 +376,7 @@ class CommentListInPostState extends State<CommentListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      LogUtils.e('${e.response?.data ?? e.message}');
+      LogUtil.e('${e.response?.data ?? e.message}');
     }
   }
 
@@ -424,7 +424,7 @@ class CommentListInPostState extends State<CommentListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      LogUtils.e('${e.response?.data ?? e.message}');
+      LogUtil.e('${e.response?.data ?? e.message}');
     }
   }
 
@@ -459,8 +459,8 @@ class CommentListInPostState extends State<CommentListInPost>
   }
 
   String replaceMentionTag(String text) {
-    final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
-    final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
+    final RegExp mTagStartReg = RegExp(r'<M?\w+.*?/?>');
+    final RegExp mTagEndReg = RegExp(r'</M?\w+.*?/?>');
     final String commentText = text
         .replaceAllMapped(mTagStartReg, (_) => '')
         .replaceAllMapped(mTagEndReg, (_) => '');
@@ -487,7 +487,7 @@ class CommentListInPostState extends State<CommentListInPost>
                 uid: comment.fromUserUid,
                 isSysAvatar: comment.user.sysAvatar,
               ),
-              Gap(16.w),
+              Gap.h(16.w),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -502,11 +502,11 @@ class CommentListInPostState extends State<CommentListInPost>
                             padding: EdgeInsets.only(left: 6.w),
                             child: const DeveloperTag(),
                           ),
-                        Gap(6.w),
+                        Gap.h(6.w),
                         getCommentTime(context, comment),
                       ],
                     ),
-                    VGap(12.w),
+                    Gap.v(12.w),
                     getExtendedText(context, comment.content),
                   ],
                 ),
@@ -535,7 +535,7 @@ class CommentListInPostState extends State<CommentListInPost>
       extendedListDelegate: const ExtendedListDelegate(),
       separatorBuilder: (_, __) => const LineDivider(),
       itemCount: _comments.length + 1,
-      itemBuilder: (BuildContext _, int index) {
+      itemBuilder: (_, int index) {
         if (index == _comments.length - 1 && canLoadMore) {
           _loadList();
         }

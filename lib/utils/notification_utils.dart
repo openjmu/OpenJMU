@@ -18,9 +18,7 @@ class NotificationUtils {
   static void initSettings() {
     const AndroidInitializationSettings _settingsAndroid =
         AndroidInitializationSettings('ic_stat_name');
-    const IOSInitializationSettings _settingsIOS = IOSInitializationSettings(
-      onDidReceiveLocalNotification: _onReceive,
-    );
+    const IOSInitializationSettings _settingsIOS = IOSInitializationSettings();
     const InitializationSettings _settings = InitializationSettings(
       android: _settingsAndroid,
       iOS: _settingsIOS,
@@ -94,16 +92,9 @@ class NotificationUtils {
     return NotificationUtils.plugin.cancelAll();
   }
 
-  static Future<void> _onReceive(
-    int id,
-    String title,
-    String body,
-    String payload,
-  ) async {}
-
-  static Future<void> _onSelect(String payload) async {
+  static Future<void> _onSelect(String? payload) async {
     if (payload != null) {
-      LogUtils.d('notification payload: ' + payload);
+      LogUtil.d('notification payload: ' + payload);
     }
   }
 }

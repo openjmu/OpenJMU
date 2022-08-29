@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NewsListPage extends StatefulWidget {
-  const NewsListPage({Key key}) : super(key: key);
+  const NewsListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => NewsListPageState();
@@ -236,7 +236,7 @@ class NewsListPageState extends State<NewsListPage>
                   ),
                   shrinkWrap: true,
                   controller: _scrollController,
-                  separatorBuilder: (_, __) => VGap(1.w),
+                  separatorBuilder: (_, __) => Gap.v(1.w),
                   itemCount: newsList.length + 1,
                   itemBuilder: (_, int index) {
                     if (index == newsList.length) {

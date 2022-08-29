@@ -9,37 +9,34 @@ class DateProvider extends ChangeNotifier {
     initCurrentWeek();
   }
 
-  DateTime _startDate;
+  Timer? _fetchCurrentWeekTimer;
 
-  DateTime get startDate => _startDate;
+  DateTime? get startDate => _startDate;
+  DateTime? _startDate;
 
-  set startDate(DateTime value) {
+  set startDate(DateTime? value) {
     _startDate = value;
     notifyListeners();
   }
 
-  Timer _fetchCurrentWeekTimer;
-
-  int _currentWeek = 0;
-
   int get currentWeek => _currentWeek;
+  int _currentWeek = 0;
 
   set currentWeek(int value) {
     _currentWeek = value;
     notifyListeners();
   }
 
-  int _difference;
+  int? get difference => _difference;
+  int? _difference;
 
-  int get difference => _difference;
-
-  set difference(int value) {
+  set difference(int? value) {
     _difference = value;
     notifyListeners();
   }
 
   Future<void> initCurrentWeek() async {
-    final DateTime _dateInCache = HiveBoxes.startWeekBox.get('startDate');
+    final DateTime? _dateInCache = HiveBoxes.startWeekBox.get('startDate');
     if (_dateInCache != null) {
       _startDate = _dateInCache;
       _handleCurrentWeek();
@@ -53,12 +50,11 @@ class DateProvider extends ChangeNotifier {
   }
 
   void _handleCurrentWeek() {
-    final int _d = _startDate.difference(currentTime).inDays;
+    final int _d = _startDate!.difference(currentTime).inDays;
     if (_difference != _d) {
       _difference = _d;
     }
-
-    final int _w = -((_difference - 1) / 7).floor();
+    final int _w = -((_difference! - 1) / 7).floor();
     if (_currentWeek != _w) {
       _currentWeek = _w;
       notifyListeners();
@@ -69,28 +65,28 @@ class DateProvider extends ChangeNotifier {
   Future<void> getCurrentWeek() async {
     final Box<DateTime> box = HiveBoxes.startWeekBox;
     try {
-      DateTime _day;
+      DateTime? _day;
       _day = box.get('startDate');
       final Response<Map<String, dynamic>> res = await NetUtils.get(
         API.firstDayOfTerm,
       );
-      final Map<String, dynamic> data = res.data;
+      final Map<String, dynamic> data = res.data!;
       final DateTime onlineDate = DateTime.parse(data['start'] as String);
       if (_day != onlineDate) {
         _day = onlineDate;
       }
       if (_startDate == null) {
-        updateStartDate(_day);
+        updateStartDate(_day!);
       } else {
         if (_startDate != _day) {
-          updateStartDate(_day);
+          updateStartDate(_day!);
         }
       }
 
       _handleCurrentWeek();
       _fetchCurrentWeekTimer?.cancel();
     } catch (e) {
-      LogUtils.e('Failed when fetching current week: $e');
+      LogUtil.e('Failed when fetching current week: $e');
       startFetchCurrentWeekTimer();
     }
   }

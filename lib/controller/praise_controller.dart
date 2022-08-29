@@ -255,9 +255,9 @@ class PraiseListInPostState extends State<PraiseListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      LogUtils.e(e.response?.data ?? e.message);
+      LogUtil.e(e.response?.data ?? e.message);
     } catch (e) {
-      LogUtils.e(e);
+      LogUtil.e(e);
     }
   }
 
@@ -287,9 +287,9 @@ class PraiseListInPostState extends State<PraiseListInPost>
         setState(() {});
       }
     } on DioError catch (e) {
-      LogUtils.e(e.response?.data ?? e.message);
+      LogUtil.e(e.response?.data ?? e.message);
     } catch (e) {
-      LogUtils.e(e);
+      LogUtil.e(e);
     }
   }
 

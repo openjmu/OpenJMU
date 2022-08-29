@@ -79,7 +79,7 @@ class SearchPageState extends State<SearchPage>
         userList.add(u);
       }
     }).catchError((dynamic e) {
-      LogUtils.e('Error when get users: $e');
+      LogUtil.e('Error when get users: $e');
     });
   }
 
@@ -105,7 +105,7 @@ class SearchPageState extends State<SearchPage>
         postList.add(p);
       }
     }).catchError((dynamic e) {
-      LogUtils.e('Error when searching posts: $e');
+      LogUtil.e('Error when searching posts: $e');
     });
   }
 
@@ -265,13 +265,13 @@ class SearchPageState extends State<SearchPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  VGap(2.w),
+                  Gap.v(2.w),
                   UserAvatar(
                     uid: userList[index].id,
                     size: 56,
                     isSysAvatar: userList[index].sysAvatar,
                   ),
-                  VGap(12.w),
+                  Gap.v(12.w),
                   Text(
                     userList[index].nickname.notBreak,
                     style: TextStyle(height: 1.2, fontSize: 18.sp),
@@ -352,7 +352,7 @@ class SearchPageState extends State<SearchPage>
           width: 50.w,
           color: context.theme.iconTheme.color,
         ),
-        VGap(20.w),
+        Gap.v(20.w),
         Text(
           '无搜索结果',
           style: TextStyle(

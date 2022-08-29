@@ -6,7 +6,7 @@ import 'package:openjmu/widgets/messages/app_message_preview_widget.dart';
 //import 'package:openjmu/widgets/messages/message_preview_widget.dart';
 
 class MessagePage extends StatelessWidget {
-  const MessagePage({Key key}) : super(key: key);
+  const MessagePage({Key? key}) : super(key: key);
 
   Widget _readAllButton(BuildContext context) {
     return Tapper(
@@ -106,7 +106,7 @@ class MessagePage extends StatelessWidget {
                 width: 50.w,
                 color: context.theme.iconTheme.color,
               ),
-              VGap(20.w),
+              Gap.v(20.w),
               Text(
                 '无新消息',
                 style: TextStyle(
@@ -227,7 +227,7 @@ class _AnnouncementItemWidget extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            VGap(12.w),
+            Gap.v(12.w),
             ExtendedText(
               item['content'] as String,
               style: const TextStyle(height: 1.4),

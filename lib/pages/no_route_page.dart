@@ -7,12 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NoRoutePage extends StatelessWidget {
-  const NoRoutePage({
-    Key key,
-    @required this.route,
-  }) : super(key: key);
+  const NoRoutePage({Key? key, this.route}) : super(key: key);
 
-  final String route;
+  final String? route;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +20,11 @@ class NoRoutePage extends StatelessWidget {
           Text.rich(
             TextSpan(
               children: <InlineSpan>[
-                const TextSpan(text: 'You\'re visiting\n'),
+                const TextSpan(text: "You're visiting\n"),
                 TextSpan(
-                    text: '$route\n',
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                  text: '${route ?? 'unknown route'}\n',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const TextSpan(text: 'which result nothing...'),
               ],
               style: TextStyle(fontSize: 22.sp),

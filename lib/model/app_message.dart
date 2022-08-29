@@ -51,7 +51,7 @@ class AppMessage extends HiveObject {
       permissionCode: json['permissionCode']?.toString(),
       messageId: json['messageId'] as int,
       messageType: json['messageType'] as int,
-      sendTime: DateTime.parse(json['sendTime']?.toString()),
+      sendTime: DateTime.parse(json['sendTime'].toString()),
       ackId: json['ackId'] as int,
       content: json['content']?.toString(),
       read: json['read'] as bool,
@@ -63,13 +63,13 @@ class AppMessage extends HiveObject {
   @HiveField(1)
   String permissionCode;
   @HiveField(2)
-  int messageId;
+  int? messageId;
   @HiveField(3)
   int messageType;
   @HiveField(4)
   DateTime sendTime;
   @HiveField(5)
-  int ackId;
+  int? ackId;
   @HiveField(6)
   String content;
   @HiveField(7)

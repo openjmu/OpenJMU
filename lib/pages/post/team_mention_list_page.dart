@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamMentionListPage extends StatefulWidget {
-  const TeamMentionListPage({Key key}) : super(key: key);
+  const TeamMentionListPage({Key? key}) : super(key: key);
 
   @override
   _TeamMentionListPageState createState() => _TeamMentionListPageState();
@@ -62,7 +62,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage>
       child: Row(
         children: <Widget>[
           UserAvatar(uid: item.fromUserId, isSysAvatar: item.user.sysAvatar),
-          Gap(16.w),
+          Gap.h(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

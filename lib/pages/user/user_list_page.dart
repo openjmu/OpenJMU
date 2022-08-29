@@ -250,7 +250,7 @@ class _UserItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _name(context),
-                  VGap(10.w),
+                  Gap.v(10.w),
                   Row(
                     children: <Widget>[
                       _CountWidget(name: '关注', value: wrapper.idols),

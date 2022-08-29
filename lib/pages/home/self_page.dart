@@ -108,7 +108,7 @@ class SelfPage extends StatelessWidget {
                 widget = Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    if (provider.hasSigned) VGap(2.w),
+                    if (provider.hasSigned) Gap.v(2.w),
                     if (provider.hasSigned)
                       SvgPicture.asset(
                         R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG,
@@ -167,7 +167,7 @@ class SelfPage extends StatelessWidget {
                 width: 45.w,
               ),
             ),
-            Gap(12.w),
+            Gap.h(12.w),
             Expanded(
               child: Text(
                 item['name'] as String,
@@ -195,7 +195,7 @@ class SelfPage extends StatelessWidget {
             size: 64,
             isSysAvatar: UserAPI.currentUser.sysAvatar,
           ),
-          Gap(20.w),
+          Gap.h(20.w),
           Expanded(
             child: Text(
               currentUser.name,
@@ -220,7 +220,7 @@ class SelfPage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.w),
       child: Consumer<WebAppsProvider>(
-        builder: (BuildContext _, WebAppsProvider provider, Widget __) {
+        builder: (_, WebAppsProvider provider, Widget __) {
           final Set<WebApp> commonWebApps = provider.commonWebApps;
           return Container(
             height: 212.w,
@@ -308,7 +308,7 @@ class SelfPage extends StatelessWidget {
                 color: context.iconTheme.color,
               ),
             ),
-            Gap(18.w),
+            Gap.h(18.w),
             Text(
               '全部应用',
               style: TextStyle(height: 1.2, fontSize: 20.sp),
@@ -348,16 +348,16 @@ class SelfPage extends StatelessWidget {
           showDialog<void>(
             context: context,
             barrierDismissible: true,
-            builder: (BuildContext _) => ManuallySetSidDialog(),
+            builder: (_) => ManuallySetSidDialog(),
           );
         } else {
           NetUtils.updateTicket();
         }
       },
       child: Selector<DateProvider, int>(
-        selector: (BuildContext _, DateProvider provider) =>
+        selector: (_, DateProvider provider) =>
             provider.currentWeek,
-        builder: (BuildContext _, int currentWeek, Widget __) {
+        builder: (_, int currentWeek, Widget __) {
           if (currentWeek != null) {
             return Container(
               margin: EdgeInsets.only(bottom: 10.h),
@@ -454,9 +454,9 @@ class SelfPage extends StatelessWidget {
                         Expanded(
                           child: ListView.separated(
                             padding: EdgeInsets.symmetric(vertical: 12.w),
-                            separatorBuilder: (_, __) => VGap(24.h),
+                            separatorBuilder: (_, __) => Gap.v(24.h),
                             itemCount: settingsSection.length,
-                            itemBuilder: (BuildContext _, int index) =>
+                            itemBuilder: (_, int index) =>
                                 settingItem(context, index),
                           ),
                         ),

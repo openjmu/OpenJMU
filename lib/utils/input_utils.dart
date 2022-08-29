@@ -21,14 +21,11 @@ class InputUtils {
   /// [selectionOffset] Selection offset after text was inserted compare to origin.
   /// 插入文字后，可手动设置光标相对原本光标的偏移量。默认为文字长度。
   static int insertText({
-    @required String text,
-    @required TextEditingController controller,
-    State<dynamic> state,
-    int selectionOffset,
+    required String text,
+    required TextEditingController controller,
+    State<dynamic>? state,
+    int? selectionOffset,
   }) {
-    assert(text != null, 'text cannot be null');
-    assert(controller != null, 'controller cannot be null');
-
     final TextEditingValue value = controller.value;
     final int start = value.selection.baseOffset;
     final int end = value.selection.extentOffset;
@@ -55,7 +52,7 @@ class InputUtils {
       );
       if (state?.mounted == true) {
         // ignore: invalid_use_of_protected_member
-        state.setState(() {});
+        state?.setState(() {});
       }
     }
     return controller.text.length;

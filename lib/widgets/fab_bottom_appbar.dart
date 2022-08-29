@@ -13,9 +13,9 @@ class FABBottomAppBarItem {
           'cannot set icon and child at the same time.',
         );
 
-  final String iconPath;
-  final String text;
-  final Widget child;
+  final String? iconPath;
+  final String? text;
+  final Widget? child;
 
   @override
   String toString() {
@@ -25,9 +25,8 @@ class FABBottomAppBarItem {
 
 class FABBottomAppBar extends StatelessWidget {
   const FABBottomAppBar({
-    this.index,
-    this.items,
-    this.centerItemText,
+    required this.index,
+    this.items = const <FABBottomAppBarItem>[],
     this.height = 64.0,
     this.iconSize = 28.0,
     this.itemFontSize = 18.0,
@@ -41,15 +40,14 @@ class FABBottomAppBar extends StatelessWidget {
 
   final int index;
   final List<FABBottomAppBarItem> items;
-  final String centerItemText;
   final double height;
   final double iconSize;
   final double itemFontSize;
-  final Color backgroundColor;
-  final Color color;
-  final Color selectedColor;
-  final NotchedShape notchedShape;
-  final ValueChanged<int> onTabSelected;
+  final Color? backgroundColor;
+  final Color? color;
+  final Color? selectedColor;
+  final NotchedShape? notchedShape;
+  final ValueChanged<int>? onTabSelected;
   final bool showText;
 
   int get _selectedIndex => index;
@@ -57,10 +55,7 @@ class FABBottomAppBar extends StatelessWidget {
   void _updateIndex(int index) {
     if (index <= 1 && index == _selectedIndex) {
       Instances.eventBus.fire(
-        ScrollToTopEvent(
-          tabIndex: index,
-          type: items[index].text,
-        ),
+        ScrollToTopEvent(tabIndex: index, type: items[index].text),
       );
     }
     if (_selectedIndex == index) {
@@ -70,9 +65,9 @@ class FABBottomAppBar extends StatelessWidget {
   }
 
   Widget _buildTabItem({
-    FABBottomAppBarItem item,
-    int index,
-    ValueChanged<int> onPressed,
+    required FABBottomAppBarItem item,
+    required int index,
+    required ValueChanged<int> onPressed,
   }) {
     final bool isSelected = _selectedIndex == index;
     return Expanded(
@@ -89,15 +84,15 @@ class FABBottomAppBar extends StatelessWidget {
                   children: <Widget>[
                     item.child ??
                         SvgPicture.asset(
-                          item.iconPath,
+                          item.iconPath!,
                           color: isSelected ? selectedColor : color,
                           width: iconSize.w,
                           height: iconSize.w,
                         ),
-                    if (showText) VGap((iconSize / 8).w),
+                    if (showText) Gap.v((iconSize / 8).w),
                     if (showText)
                       Text(
-                        item.text,
+                        item.text!,
                         style: TextStyle(
                           color: isSelected ? selectedColor : color,
                           fontSize: itemFontSize,

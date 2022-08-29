@@ -1,3 +1,4 @@
+// @dart = 2.9
 ///
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-08 10:52
@@ -68,14 +69,14 @@ class MessagesProvider with ChangeNotifier {
     try {
       content = jsonDecode(content)['content'] as String;
     } catch (e) {
-      LogUtils.d('Incoming message don\'t need to convert.');
+      LogUtil.d('Incoming message don\'t need to convert.');
     }
     if (content != null &&
         content.trim().replaceAll('\n', '').replaceAll('\r', '').isNotEmpty) {
       final WebAppsProvider provider =
           Provider.of<WebAppsProvider>(currentContext, listen: false);
-      LogUtils.d(provider.allApps.toString());
-      LogUtils.d(message.toString());
+      LogUtil.d(provider.allApps.toString());
+      LogUtil.d(message.toString());
       final WebApp app = provider.allApps
           .where((WebApp app) => app.appId == message.appId)
           .elementAt(0);

@@ -17,8 +17,8 @@ import 'package:openjmu/constants/constants.dart';
 )
 class ChatAppMessagePage extends StatefulWidget {
   const ChatAppMessagePage({
-    @required this.app,
-    Key key,
+    required this.app,
+    Key? key,
   }) : super(key: key);
 
   final WebApp app;
@@ -30,23 +30,18 @@ class ChatAppMessagePage extends StatefulWidget {
 class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   final ScrollController _scrollController = ScrollController();
 
-  MessagesProvider messagesProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    messagesProvider = Provider.of<MessagesProvider>(context, listen: false);
-  }
+  late final MessagesProvider messagesProvider = Provider.of<MessagesProvider>(
+    context,
+    listen: false,
+  );
 
   void judgeMessageConfirm() {
     final List<AppMessage> messages = List<AppMessage>.from(
-      messagesProvider.appsMessages[widget.app.appId],
+      messagesProvider.appsMessages[widget.app.appId]!,
     );
-    final List<AppMessage> unreadMessages =
-        messages.where((AppMessage appMessage) {
-      return !appMessage.read;
-    })?.toList();
-    if (unreadMessages.isNotEmpty) {
+    final List<AppMessage>? unreadMessages =
+        messages.where((AppMessage appMessage) => !appMessage.read).toList();
+    if (unreadMessages != null && unreadMessages.isNotEmpty) {
       while (unreadMessages.last.messageId == null &&
           unreadMessages.last.ackId == null) {
         unreadMessages.last.read = true;
@@ -55,7 +50,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
       if (unreadMessages.isNotEmpty) {
         final AppMessage message = unreadMessages[0];
         if (message.ackId != null && message.ackId != 0) {
-          MessageUtils.sendConfirmMessage(ackId: message.ackId);
+          MessageUtils.sendConfirmMessage(ackId: message.ackId!);
         }
         if (!message.read) {
           message.read = true;
@@ -99,7 +94,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   Widget _appJumpButton(BuildContext context) {
     return Tapper(
       onTap: () {
-        API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
+        API.launchWeb(url: widget.app.replacedUrl!, app: widget.app);
       },
       child: Container(
         width: 120.w,
@@ -129,9 +124,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         children: <Widget>[
           Text(
             timeHandler(message.sendTime),
-            style: context.textTheme.caption.copyWith(fontSize: 16.sp),
+            style: context.textTheme.caption?.copyWith(fontSize: 16.sp),
           ),
-          VGap(16.w),
+          Gap.v(16.w),
           Container(
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
@@ -168,7 +163,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
     return Scaffold(
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
-          title: Text(widget.app.name),
+          title: Text('${widget.app.name ?? widget.app.appId}'),
           actions: <Widget>[
             if (widget.app.url?.isNotEmpty == true) _appJumpButton(context),
           ],
@@ -176,7 +171,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         body: Consumer<MessagesProvider>(
           builder: (_, MessagesProvider provider, __) {
             final List<AppMessage> messages = List<AppMessage>.from(
-              provider.appsMessages[widget.app.appId],
+              provider.appsMessages[widget.app.appId]!,
             );
             return ExtendedListView.builder(
               controller: _scrollController,

@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NoNetworkPage extends StatelessWidget {
-  const NoNetworkPage({Key key}) : super(key: key);
+  const NoNetworkPage({Key? key}) : super(key: key);
 
   Widget get logo {
     return Padding(
@@ -28,12 +28,12 @@ class NoNetworkPage extends StatelessWidget {
         SvgPicture.asset(
           R.ASSETS_PLACEHOLDERS_NO_NETWORK_SVG,
           width: 36.w,
-          color: context.textTheme.caption.color.withOpacity(0.5),
+          color: context.textTheme.caption?.color?.withOpacity(0.5),
         ),
-        Gap(15.w),
+        Gap.h(15.w),
         DefaultTextStyle.merge(
           style: TextStyle(
-            color: context.textTheme.caption.color.withOpacity(0.5),
+            color: context.textTheme.caption?.color?.withOpacity(0.5),
             height: 1.2,
             fontSize: 18.sp,
           ),

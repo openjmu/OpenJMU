@@ -24,7 +24,8 @@ class DataUtils {
     await HiveBoxes.upBox.clear();
     await HiveBoxes.upBox.add(UPModel(username, password));
     try {
-      final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
+      final Map<String, dynamic> loginData =
+          (await UserAPI.login(params)).data!;
       currentUser = currentUser.copyWith(
         sid: loginData['sid'] as String,
         ticket: loginData['ticket'] as String,
@@ -54,22 +55,20 @@ class DataUtils {
       showToast('登录成功！');
       return true;
     } on DioError catch (dioError) {
-      LogUtils.e('Error when login: $dioError');
+      LogUtil.e('Error when login: $dioError');
       showToast('登录失败 (0 ${dioError.response?.data ?? dioError})');
       return false;
     } catch (e) {
-      LogUtils.e('Failed when login: $e');
+      LogUtil.e('Failed when login: $e');
       showToast('登录失败 (-1 DU)');
       return false;
     }
   }
 
   static void logout() {
-    UserAPI.blacklist?.clear();
+    UserAPI.blacklist.clear();
     MessageUtils.sendLogout();
     NetUtils.post<void>(API.logout).whenComplete(() {
-      NetUtils.dio.clear();
-      NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
       NetUtils.webViewCookieManager.deleteAllCookies();
@@ -98,7 +97,7 @@ class DataUtils {
       }
       Instances.eventBus.fire(const TicketGotEvent());
     } catch (e) {
-      LogUtils.e('Error in recover login info: $e');
+      LogUtil.e('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
     }
   }
@@ -111,12 +110,12 @@ class DataUtils {
         API.userInfo,
         queryParameters: <String, dynamic>{'uid': currentUser.uid},
       ))
-              .data;
+              .data!;
       final DateTime _end = currentTime;
-      LogUtils.d('Done request user info in: ${_end.difference(_start)}');
+      LogUtil.d('Done request user info in: ${_end.difference(_start)}');
       getUserInfoFromResponse(data);
     } catch (e) {
-      LogUtils.e('Get user info error: $e');
+      LogUtil.e('Get user info error: $e');
     }
   }
 
@@ -139,12 +138,12 @@ class DataUtils {
 
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
-    if (HiveFieldUtils.getEnabledNewAppsIcon() == null) {
+    if (HiveFieldUtils.getEnabledNewAppsIcon()) {
       HiveFieldUtils.setEnabledNewAppsIcon(!(data['isTeacher'] as bool));
     }
   }
 
-  static Future<void> saveLoginInfo(Map<String, dynamic> data) async {
+  static Future<void> saveLoginInfo(Map<String, dynamic>? data) async {
     if (data != null) {
       setUserInfo(data);
       await _settingsBox.putAll(<dynamic, dynamic>{
@@ -174,7 +173,7 @@ class DataUtils {
 
   static Future<bool> getTicket() async {
     try {
-      LogUtils.d('Fetch new ticket with: ${_settingsBox.get(spTicket)}');
+      LogUtil.d('Fetch new ticket with: ${_settingsBox.get(spTicket)}');
       final Map<String, dynamic> params = Constants.loginParams(
         blowfish: _settingsBox.get(spBlowfish) as String,
         ticket: _settingsBox.get(spTicket) as String,
@@ -185,15 +184,15 @@ class DataUtils {
         API.loginTicket,
         data: params,
       ))
-              .data;
+              .data!;
       final DateTime _end = currentTime;
-      LogUtils.d('Done request new ticket in: ${_end.difference(_start)}');
+      LogUtil.d('Done request new ticket in: ${_end.difference(_start)}');
       updateSid(response); // Using 99.
       await NetUtils.updateDomainsCookies(API.ndHosts);
       await getUserInfo();
       return true;
     } catch (e) {
-      LogUtils.e('Error when getting ticket: $e');
+      LogUtil.e('Error when getting ticket: $e');
       return false;
     }
   }

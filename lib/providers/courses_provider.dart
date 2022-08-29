@@ -5,18 +5,16 @@
 part of 'providers.dart';
 
 class CoursesProvider extends ChangeNotifier {
+  final int maxCoursesPerDay = 12;
+
   Box<Map<dynamic, dynamic>> get _courseBox => HiveBoxes.coursesBox;
 
   Box<String> get _courseRemarkBox => HiveBoxes.courseRemarkBox;
 
-  final int maxCoursesPerDay = 12;
+  DateTime? get now => _now;
+  DateTime? _now;
 
-  DateTime _now;
-
-  DateTime get now => _now;
-
-  set now(DateTime value) {
-    assert(value != null);
+  set now(DateTime? value) {
     if (value == _now) {
       return;
     }
@@ -24,20 +22,18 @@ class CoursesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, Map<dynamic, dynamic>> _courses;
+  Map<int, Map<dynamic, dynamic>>? get courses => _courses;
+  Map<int, Map<dynamic, dynamic>>? _courses;
 
-  Map<int, Map<dynamic, dynamic>> get courses => _courses;
-
-  set courses(Map<int, Map<dynamic, dynamic>> value) {
-    _courses = <int, Map<dynamic, dynamic>>{...value};
+  set courses(Map<int, Map<dynamic, dynamic>>? value) {
+    _courses = <int, Map<dynamic, dynamic>>{...?value};
     notifyListeners();
   }
 
-  String _remark;
+  String? get remark => _remark;
+  String? _remark;
 
-  String get remark => _remark;
-
-  set remark(String value) {
+  set remark(String? value) {
     _remark = value;
     notifyListeners();
   }
@@ -89,15 +85,15 @@ class CoursesProvider extends ChangeNotifier {
     _remark = _courseRemarkBox.get(currentUser.uid);
     _hasCourses = _courses != null;
     if (hasCourses) {
-      for (final Map<dynamic, dynamic> _map in _courses.values) {
+      for (final Map<dynamic, dynamic> _map in _courses!.values) {
         final Map<int, List<dynamic>> map = _map.cast<int, List<dynamic>>();
         final List<List<dynamic>> lists =
-            map.values?.toList()?.cast<List<dynamic>>();
+            map.values.toList().cast<List<dynamic>>();
         for (final List<dynamic> list in lists) {
           final List<Course> courses = list.cast<Course>();
           for (final Course course in courses) {
             if (course.color == null) {
-              Course.uniqueColor(course, CourseAPI.randomCourseColor());
+              Course.makeUniqueColorForCourse(course);
             }
           }
         }
@@ -158,7 +154,7 @@ class CoursesProvider extends ChangeNotifier {
           jsonDecode(responses[0].data) as Map<String, dynamic>;
       if ((courseData['courses'] as List<dynamic>).isEmpty &&
           courseData['othCase'] == null) {
-        LogUtils.w('Courses may return invalid value, retry...');
+        LogUtil.w('Courses may return invalid value, retry...');
         updateCourses();
         return;
       }
@@ -187,10 +183,10 @@ class CoursesProvider extends ChangeNotifier {
     } catch (e) {
       _showError = !_hasCourses; // 有课则不显示错误
       if (isOuterNetwork && e is FormatException) {
-        LogUtils.d('Displaying courses from cache...');
+        LogUtil.d('Displaying courses from cache...');
         _isOuterError = true;
       } else {
-        LogUtils.e('Error when updating course: $e');
+        LogUtil.e('Error when updating course: $e');
         _isOuterError = false;
       }
       if (!firstLoaded && dateProvider.currentWeek != null) {
@@ -241,10 +237,10 @@ class CoursesProvider extends ChangeNotifier {
     try {
       courses[courseDay][courseTime].add(course);
     } catch (e) {
-      LogUtils.e(
+      LogUtil.e(
         'Failed when trying to add course at day($courseDay) time($courseTime)',
       );
-      LogUtils.e('$course');
+      LogUtil.e('$course');
     }
   }
 

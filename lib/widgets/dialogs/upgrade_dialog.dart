@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class UpgradeDialog extends StatelessWidget {
-  const UpgradeDialog({
-    Key key,
-    @required this.event,
-  })  : assert(event != null),
-        super(key: key);
+  const UpgradeDialog({Key? key, required this.event}) : super(key: key);
 
   final HasUpdateEvent event;
 
@@ -81,7 +77,7 @@ class UpgradeDialog extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      VGap(30.w),
+                      Gap.v(30.w),
                       _logsWidget(context),
                     ],
                   ),

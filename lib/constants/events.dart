@@ -64,7 +64,7 @@ class PostDeletedEvent {
   );
 
   final int postId;
-  final String page;
+  final String? page;
   final int? index;
 }
 
@@ -154,11 +154,11 @@ class UserAvatarUpdateEvent {}
 class ScrollToTopEvent {
   const ScrollToTopEvent({
     required this.tabIndex,
-    required this.type,
+    this.type,
   });
 
   final int tabIndex;
-  final String type;
+  final String? type;
 }
 
 class PostChangeEvent {
@@ -184,7 +184,7 @@ class MessageReceivedEvent {
     this.isSelf = false,
     required this.type,
     required this.senderUid,
-    required this.senderMultiPortId,
+    this.senderMultiPortId,
     required this.sendTime,
     this.messageId,
     this.ackId,
@@ -194,7 +194,7 @@ class MessageReceivedEvent {
   final bool isSelf;
   final int type;
   final String senderUid;
-  final String senderMultiPortId;
+  final String? senderMultiPortId;
   final DateTime sendTime;
   final int? messageId;
   final int? ackId;

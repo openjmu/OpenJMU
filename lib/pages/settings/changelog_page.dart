@@ -156,7 +156,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           else
             const Spacer(flex: 2),
           versionInfo(log),
-          VGap(12.h),
+          Gap.v(12.h),
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -312,13 +312,13 @@ class _ChangeLogPageState extends State<ChangeLogPage>
                       color: defaultLightColor,
                       height: 28.w,
                     ),
-                    VGap(40.w),
+                    Gap.v(40.w),
                     SvgPicture.asset(
                       R.ASSETS_ICONS_OPEN_THE_SKY_SVG,
                       color: context.textTheme.bodyText2.color,
                       width: Screens.width / 4,
                     ),
-                    VGap(40.w),
+                    Gap.v(40.w),
                     Text(
                       '开发组成员',
                       style: TextStyle(
@@ -326,9 +326,9 @@ class _ChangeLogPageState extends State<ChangeLogPage>
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    VGap(15.w),
+                    Gap.v(15.w),
                     _developersGrid(context),
-                    VGap(40.w),
+                    Gap.v(40.w),
                     Text(
                       '© ${currentTime.year} The OpenJMU Team',
                       style: context.textTheme.caption.copyWith(
@@ -375,7 +375,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           const LoadMoreSpinningIcon(isRefreshing: true),
-          VGap(40.h),
+          Gap.v(40.h),
           Text.rich(
             TextSpan(
               children: <InlineSpan>[
@@ -513,7 +513,7 @@ class _DeveloperWidget extends StatelessWidget {
             ],
           ),
         ),
-        VGap(6.w),
+        Gap.v(6.w),
         Text(
           tag,
           style: context.textTheme.caption.copyWith(fontSize: 17.sp),

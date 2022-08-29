@@ -12,7 +12,7 @@ import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://login', routeName: '登录页')
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -140,7 +140,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         _isLogin.value = false;
       }
     } catch (e) {
-      LogUtils.e('Failed when login: $e');
+      LogUtil.e('Failed when login: $e');
       showToast('登录失败 (-1 LP)');
       _isLogin.value = false;
     }
@@ -369,7 +369,7 @@ class LoginPageState extends State<LoginPage> with RouteAware {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           agreementCheckbox,
-          Gap(16.w),
+          Gap.h(16.w),
           agreementTip,
         ],
       ),

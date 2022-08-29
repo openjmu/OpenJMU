@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 
 class ImageHero extends StatefulWidget {
   const ImageHero({
-    Key key,
-    @required this.child,
-    @required this.tag,
-    @required this.slidePageKey,
+    Key? key,
+    required this.child,
+    required this.tag,
+    required this.slidePageKey,
     this.slideType = SlideType.onlyImage,
   }) : super(key: key);
 
@@ -30,7 +30,7 @@ class _ImageHeroState extends State<ImageHero> {
   Widget build(BuildContext context) {
     return Hero(
       tag: widget.tag,
-      createRectTween: (Rect begin, Rect end) {
+      createRectTween: (Rect? begin, Rect? end) {
         _rectTween = RectTween(begin: begin, end: end);
         return _rectTween;
       },
@@ -46,15 +46,14 @@ class _ImageHeroState extends State<ImageHero> {
             : toHeroContext.widget) as Hero;
         if (flightDirection == HeroFlightDirection.pop) {
           final bool fixTransform = widget.slideType == SlideType.onlyImage &&
-              (widget.slidePageKey.currentState.offset != Offset.zero ||
-                  widget.slidePageKey.currentState.scale != 1.0);
+              (widget.slidePageKey.currentState?.offset != Offset.zero ||
+                  widget.slidePageKey.currentState?.scale != 1.0);
 
           final Widget toHeroWidget = (toHeroContext.widget as Hero).child;
           return AnimatedBuilder(
             animation: animation,
-            builder: (BuildContext buildContext, Widget child) {
+            builder: (BuildContext buildContext, Widget? child) {
               Widget animatedBuilderChild = hero.child;
-
               // Make hero more smoothly.
               animatedBuilderChild = Stack(
                 clipBehavior: Clip.antiAlias,
@@ -64,8 +63,8 @@ class _ImageHeroState extends State<ImageHero> {
                     opacity: 1 - animation.value,
                     child: UnconstrainedBox(
                       child: SizedBox(
-                        width: _rectTween.begin.width,
-                        height: _rectTween.begin.height,
+                        width: _rectTween.begin?.width,
+                        height: _rectTween.begin?.height,
                         child: toHeroWidget,
                       ),
                     ),
@@ -81,12 +80,12 @@ class _ImageHeroState extends State<ImageHero> {
               if (fixTransform) {
                 final Tween<Offset> offsetTween = Tween<Offset>(
                   begin: Offset.zero,
-                  end: widget.slidePageKey.currentState.offset,
+                  end: widget.slidePageKey.currentState?.offset,
                 );
 
                 final Tween<double> scaleTween = Tween<double>(
                   begin: 1.0,
-                  end: widget.slidePageKey.currentState.scale,
+                  end: widget.slidePageKey.currentState?.scale,
                 );
                 animatedBuilderChild = Transform.translate(
                   offset: offsetTween.evaluate(animation),

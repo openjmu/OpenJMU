@@ -10,7 +10,7 @@ import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://app-center-page', routeName: '应用中心')
 class AppCenterPage extends StatelessWidget {
-  const AppCenterPage({Key key}) : super(key: key);
+  const AppCenterPage({Key? key}) : super(key: key);
 
   /// 整体列表组件
   Widget categoryListView(BuildContext context) {
@@ -33,7 +33,7 @@ class AppCenterPage extends StatelessWidget {
               bottom: Screens.bottomSafeHeight + 8.w,
             ),
             itemCount: _list.length,
-            itemBuilder: (BuildContext _, int index) => _list[index],
+            itemBuilder: (_, int index) => _list[index],
           ),
         ),
       ],
@@ -60,9 +60,9 @@ class AppCenterPage extends StatelessWidget {
                     : R.ASSETS_ICONS_APP_CENTER_EDIT_SVG,
                 width: 20.w,
                 height: 20.w,
-                color: context.textTheme.bodyText2.color,
+                color: context.textTheme.bodyText2?.color,
               ),
-              Gap(10.w),
+              Gap.h(10.w),
               Text(isEditing ? '完成' : '编辑'),
             ],
           ),
@@ -120,7 +120,7 @@ class AppCenterPage extends StatelessWidget {
   /// 常用应用的区域部件
   Widget commonAppsSection(BuildContext context) {
     return Consumer<WebAppsProvider>(
-      builder: (BuildContext _, WebAppsProvider provider, Widget __) {
+      builder: (_, WebAppsProvider provider, __) {
         final bool isEditing = provider.isEditingCommonApps;
         return DefaultTextStyle.merge(
           style: TextStyle(height: 1.2, fontSize: 20.sp),
@@ -147,7 +147,7 @@ class AppCenterPage extends StatelessWidget {
                             child: Text(
                               isEditing ? '点击下方按钮以增删捷径' : '点击编辑以进行调整',
                               style: TextStyle(
-                                color: context.textTheme.caption.color,
+                                color: context.textTheme.caption?.color,
                               ),
                             ),
                           );
@@ -189,12 +189,12 @@ class AppCenterPage extends StatelessWidget {
     bool needIndicator = true,
   }) {
     return Consumer<WebAppsProvider>(
-      builder: (_, WebAppsProvider provider, Widget child) {
+      builder: (_, WebAppsProvider provider, Widget? child) {
         return Tapper(
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              child,
+              child!,
               if (provider.isEditingCommonApps)
                 appEditIndicator(context, provider, webApp, needIndicator),
             ],
@@ -208,7 +208,7 @@ class AppCenterPage extends StatelessWidget {
                 provider.addCommonApp(webApp);
               }
             } else {
-              API.launchWeb(url: webApp.replacedUrl, app: webApp);
+              API.launchWeb(url: webApp.replacedUrl!, app: webApp);
             }
           },
           onLongPress: !provider.isEditingCommonApps
@@ -220,7 +220,7 @@ class AppCenterPage extends StatelessWidget {
                     showConfirm: true,
                   );
                   if (confirm) {
-                    launch(webApp.replacedUrl, forceSafariVC: false);
+                    API.launchOnDevice(webApp.replacedUrl!);
                   }
                 }
               : null,
@@ -234,8 +234,8 @@ class AppCenterPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(bottom: 10.w),
               child: Text(
-                webApp.name,
-                style: context.textTheme.bodyText2.copyWith(
+                '${webApp.name ?? webApp.appId}',
+                style: context.textTheme.bodyText2?.copyWith(
                   height: 1.2,
                   fontSize: 18.sp,
                   fontWeight: FontWeight.normal,
@@ -287,55 +287,54 @@ class AppCenterPage extends StatelessWidget {
     return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
       selector: (_, WebAppsProvider p) => p.appCategoriesList,
       builder: (_, Map<String, Set<WebApp>> appCategoriesList, __) {
-        final Set<WebApp> list = appCategoriesList[name];
-        if (list?.isNotEmpty ?? false) {
-          return Container(
-            margin: EdgeInsets.symmetric(vertical: 10.w),
-            padding: EdgeInsets.symmetric(vertical: 10.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.w),
-              color: context.theme.colorScheme.surface,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                    left: 30.w,
-                    top: 10.h,
-                    bottom: 10.h,
-                  ),
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      WebApp.category[name],
-                      style: context.textTheme.bodyText2.copyWith(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+        final Set<WebApp>? list = appCategoriesList[name];
+        if (list == null || list.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          margin: EdgeInsets.symmetric(vertical: 10.w),
+          padding: EdgeInsets.symmetric(vertical: 10.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.w),
+            color: context.theme.colorScheme.surface,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(
+                  left: 30.w,
+                  top: 10.h,
+                  bottom: 10.h,
+                ),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    WebApp.category[name]!,
+                    style: context.textTheme.bodyText2?.copyWith(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    childAspectRatio: 1,
-                  ),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext _, int index) => appWidget(
-                    context,
-                    list.elementAt(index),
-                  ),
+              ),
+              GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 1,
                 ),
-              ],
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: list.length,
+                itemBuilder: (_, int index) => appWidget(
+                  context,
+                  list.elementAt(index),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -346,35 +345,31 @@ class AppCenterPage extends StatelessWidget {
       (WebAppsProvider provider) => provider.fetching,
     );
     return Selector<WebAppsProvider, bool>(
-      selector: (BuildContext _, WebAppsProvider provider) =>
-          provider.isEditingCommonApps,
-      builder: (BuildContext _, bool isEditingCommonApps, Widget __) {
-        return WillPopScope(
-          onWillPop: () {
-            if (isEditingCommonApps) {
-              context.read<WebAppsProvider>().saveCommonApps();
-              context.read<WebAppsProvider>().isEditingCommonApps =
-                  !isEditingCommonApps;
-            }
-            return Future<bool>.value(!isEditingCommonApps);
-          },
-          child: Scaffold(
-            backgroundColor: Color.lerp(
-              context.theme.canvasColor,
-              context.theme.colorScheme.surface,
-              0.5,
-            ),
-            body: FixedAppBarWrapper(
-              appBar: const FixedAppBar(title: Text('应用中心')),
-              body: fetching
-                  ? const Center(
-                      child: LoadMoreSpinningIcon(isRefreshing: true),
-                    )
-                  : categoryListView(context),
-            ),
-          ),
-        );
-      },
+      selector: (_, WebAppsProvider provider) => provider.isEditingCommonApps,
+      builder: (_, bool isEditingCommonApps, Widget? child) => WillPopScope(
+        onWillPop: () {
+          if (isEditingCommonApps) {
+            context.read<WebAppsProvider>().saveCommonApps();
+            context.read<WebAppsProvider>().isEditingCommonApps =
+                !isEditingCommonApps;
+          }
+          return Future<bool>.value(!isEditingCommonApps);
+        },
+        child: child!,
+      ),
+      child: Scaffold(
+        backgroundColor: Color.lerp(
+          context.theme.canvasColor,
+          context.theme.colorScheme.surface,
+          0.5,
+        ),
+        body: FixedAppBarWrapper(
+          appBar: const FixedAppBar(title: Text('应用中心')),
+          body: fetching
+              ? const Center(child: LoadMoreSpinningIcon(isRefreshing: true))
+              : categoryListView(context),
+        ),
+      ),
     );
   }
 }

@@ -6,92 +6,70 @@ import 'package:flutter/widgets.dart';
 
 class LazyIndexedStack extends StatefulWidget {
   const LazyIndexedStack({
-    Key key,
-    @required this.index,
-    @required this.children,
+    Key? key,
     this.alignment = AlignmentDirectional.topStart,
     this.textDirection,
     this.sizing = StackFit.loose,
+    this.index = 0,
+    this.children = const <Widget>[],
   }) : super(key: key);
 
-  final int index;
-  final List<Widget> children;
   final AlignmentGeometry alignment;
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
   final StackFit sizing;
+  final int? index;
+  final List<Widget> children;
 
   @override
-  _LazyIndexedStackState createState() => _LazyIndexedStackState();
+  State<LazyIndexedStack> createState() => _LazyIndexedStackState();
 }
 
 class _LazyIndexedStackState extends State<LazyIndexedStack> {
-  Map<int, bool> _innerWidgetMap;
-  int index;
-
-  @override
-  void initState() {
-    super.initState();
-    _innerWidgetMap = Map<int, bool>.fromEntries(
-      List<MapEntry<int, bool>>.generate(
-        widget.children.length,
-        (int i) => MapEntry<int, bool>(i, i == index),
-      ),
-    );
-    index = widget.index;
-  }
+  late final List<bool> _activatedList = List<bool>.generate(
+    widget.children.length,
+    (int i) => i == widget.index,
+  );
 
   @override
   void didUpdateWidget(LazyIndexedStack oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // Activate new index when it's changed between widgets update.
     if (oldWidget.index != widget.index) {
-      _changeIndex(widget.index);
+      _activateIndex(widget.index);
     }
   }
 
-  void _activeCurrentIndex(int index) {
-    if (_innerWidgetMap[index] != true) {
-      _innerWidgetMap[index] = true;
-    }
-  }
-
-  void _changeIndex(int value) {
-    if (value == index) {
+  void _activateIndex(int? index) {
+    if (index == null) {
       return;
     }
-    setState(() {
-      index = value;
-    });
-  }
-
-  bool _hasInit(int index) {
-    final bool result = _innerWidgetMap[index];
-    if (result == null) {
-      return false;
+    if (!_activatedList[index]) {
+      setState(() {
+        _activatedList[index] = true;
+      });
     }
-    return result == true;
   }
 
   List<Widget> _buildChildren(BuildContext context) {
-    final List<Widget> list = <Widget>[];
-    for (int i = 0; i < widget.children.length; i++) {
-      if (_hasInit(i)) {
-        list.add(widget.children[i]);
-      } else {
-        list.add(const SizedBox.shrink());
-      }
-    }
-    return list;
+    return List<Widget>.generate(
+      widget.children.length,
+      (int i) {
+        if (_activatedList[i]) {
+          return widget.children[i];
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    _activeCurrentIndex(index);
     return IndexedStack(
-      index: index,
-      children: _buildChildren(context),
       alignment: widget.alignment,
-      sizing: widget.sizing,
       textDirection: widget.textDirection,
+      sizing: widget.sizing,
+      index: widget.index,
+      children: _buildChildren(context),
     );
   }
 }

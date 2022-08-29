@@ -20,6 +20,7 @@ export 'package:permission_handler/permission_handler.dart' show Permission;
 export 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart'
     hide CupertinoActivityIndicator;
 export 'package:url_launcher/url_launcher.dart';
+export 'package:url_launcher/url_launcher_string.dart';
 export 'package:wechat_assets_picker/wechat_assets_picker.dart'
     hide ImageFileType;
 export 'package:wechat_camera_picker/wechat_camera_picker.dart';

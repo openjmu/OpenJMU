@@ -1,9 +1,9 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:extended_image/extended_image.dart' hide MultipartFile;
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_crop_helper.dart';
@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 @FFRoute(name: 'openjmu://edit-avatar-page', routeName: '修改头像')
 class EditAvatarPage extends StatefulWidget {
-  const EditAvatarPage({Key key}) : super(key: key);
+  const EditAvatarPage({Key? key}) : super(key: key);
 
   @override
   _EditAvatarPageState createState() => _EditAvatarPageState();
@@ -23,57 +23,69 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       GlobalKey<ExtendedImageEditorState>();
   final LoadingDialogController _controller = LoadingDialogController();
 
-  Uint8List _imageData;
+  Uint8List? _imageData;
   bool _cropping = false;
   bool firstLoad = true;
 
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
       _openImage();
     });
   }
 
   Future<void> _openImage() async {
-    final List<AssetEntity> entity = await AssetPicker.pickAssets(
+    final List<AssetEntity>? entity = await AssetPicker.pickAssets(
       context,
-      selectedAssets: <AssetEntity>[],
-      maxAssets: 1,
-      themeColor: currentThemeColor,
-      requestType: RequestType.image,
-      filterOptions: FilterOptionGroup()
-        ..setOption(
-          AssetType.image,
-          const FilterOption(
-            sizeConstraint: SizeConstraint(ignoreSize: true),
+      pickerConfig: AssetPickerConfig(
+        selectedAssets: <AssetEntity>[],
+        maxAssets: 1,
+        themeColor: currentThemeColor,
+        requestType: RequestType.image,
+        filterOptions: FilterOptionGroup()
+          ..setOption(
+            AssetType.image,
+            const FilterOption(
+              sizeConstraint: SizeConstraint(ignoreSize: true),
+            ),
           ),
-        ),
-      allowSpecialItemWhenEmpty: true,
-      specialItemPosition: SpecialItemPosition.prepend,
-      specialItemBuilder: (BuildContext c) => Tapper(
-        onTap: () async {
-          final AssetEntity cr = await CameraPicker.pickFromCamera(
-            c,
-            enableAudio: false,
-            enableRecording: false,
-            shouldDeletePreviewFile: true,
-          );
-          if (cr != null) {
-            Navigator.of(c).pop(<AssetEntity>[cr]);
+        specialItemPosition: SpecialItemPosition.prepend,
+        specialItemBuilder: (
+          BuildContext context,
+          AssetPathEntity? path,
+          int length,
+        ) {
+          if (path?.isAll != true) {
+            return null;
           }
+          return Tapper(
+            onTap: () async {
+              final AssetEntity? cr = await CameraPicker.pickFromCamera(
+                context,
+                pickerConfig: const CameraPickerConfig(
+                  enableAudio: false,
+                  enableRecording: false,
+                  shouldDeletePreviewFile: true,
+                ),
+              );
+              if (cr != null) {
+                Navigator.of(context).pop(<AssetEntity>[cr]);
+              }
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.photo_camera_rounded, size: 42.w),
+                Text('拍摄照片', style: TextStyle(fontSize: 16.sp)),
+              ],
+            ),
+          );
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.photo_camera_rounded, size: 42.w),
-            Text('拍摄照片', style: TextStyle(fontSize: 16.sp)),
-          ],
-        ),
       ),
     );
     if (entity?.isNotEmpty ?? false) {
-      _imageData = await entity.first.originBytes;
+      _imageData = await entity!.first.originBytes;
     }
     if (mounted) {
       setState(() {});
@@ -106,7 +118,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
     try {
       final String path = (await getApplicationDocumentsDirectory()).path;
       final File file = File('$path/_temp_avatar.jpg');
-      file.writeAsBytesSync(await cropImage(state: _editorKey.currentState));
+      file.writeAsBytesSync(await cropImage(_editorKey.currentState!));
       final File compressedFile = await FlutterNativeImage.compressImage(
         file.path,
         quality: 100,
@@ -115,7 +127,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
       );
       uploadImage(context, compressedFile);
     } catch (e) {
-      LogUtils.e('Crop image faild: $e');
+      LogUtil.e('Crop image faild: $e');
       _controller.changeState('failed', title: '头像更新失败');
     }
   }
@@ -132,7 +144,7 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
         Navigator.of(context).pop(true);
       });
     } catch (e) {
-      LogUtils.e(e.toString());
+      LogUtil.e(e.toString());
       _controller.changeState('failed', title: '头像更新失败');
       _cropping = false;
     }
@@ -168,12 +180,12 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
         ),
         body: _imageData != null
             ? ExtendedImage.memory(
-                _imageData,
+                _imageData!,
                 fit: BoxFit.contain,
                 mode: ExtendedImageMode.editor,
                 enableLoadState: true,
                 extendedImageEditorKey: _editorKey,
-                initEditorConfigHandler: (ExtendedImageState state) {
+                initEditorConfigHandler: (ExtendedImageState? state) {
                   return EditorConfig(
                     maxScale: 8.0,
                     cropRectPadding: const EdgeInsets.all(30.0),
@@ -193,10 +205,10 @@ class _EditAvatarPageState extends State<EditAvatarPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Icon(Icons.add, size: 60.sp),
-                        VGap(20.w),
+                        Gap.v(20.w),
                         Text(
                           '选择需要上传的头像',
-                          style: context.textTheme.bodyText2.copyWith(
+                          style: context.textTheme.bodyText2?.copyWith(
                             fontSize: 20.sp,
                           ),
                         ),

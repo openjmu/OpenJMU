@@ -412,7 +412,7 @@ class NotificationsPageState extends State<NotificationsPage>
           },
           child: AnimatedBuilder(
             animation: backgroundOpacityController,
-            builder: (BuildContext _, Widget child) => Material(
+            builder: (_, Widget child) => Material(
               color:
                   Colors.black.withOpacity(backgroundOpacityController.value),
               child: child,
@@ -424,7 +424,7 @@ class NotificationsPageState extends State<NotificationsPage>
                 SliverToBoxAdapter(
                   child: Tapper(
                     onTap: navigatorState.maybePop,
-                    child: VGap(Screens.height),
+                    child: Gap.v(Screens.height),
                   ),
                 ),
               ],

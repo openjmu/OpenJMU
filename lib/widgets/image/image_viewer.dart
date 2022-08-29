@@ -26,8 +26,8 @@ import 'image_hero.dart';
 )
 class ImageViewer extends StatefulWidget {
   const ImageViewer({
-    @required this.index,
-    @required this.pics,
+    required this.index,
+    required this.pics,
     this.heroPrefix,
     this.needsClear = false,
     this.post,
@@ -35,9 +35,9 @@ class ImageViewer extends StatefulWidget {
 
   final int index;
   final List<ImageBean> pics;
+  final String? heroPrefix;
   final bool needsClear;
-  final Post post;
-  final String heroPrefix;
+  final Post? post;
 
   @override
   ImageViewerState createState() => ImageViewerState();
@@ -52,45 +52,44 @@ class ImageViewerState extends State<ImageViewer>
   final GlobalKey<ExtendedImageSlidePageState> slidePageKey =
       GlobalKey<ExtendedImageSlidePageState>();
 
-  int currentIndex;
+  late int currentIndex = widget.index;
   bool popping = false;
-  List<Uint8List> imagesData;
+  late final List<Uint8List?> imagesData = List<Uint8List?>.filled(
+    widget.pics.length,
+    null,
+  );
 
-  AnimationController _doubleTapAnimationController;
-  Animation<double> _doubleTapCurveAnimation;
-  Animation<double> _doubleTapAnimation;
-  VoidCallback _doubleTapListener;
+  late final AnimationController _doubleTapAnimationController =
+      AnimationController(
+    duration: 200.milliseconds,
+    vsync: this,
+  );
+  late final Animation<double> _doubleTapCurveAnimation = CurvedAnimation(
+    parent: _doubleTapAnimationController,
+    curve: Curves.easeOutQuart,
+  );
+  late Animation<double> _doubleTapAnimation;
+  late VoidCallback _doubleTapListener;
 
-  ExtendedPageController _controller;
+  late final ExtendedPageController _controller = ExtendedPageController(
+    initialPage: currentIndex,
+  );
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.needsClear ?? false) {
+    if (widget.needsClear) {
       clearMemoryImageCache();
       clearDiskCachedImages();
     }
-    currentIndex = widget.index;
-    imagesData = List<Uint8List>.filled(widget.pics.length, null);
-
-    _controller = ExtendedPageController(initialPage: currentIndex);
-
-    _doubleTapAnimationController = AnimationController(
-      duration: 200.milliseconds,
-      vsync: this,
-    );
-    _doubleTapCurveAnimation = CurvedAnimation(
-      parent: _doubleTapAnimationController,
-      curve: Curves.easeOutQuart,
-    );
   }
 
   @override
   void dispose() {
-    pageStreamController?.close();
-    backgroundOpacityStreamController?.close();
-    _doubleTapAnimationController?.dispose();
+    pageStreamController.close();
+    backgroundOpacityStreamController.close();
+    _doubleTapAnimationController.dispose();
     super.dispose();
   }
 
@@ -103,8 +102,8 @@ class ImageViewerState extends State<ImageViewer>
   }
 
   Future<void> _imageExtraActions(BuildContext context) async {
-    final Uint8List data = imagesData[currentIndex];
-    final RScanResult scanResult = await RScan.scanImageMemory(data);
+    final Uint8List data = imagesData[currentIndex]!;
+    final RScanResult? scanResult = await RScan.scanImageMemory(data);
     ConfirmationBottomSheet.show(
       context,
       actions: <ConfirmationBottomSheetAction>[
@@ -145,11 +144,11 @@ class ImageViewerState extends State<ImageViewer>
   }
 
   void updateAnimation(ExtendedImageGestureState state) {
-    final double begin = state.gestureDetails.totalScale;
-    final double end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
-    final Offset pointerDownPosition = state.pointerDownPosition;
+    final double? begin = state.gestureDetails?.totalScale;
+    final double end = state.gestureDetails?.totalScale == 1.0 ? 3.0 : 1.0;
+    final Offset? pointerDownPosition = state.pointerDownPosition;
 
-    _doubleTapAnimation?.removeListener(_doubleTapListener);
+    _doubleTapAnimation.removeListener(_doubleTapListener);
     _doubleTapAnimationController
       ..stop()
       ..reset();
@@ -180,8 +179,8 @@ class ImageViewerState extends State<ImageViewer>
 
   bool slideEndHandler(
     Offset offset, {
-    ExtendedImageSlidePageState state,
-    ScaleEndDetails details,
+    ExtendedImageSlidePageState? state,
+    ScaleEndDetails? details,
   }) {
     final bool shouldEnd =
         offset.distance > Offset(Screens.width, Screens.height).distance / 7;
@@ -193,7 +192,6 @@ class ImageViewerState extends State<ImageViewer>
 
   Widget pageBuilder(BuildContext context, int index) {
     return ImageGestureDetector(
-      context: context,
       imageViewerState: this,
       slidePageKey: slidePageKey,
       enableTapPop: true,
@@ -209,20 +207,18 @@ class ImageViewerState extends State<ImageViewer>
         enableSlideOutPage: true,
         heroBuilderForSlidingPage: (Widget result) {
           if (index < widget.pics.length && widget.heroPrefix != null) {
-            String tag = widget.heroPrefix;
+            String tag = widget.heroPrefix ?? '';
             if (widget.pics[index].postId != null) {
               tag += '${widget.pics[index].postId}-';
             }
             tag += '${widget.pics[index].id}';
-
             return ImageHero(
               tag: tag,
               child: result,
               slidePageKey: slidePageKey,
             );
-          } else {
-            return result;
           }
+          return result;
         },
         initGestureConfigHandler: (ExtendedImageState state) {
           return GestureConfig(
@@ -236,7 +232,7 @@ class ImageViewerState extends State<ImageViewer>
           );
         },
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
+          Widget? loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               loader = const Center(
@@ -295,9 +291,8 @@ class ImageViewerState extends State<ImageViewer>
                     stream: backgroundOpacityStreamController.stream,
                     builder: (BuildContext c, AsyncSnapshot<double> data) {
                       return Opacity(
-                        opacity: popping ? 0.0 : data.data,
+                        opacity: popping ? 0 : data.data ?? 0,
                         child: _ViewAppBar(
-                          post: widget.post,
                           onMoreClicked: () => _imageExtraActions(c),
                         ),
                       );
@@ -313,7 +308,7 @@ class ImageViewerState extends State<ImageViewer>
                       initialData: 1.0,
                       stream: backgroundOpacityStreamController.stream,
                       builder: (_, AsyncSnapshot<double> data) => Opacity(
-                        opacity: popping ? 0.0 : data.data,
+                        opacity: popping ? 0 : data.data ?? 0,
                         child: _ImageList(
                           controller: _controller,
                           pageStreamController: pageStreamController,
@@ -334,16 +329,16 @@ class ImageViewerState extends State<ImageViewer>
 
 class _ImageList extends StatelessWidget {
   const _ImageList({
+    required this.pics,
+    this.index = 0,
     this.controller,
     this.pageStreamController,
-    this.index,
-    this.pics,
   });
 
-  final ExtendedPageController controller;
-  final StreamController<int> pageStreamController;
-  final int index;
   final List<ImageBean> pics;
+  final int index;
+  final ExtendedPageController? controller;
+  final StreamController<int>? pageStreamController;
 
   @override
   Widget build(BuildContext context) {
@@ -361,7 +356,7 @@ class _ImageList extends StatelessWidget {
       ),
       child: StreamBuilder<int>(
         initialData: index,
-        stream: pageStreamController.stream,
+        stream: pageStreamController?.stream,
         builder: (BuildContext context, AsyncSnapshot<int> data) => SizedBox(
           height: 52.h,
           child: Row(
@@ -411,14 +406,9 @@ class _ImageList extends StatelessWidget {
 }
 
 class _ViewAppBar extends StatelessWidget {
-  const _ViewAppBar({
-    Key key,
-    this.post,
-    this.onMoreClicked,
-  }) : super(key: key);
+  const _ViewAppBar({Key? key, this.onMoreClicked}) : super(key: key);
 
-  final Post post;
-  final VoidCallback onMoreClicked;
+  final VoidCallback? onMoreClicked;
 
   Widget _backButton(BuildContext context) {
     return Tapper(
@@ -484,12 +474,14 @@ class _ViewAppBar extends StatelessWidget {
 }
 
 class _CustomScrollPhysics extends BouncingScrollPhysics {
-  const _CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
+  const _CustomScrollPhysics();
 
   @override
-  SpringDescription get spring => SpringDescription.withDampingRatio(
-        mass: 0.5,
-        stiffness: 300.0,
-        ratio: 1.1,
-      );
+  SpringDescription get spring {
+    return SpringDescription.withDampingRatio(
+      mass: 0.5,
+      stiffness: 300.0,
+      ratio: 1.1,
+    );
+  }
 }

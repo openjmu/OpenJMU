@@ -4,6 +4,7 @@
 ///
 import 'package:extended_image/extended_image.dart'
     hide ExtendedNetworkImageProvider;
+
 // ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
 import 'package:flutter/material.dart';
@@ -11,20 +12,17 @@ import 'package:openjmu/constants/constants.dart';
 
 class UserAvatar extends StatefulWidget {
   const UserAvatar({
-    Key key,
+    super.key,
+    this.size = 48,
     this.uid,
-    this.size = 48.0,
-    this.timestamp,
     this.radius,
     this.canJump = true,
     this.isSysAvatar = false,
-  })  : assert(radius == null || (radius != null && radius > 0.0)),
-        super(key: key);
+  }) : assert(radius == null || radius > 0);
 
   final double size;
-  final String uid;
-  final int timestamp;
-  final double radius;
+  final String? uid;
+  final double? radius;
   final bool canJump;
   final bool isSysAvatar;
 
@@ -33,12 +31,11 @@ class UserAvatar extends StatefulWidget {
 }
 
 class _UserAvatarState extends State<UserAvatar> {
-  ExtendedNetworkImageProvider get provider =>
+  late final String _uid = widget.uid ?? currentUser.uid;
+  late final ExtendedNetworkImageProvider provider =
       UserAPI.getAvatarProvider(uid: _uid);
 
-  String get _uid => widget.uid ?? currentUser.uid;
-
-  String _stringData;
+  String? _stringData;
 
   @override
   void initState() {
@@ -51,10 +48,10 @@ class _UserAvatarState extends State<UserAvatar> {
   }
 
   void jump(BuildContext context) {
-    final RouteSettings _routeSettings = ModalRoute.of(context).settings;
-    final Map<String, dynamic> _routeArguments =
-        Routes.openjmuUserPage.d(uid: _uid);
-
+    final RouteSettings? _routeSettings = ModalRoute.of(context)?.settings;
+    final Map<String, dynamic> _routeArguments = Routes.openjmuUserPage.d(
+      uid: _uid,
+    );
     if (_routeSettings is FFRouteSettings) {
       if (_routeSettings.name != Routes.openjmuUserPage.name ||
           _routeSettings.arguments.toString() != _routeArguments.toString()) {
@@ -73,17 +70,17 @@ class _UserAvatarState extends State<UserAvatar> {
 
   Widget _defaultAvatar(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: widget.radius != null
-            ? BorderRadius.circular(widget.radius.w)
+            ? BorderRadius.circular(widget.radius!.w)
             : maxBorderRadius,
         color: context.theme.dividerColor,
       ),
-      alignment: Alignment.center,
       child: SvgPicture.asset(
         R.ASSETS_PLACEHOLDERS_AVATAR_SVG,
         width: widget.size.w * 0.7,
-        color: context.textTheme.bodyText2.color,
+        color: context.textTheme.bodyText2?.color,
       ),
     );
   }
@@ -91,7 +88,7 @@ class _UserAvatarState extends State<UserAvatar> {
   Widget _realAvatar(BuildContext context) {
     return ExtendedImage(
       borderRadius: widget.radius != null
-          ? BorderRadius.circular(widget.radius.w)
+          ? BorderRadius.circular(widget.radius!.w)
           : maxBorderRadius,
       shape: BoxShape.rectangle,
       image: provider,

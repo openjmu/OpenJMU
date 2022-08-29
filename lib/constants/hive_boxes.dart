@@ -131,14 +131,14 @@ class HiveBoxes {
         showConfirm: true,
         content: '清除的数据无法恢复，请确认操作',
       )) {
-        LogUtils.d('Clearing Hive Cache Boxes...');
+        LogUtil.d('Clearing Hive Cache Boxes...');
         await Future.wait<void>(<Future<dynamic>>[
           coursesBox.clear(),
           courseRemarkBox.clear(),
           scoresBox.clear(),
           startWeekBox.clear(),
         ]);
-        LogUtils.d('Cache boxes cleared.');
+        LogUtil.d('Cache boxes cleared.');
         if (kReleaseMode) {
           SystemNavigator.pop();
         }
@@ -159,7 +159,7 @@ class HiveBoxes {
         showConfirm: true,
         content: '清除的内容无法恢复，请确认操作',
       )) {
-        LogUtils.d('Clearing Hive Boxes...');
+        LogUtil.d('Clearing Hive Boxes...');
         await Future.wait<void>(<Future<dynamic>>[
           upBox.clear(),
           appMessagesBox.clear(),
@@ -179,7 +179,7 @@ class HiveBoxes {
           NetUtils.tokenCookieJar.deleteAll(),
           NetUtils.webViewCookieManager.deleteAllCookies(),
         ]);
-        LogUtils.d('Boxes cleared.');
+        LogUtil.d('Boxes cleared.');
         if (kReleaseMode) {
           SystemNavigator.pop();
         }

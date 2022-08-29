@@ -9,12 +9,10 @@ class ThemesProvider with ChangeNotifier {
     initTheme();
   }
 
+  ThemeGroup get currentThemeGroup => _currentThemeGroup;
   ThemeGroup _currentThemeGroup = defaultThemeGroup;
 
-  ThemeGroup get currentThemeGroup => _currentThemeGroup;
-
   set currentThemeGroup(ThemeGroup value) {
-    assert(value != null);
     if (_currentThemeGroup == value) {
       return;
     }
@@ -22,12 +20,10 @@ class ThemesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get dark => _dark;
   bool _dark = false;
 
-  bool get dark => _dark;
-
   set dark(bool value) {
-    assert(value != null);
     if (_dark == value) {
       return;
     }
@@ -36,12 +32,10 @@ class ThemesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get platformBrightness => _platformBrightness;
   bool _platformBrightness = true;
 
-  bool get platformBrightness => _platformBrightness;
-
   set platformBrightness(bool value) {
-    assert(value != null);
     if (_platformBrightness == value) {
       return;
     }
@@ -103,7 +97,6 @@ class ThemesProvider with ChangeNotifier {
     return ThemeData.light().copyWith(
       brightness: Brightness.light,
       primaryColor: primaryColor,
-      primaryColorBrightness: Brightness.light,
       primaryColorLight: primaryColor,
       primaryColorDark: backgroundColor,
       canvasColor: backgroundColor,
@@ -135,9 +128,7 @@ class ThemesProvider with ChangeNotifier {
       ),
       colorScheme: ColorScheme(
         primary: currentColor,
-        primaryVariant: currentColor,
         secondary: currentColor,
-        secondaryVariant: currentColor,
         surface: Colors.white,
         background: backgroundColor,
         error: defaultLightColor,
@@ -181,7 +172,6 @@ class ThemesProvider with ChangeNotifier {
     return ThemeData.dark().copyWith(
       brightness: Brightness.dark,
       primaryColor: primaryColor,
-      primaryColorBrightness: Brightness.dark,
       primaryColorLight: backgroundColor,
       primaryColorDark: primaryColor,
       canvasColor: backgroundColor,
@@ -213,9 +203,7 @@ class ThemesProvider with ChangeNotifier {
       ),
       colorScheme: ColorScheme(
         primary: currentColor,
-        primaryVariant: currentColor,
         secondary: currentColor,
-        secondaryVariant: currentColor,
         surface: primaryColor,
         background: backgroundColor,
         error: defaultLightColor,

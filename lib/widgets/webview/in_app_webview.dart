@@ -81,31 +81,30 @@ class _AppWebViewState extends State<AppWebView>
     with AutomaticKeepAliveClientMixin {
   final StreamController<double> progressController =
       StreamController<double>.broadcast();
-  Timer _progressCancelTimer;
+  Timer? _progressCancelTimer;
 
   final ValueNotifier<String> title = ValueNotifier<String>('');
 
-  String url = 'about:blank';
+  late String url = widget.url.trim();
 
-  InAppWebView _webView;
-  InAppWebViewController _webViewController;
+  late InAppWebView _webView = newWebView;
+  InAppWebViewController? _webViewController;
+  bool _canWebViewGoBack = false;
   bool useDesktopMode = false;
 
-  String get urlDomain => Uri.parse(url).host ?? url;
+  String get urlDomain => Uri.parse(url).host;
 
   @override
-  bool get wantKeepAlive => widget.keepAlive ?? false;
+  bool get wantKeepAlive => widget.keepAlive;
 
   @override
   void initState() {
     super.initState();
-    url = (widget.url ?? url).trim();
     title.value = (widget.app?.name ?? widget.title ?? title.value).trim();
     if (url.startsWith(API.labsHost) && currentIsDark) {
       url += '&night=1';
     }
     _handleWebVPNUrl();
-    _webView = newWebView;
 
     Instances.eventBus
         .on<CourseScheduleRefreshEvent>()
@@ -128,8 +127,8 @@ class _AppWebViewState extends State<AppWebView>
   /// with the WebVPN version.
   void _handleWebVPNUrl() {
     if (widget.app != null &&
-        widget.app.name != 'WEBVPN' &&
-        widget.app.code != '10086' && // Skip WebVPN itself.
+        widget.app!.name != 'WEBVPN' &&
+        widget.app!.code != '10086' && // Skip WebVPN itself.
         NetUtils.shouldUseWebVPN &&
         url.contains('jmu.edu.cn')) {
       url = API.replaceWithWebVPN(url);
@@ -139,8 +138,8 @@ class _AppWebViewState extends State<AppWebView>
   void cancelProgress([Duration duration = const Duration(seconds: 1)]) {
     _progressCancelTimer?.cancel();
     _progressCancelTimer = Timer(duration, () {
-      if (progressController?.isClosed == false) {
-        progressController?.add(0.0);
+      if (progressController.isClosed == false) {
+        progressController.add(0.0);
       }
     });
   }
@@ -158,14 +157,14 @@ class _AppWebViewState extends State<AppWebView>
           NetUtils.convertWebViewCookies(cookies),
         );
       },
-    ).catchError(
-      (Object e) => LogUtils.e('Error when sync WebView\'s cookies: $e'),
-    );
+    ).catchError((Object e, StackTrace s) {
+      LogUtil.e("Error when sync WebView's cookies: $e");
+    });
   }
 
   void loadCourseSchedule() {
     try {
-      _webViewController.loadUrl(
+      _webViewController?.loadUrl(
         urlRequest: URLRequest(
           url: Uri.parse(
             '${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}'
@@ -175,19 +174,20 @@ class _AppWebViewState extends State<AppWebView>
         ),
       );
     } catch (e) {
-      LogUtils.d('$e');
+      LogUtil.d('$e');
     }
   }
 
   bool checkSchemeLoad(InAppWebViewController controller, String url) {
-    final RegExp protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
+    final RegExp protocolRegExp = RegExp(r'(http|https)://([\w.]+/?)\S*');
     if (!url.startsWith(protocolRegExp) && url.contains('://')) {
-      LogUtils.d('Found scheme when load: $url');
+      LogUtil.d('Found scheme when load: $url');
       if (Platform.isAndroid) {
         Future<void>.delayed(1.microseconds, () async {
           controller.stopLoading();
-          LogUtils.d('Try to launch intent...');
-          final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
+          LogUtil.d('Try to launch intent...');
+          final String? appName =
+              await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
             if (await isAppJumpConfirm(appName)) {
               await _launchURL(url: url);
@@ -196,9 +196,8 @@ class _AppWebViewState extends State<AppWebView>
         });
       }
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   Future<bool> isAppJumpConfirm(String applicationLabel) {
@@ -211,26 +210,24 @@ class _AppWebViewState extends State<AppWebView>
     );
   }
 
-  Future<void> onDownload(InAppWebViewController controller, Uri url) async {
-    final String _headRes = await NetUtils.head(url.toString());
-    final bool hasRealName = _headRes != null;
-    String filename;
-    if (hasRealName) {
-      filename = _headRes;
-    } else {
-      filename = '$currentTimeStamp';
-    }
+  Future<void> onDownload(
+    InAppWebViewController controller,
+    DownloadStartRequest request,
+  ) async {
+    final Uri url = request.url;
+    final bool hasFilename = request.suggestedFilename != null;
+    final String filename = request.suggestedFilename ?? '$currentTimeStamp';
     if (await ConfirmationDialog.show(
       context,
-      title: hasRealName ? '文件下载确认' : '未知文件下载确认',
+      title: hasFilename ? '文件下载确认' : '未知文件下载确认',
       content: '文件安全性未知，请确认下载\n\n'
           '${url.host.notBreak}\n想要下载文件'
-          '\n${hasRealName ? filename : '\n文件名称未知，将下载为 $filename'}',
+          '\n${hasFilename ? filename : '\n文件名称未知，将下载为 $filename'}',
       showConfirm: true,
       confirmLabel: '下载',
       resolveSpecialText: false,
     )) {
-      LogUtils.d('WebView started download from: $url');
+      LogUtil.d('WebView started download from: $url');
       NetUtils.download(url.toString(), filename);
     }
   }
@@ -269,20 +266,31 @@ class _AppWebViewState extends State<AppWebView>
     });
   }
 
-  Future<void> _launchURL({String url, bool forceSafariVC = true}) async {
-    final String uri = Uri.parse(url ?? this.url).toString();
-    if (await canLaunch(uri)) {
-      await launch(uri, forceSafariVC: Platform.isIOS && forceSafariVC);
+  Future<void> _launchURL({String? url, bool forceSafariVC = true}) async {
+    final Uri uri = Uri.parse(url ?? this.url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalNonBrowserApplication,
+      );
     } else {
       showCenterErrorToast('无法打开网址: $uri');
     }
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_webViewController != null) {
+      _webViewController?.goBack();
+      return false;
+    }
+    return true;
   }
 
   Widget appBar(BuildContext context) {
     Widget _appIcon() {
       return Padding(
         padding: EdgeInsets.only(right: 10.w),
-        child: WebAppIcon(app: widget.app, size: 42.0),
+        child: WebAppIcon(app: widget.app!, size: 42.0),
       );
     }
 
@@ -312,7 +320,7 @@ class _AppWebViewState extends State<AppWebView>
             child: SvgPicture.asset(
               R.ASSETS_ICONS_POST_ACTIONS_MORE_SVG,
               width: 20.w,
-              color: context.textTheme.bodyText2.color,
+              color: context.textTheme.bodyText2?.color,
             ),
           ),
         ),
@@ -328,7 +336,7 @@ class _AppWebViewState extends State<AppWebView>
             child: SvgPicture.asset(
               R.ASSETS_ICONS_CLEAR_SVG,
               width: 20.w,
-              color: context.textTheme.bodyText2.color,
+              color: context.textTheme.bodyText2?.color,
             ),
           ),
         ),
@@ -339,7 +347,7 @@ class _AppWebViewState extends State<AppWebView>
       color: context.appBarTheme.backgroundColor,
       child: Column(
         children: <Widget>[
-          VGap(Screens.topSafeHeight),
+          Gap.v(Screens.topSafeHeight),
           Container(
             height: kAppBarHeight.w,
             child: Stack(
@@ -354,7 +362,7 @@ class _AppWebViewState extends State<AppWebView>
                             children: <Widget>[
                               if (widget.app != null) _appIcon(),
                               Expanded(child: _title()),
-                              Gap(10.w),
+                              Gap.h(10.w),
                               DecoratedBox(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(13.w),
@@ -450,25 +458,26 @@ class _AppWebViewState extends State<AppWebView>
         }
         return false;
       },
-      onLoadStart: (_, Uri url) {
-        LogUtils.d('WebView onLoadStart: $url');
+      onLoadStart: (_, Uri? url) {
+        LogUtil.d('WebView onLoadStart: $url');
       },
-      onLoadStop: (InAppWebViewController controller, Uri url) async {
-        LogUtils.d('WebView onLoadStop: $url');
+      onLoadStop: (InAppWebViewController controller, Uri? url) async {
+        LogUtil.d('WebView onLoadStop: $url');
         controller.evaluateJavascript(
           source: 'window.onbeforeunload=null',
         );
 
         this.url = url.toString();
-        final String _title = (await controller.getTitle())?.trim();
-        if (_title?.isNotEmpty == true && _title != this.url) {
+        final String? _title = (await controller.getTitle())?.trim();
+        if (_title != null && _title.isNotEmpty && _title != this.url) {
           title.value = _title;
         } else {
-          final String ogTitle = await controller.evaluateJavascript(
-            source:
-                'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
+          final String? ogTitle = await controller.evaluateJavascript(
+            source: 'var ogTitle = document.querySelector'
+                "('[property=\"og:title\"]');"
+                '\n'
                 'if (ogTitle != undefined) ogTitle.content;',
-          ) as String;
+          ) as String?;
           if (ogTitle != null) {
             title.value = ogTitle;
           }
@@ -477,17 +486,17 @@ class _AppWebViewState extends State<AppWebView>
         syncCookies();
       },
       onProgressChanged: (_, int progress) {
-        progressController?.add(progress / 100);
+        progressController.add(progress / 100);
       },
       onConsoleMessage: (_, ConsoleMessage consoleMessage) {
-        LogUtils.d(
+        LogUtil.d(
           'Console message: '
           '${consoleMessage.messageLevel.toString()}'
           ' - '
           '${consoleMessage.message}',
         );
       },
-      onDownloadStart: onDownload,
+      onDownloadStartRequest: onDownload,
       onWebViewCreated: (InAppWebViewController controller) {
         _webViewController = controller;
       },
@@ -495,18 +504,26 @@ class _AppWebViewState extends State<AppWebView>
         InAppWebViewController controller,
         NavigationAction navigationAction,
       ) async {
-        if (checkSchemeLoad(
-          controller,
-          navigationAction.request.url?.toString(),
-        )) {
-          return NavigationActionPolicy.CANCEL;
-        } else {
+        final String? url = navigationAction.request.url?.toString();
+        if (url == null) {
           return NavigationActionPolicy.ALLOW;
         }
+        if (checkSchemeLoad(controller, url)) {
+          return NavigationActionPolicy.CANCEL;
+        }
+        return NavigationActionPolicy.ALLOW;
       },
-      onUpdateVisitedHistory: (_, Uri url, bool androidIsReload) {
-        LogUtils.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
+      onUpdateVisitedHistory: (
+        InAppWebViewController controller,
+        Uri? url,
+        bool? androidIsReload,
+      ) {
+        LogUtil.d('WebView onUpdateVisitedHistory: $url, $androidIsReload');
         cancelProgress();
+        safeSetState(() async {
+          await Future<void>.delayed(const Duration(milliseconds: 300));
+          _canWebViewGoBack = await controller.canGoBack();
+        });
       },
       onReceivedServerTrustAuthRequest: (_, __) async {
         return ServerTrustAuthResponse(
@@ -520,22 +537,20 @@ class _AppWebViewState extends State<AppWebView>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    return WillPopScope(
-      onWillPop: () async {
-        if (await _webViewController?.canGoBack() == true) {
-          _webViewController.goBack();
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
+    Widget child = _webView;
+    if (widget.withScaffold) {
+      child = Scaffold(
         body: Column(
           children: <Widget>[
             appBar(context),
             Expanded(child: _webView),
           ],
         ),
-      ),
+      );
+    }
+    return WillPopScope(
+      onWillPop: _canWebViewGoBack ? _onWillPop : null,
+      child: child,
     );
   }
 }

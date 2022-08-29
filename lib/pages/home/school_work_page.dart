@@ -64,7 +64,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       ),
       actions: <Widget>[
         _refreshIcon,
-        Gap(16.w),
+        Gap.h(16.w),
         switchButton,
       ],
     );
@@ -165,7 +165,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
 }
 
 class OuterNetworkErrorDialog extends StatelessWidget {
-  const OuterNetworkErrorDialog({Key key}) : super(key: key);
+  const OuterNetworkErrorDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +184,7 @@ class OuterNetworkErrorDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(Icons.signal_wifi_off, size: 42.w),
-              VGap(10.w),
+              Gap.v(10.w),
               Text(
                 '由于外网网络限制\n无法获取最新数据\n请连接校园网后重试',
                 style: TextStyle(fontSize: 20.sp),

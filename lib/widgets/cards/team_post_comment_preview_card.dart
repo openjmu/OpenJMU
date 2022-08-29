@@ -10,10 +10,10 @@ import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamPostCommentPreviewCard extends StatelessWidget {
   const TeamPostCommentPreviewCard({
-    Key key,
-    @required this.comment,
-    @required this.topPost,
-    @required this.detailPageState,
+    Key? key,
+    required this.comment,
+    required this.topPost,
+    required this.detailPageState,
   }) : super(key: key);
 
   final TeamPostComment comment;
@@ -63,8 +63,8 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
 
   Widget _getName(BuildContext context) {
     return Text(
-      (comment.user.nickname ?? comment.uid).toString(),
-      style: context.textTheme.bodyText2.copyWith(
+      comment.user.nickname,
+      style: context.textTheme.bodyText2?.copyWith(
         height: 1.2,
         fontSize: 18.sp,
         fontWeight: FontWeight.w600,
@@ -75,7 +75,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
   Widget _getTime(BuildContext context) {
     return Text(
       '${comment.floor}L · ${TeamPostAPI.timeConverter(comment.postTime)}',
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         height: 1.2,
         fontSize: 16.sp,
       ),
@@ -84,7 +84,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
 
   Widget get _content {
     return ExtendedText(
-      comment.content ?? '',
+      comment.content,
       style: TextStyle(height: 1.2, fontSize: 17.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -109,7 +109,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                 uid: comment.uid,
                 isSysAvatar: comment.user.sysAvatar,
               ),
-              Gap(16.w),
+              Gap.h(16.w),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -123,11 +123,11 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                             padding: EdgeInsets.only(left: 6.w),
                             child: const DeveloperTag(),
                           ),
-                        Gap(6.w),
+                        Gap.h(6.w),
                         _getTime(context),
                       ],
                     ),
-                    VGap(12.w),
+                    Gap.v(12.w),
                     _content,
                   ],
                 ),

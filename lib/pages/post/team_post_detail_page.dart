@@ -385,11 +385,11 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         setState(() {});
       }
 
-      LogUtils.e('Error when trying upload images: $e');
+      LogUtil.e('Error when trying upload images: $e');
       if (e is DioError) {
-        LogUtils.e('${e.response.data}');
+        LogUtil.e('${e.response.data}');
       }
-      LogUtils.e('Images requests will be all cancelled.');
+      LogUtil.e('Images requests will be all cancelled.');
     }
   }
 
@@ -476,7 +476,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         _focusNode.requestFocus();
       }
       if (result != null) {
-        LogUtils.d('Mentioned User: ${result.toString()}');
+        LogUtil.d('Mentioned User: ${result.toString()}');
         Future<void>.delayed(const Duration(milliseconds: 250), () {
           if (_focusNode.canRequestFocus) {
             _focusNode.requestFocus();
@@ -532,7 +532,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       showToast('发送成功');
       initialLoad();
     } catch (e) {
-      LogUtils.e('Reply failed: $e');
+      LogUtil.e('Reply failed: $e');
       showErrorToast('发送失败');
     } finally {
       sending.value = false;
@@ -554,7 +554,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           width: 50.w,
           color: context.theme.iconTheme.color,
         ),
-        VGap(20.w),
+        Gap.v(20.w),
         Text(
           '暂无内容',
           style: TextStyle(
@@ -796,7 +796,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     height: 20.w,
                     color: context.textTheme.bodyText2.color,
                   ),
-                  Gap(10.w),
+                  Gap.h(10.w),
                   Text(
                     extendedFeature[index].name,
                     style: TextStyle(height: 1.2, fontSize: 19.sp),
@@ -876,7 +876,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
               scrollDirection: Axis.horizontal,
               itemCount: math.min(isCollapsed ? imagesLength : imagesLength + 1,
                   maxAssetsLength),
-              itemBuilder: (BuildContext _, int index) {
+              itemBuilder: (_, int index) {
                 if (index == imagesLength) {
                   return _assetAddItem;
                 }
@@ -1139,9 +1139,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   textField,
-                  Gap(12.w),
+                  Gap.h(12.w),
                   extendedPadButton,
-                  Gap(12.w),
+                  Gap.h(12.w),
                   sendButton,
                 ],
               ),

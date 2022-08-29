@@ -1,5 +1,6 @@
 import 'dart:isolate';
 import 'dart:typed_data';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:image/image.dart';
@@ -7,8 +8,10 @@ import 'package:image_editor/image_editor.dart';
 import 'package:isolate/isolate_runner.dart';
 import 'package:isolate/load_balancer.dart';
 
-final Future<LoadBalancer> loadBalancer =
-    LoadBalancer.create(1, IsolateRunner.spawn);
+final Future<LoadBalancer> loadBalancer = LoadBalancer.create(
+  1,
+  IsolateRunner.spawn,
+);
 
 Future<dynamic> isolateDecodeImage(List<int> data) async {
   final ReceivePort response = ReceivePort();
@@ -48,9 +51,9 @@ void _isolateEncodeImage(SendPort port) {
   });
 }
 
-Future<List<int>> cropImage({ExtendedImageEditorState state}) async {
-  final Rect cropRect = state.getCropRect();
-  final EditActionDetails action = state.editAction;
+Future<List<int>> cropImage(ExtendedImageEditorState state) async {
+  final Rect cropRect = state.getCropRect()!;
+  final EditActionDetails action = state.editAction!;
 
   final int rotateAngle = action.rotateAngle.toInt();
   final bool flipHorizontal = action.flipY;
@@ -72,9 +75,9 @@ Future<List<int>> cropImage({ExtendedImageEditorState state}) async {
     option.addOption(RotateOption(rotateAngle));
   }
 
-  final Uint8List result = await ImageEditor.editImage(
+  final Uint8List? result = await ImageEditor.editImage(
     image: img,
     imageEditorOption: option,
   );
-  return result;
+  return result!;
 }

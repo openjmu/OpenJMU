@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
@@ -12,8 +13,6 @@ export 'package:openjmu/model/special_text.dart';
 part 'models.g.dart';
 
 part 'app_message.dart';
-
-part 'backpack_item.dart';
 
 part 'blacklist_user.dart';
 

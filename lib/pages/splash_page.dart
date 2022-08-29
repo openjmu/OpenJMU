@@ -11,7 +11,7 @@ import 'package:openjmu/pages/tutorial_page.dart';
 
 @FFRoute(name: 'openjmu://splash', routeName: '启动页')
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key key}) : super(key: key);
+  const SplashPage({Key? key}) : super(key: key);
 
   @override
   SplashState createState() => SplashState();
@@ -19,19 +19,19 @@ class SplashPage extends StatefulWidget {
 
 class SplashState extends State<SplashPage> {
   bool firstFramed = false;
-  bool isOnline;
+  bool? isOnline;
   bool isInLoginProcess = false;
   bool isUserLogin = false;
   bool showLoading = false;
   bool isNavigating = false;
 
-  Timer _forceToLoginTimer;
-  Timer _showLoginIndicatorTimer;
+  Timer? _forceToLoginTimer;
+  Timer? _showLoginIndicatorTimer;
 
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance?.addPostFrameCallback((_) {
       setState(() {
         firstFramed = true;
       });
@@ -131,7 +131,7 @@ class SplashState extends State<SplashPage> {
       _forceToLoginTimer?.cancel();
       _showLoginIndicatorTimer?.cancel();
     } catch (e) {
-      LogUtils.e('Error when navigating: $e');
+      LogUtil.e('Error when navigating: $e');
       isNavigating = false;
       NetUtils.webViewCookieManager.deleteAllCookies();
     }
@@ -152,17 +152,17 @@ class SplashState extends State<SplashPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        LoadMoreSpinningIcon(isRefreshing: isOnline, size: 36),
-        Gap(15.w),
+        LoadMoreSpinningIcon(isRefreshing: isOnline == true, size: 36),
+        Gap.h(15.w),
         DefaultTextStyle.merge(
           style: TextStyle(
-            color: context.textTheme.caption.color.withOpacity(0.5),
+            color: context.textTheme.caption?.color?.withOpacity(0.5),
             height: 1.2,
             fontSize: 18.sp,
           ),
           child: AnimatedSwitcher(
             duration: kThemeChangeDuration,
-            child: isOnline ? const Text('正在加载…') : const Text('网络未连接'),
+            child: Text(isOnline == true ? '正在加载…' : '网络未连接'),
           ),
         ),
       ],

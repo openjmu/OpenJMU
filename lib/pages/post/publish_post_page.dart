@@ -15,7 +15,7 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(name: 'openjmu://publish-post', routeName: '发布动态')
 class PublishPostPage extends StatefulWidget {
-  const PublishPostPage({Key key}) : super(key: key);
+  const PublishPostPage({Key? key}) : super(key: key);
 
   @override
   _PublishPostPageState createState() => _PublishPostPageState();
@@ -32,7 +32,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   List<AssetEntity> selectedAssets = <AssetEntity>[];
   final Set<AssetEntity> failedAssets = <AssetEntity>{};
   final List<CancelToken> assetsUploadCancelTokens = <CancelToken>[];
-  final Map<AssetEntity, int> uploadedAssetId = <AssetEntity, int>{};
+  final Map<AssetEntity, int?> uploadedAssetId = <AssetEntity, int>{};
 
   final int maxAssetsLength = 9;
   int uploadedAssets = 0;
@@ -48,14 +48,14 @@ class _PublishPostPageState extends State<PublishPostPage>
 
   bool get hasImages => selectedAssets.isNotEmpty;
 
-  String get filteredContent => textEditingController?.text?.trim();
+  String get filteredContent => textEditingController.text.trim();
 
-  bool get isContentNotEmpty => filteredContent?.isNotEmpty ?? false;
+  bool get isContentNotEmpty => filteredContent.isNotEmpty;
 
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+    SchedulerBinding.instance?.addPostFrameCallback((Duration _) {
       focusNode.requestFocus();
     });
   }
@@ -87,7 +87,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// 弹出提到某人的搜索框并在输入区域中插入已选用户
   Future<void> mentionPeople() async {
     try {
-      final User result = await showDialog<User>(
+      final User? result = await showDialog<User>(
         context: context,
         builder: (BuildContext context) => MentionPeopleDialog(),
       );
@@ -107,7 +107,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         });
       }
     } catch (e) {
-      LogUtils.e('Error when trying to mention someone: $e');
+      LogUtil.e('Error when trying to mention someone: $e');
     }
   }
 
@@ -115,7 +115,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// 使用图片选择器选择图片
   Future<void> pickAssets() async {
     unFocusTextField();
-    final List<AssetEntity> ar = await AssetPicker.pickAssets(
+    final List<AssetEntity>? ar = await AssetPicker.pickAssets(
       context,
       selectedAssets: selectedAssets,
       themeColor: currentThemeColor,
@@ -131,7 +131,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       specialItemPosition: SpecialItemPosition.prepend,
       specialItemBuilder: (_) => Tapper(
         onTap: () async {
-          final AssetEntity cr = await CameraPicker.pickFromCamera(
+          final AssetEntity? cr = await CameraPicker.pickFromCamera(
             context,
             enableAudio: false,
             enableRecording: false,
@@ -177,7 +177,7 @@ class _PublishPostPageState extends State<PublishPostPage>
     if (kh > 0 && kh >= _keyboardHeight) {
       isEmoticonPadActive.value = false;
     }
-    _keyboardHeight = math.max(kh, _keyboardHeight ?? 0);
+    _keyboardHeight = math.max(kh, _keyboardHeight);
   }
 
   /// Method to update display status for the emoticon pad.
@@ -214,7 +214,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Check if the content is empty.
   /// 检查内容是否为空
   void checkContentEmptyWhenPublish() {
-    if (filteredContent?.isEmpty ?? true) {
+    if (filteredContent.isEmpty) {
       showCenterToast('内容不能为空');
     } else {
       checkConvention();
@@ -311,18 +311,18 @@ class _PublishPostPageState extends State<PublishPostPage>
       /// Cancel all request and clear token list.
       /// 取消所有的上传请求并清空所有cancel token
       assetsUploadCancelTokens
-        ..forEach((CancelToken token) => token?.cancel())
+        ..forEach((CancelToken token) => token.cancel())
         ..clear();
 
       if (mounted) {
         setState(() {});
       }
 
-      LogUtils.e('Error when trying upload images: $e');
+      LogUtil.e('Error when trying upload images: $e');
       if (e is DioError) {
-        LogUtils.e('${e.response?.data}');
+        LogUtil.e('${e.response?.data}');
       }
-      LogUtils.e('Images requests will be all cancelled.');
+      LogUtil.e('Images requests will be all cancelled.');
     }
   }
 
@@ -340,9 +340,9 @@ class _PublishPostPageState extends State<PublishPostPage>
             .replaceAll(']', ''),
     };
     try {
-      final Map<String, dynamic> response =
+      final Map<String, dynamic>? response =
           (await PostAPI.publishPost(content)).data;
-      if (response['tid'] != null) {
+      if (response?['tid'] != null) {
         loadingDialogController.changeState(
           'success',
           title: '动态发布成功',
@@ -423,7 +423,7 @@ class _PublishPostPageState extends State<PublishPostPage>
               hintStyle: TextStyle(color: Colors.grey),
             ),
             buildCounter: emptyCounterBuilder,
-            style: currentTheme.textTheme.bodyText2.copyWith(
+            style: currentTheme.textTheme.bodyText2?.copyWith(
               height: 1.5,
               fontSize: 21.sp,
               textBaseline: TextBaseline.alphabetic,
@@ -445,7 +445,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       builder: (_, bool value, __) => Tapper(
         onTap: () async {
           if (!value) {
-            final List<AssetEntity> result =
+            final List<AssetEntity>? result =
                 await AssetPickerViewer.pushToViewer(
               context,
               currentIndex: index,
@@ -508,7 +508,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         ),
         child: Text(
           '删除',
-          style: context.textTheme.caption.copyWith(
+          style: context.textTheme.caption?.copyWith(
             height: 1.23,
             fontSize: 14.sp,
           ),
@@ -583,7 +583,7 @@ class _PublishPostPageState extends State<PublishPostPage>
               scrollDirection: Axis.horizontal,
               itemCount: math.min(isCollapsed ? imagesLength : imagesLength + 1,
                   maxAssetsLength),
-              itemBuilder: (BuildContext _, int index) {
+              itemBuilder: (_, int index) {
                 if (index == imagesLength) {
                   return _assetAddItem;
                 }
@@ -634,10 +634,10 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Button wrapper for the toolbar.
   /// 工具栏按钮封装
   Widget _toolbarButton({
-    String icon,
-    Color iconColor,
-    String text,
-    VoidCallback onTap,
+    required String icon,
+    Color? iconColor,
+    String? text,
+    VoidCallback? onTap,
   }) {
     Widget button = GestureDetector(
       onTap: onTap,
@@ -657,7 +657,7 @@ class _PublishPostPageState extends State<PublishPostPage>
               icon,
               width: 20.w,
               height: 20.w,
-              color: iconColor ?? context.textTheme.bodyText2.color,
+              color: iconColor ?? context.textTheme.bodyText2?.color,
             ),
             if (text != null)
               Text(

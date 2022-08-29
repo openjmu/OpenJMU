@@ -17,35 +17,31 @@ part of 'models.dart';
 /// [unitId] 机构id, [groupId] 组别id,
 class TeamPost {
   TeamPost({
-    this.tid,
-    this.uid,
-    this.rootTid,
-    this.rootUid,
-    this.nickname,
-    this.postTime,
+    this.tid = 0,
+    required this.uid,
+    this.rootTid = 0,
+    this.rootUid = 0,
+    required this.nickname,
+    required this.postTime,
     this.category,
-    this.title,
     this.content,
     this.article,
     this.pics,
     this.postInfo,
-    this.userInfo,
+    required this.userInfo,
     this.replyInfo,
-    this.repliesCount,
-    this.praisesCount,
-    this.glances,
+    this.repliesCount = 0,
+    this.praisesCount = 0,
+    this.glances = 0,
     this.isLike = false,
-    this.praisor,
-    this.heat,
-    this.floor,
-    this.unitId,
-    this.groupId,
+    this.praisor = const <PostUser>[],
+    this.heat = 0,
+    this.floor = 0,
+    this.unitId = 0,
+    this.groupId = 0,
   });
 
   factory TeamPost.fromJson(Map<String, dynamic> json) {
-    if (json == null) {
-      return null;
-    }
     json.forEach((String k, dynamic v) {
       if (json[k] == '') {
         json[k] = null;
@@ -59,33 +55,36 @@ class TeamPost {
       }
     });
     final TeamPost _post = TeamPost(
-      tid: json['tid'].toString().toIntOrNull(),
+      tid: json['tid'].toString().toIntOrNull() ?? 0,
       uid: _user['uid'].toString(),
-      rootTid: json['root_tid'].toString().toIntOrNull(),
-      rootUid: json['root_uid'].toString().toIntOrNull(),
-      nickname: ((_user['nickname'] ?? _user['uid']) as dynamic).toString(),
+      rootTid: json['root_tid'].toString().toIntOrNull() ?? 0,
+      rootUid: json['root_uid'].toString().toIntOrNull() ?? 0,
+      nickname: (_user['nickname'] ?? _user['uid']).toString(),
       postTime: DateTime.fromMillisecondsSinceEpoch(
-          (json['post_time'] as String).toIntOrNull()),
-      category: json['category'] as String,
-      content: json['content'] as String,
-      article: json['article'] as String,
-      pics: (json['file_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
+        (json['post_time'] as String).toIntOrNull() ?? 0,
+      ),
+      category: json['category'] as String?,
+      content: json['content'] as String?,
+      article: json['article'] as String?,
+      pics:
+          (json['file_info'] as List<dynamic>?)?.cast<Map<dynamic, dynamic>>(),
       postInfo:
-          (json['post_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
+          (json['post_info'] as List<dynamic>?)?.cast<Map<dynamic, dynamic>>(),
       userInfo: PostUser.fromJson(_user),
       replyInfo:
-          (json['reply_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
-      repliesCount: json['replys'].toString().toIntOrNull(),
-      praisesCount: json['praises'].toString().toIntOrNull(),
-      glances: json['glances'].toString().toIntOrNull(),
+          (json['reply_info'] as List<dynamic>?)?.cast<Map<dynamic, dynamic>>(),
+      repliesCount: json['replys'].toString().toIntOrNull() ?? 0,
+      praisesCount: json['praises'].toString().toIntOrNull() ?? 0,
+      glances: json['glances'].toString().toIntOrNull() ?? 0,
       isLike: json['praised'].toString().toIntOrNull() == 1,
-      praisor: (json['praisor'] as List<dynamic>)
-          ?.map((dynamic e) => PostUser.fromJson(e as Map<String, dynamic>))
-          ?.toList(),
-      heat: json['heat'].toString().toDoubleOrNull(),
-      floor: json['floor'].toString().toIntOrNull(),
-      unitId: json['unit_id'].toString().toIntOrNull(),
-      groupId: json['group_id'].toString().toIntOrNull(),
+      praisor: (json['praisor'] as List<dynamic>?)
+              ?.map((dynamic e) => PostUser.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          <PostUser>[],
+      heat: json['heat'].toString().toDoubleOrNull() ?? 0,
+      floor: json['floor'].toString().toIntOrNull() ?? 0,
+      unitId: json['unit_id'].toString().toIntOrNull() ?? 0,
+      groupId: json['group_id'].toString().toIntOrNull() ?? 0,
     );
     return _post;
   }
@@ -94,14 +93,13 @@ class TeamPost {
   final String uid;
   final String nickname;
   final DateTime postTime;
-  final String category;
-  final String title;
-  final String content;
-  final String article;
-  final List<Map<dynamic, dynamic>> pics;
-  final List<Map<dynamic, dynamic>> postInfo;
+  final String? category;
+  final String? content;
+  final String? article;
+  final List<Map<dynamic, dynamic>>? pics;
+  final List<Map<dynamic, dynamic>>? postInfo;
   final PostUser userInfo;
-  final List<Map<dynamic, dynamic>> replyInfo;
+  final List<Map<dynamic, dynamic>>? replyInfo;
   int repliesCount;
   int praisesCount;
   int glances;
@@ -131,7 +129,6 @@ class TeamPost {
       'nickname': nickname,
       'postTime': postTime.toString(),
       'category': category,
-      'title': title,
       'content': content,
       'article': article,
       'pics': pics,
@@ -142,7 +139,7 @@ class TeamPost {
       'praisesCount': praisesCount,
       'glances': glances,
       'isLike': isLike,
-      'praisor': praisor?.map((PostUser u) => u.toJson())?.toList(),
+      'praisor': praisor.map((PostUser u) => u.toJson()).toList(),
       'heat': heat,
       'floor': floor,
       'unitId': unitId,

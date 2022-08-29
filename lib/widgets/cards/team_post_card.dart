@@ -12,9 +12,9 @@ import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamPostCard extends StatefulWidget {
   const TeamPostCard({
-    Key key,
-    @required this.post,
-    @required this.detailPageState,
+    Key? key,
+    required this.post,
+    required this.detailPageState,
   }) : super(key: key);
 
   final TeamPost post;
@@ -25,15 +25,14 @@ class TeamPostCard extends StatefulWidget {
 }
 
 class _TeamPostCardState extends State<TeamPostCard> {
-  TeamPost post;
+  late TeamPost post = widget.post;
 
   @override
   void initState() {
     super.initState();
-    post = widget.post;
     TeamPostAPI.getPostDetail(id: widget.post.tid).then(
       (Response<Map<String, dynamic>> response) {
-        final TeamPost _post = TeamPost.fromJson(response.data);
+        final TeamPost _post = TeamPost.fromJson(response.data!);
         post = _post;
         if (mounted) {
           setState(() {});
@@ -49,7 +48,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       child: Row(
         children: <Widget>[
           UserAvatar(uid: post.uid, isSysAvatar: post.userInfo.sysAvatar),
-          Gap(16.w),
+          Gap.h(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -58,7 +57,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                 Row(
                   children: <Widget>[
                     Text(
-                      post.nickname ?? post.uid.toString(),
+                      post.nickname ?? post.uid,
                       style: TextStyle(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
@@ -83,7 +82,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
   Widget _postTime(BuildContext context) {
     return Text(
       TeamPostAPI.timeConverter(post),
-      style: context.textTheme.caption.copyWith(
+      style: context.textTheme.caption?.copyWith(
         fontSize: 16.sp,
         fontWeight: FontWeight.normal,
       ),
@@ -102,8 +101,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
 
   Widget _images(BuildContext context) {
     final List<Widget> imagesWidget = <Widget>[];
-    for (int index = 0; index < post.pics.length; index++) {
-      final int imageId = (post.pics[index]['fid'] as String).toInt();
+    for (int index = 0; index < post.pics!.length; index++) {
+      final int imageId = (post.pics![index]['fid'] as String).toInt();
       final String imageUrl = API.teamFile(fid: imageId);
       Widget _exImage = ExtendedImage.network(
         imageUrl,
@@ -112,7 +111,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
         color: currentIsDark ? Colors.black.withAlpha(50) : null,
         colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
+          Widget? loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               loader = DecoratedBox(
@@ -123,11 +122,11 @@ class _TeamPostCardState extends State<TeamPostCard> {
               );
               break;
             case LoadState.completed:
-              final ImageInfo info = state.extendedImageInfo;
+              final ImageInfo? info = state.extendedImageInfo;
               if (info != null) {
                 loader = ScaledImage(
                   image: info.image,
-                  length: post.pics.length,
+                  length: post.pics!.length,
                   num200: 200.w,
                   num400: 400.w,
                 );
@@ -145,7 +144,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
             Routes.openjmuImageViewer.name,
             arguments: Routes.openjmuImageViewer.d(
               index: index,
-              pics: post.pics.map<ImageBean>((Map<dynamic, dynamic> f) {
+              pics: post.pics!.map<ImageBean>((Map<dynamic, dynamic> f) {
                 final int imageId = f['fid'].toString().toInt();
                 final String imageUrl = API.teamFile(fid: imageId);
                 return ImageBean(
@@ -168,13 +167,13 @@ class _TeamPostCardState extends State<TeamPostCard> {
       );
       imagesWidget.add(_exImage);
     }
-    Widget _image;
-    if (post.pics.length == 1) {
+    Widget? _image;
+    if (post.pics!.length == 1) {
       _image = Align(
         alignment: Alignment.topLeft,
         child: imagesWidget[0],
       );
-    } else if (post.pics.length > 1) {
+    } else if (post.pics!.length > 1) {
       _image = GridView.count(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
@@ -215,7 +214,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                 children: <Widget>[
                   Flexible(
                     child: DefaultTextStyle.merge(
-                      style: context.textTheme.caption.copyWith(
+                      style: context.textTheme.caption?.copyWith(
                         height: 1.2,
                         fontSize: 16.sp,
                       ),
@@ -233,7 +232,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                   ),
                   Text(
                     '觉得很赞',
-                    style: context.textTheme.caption.copyWith(
+                    style: context.textTheme.caption?.copyWith(
                       height: 1.2,
                       fontSize: 16.sp,
                     ),
@@ -254,7 +253,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                 size: 40,
                 isSysAvatar: post.praisor[index].sysAvatar,
               ),
-              separatorBuilder: (_, __) => Gap(10.w),
+              separatorBuilder: (_, __) => Gap.h(10.w),
             ),
           ),
         ],
@@ -290,7 +289,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
               ],
             ),
           ),
-          if (post.praisor?.isNotEmpty == true) _praisors,
+          if (post.praisor.isNotEmpty) _praisors,
         ],
       ),
     );

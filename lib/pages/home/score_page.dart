@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ScorePage extends StatefulWidget {
-  const ScorePage({Key key}) : super(key: key);
+  const ScorePage({Key? key}) : super(key: key);
 
   @override
   _ScorePageState createState() => _ScorePageState();
@@ -43,7 +43,7 @@ class _ScorePageState extends State<ScorePage>
           width: 50.w,
           color: context.theme.iconTheme.color,
         ),
-        VGap(20.w),
+        Gap.v(20.w),
         Text(
           '成绩未就绪',
           style: TextStyle(
@@ -66,7 +66,7 @@ class _ScorePageState extends State<ScorePage>
             width: 50.w,
             color: context.theme.iconTheme.color,
           ),
-          VGap(20.w),
+          Gap.v(20.w),
           Text(
             '暂无成绩',
             style: TextStyle(

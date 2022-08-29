@@ -24,16 +24,16 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 
   /// Controller for [RScanCameraDescription].
   /// 相机控制器
-  RScanCameraController _controller;
+  RScanCameraController? _controller;
 
   /// Get first camera from list. Return `null` if there are none.
   /// 获取第一个相机实例，如果没有则返回 `null`。
-  RScanCameraDescription get firstCameraDescription =>
+  RScanCameraDescription? get firstCameraDescription =>
       rScanCameras.isNotEmpty ? rScanCameras.first : null;
 
   /// Store scan result as a variable.
   /// 将扫码结果以变量方式保存
-  RScanResult scanResult;
+  RScanResult? scanResult;
 
   /// Whether there's no camera for scanning.
   /// 是否无相机可用
@@ -66,7 +66,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// 通过 [controller] 的预览大小，判断相机预览适用的缩放类型。
   _PreviewScaleType get _effectiveScaleType {
     assert(_controller != null);
-    final Size _size = _controller.value.previewSize;
+    final Size _size = _controller!.value.previewSize!;
     final Size _scaledSize = _size * (Screens.widthPixels / _size.height);
     if (_scaledSize.width > Screens.heightPixels) {
       return _PreviewScaleType.width;
@@ -80,32 +80,29 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     fetchCameras();
-    // initShaderAnimation();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        fetchCameras();
+        if (_controller?.value.isInitialized != true) {
+          fetchCameras();
+        }
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        _controller.dispose();
+        _controller?.dispose();
         break;
     }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    // shaderTranslateStream.close();
-    // shaderAnimationController
-    //   ..stop()
-    //   ..dispose();
+    WidgetsBinding.instance?.removeObserver(this);
     _controller?.stopScan();
     _controller?.dispose();
     super.dispose();
@@ -118,7 +115,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       rScanCameras = s;
       if (firstCameraDescription != null) {
         _controller = RScanCameraController(
-          firstCameraDescription,
+          firstCameraDescription!,
           RScanCameraResolutionPreset.max,
         )
           ..addListener(onScan)
@@ -142,18 +139,18 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       if (mounted) {
         setState(() {});
       }
-      LogUtils.e('Failed when fetching cameras: $e');
+      LogUtil.e('Failed when fetching cameras: $e');
     });
   }
 
   /// Callback for scanner result.
   /// 扫描得到结果时的回调
-  Future<void> onScan({RScanResult result, bool fromAlbum = false}) async {
+  Future<void> onScan({RScanResult? result, bool fromAlbum = false}) async {
     if (!shouldHandleResult) {
       return;
     }
 
-    scanResult = result ?? _controller.result;
+    scanResult = result ?? _controller?.result;
     if (scanResult == null) {
       if (fromAlbum) {
         showToast('未从图片中扫描到结果');
@@ -165,34 +162,15 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 
     /// Call vibrate once.
     /// 振动
-    Vibration.hasVibrator().then((bool hasVibrator) {
-      if (hasVibrator) {
+    Vibration.hasVibrator().then((bool? hasVibrator) {
+      if (hasVibrator == true) {
         Vibration.vibrate(duration: 100, intensities: <int>[100]);
       }
     });
 
     shouldHandleResult = !await onHandleScan(scanResult: scanResult);
-    _controller.result = null;
+    _controller?.result = null;
   }
-
-  /// Initialize animation for grid shader.
-  /// 为网格效果初始化动画
-  // void initShaderAnimation() {
-  //   shaderAnimationController = AnimationController(
-  //     duration: 3.seconds,
-  //     vsync: this,
-  //   );
-  //   shaderAnimation = Tween<double>(
-  //     begin: -Screens.height,
-  //     end: Screens.height * 0.5,
-  //   ).animate(shaderAnimationController)
-  //     ..addListener(() {
-  //       shaderTranslateStream.add(shaderAnimation.value);
-  //     });
-  //   SchedulerBinding.instance.addPostFrameCallback((_) {
-  //     shaderAnimationController.repeat();
-  //   });
-  // }
 
   /// Switch user's qr code display status.
   /// 切换用户二维码的显示状态
@@ -203,7 +181,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// Scan QR code from the file.
   /// 从文件中扫描二维码
   Future<void> scanFromFile() async {
-    final List<AssetEntity> entity = await AssetPicker.pickAssets(
+    final List<AssetEntity>? entity = await AssetPicker.pickAssets(
       context,
       maxAssets: 1,
       themeColor: currentThemeColor,
@@ -214,8 +192,8 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       return;
     }
     try {
-      final RScanResult result = await RScan.scanImagePath(
-        (await entity.first.originFile).path,
+      final RScanResult? result = await RScan.scanImagePath(
+        (await entity!.first.originFile)!.path,
       );
       onScan(result: result, fromAlbum: true);
     } catch (e) {
@@ -231,7 +209,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   //     child: StreamBuilder<double>(
   //       initialData: 0.0,
   //       stream: shaderTranslateStream.stream,
-  //       builder: (BuildContext _, AsyncSnapshot<double> data) {
+  //       builder: (_, AsyncSnapshot<double> data) {
   //         return ShaderMask(
   //           shaderCallback: (Rect rect) {
   //             final Gradient gradient = LinearGradient(
@@ -276,7 +254,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   Widget _previewBuilder(BuildContext context) {
     assert(_controller != null);
 
-    Widget _preview = RScanCamera(_controller);
+    Widget _preview = RScanCamera(_controller!);
 
     if (_effectiveScaleType == _PreviewScaleType.none) {
       return _preview;
@@ -287,10 +265,10 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     switch (_effectiveScaleType) {
       case _PreviewScaleType.width:
         _width = Screens.width;
-        _height = Screens.width * _controller.value.aspectRatio;
+        _height = Screens.width * _controller!.value.aspectRatio;
         break;
       case _PreviewScaleType.height:
-        _width = Screens.height / _controller.value.aspectRatio;
+        _width = Screens.height / _controller!.value.aspectRatio;
         _height = Screens.height;
         break;
       default:
@@ -315,10 +293,10 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   }
 
   Widget _scanPainter({
-    @required double size,
-    @required double radius,
-    @required double top,
-    Widget child,
+    required double size,
+    required double radius,
+    required double top,
+    Widget? child,
   }) {
     return CustomPaint(
       painter: ScanRectPainter(
@@ -355,7 +333,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
                       top: Screens.width / 2.75,
                       child: Column(
                         children: <Widget>[
-                          VGap(40.w),
+                          Gap.v(40.w),
                           Text(
                             '请将摄像头对准二维码',
                             style: TextStyle(
@@ -365,7 +343,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
                           ),
                           const Spacer(),
                           importFromGalleryButton,
-                          VGap(60.w),
+                          Gap.v(60.w),
                         ],
                       ),
                     ),
@@ -400,15 +378,14 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 /// [paddingOffset] 镂空区域距离起始点的偏移量，且作为边距
 class ScanRectPainter extends CustomPainter {
   const ScanRectPainter({
-    @required this.size,
-    @required this.radius,
+    required this.size,
+    required this.radius,
     this.top,
-  })  : assert(size != null),
-        assert(radius != null);
+  });
 
   final Size size;
   final double radius;
-  final double top;
+  final double? top;
 
   void drawInnerRect(Canvas c, Size s) {
     assert(size < Size(Screens.width, Screens.height));
@@ -481,15 +458,19 @@ class GradientTranslateTransform extends GradientTransform {
   final Offset offset;
 
   @override
-  Matrix4 transform(Rect bounds, {TextDirection textDirection}) {
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
     return Matrix4.translationValues(offset.dx, offset.dy, 0.0);
   }
 }
 
 enum _PreviewScaleType { none, width, height }
 
-Future<bool> onHandleScan({RScanResult scanResult}) async {
-  if (API.urlReg.stringMatch(scanResult.message) != null) {
+Future<bool> onHandleScan({RScanResult? scanResult}) async {
+  if (scanResult == null || scanResult.message == null) {
+    return false;
+  }
+  final String message = scanResult.message!;
+  if (API.urlReg.stringMatch(message) != null) {
     // Launch web page if a common url was detected.
     // 如果检测到常见的 url 格式内容则打开网页
     if (await ConfirmationDialog.show(
@@ -501,17 +482,17 @@ Future<bool> onHandleScan({RScanResult scanResult}) async {
       confirmLabel: '继续访问',
     )) {
       navigatorState.pop();
-      API.launchWeb(url: scanResult.message);
+      API.launchWeb(url: message);
       return true;
     }
     return false;
-  } else if (API.schemeUserPage.stringMatch(scanResult.message) != null) {
+  } else if (API.schemeUserPage.stringMatch(message) != null) {
     // Push to user page if a user scheme is being detect.
     // 如果检测到用户 scheme 则跳转到用户页
     navigatorState.pushReplacementNamed(
       Routes.openjmuUserPage.name,
       arguments: Routes.openjmuUserPage.d(
-        uid: scanResult.message
+        uid: message
             .replaceAll(Routes.openjmuUserPage.name, '')
             .replaceAll('/', '')
             .trim(),
@@ -524,7 +505,7 @@ Future<bool> onHandleScan({RScanResult scanResult}) async {
     if (!await ConfirmationDialog.show(
       currentContext,
       title: '扫码结果',
-      content: scanResult.message,
+      content: message,
       showConfirm: true,
       confirmLabel: '返回',
       cancelLabel: '复制文字',

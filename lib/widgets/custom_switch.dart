@@ -12,87 +12,266 @@ import 'package:flutter/services.dart';
 
 class CustomSwitch extends StatefulWidget {
   const CustomSwitch({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
+    Key? key,
+    required this.value,
+    required this.onChanged,
     this.activeColor,
+    this.trackColor,
+    this.thumbColor,
     this.dragStartBehavior = DragStartBehavior.start,
-    this.trackWidth = 50.0,
-    this.trackHeight = 28.0,
-  })  : assert(value != null),
-        assert(dragStartBehavior != null),
-        super(key: key);
+    this.trackWidth = 50,
+    this.trackHeight = 28,
+  }) : super(key: key);
 
   final bool value;
-  final ValueChanged<bool> onChanged;
-  final Color activeColor;
+  final ValueChanged<bool>? onChanged;
+  final Color? activeColor;
+  final Color? trackColor;
+  final Color? thumbColor;
   final DragStartBehavior dragStartBehavior;
-
   final double trackWidth;
   final double trackHeight;
 
   @override
-  _CustomSwitchState createState() => _CustomSwitchState();
+  State<CustomSwitch> createState() => _CustomSwitchState();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagProperty(
-      'value',
-      value: value,
-      ifTrue: 'on',
-      ifFalse: 'off',
-      showName: true,
-    ));
-    properties.add(ObjectFlagProperty<ValueChanged<bool>>(
-      'onChanged',
-      onChanged,
-      ifNull: 'disabled',
-    ));
+    properties.add(
+      FlagProperty(
+        'value',
+        value: value,
+        ifTrue: 'on',
+        ifFalse: 'off',
+        showName: true,
+      ),
+    );
+    properties.add(
+      ObjectFlagProperty<ValueChanged<bool>>(
+        'onChanged',
+        onChanged,
+        ifNull: 'disabled',
+      ),
+    );
   }
 }
 
 class _CustomSwitchState extends State<CustomSwitch>
     with TickerProviderStateMixin {
+  late TapGestureRecognizer _tap;
+  late HorizontalDragGestureRecognizer _drag;
+
+  late AnimationController _positionController;
+  late CurvedAnimation position;
+
+  late AnimationController _reactionController;
+  late Animation<double> _reaction;
+
+  bool get isInteractive => widget.onChanged != null;
+
+  bool needsPositionAnimation = false;
+
+  double get _kTrackInnerStart => widget.trackHeight / 2.0;
+
+  double get _kTrackInnerEnd => widget.trackWidth - _kTrackInnerStart;
+
+  double get _kTrackInnerLength => _kTrackInnerEnd - _kTrackInnerStart;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tap = TapGestureRecognizer()
+      ..onTapDown = _handleTapDown
+      ..onTapUp = _handleTapUp
+      ..onTap = _handleTap
+      ..onTapCancel = _handleTapCancel;
+    _drag = HorizontalDragGestureRecognizer()
+      ..onStart = _handleDragStart
+      ..onUpdate = _handleDragUpdate
+      ..onEnd = _handleDragEnd
+      ..dragStartBehavior = widget.dragStartBehavior;
+
+    _positionController = AnimationController(
+      duration: _kToggleDuration,
+      value: widget.value ? 1.0 : 0.0,
+      vsync: this,
+    );
+    position = CurvedAnimation(
+      parent: _positionController,
+      curve: Curves.linear,
+    );
+    _reactionController = AnimationController(
+      duration: _kReactionDuration,
+      vsync: this,
+    );
+    _reaction = CurvedAnimation(
+      parent: _reactionController,
+      curve: Curves.ease,
+    );
+  }
+
+  @override
+  void didUpdateWidget(CustomSwitch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _drag.dragStartBehavior = widget.dragStartBehavior;
+
+    if (needsPositionAnimation || oldWidget.value != widget.value)
+      _resumePositionAnimation(isLinear: needsPositionAnimation);
+  }
+
+  void _resumePositionAnimation({bool isLinear = true}) {
+    needsPositionAnimation = false;
+    position
+      ..curve = isLinear ? Curves.linear : Curves.ease
+      ..reverseCurve = isLinear ? Curves.linear : Curves.ease.flipped;
+    if (widget.value)
+      _positionController.forward();
+    else
+      _positionController.reverse();
+  }
+
+  void _handleTapDown(TapDownDetails details) {
+    if (isInteractive) {
+      needsPositionAnimation = false;
+    }
+    _reactionController.forward();
+  }
+
+  void _handleTap() {
+    if (isInteractive) {
+      widget.onChanged!(!widget.value);
+      _emitVibration();
+    }
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    if (isInteractive) {
+      needsPositionAnimation = false;
+      _reactionController.reverse();
+    }
+  }
+
+  void _handleTapCancel() {
+    if (isInteractive) {
+      _reactionController.reverse();
+    }
+  }
+
+  void _handleDragStart(DragStartDetails details) {
+    if (isInteractive) {
+      needsPositionAnimation = false;
+      _reactionController.forward();
+      _emitVibration();
+    }
+  }
+
+  void _handleDragUpdate(DragUpdateDetails details) {
+    if (isInteractive) {
+      position
+        ..curve = Curves.linear
+        ..reverseCurve = Curves.linear;
+      final double delta = details.primaryDelta! / _kTrackInnerLength;
+      switch (Directionality.of(context)) {
+        case TextDirection.rtl:
+          _positionController.value -= delta;
+          break;
+        case TextDirection.ltr:
+          _positionController.value += delta;
+          break;
+      }
+    }
+  }
+
+  void _handleDragEnd(DragEndDetails details) {
+    // Deferring the animation to the next build phase.
+    setState(() {
+      needsPositionAnimation = true;
+    });
+    // Call onChanged when the user's intent to change value is clear.
+    if (position.value >= 0.5 != widget.value) {
+      widget.onChanged!(!widget.value);
+    }
+    _reactionController.reverse();
+  }
+
+  void _emitVibration() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+        HapticFeedback.lightImpact();
+        break;
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (needsPositionAnimation) {
+      _resumePositionAnimation();
+    }
     return Opacity(
-      opacity:
-          widget.onChanged == null ? _kCupertinoSwitchDisabledOpacity : 1.0,
+      opacity: widget.onChanged == null ? _kCustomSwitchDisabledOpacity : 1.0,
       child: _CustomSwitchRenderObjectWidget(
         value: widget.value,
         activeColor: CupertinoDynamicColor.resolve(
           widget.activeColor ?? CupertinoColors.systemGreen,
           context,
         ),
+        trackColor: CupertinoDynamicColor.resolve(
+          widget.trackColor ?? CupertinoColors.secondarySystemFill,
+          context,
+        ),
+        thumbColor: CupertinoDynamicColor.resolve(
+          widget.thumbColor ?? CupertinoColors.white,
+          context,
+        ),
         onChanged: widget.onChanged,
-        vsync: this,
-        dragStartBehavior: widget.dragStartBehavior,
+        textDirection: Directionality.of(context),
+        state: this,
         trackWidth: widget.trackWidth,
         trackHeight: widget.trackHeight,
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _tap.dispose();
+    _drag.dispose();
+
+    _positionController.dispose();
+    _reactionController.dispose();
+    super.dispose();
+  }
 }
 
 class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
   const _CustomSwitchRenderObjectWidget({
-    Key key,
-    this.value,
-    this.activeColor,
-    this.onChanged,
-    this.vsync,
-    this.dragStartBehavior = DragStartBehavior.start,
-    this.trackWidth,
-    this.trackHeight,
+    Key? key,
+    required this.value,
+    required this.activeColor,
+    required this.trackColor,
+    required this.thumbColor,
+    required this.onChanged,
+    required this.textDirection,
+    required this.state,
+    required this.trackWidth,
+    required this.trackHeight,
   }) : super(key: key);
 
   final bool value;
   final Color activeColor;
-  final ValueChanged<bool> onChanged;
-  final TickerProvider vsync;
-  final DragStartBehavior dragStartBehavior;
-
+  final Color trackColor;
+  final Color thumbColor;
+  final ValueChanged<bool>? onChanged;
+  final _CustomSwitchState state;
+  final TextDirection textDirection;
   final double trackWidth;
   final double trackHeight;
 
@@ -101,12 +280,11 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
     return _RenderCustomSwitch(
       value: value,
       activeColor: activeColor,
-      trackColor: CupertinoDynamicColor.resolve(
-          CupertinoColors.secondarySystemFill, context),
+      trackColor: trackColor,
+      thumbColor: thumbColor,
       onChanged: onChanged,
-      textDirection: Directionality.of(context),
-      vsync: vsync,
-      dragStartBehavior: dragStartBehavior,
+      textDirection: textDirection,
+      state: state,
       trackWidth: trackWidth,
       trackHeight: trackHeight,
     );
@@ -114,167 +292,74 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, _RenderCustomSwitch renderObject) {
+    BuildContext context,
+    _RenderCustomSwitch renderObject,
+  ) {
     renderObject
       ..value = value
       ..activeColor = activeColor
-      ..trackColor = CupertinoDynamicColor.resolve(
-          CupertinoColors.secondarySystemFill, context)
+      ..trackColor = trackColor
+      ..thumbColor = thumbColor
       ..onChanged = onChanged
-      ..textDirection = Directionality.of(context)
-      ..vsync = vsync
-      ..dragStartBehavior = dragStartBehavior
-      ..trackWidth = trackWidth
-      ..trackHeight = trackHeight;
+      ..textDirection = textDirection;
   }
 }
 
-const double _kCupertinoSwitchDisabledOpacity = 0.5;
+const double _kSwitchWidth = 59.0;
+const double _kSwitchHeight = 39.0;
+// Opacity of a disabled switch, as eye-balled from iOS Simulator on Mac.
+const double _kCustomSwitchDisabledOpacity = 0.5;
 
 const Duration _kReactionDuration = Duration(milliseconds: 300);
 const Duration _kToggleDuration = Duration(milliseconds: 200);
 
 class _RenderCustomSwitch extends RenderConstrainedBox {
   _RenderCustomSwitch({
-    @required bool value,
-    @required Color activeColor,
-    @required Color trackColor,
-    ValueChanged<bool> onChanged,
-    @required TextDirection textDirection,
-    @required TickerProvider vsync,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    double trackWidth,
-    double trackHeight,
-  })  : assert(value != null),
-        assert(activeColor != null),
-        assert(vsync != null),
-        _value = value,
+    required bool value,
+    required Color activeColor,
+    required Color trackColor,
+    required Color thumbColor,
+    ValueChanged<bool>? onChanged,
+    required TextDirection textDirection,
+    required _CustomSwitchState state,
+    required double trackWidth,
+    required double trackHeight,
+  })  : _value = value,
         _activeColor = activeColor,
         _trackColor = trackColor,
+        _thumbPainter = CupertinoThumbPainter.switchThumb(color: thumbColor),
         _onChanged = onChanged,
         _textDirection = textDirection,
-        _vsync = vsync,
+        _state = state,
         _trackWidth = trackWidth,
         _trackHeight = trackHeight,
         super(
-          additionalConstraints: BoxConstraints.tightFor(
-            width: trackWidth,
-            height: trackWidth,
+          additionalConstraints: const BoxConstraints.tightFor(
+            width: _kSwitchWidth,
+            height: _kSwitchHeight,
           ),
         ) {
-    _tap = TapGestureRecognizer()
-      ..onTapDown = _handleTapDown
-      ..onTap = _handleTap
-      ..onTapUp = _handleTapUp
-      ..onTapCancel = _handleTapCancel;
-    _drag = HorizontalDragGestureRecognizer()
-      ..onStart = _handleDragStart
-      ..onUpdate = _handleDragUpdate
-      ..onEnd = _handleDragEnd
-      ..dragStartBehavior = dragStartBehavior;
-    _positionController = AnimationController(
-      duration: _kToggleDuration,
-      value: value ? 1.0 : 0.0,
-      vsync: vsync,
-    );
-    _position = CurvedAnimation(
-      parent: _positionController,
-      curve: Curves.linear,
-    )
-      ..addListener(markNeedsPaint)
-      ..addStatusListener(_handlePositionStateChanged);
-    _reactionController = AnimationController(
-      duration: _kReactionDuration,
-      vsync: vsync,
-    );
-    _reaction = CurvedAnimation(
-      parent: _reactionController,
-      curve: Curves.ease,
-    )..addListener(markNeedsPaint);
+    state.position.addListener(markNeedsPaint);
+    state._reaction.addListener(markNeedsPaint);
   }
 
-  double _trackWidth;
-
-  double get trackWidth => _trackWidth;
-
-  set trackWidth(double value) {
-    assert(value != null);
-    if (value == _trackWidth) {
-      return;
-    }
-    _trackWidth = value;
-    markNeedsPaint();
-  }
-
-  double _trackHeight;
-
-  double get trackHeight => _trackHeight;
-
-  set trackHeight(double value) {
-    assert(value != null);
-    if (value == _trackHeight) {
-      return;
-    }
-    _trackHeight = value;
-    markNeedsPaint();
-  }
-
-  double get _kTrackWidth => trackWidth;
-
-  double get _kTrackHeight => trackHeight;
-
-  double get _kTrackRadius => trackHeight / 2.0;
-
-  double get _kTrackInnerStart => _kTrackHeight / 1.4;
-
-  double get _kTrackInnerEnd => _kTrackWidth - _kTrackInnerStart;
-
-  double get _kTrackInnerLength => _kTrackInnerEnd - _kTrackInnerStart;
-
-  AnimationController _positionController;
-  CurvedAnimation _position;
-
-  AnimationController _reactionController;
-  Animation<double> _reaction;
+  final _CustomSwitchState _state;
 
   bool get value => _value;
   bool _value;
 
   set value(bool value) {
-    assert(value != null);
     if (value == _value) {
       return;
     }
     _value = value;
     markNeedsSemanticsUpdate();
-    _position
-      ..curve = Curves.ease
-      ..reverseCurve = Curves.ease.flipped;
-    if (value) {
-      _positionController.forward();
-    } else {
-      _positionController.reverse();
-    }
-  }
-
-  TickerProvider get vsync => _vsync;
-  TickerProvider _vsync;
-
-  set vsync(TickerProvider value) {
-    assert(value != null);
-    if (value == _vsync) {
-      return;
-    }
-    _vsync = value;
-    _positionController.resync(vsync);
-    _reactionController.resync(vsync);
   }
 
   Color get activeColor => _activeColor;
   Color _activeColor;
 
   set activeColor(Color value) {
-    assert(value != null);
     if (value == _activeColor) {
       return;
     }
@@ -286,7 +371,6 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   Color _trackColor;
 
   set trackColor(Color value) {
-    assert(value != null);
     if (value == _trackColor) {
       return;
     }
@@ -294,10 +378,21 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     markNeedsPaint();
   }
 
-  ValueChanged<bool> get onChanged => _onChanged;
-  ValueChanged<bool> _onChanged;
+  Color get thumbColor => _thumbPainter.color;
+  CupertinoThumbPainter _thumbPainter;
 
-  set onChanged(ValueChanged<bool> value) {
+  set thumbColor(Color value) {
+    if (value == thumbColor) {
+      return;
+    }
+    _thumbPainter = CupertinoThumbPainter.switchThumb(color: value);
+    markNeedsPaint();
+  }
+
+  ValueChanged<bool>? get onChanged => _onChanged;
+  ValueChanged<bool>? _onChanged;
+
+  set onChanged(ValueChanged<bool>? value) {
     if (value == _onChanged) {
       return;
     }
@@ -313,7 +408,6 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   TextDirection _textDirection;
 
   set textDirection(TextDirection value) {
-    assert(value != null);
     if (_textDirection == value) {
       return;
     }
@@ -321,133 +415,35 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     markNeedsPaint();
   }
 
-  DragStartBehavior get dragStartBehavior => _drag.dragStartBehavior;
+  double get trackWidth => _trackWidth;
+  double _trackWidth;
 
-  set dragStartBehavior(DragStartBehavior value) {
-    assert(value != null);
-    if (_drag.dragStartBehavior == value) {
+  set trackWidth(double value) {
+    if (_trackWidth == value) {
       return;
     }
-    _drag.dragStartBehavior = value;
+    _trackWidth = value;
+    markNeedsPaint();
+  }
+
+  double get trackHeight => _trackHeight;
+  double _trackHeight;
+
+  set trackHeight(double value) {
+    if (_trackHeight == value) {
+      return;
+    }
+    _trackHeight = value;
+    markNeedsPaint();
   }
 
   bool get isInteractive => onChanged != null;
 
-  TapGestureRecognizer _tap;
-  HorizontalDragGestureRecognizer _drag;
+  double get _kTrackRadius => _trackHeight / 2.0;
 
-  @override
-  void attach(PipelineOwner owner) {
-    super.attach(owner);
-    if (value) {
-      _positionController.forward();
-    } else {
-      _positionController.reverse();
-    }
-    if (isInteractive) {
-      switch (_reactionController.status) {
-        case AnimationStatus.forward:
-          _reactionController.forward();
-          break;
-        case AnimationStatus.reverse:
-          _reactionController.reverse();
-          break;
-        case AnimationStatus.dismissed:
-        case AnimationStatus.completed:
-          // nothing to do
-          break;
-      }
-    }
-  }
+  double get _kTrackInnerStart => _trackHeight / 2.0;
 
-  @override
-  void detach() {
-    _positionController.stop();
-    _reactionController.stop();
-    super.detach();
-  }
-
-  void _handlePositionStateChanged(AnimationStatus status) {
-    if (isInteractive) {
-      if (status == AnimationStatus.completed && !_value) {
-        onChanged(true);
-      } else if (status == AnimationStatus.dismissed && _value) {
-        onChanged(false);
-      }
-    }
-  }
-
-  void _handleTapDown(TapDownDetails details) {
-    if (isInteractive) {
-      _reactionController.forward();
-    }
-  }
-
-  void _handleTap() {
-    if (isInteractive) {
-      onChanged(!_value);
-      _emitVibration();
-    }
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    if (isInteractive) {
-      _reactionController.reverse();
-    }
-  }
-
-  void _handleTapCancel() {
-    if (isInteractive) {
-      _reactionController.reverse();
-    }
-  }
-
-  void _handleDragStart(DragStartDetails details) {
-    if (isInteractive) {
-      _reactionController.forward();
-      _emitVibration();
-    }
-  }
-
-  void _handleDragUpdate(DragUpdateDetails details) {
-    if (isInteractive) {
-      _position
-        ..curve = null
-        ..reverseCurve = null;
-      final double delta = details.primaryDelta / _kTrackInnerLength;
-      switch (textDirection) {
-        case TextDirection.rtl:
-          _positionController.value -= delta;
-          break;
-        case TextDirection.ltr:
-          _positionController.value += delta;
-          break;
-      }
-    }
-  }
-
-  void _handleDragEnd(DragEndDetails details) {
-    if (_position.value >= 0.5) {
-      _positionController.forward();
-    } else {
-      _positionController.reverse();
-    }
-    _reactionController.reverse();
-  }
-
-  void _emitVibration() {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        HapticFeedback.lightImpact();
-        break;
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.android:
-      case TargetPlatform.windows:
-      case TargetPlatform.linux:
-        break;
-    }
-  }
+  double get _kTrackInnerEnd => _trackWidth - _kTrackInnerStart;
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -456,8 +452,8 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     assert(debugHandleEvent(event, entry));
     if (event is PointerDownEvent && isInteractive) {
-      _drag.addPointer(event);
-      _tap.addPointer(event);
+      _state._drag.addPointer(event);
+      _state._tap.addPointer(event);
     }
   }
 
@@ -466,7 +462,7 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     super.describeSemanticsConfiguration(config);
 
     if (isInteractive) {
-      config.onTap = _handleTap;
+      config.onTap = _state._handleTap;
     }
 
     config.isEnabled = isInteractive;
@@ -477,10 +473,10 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   void paint(PaintingContext context, Offset offset) {
     final Canvas canvas = context.canvas;
 
-    final double currentValue = _position.value;
-    final double currentReactionValue = _reaction.value;
+    final double currentValue = _state.position.value;
+    final double currentReactionValue = _state._reaction.value;
 
-    double visualPosition;
+    final double visualPosition;
     switch (textDirection) {
       case TextDirection.rtl:
         visualPosition = 1.0 - currentValue;
@@ -491,13 +487,13 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     }
 
     final Paint paint = Paint()
-      ..color = Color.lerp(trackColor, activeColor, currentValue);
+      ..color = Color.lerp(trackColor, activeColor, currentValue)!;
 
     final Rect trackRect = Rect.fromLTWH(
-      offset.dx + (size.width - trackWidth) / 2.0,
-      offset.dy + (size.height - trackHeight) / 2.0,
-      trackWidth,
-      trackHeight,
+      offset.dx + (size.width - _trackWidth) / 2.0,
+      offset.dy + (size.height - _trackHeight) / 2.0,
+      _trackWidth,
+      _trackHeight,
     );
     final RRect trackRRect = RRect.fromRectAndRadius(
       trackRect,
@@ -511,55 +507,68 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
       trackRect.left + _kTrackInnerStart - CupertinoThumbPainter.radius,
       trackRect.left +
           _kTrackInnerEnd -
-          CupertinoThumbPainter.radius / 1.5 -
+          CupertinoThumbPainter.radius -
           currentThumbExtension,
       visualPosition,
-    );
+    )!;
     final double thumbRight = lerpDouble(
       trackRect.left +
           _kTrackInnerStart +
-          CupertinoThumbPainter.radius / 1.5 +
+          CupertinoThumbPainter.radius +
           currentThumbExtension,
       trackRect.left + _kTrackInnerEnd + CupertinoThumbPainter.radius,
       visualPosition,
-    );
+    )!;
     final double thumbCenterY = offset.dy + size.height / 2.0;
     final Rect thumbBounds = Rect.fromLTRB(
       thumbLeft,
-      thumbCenterY - CupertinoThumbPainter.radius / 1.5,
+      thumbCenterY - CupertinoThumbPainter.radius,
       thumbRight,
-      thumbCenterY + CupertinoThumbPainter.radius / 1.5,
+      thumbCenterY + CupertinoThumbPainter.radius,
     );
 
-    context.pushClipRRect(
+    _clipRRectLayer.layer = context.pushClipRRect(
       needsCompositing,
       Offset.zero,
       thumbBounds,
       trackRRect,
       (PaintingContext innerContext, Offset offset) {
-        const CupertinoThumbPainter.switchThumb()
-            .paint(innerContext.canvas, thumbBounds);
+        _thumbPainter.paint(innerContext.canvas, thumbBounds);
       },
+      oldLayer: _clipRRectLayer.layer,
     );
+  }
+
+  final LayerHandle<ClipRRectLayer> _clipRRectLayer =
+      LayerHandle<ClipRRectLayer>();
+
+  @override
+  void dispose() {
+    _clipRRectLayer.layer = null;
+    super.dispose();
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
-    description.add(FlagProperty(
-      'value',
-      value: value,
-      ifTrue: 'checked',
-      ifFalse: 'unchecked',
-      showName: true,
-    ));
-    description.add(FlagProperty(
-      'isInteractive',
-      value: isInteractive,
-      ifTrue: 'enabled',
-      ifFalse: 'disabled',
-      showName: true,
-      defaultValue: true,
-    ));
+    description.add(
+      FlagProperty(
+        'value',
+        value: value,
+        ifTrue: 'checked',
+        ifFalse: 'unchecked',
+        showName: true,
+      ),
+    );
+    description.add(
+      FlagProperty(
+        'isInteractive',
+        value: isInteractive,
+        ifTrue: 'enabled',
+        ifFalse: 'disabled',
+        showName: true,
+        defaultValue: true,
+      ),
+    );
   }
 }

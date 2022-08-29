@@ -5,33 +5,75 @@
 import 'package:flutter/material.dart';
 
 class Gap extends StatelessWidget {
-  const Gap(
-    this.width, {
-    Key key,
+  const Gap.h(
+    double width, {
+    Key? key,
+    double? height,
     this.color,
-  }) : super(key: key);
+  })  : _width = width,
+        _height = height,
+        super(key: key);
 
-  final double width;
-  final Color color;
+  const Gap.v(
+    double height, {
+    Key? key,
+    double? width,
+    this.color,
+  })  : _width = width,
+        _height = height,
+        super(key: key);
+
+  factory Gap.bottomInsets(BuildContext context) {
+    return Gap.v(MediaQuery.of(context).viewInsets.bottom);
+  }
+
+  final double? _width;
+  final double? _height;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: width, color: color);
+    Widget _w = SizedBox(width: _width, height: _height);
+    if (color != null) {
+      _w = ColoredBox(color: color!, child: _w);
+    }
+    return _w;
   }
 }
 
-class VGap extends StatelessWidget {
-  const VGap(
-    this.height, {
-    Key key,
+class SliverGap extends StatelessWidget {
+  const SliverGap.h(
+    double width, {
+    Key? key,
+    double? height,
     this.color,
-  }) : super(key: key);
+  })  : _width = width,
+        _height = height,
+        super(key: key);
 
-  final double height;
-  final Color color;
+  const SliverGap.v(
+    double height, {
+    Key? key,
+    double? width,
+    this.color,
+  })  : _width = width,
+        _height = height,
+        super(key: key);
+
+  final double? _width;
+  final double? _height;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    return Container(height: height, color: color);
+    Widget child;
+    if (_width != null) {
+      child = Gap.h(_width!, height: _height, color: color);
+    } else if (_height != null) {
+      child = Gap.v(_height!, width: _width, color: color);
+    } else {
+      child = const SizedBox.shrink();
+    }
+    return SliverToBoxAdapter(child: child);
   }
 }

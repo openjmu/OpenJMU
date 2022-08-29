@@ -1,3 +1,4 @@
+// @dart = 2.9
 ///
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-13 16:52
@@ -10,66 +11,58 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   // Fow start index.
-  int _homeSplashIndex = 0;
-
   int get homeSplashIndex => _homeSplashIndex;
+  int _homeSplashIndex = 0;
 
   set homeSplashIndex(int value) {
     _homeSplashIndex = value;
     notifyListeners();
   }
 
-  List<Map<dynamic, dynamic>> _announcements = <Map<dynamic, dynamic>>[];
-
   List<Map<dynamic, dynamic>> get announcements => _announcements;
+  List<Map<dynamic, dynamic>> _announcements = <Map<dynamic, dynamic>>[];
 
   set announcements(List<Map<dynamic, dynamic>> value) {
     _announcements = List<Map<dynamic, dynamic>>.from(value);
     notifyListeners();
   }
 
-  bool _announcementsEnabled = false;
-
   bool get announcementsEnabled => _announcementsEnabled;
+  bool _announcementsEnabled = false;
 
   set announcementsEnabled(bool value) {
     _announcementsEnabled = value;
     notifyListeners();
   }
 
-  bool _announcementsUserEnabled = false;
-
   bool get announcementsUserEnabled => _announcementsUserEnabled;
+  bool _announcementsUserEnabled = false;
 
   set announcementsUserEnabled(bool value) {
     _announcementsUserEnabled = value;
     notifyListeners();
   }
 
-  bool _newAppCenterIcon = false;
-
   bool get newAppCenterIcon => _newAppCenterIcon;
+  bool _newAppCenterIcon = false;
 
   set newAppCenterIcon(bool value) {
     _newAppCenterIcon = value;
     notifyListeners();
   }
 
-  bool _hideShieldPost = true;
-
   bool get hideShieldPost => _hideShieldPost;
+  bool _hideShieldPost = true;
 
   set hideShieldPost(bool value) {
     _hideShieldPost = value;
     notifyListeners();
   }
 
+  bool get launchFromSystemBrowser => _launchFromSystemBrowser;
   bool _launchFromSystemBrowser = false;
 
-  bool get launchFromSystemBrowser => _launchFromSystemBrowser;
-
   set launchFromSystemBrowser(bool value) {
-    assert(value != null);
     if (_launchFromSystemBrowser == value) {
       return;
     }
@@ -77,12 +70,15 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<double> fontScaleRange = DeviceUtils.deviceModel.contains('iPad')
-      ? <double>[0.3, 0.7]
-      : <double>[0.8, 1.2];
-  double _fontScale = DeviceUtils.deviceModel.contains('iPad') ? 0.5 : 1.0;
+  List<double> get fontScaleRange {
+    if (DeviceUtils.deviceModel.contains('iPad')) {
+      return <double>[0.3, 0.7];
+    }
+    return <double>[0.8, 1.2];
+  }
 
   double get fontScale => _fontScale;
+  double _fontScale = DeviceUtils.deviceModel.contains('iPad') ? 0.5 : 1.0;
 
   set fontScale(double value) {
     _fontScale = value;
@@ -123,7 +119,7 @@ class SettingsProvider extends ChangeNotifier {
       _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();
     } catch (e) {
-      LogUtils.e('Get announcement error: $e');
+      LogUtil.e('Get announcement error: $e');
       Future<void>.delayed(30.seconds, getAnnouncement);
     }
   }
@@ -143,10 +139,10 @@ class SettingsProvider extends ChangeNotifier {
 //      } else if (res['code'] == '000') {
 //        handleSettingsSyncing(CloudSettingsModel.fromJson(res['data']));
 //      } else {
-//        LogUtils.e('Failed in getting cloud settings: ${res['message']}');
+//        LogUtil.e('Failed in getting cloud settings: ${res['message']}');
 //      }
 //    } catch (e) {
-//      LogUtils.e('Failed in getting cloud settings: $e');
+//      LogUtil.e('Failed in getting cloud settings: $e');
 //    }
 //  }
 //
@@ -182,7 +178,7 @@ class SettingsProvider extends ChangeNotifier {
 //              crossAxisAlignment: CrossAxisAlignment.start,
 //              children: <Widget>[
 //                Text('检测到您的云设置与云端不匹配，请选择保留本机或云端设置：'),
-//                VGap(10.h),
+//                Gap.v(10.h),
 //                Row(
 //                  children: <Widget>[
 //                    syncSettingWidget(currentModel),

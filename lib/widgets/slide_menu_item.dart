@@ -8,25 +8,23 @@ import 'package:flutter/material.dart';
 
 class SlideMenuItem extends StatelessWidget {
   const SlideMenuItem({
-    Key key,
-    @required this.child,
-    @required this.onTap,
+    super.key,
+    required this.child,
+    this.onTap,
     this.color,
     this.width,
     this.height,
     this.margin,
     this.decoration,
-  })  : assert(child != null),
-        assert(color == null || decoration == null),
-        super(key: key);
+  }) : assert(color == null || decoration == null);
 
   final Widget child;
-  final GestureTapCallback onTap;
-  final double width;
-  final double height;
-  final EdgeInsetsGeometry margin;
-  final Color color;
-  final BoxDecoration decoration;
+  final GestureTapCallback? onTap;
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry? margin;
+  final Color? color;
+  final BoxDecoration? decoration;
 
   double get _validWidth =>
       width ?? MediaQueryData.fromWindow(ui.window).size.width / 5;
@@ -44,73 +42,43 @@ class SlideMenuItem extends StatelessWidget {
   }
 }
 
-class SlideItem extends StatelessWidget {
-  SlideItem({
-    @required this.child,
-    @required this.menu,
-    @required double width,
+class SlideItem extends StatefulWidget {
+  const SlideItem({
+    super.key,
+    required this.child,
+    this.menu,
+    this.width,
     this.height,
-    VoidCallback onTap,
-  }) {
-    children.add(
-      GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap != null
-            ? () {
-                if (_controller.offset != 0) {
-                  _dismiss();
-                } else {
-                  onTap();
-                }
-              }
-            : null,
-        child: SizedBox(width: width, child: child),
-      ),
-    );
-    if (menu?.isNotEmpty ?? false) {
-      children.addAll(
-        menu
-            ?.map(
-              (SlideMenuItem item) => GestureDetector(
-                onTap: () {
-                  item.onTap?.call();
-                  _dismiss();
-                },
-                behavior: HitTestBehavior.opaque,
-                child: item,
-              ),
-            )
-            ?.toList(),
-      );
-    }
-  }
+    this.onTap,
+    this.controller,
+  });
 
-  final ScrollController _controller = ScrollController();
   final Widget child;
-  final List<SlideMenuItem> menu;
-  final double height;
+  final List<SlideMenuItem>? menu;
+  final double? width;
+  final double? height;
+  final VoidCallback? onTap;
+  final ScrollController? controller;
 
-  final List<Widget> children = <Widget>[];
-
-  void _dismiss() {
-    _controller.animateTo(
+  static void dismiss(ScrollController controller) {
+    controller.animateTo(
       0,
       duration: const Duration(milliseconds: 100),
-      curve: Curves.linear,
+      curve: Curves.easeOut,
     );
   }
 
-  void _expands() {
-    _controller.animateTo(
-      _menuWidths,
+  static void expand(ScrollController controller, double width) {
+    controller.animateTo(
+      width,
       duration: const Duration(milliseconds: 100),
-      curve: Curves.linear,
+      curve: Curves.easeOut,
     );
   }
 
-  double get _menuWidths {
+  static double menuWidths(List<SlideMenuItem>? menu) {
     if (menu?.isNotEmpty == true) {
-      return menu.fold<double>(
+      return menu!.fold<double>(
         0,
         (double v, SlideMenuItem e) =>
             v + e._validWidth + (e.margin?.horizontal ?? 0),
@@ -120,38 +88,90 @@ class SlideItem extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Widget _w = Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
-    );
-    if (height != null) {
-      _w = SizedBox(height: height, child: _w);
+  _SlideItemState createState() => _SlideItemState();
+}
+
+class _SlideItemState extends State<SlideItem> {
+  late final ScrollController _controller =
+      widget.controller ?? ScrollController();
+
+  bool get isMenuEmpty => widget.menu?.isEmpty != false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTap() {
+    if (_controller.offset != 0) {
+      SlideItem.dismiss(_controller);
     } else {
-      _w = IntrinsicHeight(child: _w);
+      widget.onTap!();
     }
-    return Listener(
-      onPointerUp: (menu?.isNotEmpty ?? false)
-          ? (_) {
-              if (_controller.offset < _menuWidths / 4) {
-                _dismiss();
-              } else {
-                _expands();
-              }
-            }
-          : null,
-      child: ScrollConfiguration(
-        behavior: const _NoGlowScrollBehavior(),
-        child: SingleChildScrollView(
-          clipBehavior: Clip.none,
-          physics: (menu?.isNotEmpty ?? false)
-              ? const ClampingScrollPhysics()
-              : const NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          controller: _controller,
-          child: _w,
-        ),
-      ),
+  }
+
+  void _onPointerUp(PointerUpEvent event) {
+    if (_controller.offset < SlideItem.menuWidths(widget.menu) / 4) {
+      SlideItem.dismiss(_controller);
+      return;
+    }
+    SlideItem.expand(
+      _controller,
+      SlideItem.menuWidths(widget.menu),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext c, BoxConstraints cs) {
+        Widget _w = Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onTap != null ? _onTap : null,
+              child: SizedBox(
+                width: widget.width ?? cs.maxWidth,
+                child: widget.child,
+              ),
+            ),
+            ...?widget.menu
+                ?.map(
+                  (SlideMenuItem item) => GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      item.onTap?.call();
+                      SlideItem.dismiss(_controller);
+                    },
+                    child: item,
+                  ),
+                )
+                .toList()
+          ],
+        );
+        if (widget.height != null) {
+          _w = SizedBox(height: widget.height, child: _w);
+        } else {
+          _w = IntrinsicHeight(child: _w);
+        }
+        return Listener(
+          onPointerUp: isMenuEmpty ? null : _onPointerUp,
+          child: ScrollConfiguration(
+            behavior: const _NoGlowScrollBehavior(),
+            child: SingleChildScrollView(
+              clipBehavior: Clip.none,
+              physics: isMenuEmpty
+                  ? const NeverScrollableScrollPhysics()
+                  : const ClampingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              controller: _controller,
+              child: _w,
+            ),
+          ),
+        );
+      },
     );
   }
 }

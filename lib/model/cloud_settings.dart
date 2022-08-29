@@ -1,3 +1,4 @@
+// @dart = 2.9
 ///
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020/5/10 14:14
@@ -7,9 +8,7 @@ part of 'models.dart';
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
 class CloudSettingsModel extends JsonModel {
-  CloudSettingsModel() {
-    lastModified = DateTime.now();
-  }
+  CloudSettingsModel() : lastModified = DateTime.now();
 
   factory CloudSettingsModel.fromJson(Map<String, dynamic> json) {
     final Map<String, dynamic> settings =
@@ -49,21 +48,27 @@ class CloudSettingsModel extends JsonModel {
   static const String _fPlatformBrightness = 'theme_platform_brightness';
 
   double _fontScale = 1.0;
+
   double get fontScale => _fontScale;
 
   bool _hideShieldPost = true;
+
   bool get hideShieldPost => _hideShieldPost;
 
   bool _launchFromSystemBrowser = false;
+
   bool get launchFromSystemBrowser => _launchFromSystemBrowser;
 
   bool _newAppCenterIcon = false;
+
   bool get newAppCenterIcon => _newAppCenterIcon;
 
   bool _isDark = false;
+
   bool get isDark => _isDark;
 
   bool _platformBrightness = true;
+
   bool get platformBrightness => _platformBrightness;
 
   DateTime lastModified;

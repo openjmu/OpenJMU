@@ -17,18 +17,16 @@ import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 class PostCard extends StatefulWidget {
   const PostCard(
     this.post, {
+    super.key,
     this.isDetail = false,
-    this.isRootContent,
     this.fromPage,
     this.index,
-    Key key,
-  }) : super(key: key);
+  });
 
   final Post post;
   final bool isDetail;
-  final bool isRootContent;
-  final String fromPage;
-  final int index;
+  final String? fromPage;
+  final int? index;
 
   @override
   State createState() => _PostCardState();
@@ -63,9 +61,7 @@ class _PostCardState extends State<PostCard> {
       })
       ..on<PraiseInPostUpdatedEvent>().listen((PraiseInPostUpdatedEvent event) {
         if (event.postId == widget.post.id) {
-          if (event.isLike != null) {
-            widget.post.isLike = event.isLike;
-          }
+          widget.post.isLike = event.isLike;
           widget.post.praises = event.count;
         }
         if (mounted) {
@@ -100,9 +96,16 @@ class _PostCardState extends State<PostCard> {
           Instances.eventBus.fire(
             PostDeletedEvent(widget.post.id, widget.fromPage, widget.index),
           );
+        } on DioError catch (e) {
+          LogUtil.e(e.toString());
+          LogUtil.e(e.response?.toString());
+          _ldc.changeState(
+            'failed',
+            title: '动态删除失败',
+            text: '该动态无法删除。可能问题：动态已被删除但未刷新、网络连接较差',
+          );
         } catch (e) {
-          LogUtils.e(e.toString());
-          LogUtils.e(e.response?.toString());
+          LogUtil.e(e);
           _ldc.changeState(
             'failed',
             title: '动态删除失败',
@@ -154,7 +157,7 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  void pushToDetail({Post post, int index, bool toComment = false}) {
+  void pushToDetail({Post? post, int? index, bool toComment = false}) {
     navigatorState.pushNamed(
       Routes.openjmuPostDetail.name,
       arguments: Routes.openjmuPostDetail.d(
@@ -174,8 +177,8 @@ class _PostCardState extends State<PostCard> {
     return Row(
       children: <Widget>[
         Text(
-          post.nickname ?? post.uid,
-          style: context.textTheme.bodyText2.copyWith(
+          post.nickname,
+          style: context.textTheme.bodyMedium?.copyWith(
             fontSize: 20.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -195,7 +198,7 @@ class _PostCardState extends State<PostCard> {
       '${PostAPI.postTimeConverter(post.postTime)}  '
       '来自${post.from}客户端',
       style: TextStyle(
-        color: context.textTheme.caption.color,
+        color: context.textTheme.caption?.color,
         fontSize: 16.sp,
       ),
     );
@@ -211,7 +214,7 @@ class _PostCardState extends State<PostCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getExtendedText(post.content),
-          if (post.rootTopic != null) getRootPost(context, post.rootTopic),
+          if (post.rootTopic != null) getRootPost(context, post.rootTopic!),
         ],
       ),
     );
@@ -290,131 +293,131 @@ class _PostCardState extends State<PostCard> {
   ) {
     return getImages(
       context,
-      rootTopic['image'] as List<dynamic>,
+      rootTopic['image'] as List<Object?>? ?? <Object?>[],
       isInRootPost: true,
     );
   }
 
   Widget getImages(
     BuildContext context,
-    List<dynamic> data, {
+    List<Object?> data, {
     bool isInRootPost = false,
   }) {
-    if (data != null) {
-      final List<Widget> imagesWidget = <Widget>[];
-      for (int index = 0; index < data.length; index++) {
-        final int imageId = data[index]['id'].toString().toInt();
-        final String imageUrl = data[index]['image_middle'] as String;
-        final ExtendedTypedNetworkImageProvider provider =
-            ExtendedTypedNetworkImageProvider(imageUrl);
-        Widget _exImage = ExtendedImage(
-          image: provider,
-          fit: BoxFit.cover,
-          loadStateChanged: (ExtendedImageState state) {
-            Widget loader;
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                loader = DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.w),
-                    color: context.theme.dividerColor,
-                  ),
-                );
-                break;
-              case LoadState.completed:
-                final ImageInfo info = state.extendedImageInfo;
-                if (info != null) {
-                  loader = ScaledImage(
-                    image: info.image,
-                    length: data.length,
-                    num200: 200.w,
-                    num400: 400.w,
-                    provider: provider,
-                  );
-                }
-                break;
-              case LoadState.failed:
-                break;
-            }
-            return loader;
-          },
-        );
-        _exImage = Tapper(
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.openjmuImageViewer.name,
-              arguments: Routes.openjmuImageViewer.d(
-                index: index,
-                pics: data.map<ImageBean>((dynamic f) {
-                  return ImageBean(
-                    id: imageId,
-                    imageUrl: f['image_original'] as String,
-                    imageThumbUrl: f['image_thumb'] as String,
-                    postId: widget.post.id,
-                  );
-                }).toList(),
-                post: widget.post,
-                heroPrefix: 'square-post-image-hero-'
-                    '${widget.isDetail ? 'isDetail-' : ''}',
-              ),
-            );
-          },
-          child: _exImage,
-        );
-        _exImage = Hero(
-          tag: 'square-post-image-hero-'
-              '${widget.isDetail ? 'isDetail-' : ''}'
-              '${widget.post.id}-$imageId',
-          child: _exImage,
-          placeholderBuilder: (_, __, Widget child) => child,
-        );
-        imagesWidget.add(_exImage);
-      }
-      Widget _image;
-      if (data.length == 1) {
-        _image = Container(
-          padding: EdgeInsets.only(top: 4.h),
-          child: Align(alignment: Alignment.topLeft, child: imagesWidget[0]),
-        );
-      } else if (data.length == 4) {
-        _image = GridView.count(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          primary: false,
-          mainAxisSpacing: 10.w,
-          crossAxisCount: 4,
-          crossAxisSpacing: 10.h,
-          children: imagesWidget,
-        );
-      } else if (data.length > 1) {
-        _image = GridView.count(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          primary: false,
-          mainAxisSpacing: 10.w,
-          crossAxisCount: 3,
-          crossAxisSpacing: 10.h,
-          children: imagesWidget,
-        );
-      }
-      return Padding(
-        padding: EdgeInsets.only(
-          top: isInRootPost ? 5.w : 10.w,
-          bottom: isInRootPost ? 5.w : 10.w,
-        ),
-        child: _image,
-      );
-    } else {
+    if (data.isEmpty) {
       return const SizedBox.shrink();
     }
+    final List<Widget> imagesWidget = <Widget>[];
+    for (int index = 0; index < data.length; index++) {
+      final Map<String, dynamic> map = data[index]! as Map<String, dynamic>;
+      final int imageId = map['id'].toString().toInt();
+      final String imageUrl = map['image_middle'] as String;
+      final ExtendedTypedNetworkImageProvider provider =
+          ExtendedTypedNetworkImageProvider(imageUrl);
+      Widget _exImage = ExtendedImage(
+        image: provider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget? loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.w),
+                  color: context.theme.dividerColor,
+                ),
+              );
+              break;
+            case LoadState.completed:
+              final ImageInfo? info = state.extendedImageInfo;
+              if (info != null) {
+                loader = ScaledImage(
+                  image: info.image,
+                  length: data.length,
+                  num200: 200.w,
+                  num400: 400.w,
+                  provider: provider,
+                );
+              }
+              break;
+            case LoadState.failed:
+              break;
+          }
+          return loader;
+        },
+      );
+      _exImage = Tapper(
+        onTap: () {
+          navigatorState.pushNamed(
+            Routes.openjmuImageViewer.name,
+            arguments: Routes.openjmuImageViewer.d(
+              index: index,
+              pics: data.map<ImageBean>((dynamic f) {
+                return ImageBean(
+                  id: imageId,
+                  imageUrl: f['image_original'] as String,
+                  imageThumbUrl: f['image_thumb'] as String,
+                  postId: widget.post.id,
+                );
+              }).toList(),
+              post: widget.post,
+              heroPrefix: 'square-post-image-hero-'
+                  '${widget.isDetail ? 'isDetail-' : ''}',
+            ),
+          );
+        },
+        child: _exImage,
+      );
+      _exImage = Hero(
+        tag: 'square-post-image-hero-'
+            '${widget.isDetail ? 'isDetail-' : ''}'
+            '${widget.post.id}-$imageId',
+        child: _exImage,
+        placeholderBuilder: (_, __, Widget child) => child,
+      );
+      imagesWidget.add(_exImage);
+    }
+    Widget? _image;
+    if (data.length == 1) {
+      _image = Container(
+        padding: EdgeInsets.only(top: 4.h),
+        child: Align(alignment: Alignment.topLeft, child: imagesWidget[0]),
+      );
+    } else if (data.length == 4) {
+      _image = GridView.count(
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        primary: false,
+        mainAxisSpacing: 10.w,
+        crossAxisCount: 4,
+        crossAxisSpacing: 10.h,
+        children: imagesWidget,
+      );
+    } else if (data.length > 1) {
+      _image = GridView.count(
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        primary: false,
+        mainAxisSpacing: 10.w,
+        crossAxisCount: 3,
+        crossAxisSpacing: 10.h,
+        children: imagesWidget,
+      );
+    }
+    return Padding(
+      padding: EdgeInsets.only(
+        top: isInRootPost ? 5.w : 10.w,
+        bottom: isInRootPost ? 5.w : 10.w,
+      ),
+      child: _image,
+    );
   }
 
-  Widget _action(int value, {String text, Color color}) {
+  Widget _action(int? value, {String? text, Color? color}) {
     return Container(
       constraints: BoxConstraints(minWidth: 30.w),
       alignment: Alignment.center,
       child: Text(
-        value == 0
+        value == null || value == 0
             ? text ?? ''
             : value > 999
                 ? '999+'
@@ -442,7 +445,7 @@ class _PostCardState extends State<PostCard> {
             start: currentThemeColor,
             end: currentThemeColor,
           ),
-          countBuilder: (int count, bool isLiked, String text) => _action(
+          countBuilder: (int? count, bool isLiked, String? text) => _action(
             count,
             text: '赞　',
             color: isLiked ? currentThemeColor : null,
@@ -500,13 +503,13 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _actionButton({
-    BuildContext context,
-    Widget icon,
-    String text,
-    int value,
-    VoidCallback onTap,
+    required BuildContext context,
+    required Widget icon,
+    String? text,
+    int? value,
+    VoidCallback? onTap,
   }) {
-    final String _content = value == 0
+    final String _content = value == null || value == 0
         ? text ?? ''
         : value > 999
             ? '999+'
@@ -519,7 +522,7 @@ class _PostCardState extends State<PostCard> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             icon,
-            Gap(6.w),
+            Gap.h(6.w),
             Container(
               constraints: BoxConstraints(minWidth: 30.w),
               alignment: Alignment.center,
@@ -556,7 +559,7 @@ class _PostCardState extends State<PostCard> {
         color: type == 'delete' ? context.theme.canvasColor : null,
       ),
       child: DefaultTextStyle.merge(
-        style: context.textTheme.caption.copyWith(
+        style: context.textTheme.caption?.copyWith(
           height: 1.2,
           fontSize: 20.sp,
         ),
@@ -565,7 +568,7 @@ class _PostCardState extends State<PostCard> {
           children: <Widget>[
             Text(
               content,
-              style: TextStyle(color: context.textTheme.bodyText2.color),
+              style: TextStyle(color: context.textTheme.bodyMedium?.color),
             ),
             if (type == 'shield')
               Expanded(
@@ -592,15 +595,15 @@ class _PostCardState extends State<PostCard> {
         }
       },
       child: ExtendedText(
-        content != null ? '$content ' : null,
-        style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
+        '$content ',
+        style: context.textTheme.bodyMedium?.copyWith(fontSize: 19.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: widget.isDetail != true
             ? post.shouldFoldRootTopic
                 ? 2
                 : 8
             : null,
-        overflowWidget: widget.isDetail ?? false ? null : contentOverflowWidget,
+        overflowWidget: widget.isDetail ? null : contentOverflowWidget,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       ),
     );
@@ -726,7 +729,7 @@ class _PostCardState extends State<PostCard> {
                     uid: widget.post.uid,
                     isSysAvatar: widget.post.user.sysAvatar,
                   ),
-                  Gap(16.w),
+                  Gap.h(16.w),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -747,7 +750,7 @@ class _PostCardState extends State<PostCard> {
             getPostContent(context, post),
             getPostImages(context, post),
             if (widget.isDetail)
-              VGap(2.w)
+              Gap.v(2.w)
             else
               Padding(
                 padding: EdgeInsets.only(top: 12.w),
@@ -761,7 +764,7 @@ class _PostCardState extends State<PostCard> {
                   children: <Widget>[
                     Text(
                       '浏览${post.glances}次　',
-                      style: context.textTheme.caption.copyWith(
+                      style: context.textTheme.caption?.copyWith(
                         height: 1.2,
                         fontSize: 16.sp,
                       ),

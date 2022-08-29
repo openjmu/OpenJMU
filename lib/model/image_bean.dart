@@ -6,12 +6,17 @@ part of 'models.dart';
 
 @immutable
 class ImageBean {
-  const ImageBean({this.id, this.imageUrl, this.imageThumbUrl, this.postId});
+  const ImageBean({
+    required this.id,
+    required this.imageUrl,
+    this.imageThumbUrl,
+    this.postId,
+  });
 
   final int id;
   final String imageUrl;
-  final String imageThumbUrl;
-  final int postId;
+  final String? imageThumbUrl;
+  final int? postId;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

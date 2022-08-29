@@ -5,24 +5,21 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class DismissWrapper extends StatefulWidget {
   const DismissWrapper({
-    Key key,
-    @required this.children,
+    Key? key,
+    required this.children,
     this.backgroundColor,
     this.padding,
     this.radius,
-  })  : assert(children != null, '`children` must not be null.'),
-        super(key: key);
+  }) : super(key: key);
 
   final List<Widget> children;
-  final Color backgroundColor;
-  final EdgeInsetsGeometry padding;
-  final double radius;
+  final Color? backgroundColor;
+  final EdgeInsetsGeometry? padding;
+  final double? radius;
 
   @override
   DismissWrapperState createState() => DismissWrapperState();
@@ -33,32 +30,32 @@ class DismissWrapperState extends State<DismissWrapper>
   final GlobalKey columnKey = GlobalKey();
   final Duration duration = 500.milliseconds;
 
-  AnimationController animationController;
-  Offset downPosition;
-  double columnHeight;
+  late final AnimationController animationController =
+      AnimationController.unbounded(
+    vsync: this,
+    duration: duration,
+    value: -Screens.height,
+  );
+  late Offset downPosition;
+  late double columnHeight;
 
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController.unbounded(
-      vsync: this,
-      duration: duration,
-      value: -Screens.height,
-    );
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       animateWrapper(forward: true);
     });
   }
 
   @override
   void dispose() {
-    animationController?.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
-  Future<void> animateWrapper({@required bool forward}) async {
+  Future<void> animateWrapper({required bool forward}) async {
     final RenderBox renderBox =
-        columnKey.currentContext.findRenderObject() as RenderBox;
+        columnKey.currentContext!.findRenderObject() as RenderBox;
     final double height = renderBox.size.height;
     if (forward) {
       animationController.value = height;
@@ -74,7 +71,7 @@ class DismissWrapperState extends State<DismissWrapper>
   void _onDown(PointerDownEvent event) {
     downPosition = event.localPosition;
     final RenderBox renderBox =
-        columnKey.currentContext.findRenderObject() as RenderBox;
+        columnKey.currentContext!.findRenderObject() as RenderBox;
     columnHeight = renderBox.size.height;
   }
 
@@ -109,7 +106,7 @@ class DismissWrapperState extends State<DismissWrapper>
       onPointerUp: _onUp,
       child: AnimatedBuilder(
         animation: animationController,
-        builder: (BuildContext _, Widget child) => Transform.translate(
+        builder: (_, Widget? child) => Transform.translate(
           offset: Offset(0, animationController.value),
           child: child,
         ),

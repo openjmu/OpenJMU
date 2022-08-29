@@ -15,7 +15,7 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(name: 'openjmu://publish-team-post', routeName: '发布小组动态')
 class PublishTeamPostPage extends StatefulWidget {
-  const PublishTeamPostPage({Key key}) : super(key: key);
+  const PublishTeamPostPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => PublishTeamPostPageState();
@@ -107,7 +107,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         });
       }
     } catch (e) {
-      LogUtils.e('Error when trying to mention someone: $e');
+      LogUtil.e('Error when trying to mention someone: $e');
     }
   }
 
@@ -313,11 +313,11 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         setState(() {});
       }
 
-      LogUtils.e('Error when trying upload images: $e');
+      LogUtil.e('Error when trying upload images: $e');
       if (e is DioError) {
-        LogUtils.e('${e.response.data}');
+        LogUtil.e('${e.response.data}');
       }
-      LogUtils.e('Images requests will be all cancelled.');
+      LogUtil.e('Images requests will be all cancelled.');
     }
   }
 
@@ -348,7 +348,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         title: '动态发布失败',
         text: '发布请求失败。可能问题：网络连接较差',
       );
-      LogUtils.e(e);
+      LogUtil.e(e);
     } finally {
       isLoading.value = false;
       if (mounted) {
@@ -572,7 +572,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
               scrollDirection: Axis.horizontal,
               itemCount: math.min(isCollapsed ? imagesLength : imagesLength + 1,
                   maxAssetsLength),
-              itemBuilder: (BuildContext _, int index) {
+              itemBuilder: (_, int index) {
                 if (index == imagesLength) {
                   return _assetAddItem;
                 }

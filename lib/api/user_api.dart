@@ -17,9 +17,6 @@ class UserAPI {
 
   static UserInfo currentUser = const UserInfo();
 
-  static Map<String, BackpackItemType> backpackItemTypes =
-      <String, BackpackItemType>{};
-
   static Future<Response<Map<String, dynamic>>> login(
     Map<String, dynamic> params,
   ) {
@@ -143,7 +140,7 @@ class UserAPI {
       showToast('关注成功');
       return true;
     } catch (e) {
-      LogUtils.e('Failed when follow $uid: $e');
+      LogUtil.e('Failed when follow $uid: $e');
       showCenterErrorToast('关注失败');
       return false;
     }
@@ -163,7 +160,7 @@ class UserAPI {
       }
       return true;
     } catch (e) {
-      LogUtils.e('Failed when unfollow $uid: $e');
+      LogUtil.e('Failed when unfollow $uid: $e');
       if (!fromBlacklist) {
         showCenterErrorToast('取消关注失败');
       }
@@ -191,26 +188,6 @@ class UserAPI {
       };
     }
     return users;
-  }
-
-  /// 获取背包物品的类型
-  static Future<void> getBackpackItemType() async {
-    try {
-      final Response<Map<String, dynamic>> response = await NetUtils.get(
-        API.backPackItemType,
-        headers: <String, dynamic>{'CLOUDID': 'jmu'},
-      );
-      final Map<String, dynamic> types = response.data!;
-      final List<dynamic> items = types['data'] as List<dynamic>;
-      for (int i = 0; i < items.length; i++) {
-        final BackpackItemType item = BackpackItemType.fromJson(
-          items[i] as Map<String, dynamic>,
-        );
-        backpackItemTypes['${item.type}'] = item;
-      }
-    } catch (e) {
-      LogUtils.e('Error when getting backpack item type: $e');
-    }
   }
 
   /// Blacklists.
@@ -264,7 +241,7 @@ class UserAPI {
         unFollow(user.uid, fromBlacklist: true);
       }).catchError((dynamic e) {
         showToast('加入黑名单失败');
-        LogUtils.e('Add $user to blacklist failed : $e');
+        LogUtil.e('Add $user to blacklist failed : $e');
       });
     }
   }
@@ -278,7 +255,7 @@ class UserAPI {
       data: <String, dynamic>{'fid': user.uid},
     ).catchError((dynamic e) {
       showToast('移出黑名单失败');
-      LogUtils.e('Remove $user from blacklist failed: $e');
+      LogUtil.e('Remove $user from blacklist failed: $e');
       if (blacklist.contains(user)) {
         blacklist.remove(user);
       }

@@ -8,7 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: 'openjmu://tutorial-page', routeName: '宣传页')
 class TutorialPage extends StatelessWidget {
-  const TutorialPage({Key key}) : super(key: key);
+  const TutorialPage({Key? key}) : super(key: key);
 
   List<_Item> _items(BuildContext context) {
     return <_Item>[
@@ -60,7 +60,7 @@ class TutorialPage extends StatelessWidget {
         return Row(
           children: <Widget>[
             SvgPicture.asset(item.icon, width: 48.w, color: item.iconColor),
-            Gap(24.w),
+            Gap.h(24.w),
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -73,7 +73,7 @@ class TutorialPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  VGap(10.w),
+                  Gap.v(10.w),
                   Text(
                     item.content,
                     style: context.textTheme.caption.copyWith(fontSize: 18.sp),
@@ -84,7 +84,7 @@ class TutorialPage extends StatelessWidget {
           ],
         );
       },
-      separatorBuilder: (_, __) => VGap(30.w),
+      separatorBuilder: (_, __) => Gap.v(30.w),
     );
   }
 
@@ -95,7 +95,7 @@ class TutorialPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            VGap(Screens.topSafeHeight),
+            Gap.v(Screens.topSafeHeight),
             Expanded(
               flex: 4,
               child: Row(
@@ -109,7 +109,7 @@ class TutorialPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Gap(5.w),
+                  Gap.h(5.w),
                   SvgPicture.asset(
                     R.IMAGES_OPENJMU_LOGO_TEXT_SVG,
                     height: 24.w,

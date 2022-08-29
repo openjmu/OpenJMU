@@ -1,3 +1,4 @@
+// @dart = 2.9
 ///
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-23 07:07
@@ -105,10 +106,10 @@ class NotificationProvider extends ChangeNotifier {
       final Notifications notification = Notifications.fromJson(response.data);
       notifications = notification;
       if (_ == null) {
-        LogUtils.d('Updated notifications with :$notification');
+        LogUtil.d('Updated notifications with :$notification');
       }
     }).catchError((dynamic e) {
-      LogUtils.e('Error when getting notification: $e');
+      LogUtil.e('Error when getting notification: $e');
     });
   }
 
@@ -120,11 +121,11 @@ class NotificationProvider extends ChangeNotifier {
         );
         teamNotifications = notification;
         if (_ == null) {
-          LogUtils.d('Updated team notifications with: $notification');
+          LogUtil.d('Updated team notifications with: $notification');
         }
       },
     ).catchError((dynamic e) {
-      LogUtils.e('Error when getting team notification: $e');
+      LogUtil.e('Error when getting team notification: $e');
     });
   }
 

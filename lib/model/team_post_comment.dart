@@ -11,20 +11,17 @@ part of 'models.dart';
 @immutable
 class TeamPostComment {
   const TeamPostComment({
-    this.rid,
-    this.originId,
-    this.uid,
+    required this.rid,
+    required this.originId,
+    required this.uid,
     this.originType,
-    this.postTime,
-    this.content,
-    this.floor,
-    this.user,
+    required this.postTime,
+    this.content = '',
+    this.floor = 1,
+    required this.user,
   });
 
   factory TeamPostComment.fromJson(Map<String, dynamic> json) {
-    if (json == null) {
-      return null;
-    }
     json.forEach((String k, dynamic v) {
       if (json[k] == '') {
         json[k] = null;
@@ -37,22 +34,22 @@ class TeamPostComment {
       }
     });
     return TeamPostComment(
-      rid: int.parse(json['rid'].toString()),
-      originId: int.parse(json['oid'].toString()),
+      rid: json['rid']?.toString().toIntOrNull() ?? 0,
+      originId: json['oid']?.toString().toIntOrNull() ?? 0,
       uid: json['uid'].toString(),
-      originType: json['otype'] as String,
+      originType: json['otype'] as String?,
       postTime: DateTime.fromMillisecondsSinceEpoch(
-        int.parse(json['post_time'].toString()),
+        json['post_time']?.toString().toIntOrNull() ?? 0,
       ),
-      content: json['content'] as String,
-      floor: int.parse(json['floor_id'].toString()),
+      content: json['content'] as String? ?? '',
+      floor: json['floor_id']?.toString().toIntOrNull() ?? 1,
       user: PostUser.fromJson(_user),
     );
   }
 
   final int rid, originId;
   final String uid;
-  final String originType;
+  final String? originType;
   final DateTime postTime;
   final String content;
   final int floor;

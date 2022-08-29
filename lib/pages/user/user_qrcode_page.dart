@@ -11,7 +11,7 @@ import 'package:qr_flutter/qr_flutter.dart';
   pageRouteType: PageRouteType.transparent,
 )
 class UserQrCodePage extends StatefulWidget {
-  const UserQrCodePage({Key key}) : super(key: key);
+  const UserQrCodePage({Key? key}) : super(key: key);
 
   @override
   _UserQrCodePageState createState() => _UserQrCodePageState();

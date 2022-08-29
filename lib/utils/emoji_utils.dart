@@ -5,11 +5,11 @@ import 'package:openjmu/constants/constants.dart';
 
 class EmojiPad extends StatefulWidget {
   const EmojiPad({
-    Key key,
-    @required this.active,
-    @required this.height,
-    this.controller,
-  }) : super(key: key);
+    super.key,
+    required this.active,
+    required this.height,
+    required this.controller,
+  });
 
   final bool active;
   final double height;
@@ -24,15 +24,15 @@ class EmojiPad extends StatefulWidget {
 }
 
 class _EmojiPadState extends State<EmojiPad> {
-  List<EmojiModel> recentEmojis;
+  late List<EmojiModel> recentEmojis;
 
   void fetchRecentEmojis() {
-    final List<EmojiModel> _emojis =
+    final List<EmojiModel>? emojis =
         HiveBoxes.emojisBox.get(currentUser.uid)?.cast<EmojiModel>();
-    if (_emojis?.isNotEmpty == true) {
-      recentEmojis = _emojis;
+    if (emojis != null && emojis.isNotEmpty) {
+      recentEmojis = emojis;
     } else {
-      final List<EmojiModel> _sublist = emojis.sublist(
+      final List<EmojiModel> _sublist = emojiModels.sublist(
         0,
         EmojiPad.padGridCount,
       );
@@ -42,9 +42,8 @@ class _EmojiPadState extends State<EmojiPad> {
   }
 
   void addRecentEmojiModel(EmojiModel emoji) {
-    final List<EmojiModel> _emojis = List<EmojiModel>.of(
-      HiveBoxes.emojisBox.get(currentUser.uid)?.cast<EmojiModel>(),
-    );
+    final List<EmojiModel> _emojis =
+        HiveBoxes.emojisBox.get(currentUser.uid)!.cast<EmojiModel>().toList();
     if (_emojis.contains(emoji)) {
       _emojis.remove(emoji);
     } else {
@@ -57,9 +56,9 @@ class _EmojiPadState extends State<EmojiPad> {
   Widget _itemBuilder(
     BuildContext context,
     int index, {
-    Iterable<EmojiModel> list,
+    Iterable<EmojiModel>? list,
   }) {
-    final EmojiModel emoji = (list ?? emojis).elementAt(index);
+    final EmojiModel emoji = (list ?? emojiModels).elementAt(index);
     return Tapper(
       onTap: () {
         addRecentEmojiModel(emoji);
@@ -89,15 +88,15 @@ class _EmojiPadState extends State<EmojiPad> {
           children: <Widget>[
             Text(
               '表情来自',
-              style: context.textTheme.caption.copyWith(
+              style: context.textTheme.caption?.copyWith(
                 fontSize: 18.sp,
                 height: 1.2,
               ),
             ),
-            Gap(8.w),
+            Gap.h(8.w),
             SvgPicture.asset(
               R.ASSETS_ICONS_JIMOJITAG_SVG,
-              color: context.textTheme.caption.color,
+              color: context.textTheme.caption?.color,
               height: 16.sp,
             ),
           ],
@@ -152,7 +151,7 @@ class _EmojiPadState extends State<EmojiPad> {
                   ),
                   child: Text(
                     '最近使用',
-                    style: context.textTheme.caption.copyWith(
+                    style: context.textTheme.caption?.copyWith(
                       fontSize: 19.sp,
                     ),
                   ),
@@ -181,7 +180,7 @@ class _EmojiPadState extends State<EmojiPad> {
                   ),
                   child: Text(
                     '全部表情',
-                    style: context.textTheme.caption.copyWith(
+                    style: context.textTheme.caption?.copyWith(
                       fontSize: 19.sp,
                     ),
                   ),
@@ -190,7 +189,7 @@ class _EmojiPadState extends State<EmojiPad> {
               SliverGrid(
                 delegate: SliverChildBuilderDelegate(
                   _itemBuilder,
-                  childCount: emojis.length,
+                  childCount: emojiModels.length,
                 ),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   childAspectRatio: 1.25,
@@ -200,23 +199,22 @@ class _EmojiPadState extends State<EmojiPad> {
               _aboutItem(context),
             ],
           ),
-          if (widget.controller != null)
-            ValueListenableBuilder<TextEditingValue>(
-              valueListenable: widget.controller,
-              builder: (_, TextEditingValue value, __) {
-                if (value.text.isEmpty) {
-                  return const SizedBox.shrink();
-                }
-                return _deleteButton(context);
-              },
-            )
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: widget.controller,
+            builder: (_, TextEditingValue value, __) {
+              if (value.text.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return _deleteButton(context);
+            },
+          ),
         ],
       ),
     );
   }
 }
 
-const List<EmojiModel> emojis = <EmojiModel>[
+const List<EmojiModel> emojiModels = <EmojiModel>[
   EmojiModel(name: 'doge', filename: 'doge'),
   EmojiModel(name: '滑稽', filename: 'huaji'),
   EmojiModel(name: '666', filename: '666'),
@@ -343,9 +341,11 @@ const List<EmojiModel> emojis = <EmojiModel>[
 ];
 
 extension EmojiListExtension on List<EmojiModel> {
-  EmojiModel fromText(String text) =>
-      where((EmojiModel e) => e.wrappedText == text).first;
+  EmojiModel fromText(String text) {
+    return where((EmojiModel e) => e.wrappedText == text).first;
+  }
 
-  bool containsText(String text) =>
-      any((EmojiModel e) => e.wrappedText == text);
+  bool containsText(String text) {
+    return any((EmojiModel e) => e.wrappedText == text);
+  }
 }

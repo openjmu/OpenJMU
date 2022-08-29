@@ -17,20 +17,20 @@ part of 'models.dart';
 @HiveType(typeId: HiveAdapterTypeIds.course)
 class Course {
   Course({
-    @required this.isCustom,
-    this.name,
-    this.time,
+    required this.isCustom,
+    required this.name,
+    required this.time,
     this.location,
     this.className,
     this.teacher,
-    this.day,
+    required this.day,
     this.startWeek,
     this.endWeek,
     this.classesName,
-    this.isEleven,
-    this.oddEven,
-    this.rawDay,
-    this.rawTime,
+    required this.isEleven,
+    required this.oddEven,
+    required this.rawDay,
+    required this.rawTime,
   });
 
   factory Course.fromJson(Map<String, dynamic> json, {bool isCustom = false}) {
@@ -39,20 +39,17 @@ class Course {
         json[k] = null;
       }
     });
-    final int _oddEven = !isCustom ? judgeOddEven(json) : null;
-    final List<String> weeks =
+    final int? _oddEven = !isCustom ? judgeOddEven(json) : null;
+    final List<String>? weeks =
         !isCustom ? (json['allWeek'] as String).split(' ')[0].split('-') : null;
 
-    String _name;
+    String? _name;
     if (isCustom) {
       try {
-        _name = Uri.decodeComponent(json['content']?.toString());
-      } catch (e) {
-        _name = json['content']?.toString();
-      }
-    } else {
-      _name = json['couName']?.toString() ?? '(空)';
+        _name = Uri.decodeComponent(json['content'].toString());
+      } catch (_) {}
     }
+    _name ??= json['content']?.toString() ?? '(空)';
 
     String _time;
     if (isCustom) {
@@ -72,10 +69,10 @@ class Course {
           .toString()
           .substring(0, 1)
           .toInt(),
-      startWeek: !isCustom ? weeks[0].toInt() : null,
-      endWeek: !isCustom ? weeks[1].toInt() : null,
+      startWeek: !isCustom ? weeks![0].toInt() : null,
+      endWeek: !isCustom ? weeks![1].toInt() : null,
       classesName:
-          !isCustom ? json['comboClassName']?.toString()?.split(',') : null,
+          !isCustom ? json['comboClassName']?.toString().split(',') : null,
       isEleven: json['three'] == 'y',
       oddEven: _oddEven,
       rawDay:
@@ -85,7 +82,7 @@ class Course {
     if (_c.isEleven && _c.time == '90') {
       _c.time = '911';
     }
-    uniqueColor(_c, CourseAPI.randomCourseColor());
+    _c.updateUniqueColor();
     return _c;
   }
 
@@ -96,28 +93,28 @@ class Course {
   @HiveField(2)
   String time;
   @HiveField(3)
-  String location;
+  String? location;
   @HiveField(4)
-  String className;
+  String? className;
   @HiveField(5)
-  String teacher;
+  String? teacher;
   @HiveField(6)
   int day;
   @HiveField(7)
-  int startWeek;
+  int? startWeek;
   @HiveField(8)
-  int endWeek;
+  int? endWeek;
   @HiveField(9)
   int oddEven;
   @HiveField(10)
-  List<String> classesName;
+  List<String>? classesName;
   @HiveField(11)
   bool isEleven;
   @HiveField(12)
   int rawDay;
   @HiveField(13)
   String rawTime;
-  Color color;
+  Color? color;
 
   /// Whether we should use raw data to modify.
   bool get shouldUseRaw => day != rawDay || time != rawTime;
@@ -141,25 +138,25 @@ class Course {
     return _oddEven;
   }
 
-  static void uniqueColor(Course course, Color color) {
-    final CourseColor _courseColor = CourseAPI.coursesUniqueColor.firstWhere(
-      (CourseColor courseColor) => courseColor.name == course.name,
-      orElse: () => null,
+  void updateUniqueColor() {
+    final CourseColor? color = CourseAPI.coursesUniqueColor.firstWhereOrNull(
+      (CourseColor courseColor) => courseColor.name == name,
     );
-    if (_courseColor != null) {
-      course.color = _courseColor.color;
+    if (color != null) {
+      this.color = color.color;
+      return;
+    }
+    final Color newColor = CourseAPI.randomCourseColor();
+    final List<CourseColor> courses = CourseAPI.coursesUniqueColor
+        .where((CourseColor c) => c.color == newColor)
+        .toList();
+    if (courses.isNotEmpty) {
+      updateUniqueColor();
     } else {
-      final List<CourseColor> courses = CourseAPI.coursesUniqueColor
-          .where((CourseColor c) => c.color == color)
-          .toList();
-
-      if (courses.isNotEmpty) {
-        uniqueColor(course, CourseAPI.randomCourseColor());
-      } else {
-        course.color = color;
-        CourseAPI.coursesUniqueColor
-            .add(CourseColor(name: course.name, color: color));
-      }
+      this.color = newColor;
+      CourseAPI.coursesUniqueColor.add(
+        CourseColor(name: name, color: newColor),
+      );
     }
   }
 
@@ -230,7 +227,7 @@ class Course {
 
 @immutable
 class CourseColor {
-  const CourseColor({this.name, this.color});
+  const CourseColor({required this.name, required this.color});
 
   final String name;
   final Color color;

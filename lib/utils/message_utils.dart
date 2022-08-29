@@ -26,40 +26,38 @@ class MessageUtils {
   static Map<int, Packet> packageBufferZone = <int, Packet>{};
 
   /// Socket for messages.
-  static Socket messageSocket;
+  static Socket? messageSocket;
 
   /// Sequence locally. It's auto increment when sending message.
   static int packageSequence = 4;
 
   /// Timer for keep alive.
-  static Timer messageKeepAliveTimer;
+  static Timer? messageKeepAliveTimer;
 
   /// Message observer list. Methods can subscribe and receive callbacks.
   static ObserverList<Function(MessageReceivedEvent)> messageListeners =
       ObserverList<Function(MessageReceivedEvent)>();
 
   static void initMessageSocket() {
-    LogUtils.d('Connecting message socket...');
+    LogUtil.d('Connecting message socket...');
     Socket.connect(
       Messages.socketConfig['host'] as String,
       Messages.socketConfig['port'] as int,
     ).then((Socket socket) {
-      LogUtils.d('Message socket connected.');
-
-      messageSocket = socket;
-      messageSocket.setOption(SocketOption.tcpNoDelay, true);
-      messageSocket.timeout(2.minutes);
-      messageSocket.listen(bufferedStream, onDone: destroySocket);
-
+      LogUtil.d('Message socket connected.');
+      messageSocket = socket
+        ..setOption(SocketOption.tcpNoDelay, true)
+        ..timeout(2.minutes)
+        ..listen(bufferedStream, onDone: destroySocket);
       sendCheckCodeVerify();
     }).catchError((dynamic e) {
       messageSocket = null;
-      LogUtils.e('Error when connecting to message socket: $e');
+      LogUtil.e('Error when connecting to message socket: $e');
     });
   }
 
   static Future<void> destroySocket() async {
-    LogUtils.d('Message socket pipe close.');
+    LogUtil.d('Message socket pipe close.');
     messageKeepAliveTimer?.cancel();
     messageKeepAliveTimer = null;
     await messageSocket?.close();
@@ -110,7 +108,7 @@ class MessageUtils {
   /// This builder will combine header and content (if any) to a full packet.
   static List<int> packageBuilder(
     int command, [
-    List<int> data,
+    List<int>? data,
     bool increaseSequence = true,
   ]) {
     final Uint8List header = commonHeader(command, data?.length ?? 0);
@@ -134,6 +132,8 @@ class MessageUtils {
       result = byteData.getUint32(0);
     } else if (radix == 64) {
       result = byteData.getUint64(0);
+    } else {
+      throw ArgumentError.value(radix);
     }
     return result;
   }
@@ -194,18 +194,18 @@ class MessageUtils {
     if (packageBufferZone[packet.command] != null) {
       // Combine two packets to one.
       final Packet _tempPacket =
-          packageBufferZone[packet.command].combinedWith(packet);
+          packageBufferZone[packet.command]!.combinedWith(packet);
       // Send the combined packet to buffered zone.
       packageBufferZone[packet.command] = _tempPacket;
     } else {
       packageBufferZone[packet.command] = packet;
     }
     // Proceed with SUCCESS(200) status packet.
-    final int status = packageBufferZone[packet.command].status;
+    final int status = packageBufferZone[packet.command]!.status;
     if (status == 200 || status == 0) {
-      commandHandler(packageBufferZone[packet.command]);
+      commandHandler(packageBufferZone[packet.command]!);
       // Clear buffer after handled.
-      packageBufferZone[packet.command] = null;
+      packageBufferZone.remove(packet.command);
     }
   }
 
@@ -215,7 +215,7 @@ class MessageUtils {
   /// What you need is to handler the command you want to.
   static void commandHandler(Packet packet) {
     if (logMessageSocketPacket) {
-      LogUtils.d('Handling packet: $packet');
+      LogUtil.d('Handling packet: $packet');
     }
     switch (packet.command) {
       case 0x75:
@@ -247,19 +247,19 @@ class MessageUtils {
   /// Add package through socket.
   ///
   /// [content] is optional.
-  static void addPackage(String command, [MessageRequest content]) {
+  static void addPackage(String command, [MessageRequest? content]) {
     try {
       final List<int> package = packageBuilder(
-        Messages.messageCommands[command],
+        Messages.messageCommands[command]!,
         content?.requestBody(),
       );
-      messageSocket.add(package);
+      messageSocket?.add(package);
 
       if (logMessageSocketPacket) {
-        LogUtils.d('\nSending $command: $package');
+        LogUtil.d('\nSending $command: $package');
       }
     } catch (e) {
-      LogUtils.e('Error when trying to add package: $e');
+      LogUtil.e('Error when trying to add package: $e');
     }
   }
 
@@ -299,7 +299,7 @@ class MessageUtils {
   static void sendConfirmMessage({
     int friendId = 0,
     int friendMultiPortId = 0,
-    int ackId,
+    required int ackId,
   }) {
     addPackage(
       'WY_MULTPOINT_MSG_ACK',
@@ -314,7 +314,7 @@ class MessageUtils {
   static void sendConfirmMessageOne({
     int friendId = 0,
     int friendMultiPortId = 0,
-    int ackId,
+    required int ackId,
   }) {
     addPackage(
       'WY_MULTPOINT_MSG_ACK_ONE',
@@ -341,8 +341,8 @@ class MessageUtils {
   }
 
   static void sendACKedMessageToOtherMultiPort({
-    int senderUid,
-    int ackId,
+    required int senderUid,
+    required int ackId,
   }) {
     addPackage(
       'WY_MULTPOINT_NOTIFYSELF_MSG_ACKED',
@@ -353,7 +353,7 @@ class MessageUtils {
   /// Message decode methods.
   static MessageReceivedEvent decodeMessageEvent(
     List<int> content, {
-    int messageId,
+    int? messageId,
   }) {
     final int _type = getPackageUint(content.sublist(0, 1), 8);
     final int _senderUid = getPackageUint(content.sublist(1, 9), 64);

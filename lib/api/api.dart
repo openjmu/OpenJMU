@@ -141,7 +141,7 @@ class API {
   static const String postCommentsList = '$wbHost/reply_api/replylist/tid/';
   static const String postPraisesList = '$wbHost/praise_api/praisors/tid/';
 
-  static String commentImageUrl(int/*!*/ id, String type) =>
+  static String commentImageUrl(int /*!*/ id, String type) =>
       '$wbHost/upload_api/image/unit_id/55/id/$id/type/$type?env=jmu';
 
   /// 小组相关
@@ -252,40 +252,10 @@ class API {
   static const String courseScheduleCustom =
       '$labsHost/CourseSchedule/StudentCustomSchedule';
 
-  /// 礼物相关
-  static String get backPackItemType {
-    return '$wpHost/itemc/itemtypelist?'
-        'sid=${currentUser.sid}'
-        '&cuid=${currentUser.uid}'
-        '&updatetime=0';
-  }
-
-  static String backPackReceiveList({int count = 20, int start = 0}) {
-    return '$wpHost/itemc/recvlist?'
-        'sid=${currentUser.sid}'
-        '&cuid=${currentUser.uid}'
-        '&count=$count'
-        '&start=$start';
-  }
-
-  static String backPackMyItemList({int count = 20, int start = 0}) {
-    return '$wpHost/itemc/myitemlist?'
-        'sid=${currentUser.sid}'
-        '&cuid=${currentUser.uid}'
-        '&count=$count'
-        '&start=$start';
-  }
-
-  static String backPackItemIcon({int/*!*/ itemType = 10000}) {
-    return '$wpHost/itemc/icon?itemtype=$itemType&size=1&icontime=0';
-  }
-
-  /// 使用背包物品
-  static String get useBackpackItem => '$wpHost/itemc/useitem';
-
   /// 静态scheme正则
-  static final RegExp urlReg =
-      RegExp(r'(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]');
+  static final RegExp urlReg = RegExp(
+    r'(https?)://[-A-Za-z\d+&@#/%?=~_|!:,.;]+[-A-Za-z\d+&@#/%=~_|]',
+  );
   static final RegExp schemeUserPage = RegExp(r'^openjmu://user/*');
 
   /// 将域名替换为 WebVPN 映射的二级域名
@@ -294,7 +264,7 @@ class API {
   /// 结果：https://labs-jmu-edu-cn.webvpn.jmu.edu.cn
   static String replaceWithWebVPN(String url) {
     assert(url.startsWith(RegExp(r'http|https')));
-    LogUtils.d('Replacing url: $url');
+    LogUtil.d('Replacing url: $url');
     final Uri uri = Uri.parse(url);
     String newHost = uri.host.replaceAll('.', '-');
     if (uri.port != 0 && uri.port != 80) {
@@ -307,8 +277,22 @@ class API {
     if (uri.query.isNotEmpty) {
       replacedUrl += '?${uri.query}';
     }
-    LogUtils.d('Replaced with: $replacedUrl');
+    LogUtil.d('Replaced with: $replacedUrl');
     return replacedUrl;
+  }
+
+  static Future<bool> launchOnDevice(
+    String urlString, {
+    LaunchMode mode = LaunchMode.externalApplication,
+    WebViewConfiguration webViewConfiguration = const WebViewConfiguration(),
+    String? webOnlyWindowName,
+  }) {
+    return launchUrlString(
+      urlString,
+      mode: mode,
+      webViewConfiguration: webViewConfiguration,
+      webOnlyWindowName: webOnlyWindowName,
+    );
   }
 
   static Future<void> launchWeb({
@@ -323,18 +307,11 @@ class API {
     );
     final bool shouldLaunchFromSystem = provider.launchFromSystemBrowser;
     final String uri = '${Uri.parse(url.trim())}';
+    LogUtil.d('Launching web: $uri');
     if (shouldLaunchFromSystem) {
-      LogUtils.d('Launching web: $uri');
-      await launch(
-        uri,
-        forceSafariVC: false,
-        forceWebView: false,
-        enableJavaScript: true,
-        enableDomStorage: true,
-      );
+      await launchOnDevice(uri);
     } else {
-      LogUtils.d('Launching web: $uri');
-      AppWebView.launch(
+      await AppWebView.launch(
         url: uri,
         title: title,
         app: app,

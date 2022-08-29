@@ -9,9 +9,9 @@ double get maxDragOffset => 60.h;
 
 class RefreshListWrapper extends StatelessWidget {
   const RefreshListWrapper({
-    Key key,
-    @required this.loadingBase,
-    @required this.itemBuilder,
+    Key? key,
+    required this.loadingBase,
+    required this.itemBuilder,
     this.dividerBuilder,
     this.controller,
     this.refreshHeaderTextStyle,
@@ -22,20 +22,20 @@ class RefreshListWrapper extends StatelessWidget {
 
   final LoadingBase loadingBase;
   final Widget Function(Map<String, dynamic> model) itemBuilder;
-  final IndexedWidgetBuilder dividerBuilder;
-  final ScrollController controller;
-  final EdgeInsetsGeometry padding;
+  final IndexedWidgetBuilder? dividerBuilder;
+  final ScrollController? controller;
+  final EdgeInsetsGeometry? padding;
 
-  final TextStyle refreshHeaderTextStyle;
-  final Widget indicatorPlaceholder;
-  final TextStyle indicatorTextStyle;
+  final TextStyle? refreshHeaderTextStyle;
+  final Widget? indicatorPlaceholder;
+  final TextStyle? indicatorTextStyle;
 
   static Widget indicatorBuilder(
     BuildContext context,
     IndicatorStatus status,
     LoadingBase loadingBase, {
-    Widget indicatorPlaceholder,
-    TextStyle indicatorTextStyle,
+    Widget? indicatorPlaceholder,
+    TextStyle? indicatorTextStyle,
   }) {
     Widget indicator;
     switch (status) {
@@ -102,7 +102,7 @@ class RefreshListWrapper extends StatelessWidget {
           if (index.isEven) {
             return itemBuilder(loadingBase[index ~/ 2]);
           }
-          return dividerBuilder(c, index);
+          return dividerBuilder!(c, index);
         },
         indicatorBuilder: (BuildContext context, IndicatorStatus status) {
           return indicatorBuilder(
@@ -119,7 +119,7 @@ class RefreshListWrapper extends StatelessWidget {
         sourceList: loadingBase,
         padding: padding ?? EdgeInsets.symmetric(vertical: 10.w),
         lastChildLayoutType: LastChildLayoutType.fullCrossAxisExtent,
-        itemBuilder: (BuildContext _, Map<String, dynamic> model, int index) {
+        itemBuilder: (_, Map<String, dynamic> model, int index) {
           return itemBuilder(model);
         },
         indicatorBuilder: (BuildContext context, IndicatorStatus status) {
@@ -142,7 +142,7 @@ class RefreshListWrapper extends StatelessWidget {
         rebuildCustomScrollView: true,
         controller: controller,
         slivers: <Widget>[
-          PullToRefreshContainer((PullToRefreshScrollNotificationInfo info) {
+          PullToRefreshContainer((PullToRefreshScrollNotificationInfo? info) {
             return PullToRefreshHeader.buildRefreshHeader(
               context,
               info,
@@ -158,7 +158,7 @@ class RefreshListWrapper extends StatelessWidget {
 
 class ListMoreIndicator extends StatelessWidget {
   const ListMoreIndicator({
-    Key key,
+    Key? key,
     this.isSliver = true,
     this.isRequesting = false,
     this.textStyle,
@@ -166,7 +166,7 @@ class ListMoreIndicator extends StatelessWidget {
 
   final bool isSliver;
   final bool isRequesting;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +202,7 @@ class ListMoreIndicator extends StatelessWidget {
 
 class ListEmptyIndicator extends StatelessWidget {
   const ListEmptyIndicator({
-    Key key,
+    Key? key,
     this.isSliver = true,
     this.isError = false,
     this.loadingBase,
@@ -213,20 +213,20 @@ class ListEmptyIndicator extends StatelessWidget {
 
   final bool isSliver;
   final bool isError;
-  final LoadingBase loadingBase;
-  final Widget indicator;
-  final TextStyle textStyle;
+  final LoadingBase? loadingBase;
+  final Widget? indicator;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
     Widget child;
     child = GestureDetector(
-      onTap: isError ? loadingBase.refresh : null,
+      onTap: isError ? loadingBase?.refresh : null,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (indicator != null)
-            indicator
+            indicator!
           else ...<Widget>[
             SvgPicture.asset(
               isError
@@ -235,17 +235,17 @@ class ListEmptyIndicator extends StatelessWidget {
               width: 50.w,
               color: context.theme.iconTheme.color,
             ),
-            VGap(20.w),
+            Gap.v(20.w),
             Text(
               isError ? '出错了~点此重试' : '空空如也',
               style: textStyle ??
                   TextStyle(
-                    color: context.textTheme.caption.color,
+                    color: context.textTheme.caption?.color,
                     fontSize: 22.sp,
                   ),
             ),
           ],
-          VGap(Screens.height / 6),
+          Gap.v(Screens.height / 6),
         ],
       ),
     );
@@ -254,10 +254,7 @@ class ListEmptyIndicator extends StatelessWidget {
     }
     return DefaultTextStyle(
       style: textStyle ??
-          context.textTheme.caption.copyWith(
-            fontSize: 17.sp,
-            height: 1.4,
-          ),
+          context.textTheme.caption!.copyWith(fontSize: 17.sp, height: 1.4),
       textAlign: TextAlign.center,
       child: child,
     );

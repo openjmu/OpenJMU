@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:animations/animations.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -11,7 +12,7 @@ double get _dialogWidth => 300.w;
 double get _dialogHeight => 380.w;
 
 class CourseSchedulePage extends StatefulWidget {
-  const CourseSchedulePage({@required Key key}) : super(key: key);
+  const CourseSchedulePage({required Key? key}) : super(key: key);
 
   @override
   CourseSchedulePageState createState() => CourseSchedulePageState();
@@ -45,13 +46,17 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   /// Week switcher animation controller.
   /// 周数切换器的动画控制器
-  AnimationController weekSwitcherAnimationController;
+  late final AnimationController weekSwitcherAnimationController =
+      AnimationController.unbounded(
+    vsync: this,
+    duration: animateDuration,
+    value: 0,
+  );
 
   /// Week switcher scroll controller.
   /// 周数切换器的滚动控制器
-  ScrollController weekScrollController;
-
-  TabController weekTabController;
+  ScrollController? weekScrollController;
+  TabController? weekTabController;
 
   CoursesProvider get coursesProvider => currentContext.read<CoursesProvider>();
 
@@ -63,13 +68,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   bool get isOuterError => coursesProvider.isOuterError;
 
-  DateTime get now => coursesProvider.now;
+  DateTime? get now => coursesProvider.now;
 
-  Map<int, Map<dynamic, dynamic>> get courses => coursesProvider.courses;
+  Map<int, Map<dynamic, dynamic>>? get courses => coursesProvider.courses;
 
   DateProvider get dateProvider => currentContext.read<DateProvider>();
 
-  int currentWeek;
+  late int currentWeek = dateProvider.currentWeek;
 
   /// Week duration between current and selected.
   /// 选中的周数与当前周的相差时长
@@ -82,43 +87,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   @override
   void initState() {
     super.initState();
-
-    weekSwitcherAnimationController = AnimationController.unbounded(
-      vsync: this,
-      duration: animateDuration,
-      value: 0,
-    );
-
-    currentWeek = dateProvider.currentWeek;
     updateScrollController();
-
-    Instances.eventBus
-      ..on<CourseScheduleRefreshEvent>().listen(
-        (CourseScheduleRefreshEvent event) {
-          if (mounted) {
-            refreshIndicatorKey.currentState.show();
-          }
-        },
-      )
-      ..on<CurrentWeekUpdatedEvent>().listen(
-        (CurrentWeekUpdatedEvent event) {
-          if (currentWeek == null) {
-            currentWeek = dateProvider.currentWeek ?? 0;
-            updateScrollController();
-            if (mounted) {
-              setState(() {});
-            }
-            if ((weekScrollController?.hasClients ?? false) &&
-                hasCourses &&
-                currentWeek > 0) {
-              scrollToWeek(currentWeek);
-            }
-            if (Instances.schoolWorkPageStateKey.currentState.mounted) {
-              Instances.schoolWorkPageStateKey.currentState.setState(() {});
-            }
-          }
-        },
-      );
+    Instances.eventBus.on<CourseScheduleRefreshEvent>().listen(
+      (CourseScheduleRefreshEvent event) {
+        if (mounted) {
+          refreshIndicatorKey.currentState?.show();
+        }
+      },
+    );
   }
 
   /// Update week switcher scroll controller with the current week.
@@ -127,9 +103,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     if (coursesProvider.firstLoaded) {
       final int week = dateProvider.currentWeek;
       final double offset = currentWeekOffset(week);
-      weekScrollController ??= ScrollController(
-        initialScrollOffset: week != null ? offset : 0.0,
-      );
+      weekScrollController ??= ScrollController(initialScrollOffset: offset);
 
       /// Theoretically it doesn't require setState here, but it only
       /// takes effect if the setState is called.
@@ -148,7 +122,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       setState(() {});
     }
     if (weekScrollController?.hasClients ?? false) {
-      weekScrollController.animateTo(
+      weekScrollController?.animateTo(
         currentWeekOffset(currentWeek),
         duration: animateDuration,
         curve: Curves.ease,
@@ -177,16 +151,16 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// 计算最晚的一节课在周几
   int get maxWeekDay {
     int _maxWeekday = 5;
-    for (final int count in courses[6].keys.cast<int>()) {
-      if ((courses[6][count] as List<dynamic>).isNotEmpty) {
+    for (final int count in courses![6]!.keys.cast<int>()) {
+      if ((courses![6]![count] as List<dynamic>).isNotEmpty) {
         if (_maxWeekday != 7) {
           _maxWeekday = 6;
         }
         break;
       }
     }
-    for (final int count in courses[7].keys.cast<int>()) {
-      if ((courses[7][count] as List<dynamic>).isNotEmpty) {
+    for (final int count in courses![7]!.keys.cast<int>()) {
+      if ((courses![7]![count] as List<dynamic>).isNotEmpty) {
         _maxWeekday = 7;
         break;
       }
@@ -195,11 +169,15 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   }
 
   String _weekday(int i) => DateFormat('EEE', 'zh_CN').format(
-        now.add(selectedWeekDaysDuration).subtract((now.weekday - 1 - i).days),
+        now!
+            .add(selectedWeekDaysDuration)
+            .subtract((now!.weekday - 1 - i).days),
       );
 
   String _date(int i) => DateFormat('MM/dd').format(
-        now.add(selectedWeekDaysDuration).subtract((now.weekday - 1 - i).days),
+        now!
+            .add(selectedWeekDaysDuration)
+            .subtract((now!.weekday - 1 - i).days),
       );
 
   /// Week widget in week switcher.
@@ -226,8 +204,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   color: isSelected
                       ? currentThemeColor
                       : isCurrentWeek
-                          ? context.textTheme.bodyText2.color
-                          : context.textTheme.caption.color,
+                          ? context.textTheme.bodyText2?.color
+                          : context.textTheme.caption?.color,
                   fontSize: 18.w,
                   fontWeight: isSelected || isCurrentWeek
                       ? FontWeight.bold
@@ -244,45 +222,47 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   /// Remark widget.
   /// 课程备注部件
-  Widget get remarkWidget => Tapper(
-        onTap: () => showRemarkDetail(context),
-        child: Container(
-          alignment: Alignment.center,
-          width: Screens.width,
-          constraints: BoxConstraints(maxHeight: 54.h),
-          padding: EdgeInsets.symmetric(horizontal: 30.w),
-          color: context.theme.canvasColor,
-          child: Selector<CoursesProvider, String>(
-            selector: (_, CoursesProvider provider) => provider.remark,
-            builder: (_, String remark, __) => Text.rich(
-              TextSpan(
-                children: <InlineSpan>[
-                  const TextSpan(
-                    text: '班级备注: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(text: remark),
-                ],
-                style: context.textTheme.bodyText2.copyWith(
-                  fontSize: 20.sp,
+  Widget remarkWidget(BuildContext context) {
+    return Tapper(
+      onTap: () => showRemarkDetail(context),
+      child: Container(
+        alignment: Alignment.center,
+        width: Screens.width,
+        constraints: BoxConstraints(maxHeight: 54.h),
+        padding: EdgeInsets.symmetric(horizontal: 30.w),
+        color: context.theme.canvasColor,
+        child: Selector<CoursesProvider, String?>(
+          selector: (_, CoursesProvider provider) => provider.remark,
+          builder: (_, String? remark, __) => Text.rich(
+            TextSpan(
+              children: <InlineSpan>[
+                const TextSpan(
+                  text: '班级备注: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
+                TextSpan(text: remark),
+              ],
+              style: context.textTheme.bodyText2?.copyWith(
+                fontSize: 20.sp,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   /// Week switcher widget.
   /// 周数切换器部件
   Widget weekSelection(BuildContext context) {
     if (weekTabController == null) {
       weekTabController = TabController(length: 20, vsync: this);
-    } else if (weekTabController.index != currentWeek - 1) {
+    } else if (weekTabController!.index != currentWeek - 1) {
       final int _index = moreThanZero(math.min(19, currentWeek - 1));
-      weekTabController
+      weekTabController!
         ..index = _index
         ..animateTo(_index);
     }
@@ -347,7 +327,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 textAlign: TextAlign.center,
               ),
               const Text('周', textAlign: TextAlign.center),
-              VGap(4.w),
+              Gap.v(4.w),
               AnimatedBuilder(
                 animation: weekSwitcherAnimationController,
                 builder: (_, __) => RotatedBox(
@@ -371,7 +351,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   /// The current week's weekday indicator.
   /// 本周的天数指示器
-  Widget get weekDayIndicator {
+  Widget weekDayIndicator(BuildContext context) {
     return Container(
       color: context.theme.canvasColor,
       height: weekdayIndicatorHeight.h,
@@ -386,10 +366,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   borderRadius: BorderRadius.circular(5.w),
                   // color: i == 2 ? currentThemeColor.withOpacity(0.35) : null,
                   color: DateFormat('MM/dd').format(
-                            now.subtract(selectedWeekDaysDuration +
-                                (now.weekday - 1 - i).days),
+                            now!.subtract(selectedWeekDaysDuration +
+                                (now!.weekday - 1 - i).days),
                           ) ==
-                          DateFormat('MM/dd').format(now)
+                          DateFormat('MM/dd').format(now!)
                       ? currentThemeColor.withOpacity(0.35)
                       : null,
                 ),
@@ -404,10 +384,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      VGap(5.w),
+                      Gap.v(5.w),
                       Text(
                         _date(i),
-                        style: context.textTheme.caption.copyWith(
+                        style: context.textTheme.caption?.copyWith(
                           fontSize: 14.sp,
                         ),
                       ),
@@ -444,7 +424,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   ),
                   Text(
                     CourseAPI.getCourseTime(i + 1),
-                    style: context.textTheme.caption.copyWith(fontSize: 12.sp),
+                    style: context.textTheme.caption?.copyWith(fontSize: 12.sp),
                   ),
                 ],
               ),
@@ -463,11 +443,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
     /// Judge max courses per day.
     /// 判断每天最多课时
-    for (final int day in courses.keys) {
+    for (final int day in courses!.keys) {
       final List<Course> list9 =
-          (courses[day][9] as List<dynamic>).cast<Course>();
+          (courses![day]![9] as List<dynamic>).cast<Course>();
       final List<Course> list11 =
-          (courses[day][11] as List<dynamic>).cast<Course>();
+          (courses![day]![11] as List<dynamic>).cast<Course>();
       if (list9.isNotEmpty && _maxCoursesPerDay < 10) {
         _maxCoursesPerDay = 10;
       } else if (list9.isNotEmpty &&
@@ -492,8 +472,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   for (int count = 1; count < _maxCoursesPerDay; count++)
                     if (count.isOdd)
                       CourseWidget(
-                        courseList: courses[day]
-                            .cast<int, List<dynamic>>()[count]
+                        courseList: courses![day]!
+                            .cast<int, List<dynamic>>()[count]!
                             .cast<Course>(),
                         hasEleven: hasEleven && count == 9,
                         currentWeek: currentWeek,
@@ -507,14 +487,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
-  Widget get errorTips {
+  Widget errorTips(BuildContext context) {
     return Expanded(
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            top: dividerBS(context),
-          ),
-        ),
+        decoration: BoxDecoration(border: Border(top: dividerBS(context))),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -523,11 +499,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               width: 50.w,
               color: context.theme.iconTheme.color,
             ),
-            VGap(20.w),
+            Gap.v(20.w),
             Text(
               '课程表未就绪',
               style: TextStyle(
-                color: context.textTheme.caption.color,
+                color: context.textTheme.caption?.color,
                 fontSize: 22.sp,
               ),
             ),
@@ -560,21 +536,20 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   ),
                   secondChild: Column(
                     children: <Widget>[
-                      if (p.remark != null) remarkWidget,
+                      if (p.remark != null) remarkWidget(context),
                       if (p.firstLoaded &&
                           p.hasCourses &&
                           !(p.showError && !p.isOuterError))
-                        weekDayIndicator,
+                        weekDayIndicator(context),
                       if (p.firstLoaded &&
                           p.hasCourses &&
                           !(p.showError && !p.isOuterError))
                         courseLineGrid(context),
                       if (p.firstLoaded &&
-                          !p.hasCourses &&
-                          !(p.showError && !p.isOuterError))
-                        errorTips,
-                      if (p.firstLoaded && (p.showError && !p.isOuterError))
-                        errorTips,
+                          ((!p.hasCourses &&
+                                  !(p.showError && !p.isOuterError)) ||
+                              (p.showError && !p.isOuterError)))
+                        errorTips(context),
                     ],
                   ),
                 );
@@ -589,15 +564,15 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
 class CourseWidget extends StatelessWidget {
   const CourseWidget({
-    Key key,
-    @required this.courseList,
-    @required this.coordinate,
-    this.hasEleven,
-    this.currentWeek,
+    Key? key,
+    required this.courseList,
+    required this.coordinate,
+    this.hasEleven = false,
+    this.currentWeek = 0,
   })  : assert(coordinate.length == 2, 'Invalid course coordinate'),
         super(key: key);
 
-  final List<Course> courseList;
+  final List<Course>? courseList;
   final List<int> coordinate;
   final bool hasEleven;
   final int currentWeek;
@@ -606,29 +581,28 @@ class CourseWidget extends StatelessWidget {
 
   void showCoursesDetail(BuildContext context) {
     showModal<void>(
-        context: context,
-        builder: (BuildContext _) {
-          if (courseList.length == 1) {
-            if (courseList[0].isCustom) {
-              return _CustomCourseDetailDialog(
-                course: courseList[0],
-                currentWeek: currentWeek,
-                coordinate: coordinate,
-              );
-            } else {
-              return _CourseDetailDialog(
-                course: courseList[0],
-                currentWeek: currentWeek,
-              );
-            }
-          } else {
-            return _CourseListDialog(
-              courseList: courseList,
+      context: context,
+      builder: (_) {
+        if (courseList!.length == 1) {
+          if (courseList![0].isCustom) {
+            return _CustomCourseDetailDialog(
+              course: courseList![0],
               currentWeek: currentWeek,
               coordinate: coordinate,
             );
           }
-        });
+          return _CourseDetailDialog(
+            course: courseList![0],
+            currentWeek: currentWeek,
+          );
+        }
+        return _CourseListDialog(
+          courseList: courseList!,
+          currentWeek: currentWeek,
+          coordinate: coordinate,
+        );
+      },
+    );
   }
 
   Widget courseCustomIndicator(Course course) {
@@ -680,7 +654,7 @@ class CourseWidget extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            '${courseList.length}',
+            '${courseList!.length}',
             style: TextStyle(
               color: Colors.black,
               fontSize: 14.sp,
@@ -692,8 +666,8 @@ class CourseWidget extends StatelessWidget {
     );
   }
 
-  Widget courseContent(BuildContext context, Course course) {
-    Widget child;
+  Widget courseContent(BuildContext context, Course? course) {
+    final Widget child;
     if (course != null) {
       child = Text.rich(
         TextSpan(
@@ -712,10 +686,10 @@ class CourseWidget extends StatelessWidget {
             if (!course.isCustom)
               TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
             if (course.location != null)
-              TextSpan(text: '\n📍${course.location.notBreak}'),
+              TextSpan(text: '\n📍${course.location!.notBreak}'),
           ],
         ),
-        style: context.textTheme.bodyText2.copyWith(
+        style: context.textTheme.bodyText2?.copyWith(
           color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
                   !isOutOfTerm
               ? Colors.grey
@@ -736,15 +710,14 @@ class CourseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isEleven = false;
-    Course course;
-    if (courseList != null && courseList.isNotEmpty) {
-      course = courseList.firstWhere(
+    Course? course;
+    if (courseList != null && courseList!.isNotEmpty) {
+      course = courseList!.firstWhereOrNull(
         (Course c) => CourseAPI.inCurrentWeek(c, currentWeek: currentWeek),
-        orElse: () => null,
       );
     }
-    if (course == null && courseList.isNotEmpty) {
-      course = courseList[0];
+    if (course == null && (courseList?.isNotEmpty ?? false)) {
+      course = courseList![0];
     }
     if (hasEleven) {
       isEleven = course?.isEleven ?? false;
@@ -768,18 +741,19 @@ class CourseWidget extends StatelessWidget {
                       splashFactory: InkSplash.splashFactory,
                       hoverColor: Colors.black,
                       onTap: () {
-                        if (courseList.isNotEmpty) {
+                        if (courseList?.isNotEmpty ?? false) {
                           showCoursesDetail(context);
                         }
                       },
                       onLongPress: () {
-                        final Iterable<Course> cs = courseList.where(
+                        final Iterable<Course>? cs = courseList?.where(
                           (Course c) => c.isCustom,
                         );
                         showModal<void>(
                           context: context,
                           builder: (_) => _CustomCourseDetailDialog(
-                            course: cs.isNotEmpty ? cs.first : null,
+                            course:
+                                (cs?.isNotEmpty ?? false) ? cs!.first : null,
                             coordinate: coordinate,
                             currentWeek: currentWeek,
                             isEditing: true,
@@ -790,11 +764,11 @@ class CourseWidget extends StatelessWidget {
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.w),
-                          color: courseList.isNotEmpty
+                          color: courseList?.isNotEmpty ?? false
                               ? CourseAPI.inCurrentWeek(course,
                                           currentWeek: currentWeek) ||
                                       isOutOfTerm
-                                  ? course.color.withOpacity(0.85)
+                                  ? course!.color!.withOpacity(0.85)
                                   : context.theme.dividerColor
                               : null,
                         ),
@@ -804,10 +778,11 @@ class CourseWidget extends StatelessWidget {
                   ),
                 ),
                 if (courseList
-                    .where((Course course) => course.isCustom)
-                    .isNotEmpty)
-                  courseCustomIndicator(course),
-                if (courseList.length > 1) courseCountIndicator,
+                        ?.where((Course course) => course.isCustom)
+                        .isNotEmpty ??
+                    false)
+                  courseCustomIndicator(course!),
+                if ((courseList?.length ?? 0) > 1) courseCountIndicator,
               ],
             ),
           ),
@@ -820,10 +795,10 @@ class CourseWidget extends StatelessWidget {
 
 class _CourseListDialog extends StatefulWidget {
   const _CourseListDialog({
-    Key key,
-    @required this.courseList,
-    @required this.currentWeek,
-    @required this.coordinate,
+    Key? key,
+    required this.courseList,
+    required this.currentWeek,
+    required this.coordinate,
   }) : super(key: key);
 
   final List<Course> courseList;
@@ -881,12 +856,12 @@ class _CourseListDialogState extends State<_CourseListDialog> {
 
 class _CourseColorIndicator extends StatelessWidget {
   const _CourseColorIndicator({
-    Key key,
-    @required this.course,
-    @required this.currentWeek,
+    Key? key,
+    required this.course,
+    required this.currentWeek,
   }) : super(key: key);
 
-  final Course course;
+  final Course? course;
   final int currentWeek;
 
   bool get isOutOfTerm => currentWeek < 1 || currentWeek > 20;
@@ -904,7 +879,7 @@ class _CourseColorIndicator extends StatelessWidget {
           color: course != null &&
                   (isOutOfTerm ||
                       CourseAPI.inCurrentWeek(course, currentWeek: currentWeek))
-              ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
+              ? course!.color!.withOpacity(currentIsDark ? 0.85 : 1.0)
               : Colors.grey,
         ),
       ),
@@ -914,12 +889,10 @@ class _CourseColorIndicator extends StatelessWidget {
 
 class _CourseInfoRowWidget extends StatelessWidget {
   const _CourseInfoRowWidget({
-    Key key,
-    @required this.name,
-    @required this.value,
-  })  : assert(name != null),
-        assert(value != null),
-        super(key: key);
+    Key? key,
+    required this.name,
+    required this.value,
+  }) : super(key: key);
 
   final String name;
   final String value;
@@ -927,9 +900,7 @@ class _CourseInfoRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: context.textTheme.caption.copyWith(
-        fontSize: 18.sp,
-      ),
+      style: context.textTheme.caption!.copyWith(fontSize: 18.sp),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8.w),
         child: Row(
@@ -941,9 +912,7 @@ class _CourseInfoRowWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 value,
-                style: TextStyle(
-                  color: context.textTheme.bodyText2.color,
-                ),
+                style: TextStyle(color: context.textTheme.bodyText2?.color),
               ),
             ),
           ],
@@ -955,9 +924,9 @@ class _CourseInfoRowWidget extends StatelessWidget {
 
 class _CourseDetailDialog extends StatelessWidget {
   const _CourseDetailDialog({
-    Key key,
-    @required this.course,
-    @required this.currentWeek,
+    Key? key,
+    required this.course,
+    required this.currentWeek,
     this.isDialog = true,
   }) : super(key: key);
 
@@ -1005,12 +974,12 @@ class _CourseDetailDialog extends StatelessWidget {
           if (course.location != null)
             _CourseInfoRowWidget(
               name: '教室',
-              value: course.location,
+              value: course.location!,
             ),
           if (course.teacher != null)
             _CourseInfoRowWidget(
               name: '教师',
-              value: course.teacher,
+              value: course.teacher!,
             ),
           _CourseInfoRowWidget(
             name: '周数',
@@ -1031,16 +1000,14 @@ class _CourseDetailDialog extends StatelessWidget {
 
 class _CustomCourseDetailDialog extends StatefulWidget {
   const _CustomCourseDetailDialog({
-    Key key,
-    @required this.course,
-    @required this.currentWeek,
-    @required this.coordinate,
+    Key? key,
+    required this.course,
+    required this.currentWeek,
+    required this.coordinate,
     this.isEditing = false,
-  })  : assert(currentWeek != null),
-        assert(isEditing != null),
-        super(key: key);
+  }) : super(key: key);
 
-  final Course course;
+  final Course? course;
   final int currentWeek;
   final List<int> coordinate;
   final bool isEditing;
@@ -1051,11 +1018,11 @@ class _CustomCourseDetailDialog extends StatefulWidget {
 }
 
 class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
-  TextEditingController _controller;
+  TextEditingController? _controller;
   bool deleting = false;
   bool saving = false;
 
-  Course get course => widget.course;
+  Course? get course => widget.course;
 
   int get currentWeek => widget.currentWeek;
 
@@ -1074,8 +1041,11 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
   }
 
   Future<void> saveCourse() async {
-    final String content = _controller.text.trim();
-    if (saving || content.isBlank || content == widget.course?.name) {
+    final String? content = _controller?.text.trim();
+    if (saving ||
+        content == null ||
+        content.isEmpty ||
+        content == widget.course?.name) {
       return;
     }
     saving = true;
@@ -1099,7 +1069,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
     }
     editFuture.then((Response<String> response) {
       final Map<String, dynamic> res =
-          jsonDecode(response.data) as Map<String, dynamic>;
+          jsonDecode(response.data!) as Map<String, dynamic>;
       saving = false;
       if (mounted) {
         setState(() {});
@@ -1109,7 +1079,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
       }
       Instances.eventBus.fire(CourseScheduleRefreshEvent());
     }).catchError((dynamic e) {
-      LogUtils.e('Failed when editing custom course: $e');
+      LogUtil.e('Failed when editing custom course: $e');
       showCenterErrorToast('编辑自定义课程失败');
       saving = false;
       if (mounted) {
@@ -1122,7 +1092,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
     setState(() {
       deleting = true;
     });
-    final Course _course = widget.course;
+    final Course _course = widget.course!;
     try {
       final List<Response<String>> responses =
           await Future.wait<Response<String>>(
@@ -1144,7 +1114,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
       bool isOk = true;
       for (final Response<String> response in responses) {
         final Map<String, dynamic> res =
-            jsonDecode(response.data) as Map<String, dynamic>;
+            jsonDecode(response.data!) as Map<String, dynamic>;
         if (!(res['isOk'] as bool)) {
           isOk = false;
           break;
@@ -1156,7 +1126,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
       }
     } catch (e) {
       showToast('删除课程失败');
-      LogUtils.e('Failed in deleting custom course: $e');
+      LogUtil.e('Failed in deleting custom course: $e');
     } finally {
       deleting = false;
       if (mounted) {
@@ -1179,7 +1149,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
     return GestureDetector(
       onTap: saveCourse,
       child: ValueListenableBuilder<TextEditingValue>(
-        valueListenable: _controller,
+        valueListenable: _controller!,
         builder: (_, TextEditingValue value, __) {
           final bool canSave = value.text.isNotBlank &&
               value.text != (widget.course?.name ?? '');
@@ -1294,7 +1264,7 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
       );
     } else {
       _child = Text(
-        course.name,
+        course?.name ?? '(空)',
         style: TextStyle(
           fontSize: 22.sp,
           fontWeight: FontWeight.bold,
@@ -1366,12 +1336,12 @@ class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
 
 class CourseEditDialog extends StatefulWidget {
   const CourseEditDialog({
-    Key key,
-    @required this.course,
-    @required this.coordinate,
+    Key? key,
+    required this.course,
+    required this.coordinate,
   }) : super(key: key);
 
-  final Course course;
+  final Course? course;
   final List<int> coordinate;
 
   @override
@@ -1380,19 +1350,15 @@ class CourseEditDialog extends StatefulWidget {
 
 class _CourseEditDialogState extends State<CourseEditDialog> {
   final double darkModeOpacity = 0.85;
-  final ValueNotifier<String> content = ValueNotifier<String>(null);
-
-  TextEditingController _controller;
+  late final ValueNotifier<String> content = ValueNotifier<String>(
+    widget.course?.name ?? '',
+  );
+  late final TextEditingController _controller = TextEditingController(
+    text: content.value,
+  );
   bool loading = false;
 
   bool get hasCourse => widget.course != null;
-
-  @override
-  void initState() {
-    super.initState();
-    content.value = widget.course?.name;
-    _controller = TextEditingController(text: content.value);
-  }
 
   void editCourse() {
     loading = true;
@@ -1416,7 +1382,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     }
     editFuture.then((Response<String> response) {
       final Map<String, dynamic> res =
-          jsonDecode(response.data) as Map<String, dynamic>;
+          jsonDecode(response.data!) as Map<String, dynamic>;
       loading = false;
       if (mounted) {
         setState(() {});
@@ -1426,7 +1392,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       }
       Instances.eventBus.fire(CourseScheduleRefreshEvent());
     }).catchError((dynamic e) {
-      LogUtils.e('Failed when editing custom course: $e');
+      LogUtil.e('Failed when editing custom course: $e');
       showCenterErrorToast('编辑自定义课程失败');
       loading = false;
       if (mounted) {
@@ -1441,8 +1407,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.w),
         color: hasCourse
-            ? widget.course.color
-                .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
+            ? widget.course!.color
+                !.withOpacity(currentIsDark ? darkModeOpacity : 1.0)
             : context.theme.dividerColor,
       ),
       child: Padding(

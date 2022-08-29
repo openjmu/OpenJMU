@@ -1,52 +1,50 @@
 import 'package:extended_text/extended_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class PraiseCard extends StatelessWidget {
-  const PraiseCard(
-    this.praise, {
-    Key key,
-  }) : super(key: key);
+  const PraiseCard(this.praise, {super.key});
 
   final Praise praise;
 
-  Widget getPraiseNickname(BuildContext context, Praise praise) => Row(
-        children: <Widget>[
-          Text(
-            praise.nickname ?? praise.uid,
-            style: context.textTheme.bodyText2.copyWith(
-              height: 1.2,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w500,
-            ),
+  Widget getPraiseNickname(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Text(
+          praise.nickname,
+          style: context.textTheme.bodyMedium?.copyWith(
+            height: 1.2,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
           ),
-          if (Constants.developerList.contains(praise.uid))
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
-              child: const DeveloperTag(),
-            ),
-        ],
-      );
+        ),
+        if (Constants.developerList.contains(praise.uid))
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: const DeveloperTag(),
+          ),
+      ],
+    );
+  }
 
-  Widget getPraiseInfo(Praise praise) {
+  Widget getPraiseInfo(BuildContext context) {
     return Text(
       PostAPI.postTimeConverter(praise.praiseTime),
       style: TextStyle(
-        color: currentTheme.textTheme.caption.color,
+        color: currentTheme.textTheme.caption?.color,
         height: 1.3,
       ),
     );
   }
 
-  Widget getPraiseContent(BuildContext context, Praise praise) {
+  Widget getPraiseContent(BuildContext context) {
     return Text('赞了这条微博', style: TextStyle(fontSize: 19.sp));
   }
 
   Widget getRootContent(BuildContext context, Praise praise) {
-    final Post _post = Post.fromJson(praise.post);
-    String topic = '<M ${_post.uid}>@${_post.nickname}<\/M>: ';
-    topic += _post.content;
+    final Post _post = Post.fromJson(praise.post!);
+    final String topic = '<M ${_post.uid}>@${_post.nickname}<\/M>: '
+        '${_post.content}';
     return Container(
       width: Screens.width,
       margin: EdgeInsets.symmetric(vertical: 8.w),
@@ -62,7 +60,7 @@ class PraiseCard extends StatelessWidget {
   Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
       content,
-      style: context.textTheme.bodyText2.copyWith(fontSize: 19.sp),
+      style: context.textTheme.bodyMedium?.copyWith(fontSize: 19.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 2,
@@ -77,7 +75,7 @@ class PraiseCard extends StatelessWidget {
         navigatorState.pushNamed(
           Routes.openjmuPostDetail.name,
           arguments: Routes.openjmuPostDetail.d(
-            post: Post.fromJson(praise.post),
+            post: Post.fromJson(praise.post!),
           ),
         );
       },
@@ -110,20 +108,20 @@ class PraiseCard extends StatelessWidget {
                       size: 32,
                       isSysAvatar: praise.user.sysAvatar,
                     ),
-                    Gap(16.w),
-                    getPraiseNickname(context, praise),
+                    Gap.h(16.w),
+                    getPraiseNickname(context),
                     Container(
                       width: 4.w,
                       height: 4.w,
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: context.textTheme.bodyText2.color,
+                        color: context.textTheme.bodyMedium?.color,
                       ),
                     ),
-                    getPraiseInfo(praise),
-                    Gap(10.w),
-                    getPraiseContent(context, praise),
+                    getPraiseInfo(context),
+                    Gap.h(10.w),
+                    getPraiseContent(context),
                   ],
                 ),
               ),

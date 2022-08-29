@@ -61,7 +61,7 @@ class LoadingBase extends LoadingMoreBase<Map<String, dynamic>> {
       setState();
       return true;
     } catch (e) {
-      LogUtils.e('Error when loading data for LoadingBase list: $e');
+      LogUtil.e('Error when loading data for LoadingBase list: $e');
       return false;
     }
   }

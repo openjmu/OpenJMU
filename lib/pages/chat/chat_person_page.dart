@@ -11,7 +11,7 @@ import 'package:openjmu/constants/constants.dart';
 
 class ChatPersonPage extends StatefulWidget {
   const ChatPersonPage({
-    Key key,
+    Key? key,
     this.uid = '164466',
   }) : super(key: key);
 
@@ -78,7 +78,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
               const UserAvatar(size: 50.0, uid: '164466'),
               Text(
                 '陈嘉旺',
-                style: context.textTheme.bodyText2.copyWith(
+                style: context.textTheme.bodyText2?.copyWith(
                   fontSize: 19.sp,
                   fontWeight: FontWeight.w500,
                 ),
@@ -157,7 +157,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
               fontStyle: FontStyle.italic,
             ),
           ),
-          style: context.textTheme.bodyText2.copyWith(
+          style: context.textTheme.bodyText2?.copyWith(
             fontSize: 20.sp,
             textBaseline: TextBaseline.alphabetic,
           ),

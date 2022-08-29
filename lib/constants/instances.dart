@@ -45,7 +45,7 @@ class Instances {
 
   static final EventBus eventBus = EventBus()
     ..on<dynamic>().listen((dynamic event) {
-      LogUtils.d('Event fired: ${event.runtimeType}');
+      LogUtil.d('Event fired: ${event.runtimeType}');
     });
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();

@@ -20,7 +20,7 @@ class UserInfo {
     this.blowfish,
     this.isTeacher = false,
     this.unitId,
-    this.workId,
+    this.workId = '',
     this.classId,
     this.gender,
     this.isFollowing = false,
@@ -34,12 +34,12 @@ class UserInfo {
       }
     });
     return UserInfo(
-      sid: json['sid'] as String,
+      sid: json['sid'] as String?,
       uid: json['uid'].toString(),
       name: (json['username'] ?? json['uid']).toString(),
       signature: json['signature'] as String,
-      ticket: json['ticket'] as String,
-      blowfish: json['blowfish'] as String,
+      ticket: json['ticket'] as String?,
+      blowfish: json['blowfish'] as String?,
       isTeacher: (json['isTeacher'] ?? json['type'].toString().toInt()) == 1,
       unitId: (json['unitId'] ?? json['unitid']) as int,
       workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
@@ -63,7 +63,7 @@ class UserInfo {
   final int? gender;
   final String? name;
   final String? signature;
-  final String? workId;
+  final String workId;
   final bool isFollowing;
   final bool sysAvatar;
 

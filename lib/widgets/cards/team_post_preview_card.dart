@@ -13,7 +13,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
-  const TeamPostPreviewCard({@required Key key}) : super(key: key);
+  const TeamPostPreviewCard({required Key key}) : super(key: key);
 
   Future<void> confirmDelete(BuildContext context) async {
     final bool confirm = await ConfirmationDialog.show(
@@ -135,7 +135,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             uid: post.uid,
             isSysAvatar: post.userInfo.sysAvatar,
           ),
-          Gap(16.w),
+          Gap.h(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -144,8 +144,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text(
-                      post.nickname ?? post.uid.toString(),
-                      style: context.textTheme.bodyText2.copyWith(
+                      post.nickname ?? post.uid,
+                      style: context.textTheme.bodyText2?.copyWith(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -174,7 +174,7 @@ class TeamPostPreviewCard extends StatelessWidget {
     return Text(
       TeamPostAPI.timeConverter(post),
       style: TextStyle(
-        color: context.textTheme.caption.color,
+        color: context.textTheme.caption?.color,
         fontSize: 16.sp,
       ),
     );
@@ -201,16 +201,16 @@ class TeamPostPreviewCard extends StatelessWidget {
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: provider.post.postInfo.length,
+        itemCount: provider.post.postInfo!.length,
         itemBuilder: (_, int index) {
           final Map<String, dynamic> _post =
-              provider.post.postInfo[index].cast<String, dynamic>();
+              provider.post.postInfo![index].cast<String, dynamic>();
           return Padding(
             padding: EdgeInsets.symmetric(
               vertical: 4.h,
             ),
             child: ExtendedText(
-              _post['content'] as String ?? '',
+              _post['content'] as String? ?? '',
               specialTextSpanBuilder: StackSpecialTextSpanBuilder(
                 prefixSpans: <InlineSpan>[
                   TextSpan(
@@ -234,7 +234,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ),
                 ],
               ),
-              style: context.textTheme.caption.copyWith(fontSize: 17.sp),
+              style: context.textTheme.caption?.copyWith(fontSize: 17.sp),
               onSpecialTextTap: specialTextTapRecognizer,
               maxLines: 3,
               overflowWidget: const TextOverflowWidget(
@@ -249,8 +249,8 @@ class TeamPostPreviewCard extends StatelessWidget {
 
   Widget _images(BuildContext context, TeamPost post) {
     final List<Widget> imagesWidget = <Widget>[];
-    for (int i = 0; i < post.pics.length; i++) {
-      final int imageId = (post.pics[i]['fid'] as String).toInt();
+    for (int i = 0; i < post.pics!.length; i++) {
+      final int imageId = (post.pics![i]['fid'] as String).toInt();
       final String imageUrl = API.teamFile(fid: imageId);
       final ExtendedTypedNetworkImageProvider provider =
           ExtendedTypedNetworkImageProvider(imageUrl);
@@ -258,7 +258,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         image: provider,
         fit: BoxFit.cover,
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
+          Widget? loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               loader = DecoratedBox(
@@ -269,11 +269,11 @@ class TeamPostPreviewCard extends StatelessWidget {
               );
               break;
             case LoadState.completed:
-              final ImageInfo info = state.extendedImageInfo;
+              final ImageInfo? info = state.extendedImageInfo;
               if (info != null) {
                 loader = ScaledImage(
                   image: info.image,
-                  length: post.pics.length,
+                  length: post.pics!.length,
                   num200: 200.sp,
                   num400: 400.sp,
                   provider: provider,
@@ -292,7 +292,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             Routes.openjmuImageViewer.name,
             arguments: Routes.openjmuImageViewer.d(
               index: i,
-              pics: post.pics.map((Map<dynamic, dynamic> pic) {
+              pics: post.pics!.map((Map<dynamic, dynamic> pic) {
                 final int id = (pic['fid'] as String).toInt();
                 final String imageUrl = API.teamFile(fid: id);
                 return ImageBean(
@@ -315,13 +315,13 @@ class TeamPostPreviewCard extends StatelessWidget {
       );
       imagesWidget.add(_exImage);
     }
-    Widget _image;
-    if (post.pics.length == 1) {
+    Widget? _image;
+    if (post.pics!.length == 1) {
       _image = Align(
         alignment: Alignment.topLeft,
         child: imagesWidget[0],
       );
-    } else if (post.pics.length > 1) {
+    } else if (post.pics!.length > 1) {
       _image = GridView.count(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
@@ -357,11 +357,11 @@ class TeamPostPreviewCard extends StatelessWidget {
               start: currentThemeColor,
               end: currentThemeColor,
             ),
-            countBuilder: (int count, bool isLiked, String text) => Container(
+            countBuilder: (int? count, bool isLiked, String text) => Container(
               constraints: BoxConstraints(minWidth: 30.w),
               alignment: Alignment.center,
               child: Text(
-                count > 0 ? text : '赞',
+                count != null && count > 0 ? text : '赞',
                 style: TextStyle(
                   color: isLiked ? currentThemeColor : context.iconTheme.color,
                   fontSize: 18.sp,
@@ -410,11 +410,11 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Widget _actionButton({
-    BuildContext context,
-    Widget icon,
-    String text,
-    int value,
-    VoidCallback onTap,
+    required BuildContext context,
+    required Widget icon,
+    required int value,
+    String? text,
+    VoidCallback? onTap,
   }) {
     final String _content = value == 0
         ? text ?? ''
@@ -429,7 +429,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             icon,
-            Gap(6.w),
+            Gap.h(6.w),
             Container(
               constraints: BoxConstraints(minWidth: 30.w),
               alignment: Alignment.center,
@@ -498,9 +498,9 @@ class TeamPostPreviewCard extends StatelessWidget {
               children: <Widget>[
                 _header(context, p.post),
                 _content(p.post),
-                if (p.post.pics != null && p.post.pics.isNotEmpty)
+                if (p.post.pics != null && p.post.pics!.isNotEmpty)
                   _images(context, p.post),
-                if (p.post.postInfo != null && p.post.postInfo.isNotEmpty)
+                if (p.post.postInfo != null && p.post.postInfo!.isNotEmpty)
                   _postInfo(context, p),
                 Padding(
                   padding: EdgeInsets.only(top: 12.w),

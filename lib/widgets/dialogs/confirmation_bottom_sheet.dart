@@ -8,7 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 
 class ConfirmationBottomSheet extends StatefulWidget {
   const ConfirmationBottomSheet({
-    Key key,
+    Key? key,
     this.alignment = Alignment.bottomCenter,
     this.contentPadding = EdgeInsets.zero,
     this.title,
@@ -27,30 +27,30 @@ class ConfirmationBottomSheet extends StatefulWidget {
         super(key: key);
 
   final AlignmentGeometry alignment;
-  final String title;
+  final String? title;
   final bool centerTitle;
-  final String content;
-  final List<ConfirmationBottomSheetAction> actions;
+  final String? content;
+  final List<ConfirmationBottomSheetAction>? actions;
   final EdgeInsetsGeometry contentPadding;
   final bool showConfirm;
-  final String confirmLabel;
-  final String cancelLabel;
-  final Color backgroundColor;
+  final String? confirmLabel;
+  final String? cancelLabel;
+  final Color? backgroundColor;
 
   static Future<bool> show(
     BuildContext context, {
     AlignmentGeometry alignment = Alignment.bottomCenter,
     EdgeInsetsGeometry contentPadding = EdgeInsets.zero,
-    String title,
+    String? title,
     bool centerTitle = true,
-    String content,
-    List<ConfirmationBottomSheetAction> actions,
+    String? content,
+    List<ConfirmationBottomSheetAction>? actions,
     bool showConfirm = false,
-    String confirmLabel = '确认',
-    String cancelLabel = '取消',
-    Color backgroundColor,
+    String? confirmLabel = '确认',
+    String? cancelLabel = '取消',
+    Color? backgroundColor,
   }) async {
-    final bool result = await showGeneralDialog<bool>(
+    final bool? result = await showGeneralDialog(
       context: context,
       barrierDismissible: false,
       pageBuilder: (_, __, ___) => ConfirmationBottomSheet(
@@ -80,24 +80,22 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       GlobalKey<DismissWrapperState>();
   bool animating = false;
 
-  Widget titleWidget(BuildContext context) => Container(
-        margin: EdgeInsets.only(
-          left: 20.w,
-          right: 20.w,
-          bottom: 10.h,
-        ),
-        child: Row(
-          mainAxisAlignment: widget.centerTitle
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              widget.title,
-              style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      );
+  Widget titleWidget(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 10.h),
+      child: Row(
+        mainAxisAlignment: widget.centerTitle
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            widget.title!,
+            style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget confirmButton(BuildContext context) {
     return MaterialButton(
@@ -164,8 +162,8 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       separatorBuilder: (_, __) => const LineDivider(),
-      itemCount: widget.actions.length,
-      itemBuilder: (_, int index) => widget.actions[index],
+      itemCount: widget.actions!.length,
+      itemBuilder: (_, int index) => widget.actions![index],
     );
   }
 
@@ -177,7 +175,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
           return false;
         }
         animating = true;
-        await _dismissWrapperKey.currentState.animateWrapper(forward: false);
+        await _dismissWrapperKey.currentState?.animateWrapper(forward: false);
         return true;
       },
       child: Material(
@@ -197,7 +195,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
                       Padding(
                         padding: widget.contentPadding,
                         child: Text(
-                          widget.content,
+                          widget.content!,
                           style: TextStyle(fontSize: 20.sp),
                           textAlign: TextAlign.center,
                         ),
@@ -218,14 +216,11 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
 
 class ConfirmationBottomSheetAction extends StatelessWidget {
   const ConfirmationBottomSheetAction({
-    Key key,
-    @required this.text,
-    @required this.onTap,
+    Key? key,
+    required this.text,
+    required this.onTap,
     this.isSelected = false,
-  })  : assert(text != null),
-        assert(onTap != null),
-        assert(isSelected != null),
-        super(key: key);
+  }) : super(key: key);
 
   final String text;
   final GestureTapCallback onTap;

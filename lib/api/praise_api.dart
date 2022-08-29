@@ -46,7 +46,8 @@ class PraiseAPI {
       uid: itemData['user']['uid'].toString(),
       avatar: _avatar,
       praiseTime: _praiseTime,
-      nickname: '${itemData['user']['nickname']}',
+      nickname: itemData['user']['nickname'] as String? ??
+          itemData['user']['uid'].toString(),
       user: PostUser.fromJson(itemData['user'] as Map<String, dynamic>),
     );
     return _praise;
@@ -61,7 +62,7 @@ class PraiseAPI {
       '${itemData['praise_time']}000'.toInt(),
     ).toString().substring(0, 16);
     final Praise _praise = Praise(
-      id: itemData['id'] as int/*!*/,
+      id: itemData['id'] as int /*!*/,
       uid: itemData['user']['uid'].toString(),
       avatar: _avatar,
       postId: int.parse(itemData['topic']['tid'].toString()),

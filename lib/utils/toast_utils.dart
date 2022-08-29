@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
-// ignore: library_prefixes
-import 'package:oktoast/oktoast.dart' as OKToast;
+import 'package:oktoast/oktoast.dart' as ok;
 
 void showToast(String text) {
-  OKToast.showToast(text, position: OKToast.ToastPosition.bottom);
+  ok.showToast(text, position: ok.ToastPosition.bottom);
 }
 
 void showCenterToast(String text) {
-  OKToast.showToast(text, position: OKToast.ToastPosition.center);
+  ok.showToast(text, position: ok.ToastPosition.center);
 }
 
 void showErrorToast(String text) {
-  OKToast.showToast(
+  ok.showToast(
     text,
     backgroundColor: Colors.redAccent,
   );
 }
 
 void showCenterErrorToast(String text) {
-  OKToast.showToast(
+  ok.showToast(
     text,
-    position: OKToast.ToastPosition.center,
+    position: ok.ToastPosition.center,
     backgroundColor: Colors.redAccent,
   );
 }
 
 void showTopToast(String text) {
-  OKToast.showToast(text, position: OKToast.ToastPosition.top);
+  ok.showToast(text, position: ok.ToastPosition.top);
 }

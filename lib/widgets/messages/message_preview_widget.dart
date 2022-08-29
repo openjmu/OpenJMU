@@ -10,17 +10,17 @@ import 'package:openjmu/constants/constants.dart';
 
 class MessagePreviewWidget extends StatefulWidget {
   const MessagePreviewWidget({
+    Key? key,
     this.uid,
     this.app,
-    @required this.message,
-    @required this.unreadMessages,
-    this.height = 80.0,
-    Key key,
+    required this.message,
+    required this.unreadMessages,
+    this.height = 80,
   })  : assert(uid != null || app != null),
         super(key: key);
 
-  final String uid;
-  final WebApp app;
+  final String? uid;
+  final WebApp? app;
   final Message message;
   final List<Message> unreadMessages;
   final double height;
@@ -31,10 +31,10 @@ class MessagePreviewWidget extends StatefulWidget {
 
 class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     with AutomaticKeepAliveClientMixin {
-  UserInfo user;
+  UserInfo? user;
 
-  Timer timeUpdateTimer;
-  String formattedTime;
+  Timer? timeUpdateTimer;
+  late String formattedTime;
 
   @override
   bool get wantKeepAlive => true;
@@ -48,7 +48,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
         setState(() {});
       }
     }).catchError((dynamic e) {
-      LogUtils.d('$e');
+      LogUtil.d('$e');
     });
 
     timeFormat(null);
@@ -63,7 +63,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     super.dispose();
   }
 
-  void timeFormat(Timer _) {
+  void timeFormat(Timer? _) {
     final DateTime now = DateTime.now();
     if (widget.message.sendTime.day == now.day &&
         widget.message.sendTime.month == now.month &&
@@ -72,8 +72,9 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     } else if (widget.message.sendTime.year == now.year) {
       formattedTime = DateFormat('MM-dd HH:mm').format(widget.message.sendTime);
     } else {
-      formattedTime =
-          DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
+      formattedTime = DateFormat(
+        'yy-MM-dd HH:mm',
+      ).format(widget.message.sendTime);
     }
     if (mounted) {
       setState(() {});
@@ -91,7 +92,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 16.w),
-            child: UserAvatar(size: 60.0, uid: widget.uid),
+            child: UserAvatar(size: 60, uid: widget.uid),
           ),
           Expanded(
             child: SizedBox(
@@ -106,9 +107,8 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         height: 30.w,
                         child: user != null
                             ? Text(
-                                user.name ?? user.uid,
-                                style:
-                                    context.theme.textTheme.bodyText2.copyWith(
+                                user!.name ?? user!.uid,
+                                style: context.textTheme.bodyText2?.copyWith(
                                   fontSize: 22.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -117,9 +117,9 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                       ),
                       Text(
                         ' $formattedTime',
-                        style: context.textTheme.bodyText2.copyWith(
-                          color: context.theme.textTheme.bodyText2.color
-                              .withOpacity(0.5),
+                        style: TextStyle(
+                          color: context.textTheme.bodyText2?.color
+                              ?.withOpacity(0.5),
                         ),
                       ),
                       const Spacer(),
@@ -144,9 +144,9 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   ),
                   Text(
                     '${widget.message.content['content']}',
-                    style: context.textTheme.bodyText2.copyWith(
-                      color: context.theme.textTheme.bodyText2.color
-                          .withOpacity(0.5),
+                    style: TextStyle(
+                      color:
+                          context.textTheme.bodyText2?.color?.withOpacity(0.5),
                       fontSize: 19.sp,
                     ),
                     maxLines: 1,

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamReplyListPage extends StatefulWidget {
-  const TeamReplyListPage({Key key}) : super(key: key);
+  const TeamReplyListPage({Key? key}) : super(key: key);
 
   @override
   _TeamReplyListPageState createState() => _TeamReplyListPageState();
@@ -60,7 +60,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage>
       child: Row(
         children: <Widget>[
           UserAvatar(uid: item.fromUserId, isSysAvatar: item.user.sysAvatar),
-          Gap(16.w),
+          Gap.h(16.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

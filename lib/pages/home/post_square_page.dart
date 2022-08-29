@@ -9,7 +9,7 @@ import 'package:openjmu/constants/constants.dart';
 import '../main_page.dart';
 
 class PostSquarePage extends StatefulWidget {
-  const PostSquarePage({Key key}) : super(key: key);
+  const PostSquarePage({Key? key}) : super(key: key);
 
   @override
   _PostSquarePageState createState() => _PostSquarePageState();
@@ -56,7 +56,7 @@ class _PostSquarePageState extends State<PostSquarePage> {
         ),
         actions: <Widget>[
           MainPage.notificationButton(context: context),
-          Gap(16.w),
+          Gap.h(16.w),
           MainPage.publishButton(
             context: context,
             route: Routes.openjmuPublishPost.name,
@@ -129,7 +129,7 @@ class _PostLoadingBase extends LoadingBase {
       setState();
       return true;
     } catch (e) {
-      LogUtils.e('Error when loading data for LoadingBase list: $e');
+      LogUtil.e('Error when loading data for LoadingBase list: $e');
       return false;
     }
   }

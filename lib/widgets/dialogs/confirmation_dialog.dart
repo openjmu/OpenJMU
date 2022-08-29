@@ -8,7 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   const ConfirmationDialog({
-    Key key,
+    Key? key,
     this.title,
     this.centerTitle = true,
     this.child,
@@ -29,46 +29,41 @@ class ConfirmationDialog extends StatelessWidget {
               !(child != null && content != null),
           '\'child\' and \'content\' cannot be set or not set at the same time.',
         ),
-        assert(resolveSpecialText != null),
-        assert(showConfirm != null),
-        assert(showCancel != null),
-        assert(confirmLabel != null),
-        assert(cancelLabel != null),
         super(key: key);
 
-  final String title;
+  final String? title;
   final bool centerTitle;
-  final Widget child;
-  final String content;
-  final EdgeInsetsGeometry contentPadding;
+  final Widget? child;
+  final String? content;
+  final EdgeInsetsGeometry? contentPadding;
   final TextAlign contentAlignment;
   final bool resolveSpecialText;
   final bool showConfirm;
   final bool showCancel;
   final String confirmLabel;
   final String cancelLabel;
-  final Color confirmColor;
-  final Color cancelColor;
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
+  final Color? confirmColor;
+  final Color? cancelColor;
+  final VoidCallback? onConfirm;
+  final VoidCallback? onCancel;
 
   static Future<bool> show(
     BuildContext context, {
-    String title,
+    String? title,
     bool centerTitle = true,
-    Widget child,
-    String content,
-    EdgeInsetsGeometry contentPadding,
+    Widget? child,
+    String? content,
+    EdgeInsetsGeometry? contentPadding,
     TextAlign contentAlignment = TextAlign.center,
     bool resolveSpecialText = true,
     bool showConfirm = false,
     bool showCancel = true,
     String confirmLabel = '确认',
     String cancelLabel = '取消',
-    Color confirmColor,
-    Color cancelColor,
+    Color? confirmColor,
+    Color? cancelColor,
   }) async {
-    final bool result = await showDialog<bool>(
+    final bool? result = await showDialog(
       context: context,
       barrierColor: Colors.black38,
       barrierDismissible: false,
@@ -95,7 +90,7 @@ class ConfirmationDialog extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
       child: Text(
-        title.notBreak,
+        title!.notBreak,
         style: TextStyle(
           height: 1.2,
           fontSize: 22.sp,
@@ -112,7 +107,7 @@ class ConfirmationDialog extends StatelessWidget {
       isDestructiveAction: true,
       onPressed: () {
         onConfirm?.call();
-        context.navigator?.maybePop(true);
+        context.navigator.maybePop(true);
       },
     );
   }
@@ -122,7 +117,7 @@ class ConfirmationDialog extends StatelessWidget {
       child: Text(cancelLabel),
       onPressed: () {
         onCancel?.call();
-        context.navigator?.maybePop(false);
+        context.navigator.maybePop(false);
       },
     );
   }
@@ -130,12 +125,9 @@ class ConfirmationDialog extends StatelessWidget {
   Widget _contentBuilder(BuildContext context) {
     return Padding(
       padding: contentPadding ??
-          EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 24.w,
-          ),
+          EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.w),
       child: ExtendedText(
-        content,
+        content!,
         style: TextStyle(height: 1.2, fontSize: 20.sp),
         textAlign: contentAlignment,
         specialTextSpanBuilder:
@@ -176,7 +168,7 @@ class ConfirmationDialog extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         if (title != null) titleWidget(context),
-                        if (child != null) child else _contentBuilder(context),
+                        if (child != null) child! else _contentBuilder(context),
                       ],
                     ),
                   ),
@@ -206,25 +198,23 @@ class ConfirmationDialog extends StatelessWidget {
 
 class ConfirmationDialogAction extends StatelessWidget {
   const ConfirmationDialogAction({
-    Key key,
-    @required this.child,
-    @required this.onPressed,
+    Key? key,
+    required this.child,
+    required this.onPressed,
     this.isDestructiveAction = false,
     this.color,
-  })  : assert(child != null),
-        assert(onPressed != null),
-        super(key: key);
+  }) : super(key: key);
 
   final Widget child;
   final VoidCallback onPressed;
   final bool isDestructiveAction;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final TextStyle style = TextStyle(
       color:
-          isDestructiveAction ? Colors.white : context.textTheme.caption.color,
+          isDestructiveAction ? Colors.white : context.textTheme.caption?.color,
       height: 1.23,
       fontSize: 20.sp,
       fontWeight: isDestructiveAction ? FontWeight.w600 : FontWeight.normal,

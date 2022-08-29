@@ -42,10 +42,10 @@ export '../widgets/webview/in_app_webview.dart';
 
 /// Empty counter builder for [TextField].
 final InputCounterWidgetBuilder emptyCounterBuilder = (
-  BuildContext _, {
-  int? currentLength,
-  int? maxLength,
-  bool? isFocused,
+  BuildContext context, {
+  required int currentLength,
+  required int? maxLength,
+  required bool isFocused,
 }) =>
     null;
 
@@ -298,7 +298,7 @@ class _LoadMoreIndicatorState extends State<LoadMoreIndicator> {
           if (widget.canLoadMore) ...<Widget>[
             const LoadMoreSpinningIcon(isRefreshing: true, size: 32),
             if (widget.showText) ...<Widget>[
-              Gap(10.w),
+              Gap.h(10.w),
               Text(
                 '正在加载',
                 style: TextStyle(

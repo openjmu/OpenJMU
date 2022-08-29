@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart' hide SizeExtension;
 
@@ -48,7 +47,7 @@ void main() {
 
       runApp(OpenJMUApp());
     },
-    (Object e, StackTrace s) => LogUtils.e(
+    (Object e, StackTrace s) => LogUtil.e(
       'Caught unhandled exception: $e',
       stackTrace: s,
     ),
@@ -61,24 +60,23 @@ class OpenJMUApp extends StatefulWidget {
 }
 
 class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
-  StreamSubscription<ConnectivityResult> connectivitySubscription;
+  late StreamSubscription<ConnectivityResult> connectivitySubscription;
 
-  Brightness get _platformBrightness =>
-      Screens.mediaQuery.platformBrightness ?? Brightness.light;
+  Brightness get _platformBrightness => Screens.mediaQuery.platformBrightness;
 
-  ToastFuture connectivityToastFuture;
+  ToastFuture? connectivityToastFuture;
 
   @override
   void initState() {
     super.initState();
-
-    LogUtils.d('Current platform is: ${Platform.operatingSystem}');
-    WidgetsBinding.instance.addObserver(this);
+    LogUtil.d('Current platform is: ${Platform.operatingSystem}');
+    WidgetsBinding.instance
+      ..addObserver(this)
+      ..addPostFrameCallback((_) {
+        Connectivity().checkConnectivity().then(connectivityHandler);
+      });
     tryRecoverLoginInfo();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      Connectivity().checkConnectivity().then(connectivityHandler);
-    });
     connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(connectivityHandler);
 
@@ -94,12 +92,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         currentContext.read<MessagesProvider>().initMessages();
         currentContext.read<NotificationProvider>().initNotification();
         currentContext.read<ReportRecordsProvider>().initRecords();
-//        currentContext.read<SettingsProvider>().getCloudSettings();
         currentContext.read<SignProvider>().getSignStatus();
         currentContext.read<WebAppsProvider>().initApps();
-        if (UserAPI.backpackItemTypes.isEmpty) {
-          UserAPI.getBackpackItemType();
-        }
         UserAPI.initializeBlacklist();
       })
       ..on<LogoutEvent>().listen((LogoutEvent event) {
@@ -118,7 +112,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         currentContext.read<ReportRecordsProvider>().unloadRecords();
         currentContext.read<SignProvider>().resetSignStatus();
         currentContext.read<WebAppsProvider>().unloadApps();
-        UserAPI.backpackItemTypes.clear();
         Future<void>.delayed(250.milliseconds, () {
           currentContext.read<ThemesProvider>().resetTheme();
           currentContext.read<SettingsProvider>().reset();
@@ -135,14 +128,14 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    connectivitySubscription?.cancel();
+    WidgetsBinding.instance?.removeObserver(this);
+    connectivitySubscription.cancel();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    LogUtils.d('AppLifecycleState change to: ${state.toString()}');
+    LogUtil.d('AppLifecycleState change to: ${state.toString()}');
     if (state == AppLifecycleState.resumed &&
         Instances.appLifeCycleState != AppLifecycleState.resumed) {
       Future<void>.delayed(
@@ -178,7 +171,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     checkIfNoConnectivity(result);
     Instances.eventBus.fire(ConnectivityChangeEvent(result));
     Instances.connectivityResult = result;
-    LogUtils.d('Current connectivity: $result');
+    LogUtil.d('Current connectivity: $result');
   }
 
   void checkIfNoConnectivity(ConnectivityResult result) {
@@ -238,11 +231,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                 textStyle: const TextStyle(fontSize: 14),
                 child: MaterialApp(
                   navigatorKey: Instances.navigatorKey,
-                  builder: (BuildContext c, Widget w) {
+                  builder: (BuildContext c, Widget? w) {
                     ScreenUtil.init(c, allowFontScaling: true);
                     Widget widget = ScrollConfiguration(
                       behavior: const NoGlowScrollBehavior(),
-                      child: NoScaleTextWidget(child: w),
+                      child: NoScaleTextWidget(child: w!),
                     );
                     if (Platform.isIOS && Screens.topSafeHeight >= 42) {
                       widget = Stack(
@@ -263,11 +256,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   navigatorObservers: <NavigatorObserver>[
                     Instances.routeObserver,
                   ],
-                  onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
-                    settings: settings,
-                    getRouteSettings: getRouteSettings,
-                    notFoundWidget: NoRoutePage(route: settings.name),
-                  ),
+                  // onGenerateRoute: (RouteSettings settings) => onGenerateRoute(
+                  //   settings: settings,
+                  //   getRouteSettings: getRouteSettings,
+                  //   notFoundWidget: NoRoutePage(route: settings.name),
+                  // ),
                   localizationsDelegates: Constants.localizationsDelegates,
                   supportedLocales: Constants.supportedLocales,
                 ),
@@ -281,7 +274,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 }
 
 class _HiddenLogo extends StatelessWidget {
-  const _HiddenLogo({Key key}) : super(key: key);
+  const _HiddenLogo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -329,34 +322,34 @@ void _customizeErrorWidget() {
               width: 50.w,
               color: currentTheme.iconTheme.color,
             ),
-            VGap(20.w),
+            Gap.v(20.w),
             Text(
               '出现了不可预料的错误 (>_<)',
               style: TextStyle(
-                color: currentTheme.textTheme.caption.color,
+                color: currentTheme.textTheme.caption?.color,
                 fontSize: 22.sp,
               ),
             ),
-            VGap(10.w),
+            Gap.v(10.w),
             Text(
               details.exception.toString(),
               style: TextStyle(
-                color: currentTheme.textTheme.caption.color,
+                color: currentTheme.textTheme.caption?.color,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            VGap(10.w),
+            Gap.v(10.w),
             Text(
               details.stack.toString(),
               style: TextStyle(
-                color: currentTheme.textTheme.caption.color,
+                color: currentTheme.textTheme.caption?.color,
                 fontSize: 16.sp,
               ),
               maxLines: 14,
               overflow: TextOverflow.ellipsis,
             ),
-            VGap(20.w),
+            Gap.v(20.w),
             Tapper(
               onTap: _takeAppScreenshot,
               child: Container(
@@ -388,10 +381,13 @@ Future<void> _takeAppScreenshot() async {
     final ByteData byteData = await obtainScreenshotData(
       Instances.appRepaintBoundaryKey,
     );
-    await PhotoManager.editor.saveImage(byteData.buffer.asUint8List());
+    await PhotoManager.editor.saveImage(
+      byteData.buffer.asUint8List(),
+      title: '$currentTimeStamp.jpg',
+    );
     showToast('截图保存成功');
   } catch (e) {
-    LogUtils.e('Error when taking app\'s screenshot: $e');
+    LogUtil.e('Error when taking app\'s screenshot: $e');
     showCenterErrorToast('截图保存失败');
   }
 }

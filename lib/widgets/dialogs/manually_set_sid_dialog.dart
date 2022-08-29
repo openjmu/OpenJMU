@@ -12,27 +12,22 @@ class ManuallySetSidDialog extends StatefulWidget {
 }
 
 class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
-  TextEditingController _textEditingController;
+  late final TextEditingController _tec = TextEditingController(
+    text: UserAPI.currentUser.sid ?? '',
+  )..addListener(() {
+      setState(() {
+        sid = _tec.text;
+        canSave = _tec.text != UserAPI.currentUser.sid;
+      });
+    });
+
   String sid = '';
   bool canSave = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController = TextEditingController(
-      text: UserAPI.currentUser.sid ?? '',
-    )..addListener(() {
-        setState(() {
-          sid = _textEditingController.text;
-          canSave = _textEditingController.text != UserAPI.currentUser.sid;
-        });
-      });
-  }
 
   void updateSid(BuildContext context) {
     currentUser = currentUser.copyWith(sid: sid);
     Navigator.of(context).pop();
-    LogUtils.d('$currentUser');
+    LogUtil.d('$currentUser');
   }
 
   @override
@@ -63,20 +58,20 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                     padding: EdgeInsets.all(20.w),
                     child: TextField(
                       autofocus: true,
-                      style: context.textTheme.bodyText2.copyWith(
+                      style: context.textTheme.bodyText2?.copyWith(
                         fontSize: 18.sp,
                         textBaseline: TextBaseline.alphabetic,
                       ),
-                      controller: _textEditingController,
+                      controller: _tec,
                       maxLength: 32,
                       maxLines: null,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(vertical: 6.h),
                         border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[700]),
+                          borderSide: BorderSide(color: Colors.grey[700]!),
                         ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[850]),
+                          borderSide: BorderSide(color: Colors.grey[850]!),
                         ),
                         hintText: currentUser.signature,
                         hintStyle: const TextStyle(
@@ -110,13 +105,8 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                                 fontSize: 18.sp,
                               ),
                             ),
-                            onPressed: () {
-                              if (canSave) {
-                                updateSid(context);
-                              } else {
-                                return null;
-                              }
-                            },
+                            onPressed:
+                                canSave ? () => updateSid(context) : null,
                           ),
                         ),
                       ],
@@ -126,7 +116,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
               ),
             ),
           ),
-          VGap(MediaQuery.of(context).viewInsets.bottom ?? 0)
+          Gap.v(MediaQuery.of(context).viewInsets.bottom)
         ],
       ),
     );

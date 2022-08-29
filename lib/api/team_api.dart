@@ -144,7 +144,7 @@ class TeamPostAPI {
     if (content is TeamPost) {
       if (content.isReplied) {
         origin = DateTime.fromMillisecondsSinceEpoch(
-          '${content.postInfo[0]['post_time']}'.toInt(),
+          '${content.postInfo![0]['post_time']}'.toInt(),
         );
         time += '回复于';
       } else {

@@ -3,7 +3,7 @@ import 'package:openjmu/constants/constants.dart';
 
 class AnnouncementWidget extends StatelessWidget {
   const AnnouncementWidget({
-    Key key,
+    Key? key,
     this.contentColor,
     this.backgroundColor,
     this.height,
@@ -12,16 +12,16 @@ class AnnouncementWidget extends StatelessWidget {
     this.canClose = false,
   }) : super(key: key);
 
-  final Color contentColor;
-  final Color backgroundColor;
-  final double height;
-  final double gap;
-  final double radius;
+  final Color? contentColor;
+  final Color? backgroundColor;
+  final double? height;
+  final double? gap;
+  final double? radius;
   final bool canClose;
 
   Color get adaptiveColor {
     if (contentColor != null) {
-      return contentColor;
+      return contentColor!;
     }
     return adaptiveButtonColor(Colors.white70);
   }
@@ -67,7 +67,7 @@ class AnnouncementWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
-      builder: (BuildContext _, SettingsProvider provider, Widget __) {
+      builder: (_, SettingsProvider provider, Widget? __) {
         return Tapper(
           onTap: () {
             final Map<String, dynamic> data =
@@ -88,7 +88,7 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius:
-                  radius != null ? BorderRadius.circular(radius.w) : null,
+                  radius != null ? BorderRadius.circular(radius!.w) : null,
               color: backgroundColor ?? defaultLightColor,
             ),
             child: Row(

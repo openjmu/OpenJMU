@@ -9,7 +9,7 @@ import 'package:openjmu/pages/main_page.dart';
 
 @FFRoute(name: 'openjmu://settings', routeName: '设置页')
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key key}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _AboutCard extends StatelessWidget {
-  const _AboutCard({Key key}) : super(key: key);
+  const _AboutCard({Key? key}) : super(key: key);
 
   Future<void> showDebugInfoDialog(BuildContext context) async {
     final Map<String, String> info = <String, String>{
@@ -43,8 +43,6 @@ class _AboutCard extends StatelessWidget {
       'uuid': DeviceUtils.deviceUuid,
       'ticket': currentUser.ticket,
       'workId': currentUser.workId,
-      if (DeviceUtils.devicePushToken != null)
-        'pushToken': DeviceUtils.devicePushToken,
       'model': DeviceUtils.deviceModel,
     };
     final int longestKeyLength = info.keys.fold<int>(0, (int pre, String key) {
@@ -93,9 +91,9 @@ class _AboutCard extends StatelessWidget {
   }
 
   Widget debugContentBuilder({
-    BuildContext context,
-    List<MapEntry<String, String>> entries,
-    int longestKeyLength,
+    required BuildContext context,
+    required List<MapEntry<String, String>> entries,
+    required int longestKeyLength,
   }) {
     return Padding(
       padding: EdgeInsets.all(20.w),
@@ -139,7 +137,7 @@ class _AboutCard extends StatelessWidget {
               ),
             ),
           ),
-          Gap(20.w),
+          Gap.h(20.w),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -154,7 +152,7 @@ class _AboutCard extends StatelessWidget {
                 ),
                 Text(
                   'V${PackageUtils.version}+${PackageUtils.buildNumber}',
-                  style: context.textTheme.caption.copyWith(
+                  style: context.textTheme.caption?.copyWith(
                     fontSize: 17.sp,
                   ),
                 ),
@@ -226,7 +224,7 @@ class _AboutCard extends StatelessWidget {
 }
 
 class _NightModeCard extends StatelessWidget {
-  const _NightModeCard({Key key}) : super(key: key);
+  const _NightModeCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +235,7 @@ class _NightModeCard extends StatelessWidget {
           item: _SettingItem(
             name: '深色模式',
             widget: Consumer<ThemesProvider>(
-              builder: (BuildContext _, ThemesProvider provider, Widget __) {
+              builder: (_, ThemesProvider provider, Widget? __) {
                 return CustomSwitch(
                   activeColor: context.themeColor,
                   value: provider.dark,
@@ -253,7 +251,7 @@ class _NightModeCard extends StatelessWidget {
           item: _SettingItem(
             name: '跟随系统',
             widget: Consumer<ThemesProvider>(
-              builder: (BuildContext _, ThemesProvider provider, Widget __) {
+              builder: (_, ThemesProvider provider, Widget? __) {
                 return CustomSwitch(
                   activeColor: context.themeColor,
                   value: provider.platformBrightness,
@@ -270,7 +268,7 @@ class _NightModeCard extends StatelessWidget {
 }
 
 class _StartPageCard extends StatelessWidget {
-  const _StartPageCard({Key key}) : super(key: key);
+  const _StartPageCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +301,7 @@ class _StartPageCard extends StatelessWidget {
 }
 
 class _ThemeCard extends StatelessWidget {
-  const _ThemeCard({Key key}) : super(key: key);
+  const _ThemeCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -321,7 +319,7 @@ class _ThemeCard extends StatelessWidget {
                 crossAxisSpacing: 20.w,
               ),
               itemCount: supportThemeGroups.length,
-              itemBuilder: (BuildContext _, int index) {
+              itemBuilder: (_, int index) {
                 final ThemeGroup theme = supportThemeGroups[index];
                 final bool isSelected = provider.currentThemeGroup == theme;
                 return Tapper(
@@ -358,7 +356,7 @@ class _ThemeCard extends StatelessWidget {
 }
 
 class _EnhanceCard extends StatelessWidget {
-  const _EnhanceCard({Key key}) : super(key: key);
+  const _EnhanceCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -375,9 +373,9 @@ class _EnhanceCard extends StatelessWidget {
           item: _SettingItem(
             name: '隐藏被屏蔽的动态',
             widget: Selector<SettingsProvider, bool>(
-              selector: (BuildContext _, SettingsProvider provider) =>
+              selector: (_, SettingsProvider provider) =>
                   provider.hideShieldPost,
-              builder: (BuildContext _, bool hideShieldPost, Widget __) {
+              builder: (_, bool hideShieldPost, __) {
                 return CustomSwitch(
                   activeColor: context.themeColor,
                   value: hideShieldPost,
@@ -416,10 +414,9 @@ class _EnhanceCard extends StatelessWidget {
           item: _SettingItem(
             name: '在系统浏览器打开网页',
             widget: Selector<SettingsProvider, bool>(
-              selector: (BuildContext _, SettingsProvider provider) =>
+              selector: (_, SettingsProvider provider) =>
                   provider.launchFromSystemBrowser,
-              builder:
-                  (BuildContext _, bool launchFromSystemBrowser, Widget __) {
+              builder: (_, bool launchFromSystemBrowser, __) {
                 return CustomSwitch(
                   activeColor: context.themeColor,
                   value: launchFromSystemBrowser,
@@ -437,7 +434,7 @@ class _EnhanceCard extends StatelessWidget {
 }
 
 class _DataCleaningCard extends StatelessWidget {
-  const _DataCleaningCard({Key key}) : super(key: key);
+  const _DataCleaningCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -466,7 +463,7 @@ class _DataCleaningCard extends StatelessWidget {
 }
 
 class _FlutterBrandingWidget extends StatelessWidget {
-  const _FlutterBrandingWidget({Key key}) : super(key: key);
+  const _FlutterBrandingWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -491,14 +488,13 @@ class _FlutterBrandingWidget extends StatelessWidget {
 
 class _SettingsCard extends StatelessWidget {
   const _SettingsCard({
-    Key key,
-    @required this.children,
+    Key? key,
+    required this.children,
     this.title,
-  })  : assert(children != null),
-        super(key: key);
+  }) : super(key: key);
 
-  final String title;
   final List<Widget> children;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -517,7 +513,7 @@ class _SettingsCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(bottom: 15.w),
               child: Text(
-                title,
+                title!,
                 style: TextStyle(color: currentThemeColor, fontSize: 18.sp),
               ),
             ),
@@ -530,10 +526,9 @@ class _SettingsCard extends StatelessWidget {
 
 class _SettingItemWidget extends StatelessWidget {
   const _SettingItemWidget({
-    Key key,
-    @required this.item,
-  })  : assert(item != null),
-        super(key: key);
+    Key? key,
+    required this.item,
+  }) : super(key: key);
 
   final _SettingItem item;
 
@@ -556,12 +551,12 @@ class _SettingItemWidget extends StatelessWidget {
             ),
             if (item.description != null)
               Text(
-                item.description,
-                style: context.textTheme.caption.copyWith(fontSize: 22.sp),
+                item.description!,
+                style: context.textTheme.caption?.copyWith(fontSize: 22.sp),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
               ),
-            if (item.widget != null) item.widget,
+            if (item.widget != null) item.widget!,
             if (item.url != null || item.route != null || item.onTap != null)
               Container(
                 margin: EdgeInsets.only(left: 16.w),
@@ -579,9 +574,9 @@ class _SettingItemWidget extends StatelessWidget {
       onTap: () {
         item.onTap?.call();
         if (item.route != null) {
-          navigatorState.pushNamed(item.route);
+          navigatorState.pushNamed(item.route!);
         } else if (item.url != null) {
-          API.launchWeb(url: item.url, title: item.urlTitle);
+          API.launchWeb(url: item.url!, title: item.urlTitle);
         }
       },
     );
@@ -590,7 +585,7 @@ class _SettingItemWidget extends StatelessWidget {
 
 class _SettingItem {
   const _SettingItem({
-    this.name,
+    required this.name,
     this.description,
     this.widget,
     this.route,
@@ -600,10 +595,10 @@ class _SettingItem {
   });
 
   final String name;
-  final String description;
-  final Widget widget;
-  final String route;
-  final VoidCallback onTap;
-  final String url;
+  final String? description;
+  final Widget? widget;
+  final String? route;
+  final VoidCallback? onTap;
+  final String? url;
   final String urlTitle;
 }

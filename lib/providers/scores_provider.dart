@@ -8,18 +8,16 @@ class ScoresProvider extends ChangeNotifier {
   final Box<Map<dynamic, dynamic>> _scoreBox = HiveBoxes.scoresBox;
 
   final List<int> _rawData = <int>[];
-  Socket _socket;
+  Socket? _socket;
   String _scoreData = '';
 
   final int _maximumRetries = 3;
   int _retries = 0;
 
+  bool get loaded => _loaded;
   bool _loaded = false;
 
-  bool get loaded => _loaded;
-
   set loaded(bool value) {
-    assert(value != null);
     if (value == _loaded) {
       return;
     }
@@ -27,12 +25,10 @@ class ScoresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get loading => _loading;
   bool _loading = true;
 
-  bool get loading => _loading;
-
   set loading(bool value) {
-    assert(value != null);
     if (value == _loading) {
       return;
     }
@@ -40,32 +36,27 @@ class ScoresProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get loadError => _loadError;
   bool _loadError = false;
 
-  bool get loadError => _loadError;
+  String get errorString => _errorString;
   String _errorString = '';
 
-  String get errorString => _errorString;
+  List<String>? get terms => _terms;
+  List<String>? _terms;
 
-  List<String> _terms;
-
-  List<String> get terms => _terms;
-
-  set terms(List<String> value) {
-    assert(value != null);
+  set terms(List<String>? value) {
     if (value == _terms) {
       return;
     }
-    _terms = List<String>.from(value);
+    _terms = value?.toList();
     notifyListeners();
   }
 
-  String _selectedTerm;
+  String? get selectedTerm => _selectedTerm;
+  String? _selectedTerm;
 
-  String get selectedTerm => _selectedTerm;
-
-  set selectedTerm(String value) {
-    assert(value != null);
+  set selectedTerm(String? value) {
     if (value == _selectedTerm) {
       return;
     }
@@ -75,28 +66,29 @@ class ScoresProvider extends ChangeNotifier {
 
   bool get hasScore => _scores?.isNotEmpty ?? false;
 
-  List<Score> _scores;
+  List<Score>? get scores => _scores;
+  List<Score>? _scores;
 
-  List<Score> get scores => _scores;
-
-  set scores(List<Score> value) {
-    assert(value != null);
+  set scores(List<Score>? value) {
     if (value == _scores) {
       return;
     }
-    _scores = List<Score>.from(value);
+    _scores = value?.toList();
     notifyListeners();
   }
 
-  List<Score> get filteredScores =>
-      _scores?.filter((Score score) => score.termId == _selectedTerm)?.toList();
+  List<Score>? get filteredScores {
+    return _scores
+        ?.filter((Score score) => score.termId == _selectedTerm)
+        .toList();
+  }
 
-  List<Score> scoresByTerm(String term) {
-    return _scores?.filter((Score score) => score.termId == term)?.toList();
+  List<Score>? scoresByTerm(String term) {
+    return _scores?.filter((Score score) => score.termId == term).toList();
   }
 
   Future<void> initScore() async {
-    final Map<dynamic, dynamic> data = _scoreBox.get(currentUser.uid);
+    final Map<dynamic, dynamic>? data = _scoreBox.get(currentUser.uid);
     if (data != null && data['terms'] != null && data['scores'] != null) {
       _terms =
           (data['terms'] as List<dynamic>).reversed.toList().cast<String>();
@@ -112,17 +104,17 @@ class ScoresProvider extends ChangeNotifier {
   Future<bool> initSocket() async {
     try {
       _socket = await Socket.connect(API.openjmuHost, 4000);
-      _socket
+      _socket!
         ..setOption(SocketOption.tcpNoDelay, true)
-        ..timeout(2.minutes);
-      _socket.listen(onReceive, onDone: destroySocket);
-      LogUtils.d('Score socket connect success.');
+        ..timeout(2.minutes)
+        ..listen(onReceive, onDone: destroySocket);
+      LogUtil.d('Score socket connect success.');
       return true;
     } catch (e) {
       _loading = false;
       _loadError = true;
       _errorString = e.toString();
-      LogUtils.e('Score socket connect error: $e');
+      LogUtil.e('Score socket connect error: $e');
       return false;
     }
   }
@@ -147,7 +139,7 @@ class ScoresProvider extends ChangeNotifier {
         }
       } else {
         loading = false;
-        LogUtils.e('Error when request score: $e');
+        LogUtil.e('Error when request score: $e');
       }
     }
   }
@@ -171,7 +163,7 @@ class ScoresProvider extends ChangeNotifier {
           (response['scores'] as List<dynamic>).isNotEmpty) {
         final List<Score> scoreList = <Score>[];
         _terms = List<String>.from(response['terms'] as List<dynamic>);
-        _selectedTerm = _terms.last;
+        _selectedTerm = _terms?.lastOrNull;
         for (final dynamic score in response['scores'] as List<dynamic>) {
           scoreList.add(Score.fromJson(score as Map<String, dynamic>));
         }
@@ -190,11 +182,11 @@ class ScoresProvider extends ChangeNotifier {
       }
       _loading = false;
       notifyListeners();
-      LogUtils.d(
+      LogUtil.d(
         'Scores decoded successfully with ${_scores?.length ?? 0} scores.',
       );
     } catch (e) {
-      LogUtils.e('Decode scores response error: $e');
+      LogUtil.e('Decode scores response error: $e');
       if (_retries < _maximumRetries) {
         _retries++;
         _socket?.destroy();
@@ -206,7 +198,7 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   Future<void> updateScoreCache() async {
-    final Map<String, dynamic> beforeData =
+    final Map<String, dynamic>? beforeData =
         _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
     if (beforeData == null || beforeData['scores'] != _scores) {
       final Map<String, dynamic> presentData = <String, dynamic>{
@@ -214,9 +206,9 @@ class ScoresProvider extends ChangeNotifier {
         'scores': _scores,
       };
       await _scoreBox.put(currentUser.uid, presentData);
-      LogUtils.d('Scores cache updated successfully.');
+      LogUtil.d('Scores cache updated successfully.');
     } else {
-      LogUtils.d('Scores cache don\'t need to update.');
+      LogUtil.d('Scores cache don\'t need to update.');
     }
   }
 
@@ -241,6 +233,7 @@ class ScoresProvider extends ChangeNotifier {
   Future<void> destroySocket() async {
     await _socket?.close();
     _socket?.destroy();
+    _socket = null;
   }
 
   @override

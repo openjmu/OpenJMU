@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class EditSignatureDialog extends StatefulWidget {
-  const EditSignatureDialog({Key key}) : super(key: key);
+  const EditSignatureDialog({Key? key}) : super(key: key);
 
-  static Future<bool> show(BuildContext context) {
+  static Future<bool?> show(BuildContext context) {
     return showDialog(
       context: context,
       barrierColor: Colors.black26,
@@ -26,14 +26,9 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
   final FocusNode _focusNode = FocusNode();
   final ValueNotifier<bool> _isEmoticonPadActive = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _requesting = ValueNotifier<bool>(false);
-
-  TextEditingController _tec;
-
-  @override
-  void initState() {
-    super.initState();
-    _tec = TextEditingController(text: UserAPI.currentUser.signature);
-  }
+  final TextEditingController _tec = TextEditingController(
+    text: UserAPI.currentUser.signature,
+  );
 
   @override
   void dispose() {
@@ -53,7 +48,7 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
       showToast('个性签名已更新');
       context.navigator.pop(true);
     } catch (e) {
-      LogUtils.e('Error when update signature: $e');
+      LogUtil.e('Error when update signature: $e');
       showErrorToast('修改失败');
       _requesting.value = false;
     }
@@ -90,7 +85,7 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
             hintText: ' 输入您的个性签名',
           ),
           enabled: !value,
-          style: context.textTheme.bodyText2.copyWith(
+          style: context.textTheme.bodyText2?.copyWith(
             height: 1.2,
             fontSize: 20.sp,
           ),
@@ -126,7 +121,7 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
                 : R.ASSETS_ICONS_PUBLISH_EMOJI_SVG,
             width: 20.w,
             height: 20.w,
-            color: context.textTheme.bodyText2.color,
+            color: context.textTheme.bodyText2?.color,
           ),
         ),
       ),
@@ -187,7 +182,7 @@ class _EditSignatureDialogState extends State<EditSignatureDialog> {
         child: Row(
           children: <Widget>[
             Expanded(child: textField(context)),
-            Gap(16.w),
+            Gap.h(16.w),
             _emojiButton(context),
             _publishButton(context),
           ],

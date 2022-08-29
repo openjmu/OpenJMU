@@ -15,8 +15,8 @@ class BlacklistUser {
     );
   }
 
-  final String uid;
-  final String username;
+  final String? uid;
+  final String? username;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{'uid': uid, 'username': username};
