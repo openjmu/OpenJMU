@@ -55,12 +55,21 @@ class NetUtils {
 
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         _clientCreate;
-
-    dio.interceptors.add(MockingInterceptor());
-
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = _clientCreate;
-    tokenDio.interceptors.add(MockingInterceptor());
+
+    if (Constants.isMock) {
+      dio.interceptors.add(MockingInterceptor());
+      tokenDio.interceptors.add(MockingInterceptor());
+    } else {
+      dio.interceptors
+        ..add(cookieManager)
+        ..add(_interceptor);
+
+      tokenDio.interceptors
+        ..add(tokenCookieManager)
+        ..add(_interceptor);
+    }
 
     if (Constants.isDebug && shouldLogRequest) {
       dio.interceptors.add(LoggingInterceptor());

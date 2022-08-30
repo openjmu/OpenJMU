@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/model/mock.dart';
 import 'package:openjmu/utils/utils.dart';
 
@@ -16,17 +17,19 @@ class MockingInterceptor extends Interceptor {
   static const String HTTP_TAG = 'Mock - LOG';
 
   /// 延时最大值
-  static const int delay = 5000;
-
-  List<dynamic> mockDataList = <dynamic>[];
+  static const int delay = 3000;
 
   /// 模拟数据
-  /// `static` 是 Dart 中的一个关键字。它用于定义静态变量或方法。
   static Map<String, List<MockModel>> mockData = {};
+
+  /// 抓包数据
+  // List<dynamic> mockDataList = <dynamic>[];
 
   /// > 将资源文件`assets/mock/mock_data.json`
   /// 加载模拟数据并将其存储在 `mockData` 变量中
   static Future<void> loadMockSources() async {
+    Constants.isMock = true;
+
     try {
       final Map<String, dynamic> json =
           jsonDecode(await rootBundle.loadString('assets/mock/mock_data.json'))
@@ -35,8 +38,9 @@ class MockingInterceptor extends Interceptor {
       mockData = json.map((String key, dynamic value) => MapEntry(
             key,
             (value as List<dynamic>)
-                .map((dynamic e) =>
-                    MockModel.fromJson(e as Map<String, dynamic>))
+                .map(
+                  (dynamic e) => MockModel.fromJson(e as Map<String, dynamic>),
+                )
                 .toList(),
           ));
     } catch (e) {
