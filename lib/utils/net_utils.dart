@@ -12,6 +12,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
 import 'package:flutter_socks_proxy/socks_proxy.dart';
 import 'package:open_file/open_file.dart';
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/utils/mock_utils.dart';
 import 'package:path_provider/path_provider.dart';
 
 class NetUtils {
@@ -55,15 +56,11 @@ class NetUtils {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         _clientCreate;
 
-    dio.interceptors
-      ..add(cookieManager)
-      ..add(_interceptor);
+    dio.interceptors.add(MockingInterceptor());
 
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = _clientCreate;
-    tokenDio.interceptors
-      ..add(tokenCookieManager)
-      ..add(_interceptor);
+    tokenDio.interceptors.add(MockingInterceptor());
 
     if (Constants.isDebug && shouldLogRequest) {
       dio.interceptors.add(LoggingInterceptor());

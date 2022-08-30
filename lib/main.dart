@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart' hide SizeExtension;
+import 'package:openjmu/utils/mock_utils.dart';
 
 import 'constants/constants.dart' hide PageRouteType;
 import 'openjmu_route.dart';
@@ -37,6 +38,7 @@ void main() {
       await HiveBoxes.openBoxes();
       await Future.wait(
         <Future<void>>[
+          MockingInterceptor.loadMockSources(),
           DeviceUtils.initDeviceInfo(),
           PackageUtils.initPackageInfo(),
           NetUtils.initConfig(),

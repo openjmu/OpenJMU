@@ -73,6 +73,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/mock/
     - assets/emoji/
     - assets/icons/
     - assets/icons/add-button/
