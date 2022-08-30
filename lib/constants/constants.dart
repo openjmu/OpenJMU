@@ -48,6 +48,8 @@ class Constants {
 
   static const bool isDebug = bool.fromEnvironment('OpenJMUDebug');
 
+  static bool isMock = false;
+
   /// Whether force logger to print.
   static bool get forceLogging => false;
 
