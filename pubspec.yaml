@@ -15,7 +15,7 @@ dependencies:
   cookie_jar: ^3.0.1
   dartx: ^1.1.0
   device_info_plus: ^4.0.0
-  dio: ^4.0.6
+  dio: ^5.0.3
   dio_cookie_manager: ^2.0.0
   equatable: ^2.0.3
   event_bus: ^2.0.0
